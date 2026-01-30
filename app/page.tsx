@@ -13,15 +13,17 @@ const career = [
 ];
 
 const courseInfo = [
-  { label: "강의 시간", value: "주 2회 (1회차 / 2회차)" },
-  { label: "강의실", value: "추후 공지" },
-  { label: "교재", value: "Numerical Methods for Engineers, Chapra & Canale" },
+  { label: "강의 시간", value: "Mon/Tue 13:30–14:45" },
+  { label: "강의실", value: "2N378A" },
+  { label: "평가", value: "Mid-term 50% + Final 50%" },
+  { label: "교재", value: "Chapra, Applied Numerical Methods with MATLAB (4th)" },
   { label: "소프트웨어", value: "MATLAB" },
+  { label: "조교", value: "고경주 (kyeongju@inha.edu)" },
 ];
 
 const weeks = [
   {
-    week: 1, topic: "Introduction", color: "from-blue-500 to-cyan-500", ready: false,
+    week: 1, topic: "Introduction", color: "from-blue-500 to-cyan-500", ready: true,
     desc: "수치해석 개론",
     details: ["수치해석이란 무엇인가", "해석해 vs 수치해", "공학 응용 사례", "강의 로드맵"],
   },
