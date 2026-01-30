@@ -107,10 +107,10 @@ function DerivationSvg() {
         x_i
       </text>
       <text x={pxXi1} y={axisY + 16} textAnchor="middle" fill="#38bdf8" fontSize={13} fontFamily="monospace">
-        x_{{i+1}}
+        {"x_{i+1}"}
       </text>
       <text x={pxXi + 8} y={pyXi - 8} fill="#fb7185" fontSize={12} fontFamily="monospace">
-        (x_i, f(x_i))
+        {"(x_i, f(x_i))"}
       </text>
       <text x={W - pad - 30} y={axisY - 6} fill="#64748b" fontSize={11} fontFamily="monospace">
         x

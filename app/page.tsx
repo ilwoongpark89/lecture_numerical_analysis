@@ -43,7 +43,7 @@ const weeks = [
     details: ["근의 존재성 (중간값 정리)", "이분법 알고리즘과 수렴 속도", "Newton-Raphson 유도와 구현", "2차 수렴의 의미"],
   },
   {
-    week: 5, topic: "Nonlinear Equations II", color: "from-pink-500 to-fuchsia-500", ready: false,
+    week: 5, topic: "Nonlinear Equations II", color: "from-pink-500 to-fuchsia-500", ready: true,
     desc: "Secant Method 및 응용",
     details: ["Secant Method", "다중근과 수렴 실패 사례", "비선형 연립방정식 개요", "MATLAB 구현 실습"],
   },
