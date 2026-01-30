@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 const anim = {
   initial: { opacity: 0, y: 30 },
@@ -20,7 +21,7 @@ const remedies = [
   {
     title: "Known Multiplicity m",
     subtitle: "Modified Newton's Method",
-    formula: "x_{n+1} = x_n - m · f(x_n) / f'(x_n)",
+    formula: "x_{n+1} = x_n - m \\cdot \\frac{f(x_n)}{f'(x_n)}",
     desc: "근의 중복도 m을 알고 있다면, Newton 공식에 m을 곱하여 2차 수렴을 복원할 수 있습니다.",
     code: `function x = modified_newton(f, df, x0, m, tol)
   for i = 1:100
@@ -36,7 +37,7 @@ root = modified_newton(f, df, 0.5, 2, 1e-12)`,
   {
     title: "Unknown Multiplicity — u(x) Method",
     subtitle: "Reduces to Simple Roots",
-    formula: "u(x) = f(x)/f'(x),  x_{n+1} = x_n - f·f' / (f'^2 - f·f'')",
+    formula: "u(x) = \\frac{f(x)}{f'(x)},\\quad x_{n+1} = x_n - \\frac{f \\cdot f'}{f'^{2} - f \\cdot f''}",
     desc: "u(x) = f(x)/f'(x)를 정의하면, u(x)는 오직 단근만 갖습니다. u(x)에 Newton법을 적용하면 중복도에 관계없이 2차 수렴합니다.",
     code: `function x = newton_u(f, df, d2f, x0, tol)
   for i = 1:100
@@ -55,7 +56,7 @@ root = newton_u(f, df, d2f, 2.0, 1e-12)`,
   {
     title: "Deflation",
     subtitle: "Factor Out Known Roots",
-    formula: "g(x) = f(x) / (x - r₁) → find remaining roots of g(x)",
+    formula: "g(x) = \\frac{f(x)}{x - r_1} \\;\\Rightarrow\\; \\text{find remaining roots of } g(x)",
     desc: "근 r을 찾은 후, f(x)를 (x-r)로 나누어 차수를 줄입니다. 나머지 다항식에서 추가 근을 찾습니다.",
     code: `% Deflation example
 p = [1 -6 11 -6]; % x^3 - 6x^2 + 11x - 6
@@ -120,19 +121,19 @@ export default function MultipleRoots() {
         {/* What are multiple roots? */}
         <motion.div {...anim} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6">
           <h3 className="text-2xl font-bold text-white">
-            다중근이란? <span className="text-pink-400 font-mono text-lg">f(x) = (x - r)^m</span>
+            다중근이란? <M>{"f(x) = (x - r)^{m}"}</M>
           </h3>
 
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { m: 1, label: "Simple Root (단근)", cond: "f(r)=0, f'(r)≠0", behavior: "곡선이 x축을 관통" },
-              { m: 2, label: "Double Root (이중근)", cond: "f(r)=0, f'(r)=0, f''(r)≠0", behavior: "곡선이 x축에 접함" },
-              { m: 3, label: "Triple Root (삼중근)", cond: "f(r)=0, f'(r)=0, f''(r)=0", behavior: "변곡점에서 x축 관통" },
+              { m: 1, label: "Simple Root (단근)", cond: "f(r)=0,\\; f'(r)\\neq 0", behavior: "곡선이 x축을 관통" },
+              { m: 2, label: "Double Root (이중근)", cond: "f(r)=0,\\; f'(r)=0,\\; f''(r)\\neq 0", behavior: "곡선이 x축에 접함" },
+              { m: 3, label: "Triple Root (삼중근)", cond: "f(r)=0,\\; f'(r)=0,\\; f''(r)=0", behavior: "변곡점에서 x축 관통" },
             ].map((item) => (
               <div key={item.m} className="bg-slate-800/50 rounded-2xl p-5 border border-slate-700/50 space-y-2">
-                <span className="text-fuchsia-400 font-mono text-sm">m = {item.m}</span>
+                <span className="text-fuchsia-400 font-mono text-sm"><M>{`m = ${item.m}`}</M></span>
                 <h4 className="text-white font-semibold">{item.label}</h4>
-                <p className="text-slate-400 text-sm font-mono">{item.cond}</p>
+                <p className="text-slate-400 text-sm"><M>{item.cond}</M></p>
                 <p className="text-slate-300 text-sm">{item.behavior}</p>
               </div>
             ))}
@@ -171,17 +172,17 @@ export default function MultipleRoots() {
 
           <div className="space-y-4 text-slate-300">
             <p>
-              <span className="text-pink-400 font-semibold">단근 (m=1):</span>{" "}
-              Newton법은 <span className="text-fuchsia-400 font-mono">2차 수렴 (quadratic)</span>을 보입니다.
+              <span className="text-pink-400 font-semibold">단근 (<M>{"m=1"}</M>):</span>{" "}
+              Newton법은 <span className="text-fuchsia-400">2차 수렴 (quadratic)</span>을 보입니다.
             </p>
             <p>
-              <span className="text-pink-400 font-semibold">다중근 (m≥2):</span>{" "}
-              수렴 속도가 <span className="text-fuchsia-400 font-mono">1차 수렴 (linear)</span>으로 퇴화합니다.
+              <span className="text-pink-400 font-semibold">다중근 (<M>{"m \\geq 2"}</M>):</span>{" "}
+              수렴 속도가 <span className="text-fuchsia-400">1차 수렴 (linear)</span>으로 퇴화합니다.
             </p>
             <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700/50">
               <p className="text-sm text-slate-400 mb-1">Why?</p>
-              <p className="font-mono text-pink-400 text-sm">
-                f&apos;(r) = 0 for multiple roots → f(x)/f&apos;(x) → 0/0 indeterminate form near root
+              <p className="text-pink-400 text-sm">
+                <M>{"f'(r) = 0"}</M> for multiple roots → <M>{"f(x)/f'(x) \\to 0/0"}</M> indeterminate form near root
               </p>
             </div>
           </div>
@@ -253,7 +254,7 @@ end
                   </div>
                 </div>
                 <div className="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
-                  <p className="font-mono text-pink-400 text-sm">{r.formula}</p>
+                  <MBlock>{r.formula}</MBlock>
                 </div>
                 <p className="text-slate-300 text-sm">{r.desc}</p>
                 <div className="bg-slate-950 rounded-2xl p-4 border border-slate-800">

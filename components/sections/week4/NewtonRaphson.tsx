@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ------------------------------------------------------------------ */
 /*  Helper: Newton iteration on f(x) = x^3 - x - 2                   */
@@ -279,24 +280,20 @@ export default function NewtonRaphson() {
           <h3 className="text-2xl font-bold text-rose-400">기하학적 유도 &mdash; Geometric Derivation</h3>
 
           <div className="grid md:grid-cols-2 gap-8 items-start">
-            <div className="space-y-4 font-mono text-sm text-slate-300">
-              <p className="text-slate-400 text-xs uppercase tracking-wider">Taylor expansion at x_i</p>
-              <div className="bg-slate-950 rounded-xl p-4 border border-slate-800 space-y-2">
-                <p>
-                  f(x<sub>i+1</sub>) &asymp; f(x<sub>i</sub>) + f&apos;(x<sub>i</sub>)(x<sub>i+1</sub> &minus; x<sub>i</sub>)
-                </p>
-                <p className="text-slate-500">&darr; Set f(x<sub>i+1</sub>) = 0</p>
-                <p>
-                  0 = f(x<sub>i</sub>) + f&apos;(x<sub>i</sub>)(x<sub>i+1</sub> &minus; x<sub>i</sub>)
-                </p>
-                <p className="text-slate-500">&darr; Solve for x<sub>i+1</sub></p>
-                <p className="text-rose-400 text-base">
-                  x<sub>i+1</sub> = x<sub>i</sub> &minus; f(x<sub>i</sub>) / f&apos;(x<sub>i</sub>)
-                </p>
+            <div className="space-y-4 text-sm text-slate-300">
+              <p className="text-slate-400 text-xs uppercase tracking-wider">Taylor expansion at <M>{"x_i"}</M></p>
+              <div className="bg-slate-950 rounded-xl p-4 border border-slate-800 space-y-3">
+                <MBlock>{"f(x_{i+1}) \\approx f(x_{i}) + f'(x_{i})(x_{i+1} - x_{i})"}</MBlock>
+                <p className="text-slate-500 text-center">&darr; Set <M>{"f(x_{i+1}) = 0"}</M></p>
+                <MBlock>{"0 = f(x_{i}) + f'(x_{i})(x_{i+1} - x_{i})"}</MBlock>
+                <p className="text-slate-500 text-center">&darr; Solve for <M>{"x_{i+1}"}</M></p>
+                <div className="text-rose-400">
+                  <MBlock>{"x_{i+1} = x_{i} - \\frac{f(x_{i})}{f'(x_{i})}"}</MBlock>
+                </div>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed">
-                접선(tangent line)은 f를 x<sub>i</sub>에서 선형화(linearization)한 것입니다.
-                이 접선이 x축과 만나는 점이 다음 근사값 x<sub>i+1</sub>이 됩니다.
+                접선(tangent line)은 f를 <M>{"x_{i}"}</M>에서 선형화(linearization)한 것입니다.
+                이 접선이 x축과 만나는 점이 다음 근사값 <M>{"x_{i+1}"}</M>이 됩니다.
               </p>
             </div>
 
@@ -314,20 +311,8 @@ export default function NewtonRaphson() {
         >
           <h3 className="text-2xl font-bold text-pink-400">The Newton&ndash;Raphson Formula</h3>
 
-          <div className="inline-flex items-baseline gap-2 text-3xl md:text-4xl font-mono font-bold py-6">
-            <span className="text-slate-300">x</span>
-            <sub className="text-slate-500 text-lg">n+1</sub>
-            <span className="text-slate-500 mx-1">=</span>
-            <span className="text-sky-400">x<sub className="text-lg">n</sub></span>
-            <span className="text-slate-500 mx-1">&minus;</span>
-            <span className="flex flex-col items-center leading-tight">
-              <span className="text-rose-400 border-b-2 border-slate-600 pb-1 px-2">
-                f(x<sub className="text-lg">n</sub>)
-              </span>
-              <span className="text-pink-400 pt-1 px-2">
-                f&apos;(x<sub className="text-lg">n</sub>)
-              </span>
-            </span>
+          <div className="py-6">
+            <MBlock>{"x_{n+1} = x_{n} - \\frac{f(x_{n})}{f'(x_{n})}"}</MBlock>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 text-xs font-mono">
@@ -352,10 +337,11 @@ export default function NewtonRaphson() {
           className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6"
         >
           <h3 className="text-2xl font-bold text-rose-400">
-            Interactive Demo &mdash; f(x) = x&sup3; &minus; x &minus; 2
+
+            Interactive Demo &mdash; <M>{"f(x) = x^{3} - x - 2"}</M>
           </h3>
-          <p className="font-mono text-sm text-slate-400">
-            f&apos;(x) = 3x&sup2; &minus; 1 &nbsp;|&nbsp; x<sub>0</sub> = 1.5 &nbsp;|&nbsp; 실제 근 &asymp; 1.52138
+          <p className="text-sm text-slate-400">
+            <M>{"f'(x) = 3x^{2} - 1"}</M> | <M>{"x_{0} = 1.5"}</M> | 실제 근 <M>{"\\approx 1.52138"}</M>
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -435,11 +421,11 @@ export default function NewtonRaphson() {
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 font-mono text-sm space-y-3">
+              <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 text-sm space-y-3">
                 <p className="text-slate-400 text-xs uppercase tracking-wider">Error recurrence</p>
-                <p className="text-lg text-rose-400">
-                  |&epsilon;<sub>n+1</sub>| &asymp; <span className="text-pink-400">|f&Prime;(&xi;) / (2f&apos;(&xi;))|</span> &middot; |&epsilon;<sub>n</sub>|&sup2;
-                </p>
+                <div className="text-rose-400">
+                  <MBlock>{"|\\varepsilon_{n+1}| \\approx \\left|\\frac{f''(\\xi)}{2f'(\\xi)}\\right| \\cdot |\\varepsilon_{n}|^{2}"}</MBlock>
+                </div>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   매 반복마다 유효 자릿수(digits of accuracy)가 대략 <span className="text-rose-400 font-bold">두 배</span>가 됩니다.
                   이것이 Newton 법이 강력한 이유입니다.
@@ -461,7 +447,7 @@ export default function NewtonRaphson() {
                     <p className="text-xs text-slate-600">iterations</p>
                   </div>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 text-center">같은 정확도 (10&sup{-6}) 달성 기준</p>
+                <p className="text-xs text-slate-600 mt-2 text-center">같은 정확도 (<M>{"10^{-6}"}</M>) 달성 기준</p>
               </div>
             </div>
 
@@ -488,8 +474,8 @@ export default function NewtonRaphson() {
                   ))}
                 </tbody>
               </table>
-              <p className="text-xs text-slate-600 font-mono mt-2">
-                &epsilon;: 10&sup{-1} &rarr; 10&sup{-2} &rarr; 10&sup{-4} &rarr; 10&sup{-8} &rarr; 10&sup{-16}
+              <p className="text-xs text-slate-600 mt-2">
+                <M>{"\\varepsilon: 10^{-1} \\rightarrow 10^{-2} \\rightarrow 10^{-4} \\rightarrow 10^{-8} \\rightarrow 10^{-16}"}</M>
               </p>
             </div>
           </div>
@@ -528,7 +514,7 @@ export default function NewtonRaphson() {
               </h4>
               <p className="text-slate-400 text-xs font-mono leading-relaxed">
                 두 점 사이를 진동하며 수렴하지 못하는 경우.
-                예: f(x) = x&sup3; &minus; 2x + 2 에서 특정 초기값.
+                예: <M>{"f(x) = x^{3} - 2x + 2"}</M> 에서 특정 초기값.
               </p>
             </div>
 

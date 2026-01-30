@@ -2,6 +2,7 @@
 
 import { useState, useMemo, type ReactNode } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 // ─── Shared helpers ───
 const g = 9.81;
@@ -44,13 +45,13 @@ function HeatConduction1D({ mode }: { mode: "analytical" | "numerical" }) {
     <div>
       <div className="flex flex-wrap gap-4 mb-4">
         <label className="text-xs text-gray-400 flex items-center gap-2">
-          T<sub>left</sub>
+          <M>{"T_{\\text{left}}"}</M>
           <input type="range" min={0} max={200} value={T1} onChange={(e) => setT1(+e.target.value)}
             className="w-24 h-1 accent-red-400" />
           <span className="text-red-400 font-mono w-14">{T1}°C</span>
         </label>
         <label className="text-xs text-gray-400 flex items-center gap-2">
-          T<sub>right</sub>
+          <M>{"T_{\\text{right}}"}</M>
           <input type="range" min={0} max={200} value={T2} onChange={(e) => setT2(+e.target.value)}
             className="w-24 h-1 accent-blue-400" />
           <span className="text-blue-400 font-mono w-14">{T2}°C</span>
@@ -312,7 +313,7 @@ function CantileverBeam({ mode }: { mode: "analytical" | "numerical" }) {
           EI
           <input type="range" min={1e5} max={1e7} step={1e5} value={EI} onChange={(e) => setEI(+e.target.value)}
             className="w-24 h-1 accent-emerald-400" />
-          <span className="text-emerald-400 font-mono w-20">{(EI / 1e6).toFixed(1)}×10⁶</span>
+          <span className="text-emerald-400 font-mono w-20">{(EI / 1e6).toFixed(1)}<M>{"\\times 10^{6}"}</M></span>
         </label>
         {mode === "numerical" && (
           <label className="text-xs text-gray-400 flex items-center gap-2">
@@ -391,7 +392,7 @@ function BungeeJumperMini({ mode }: { mode: "analytical" | "numerical" }) {
           <span className="text-cyan-400 font-mono w-16">{mass.toFixed(1)} kg</span>
         </label>
         <label className="text-xs text-gray-400 flex items-center gap-2">
-          c<sub>d</sub>
+          <M>{"c_{d}"}</M>
           <input type="range" min={0.05} max={1} step={0.01} value={cdVal} onChange={(e) => setCdVal(+e.target.value)}
             className="w-24 h-1 accent-cyan-400" />
           <span className="text-cyan-400 font-mono w-12">{cdVal.toFixed(2)}</span>

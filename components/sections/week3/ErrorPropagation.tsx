@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -11,28 +12,28 @@ const fadeUp = {
 const arithmeticErrors = [
   {
     op: "덧셈 (Addition)",
-    formula: "Δ(a + b) = Δa + Δb",
+    formula: "\\Delta(a + b) = \\Delta a + \\Delta b",
     note: "절대 오차가 단순 합산됩니다.",
     danger: false,
   },
   {
     op: "곱셈 (Multiplication)",
-    formula: "Δ(ab) / |ab| ≈ |Δa/a| + |Δb/b|",
+    formula: "\\Delta(ab) / |ab| \\approx |\\Delta a/a| + |\\Delta b/b|",
     note: "상대 오차가 합산됩니다.",
     danger: false,
   },
   {
     op: "뺄셈 (Subtraction)",
-    formula: "Δ(a − b) = Δa + Δb",
+    formula: "\\Delta(a - b) = \\Delta a + \\Delta b",
     note: "a ≈ b이면 상대 오차가 폭발적으로 증가! (Catastrophic Cancellation)",
     danger: true,
   },
 ];
 
 const hilbertData = [
-  { n: 5, cond: "4.77 × 10⁵" },
-  { n: 10, cond: "1.60 × 10¹³" },
-  { n: 15, cond: "3.67 × 10¹⁷" },
+  { n: 5, cond: "4.77 \\times 10^{5}" },
+  { n: 10, cond: "1.60 \\times 10^{13}" },
+  { n: 15, cond: "3.67 \\times 10^{17}" },
 ];
 
 const convergenceTable = [
@@ -43,9 +44,9 @@ const convergenceTable = [
 ];
 
 const significantDigitsExamples = [
-  { value: "3.1416", digits: 5, relErr: "< 0.5 × 10⁻³" },
-  { value: "0.001234", digits: 4, relErr: "< 0.5 × 10⁻²" },
-  { value: "2.7183", digits: 5, relErr: "< 0.5 × 10⁻³" },
+  { value: "3.1416", digits: 5, relErr: "< 0.5 \\times 10^{-3}" },
+  { value: "0.001234", digits: 4, relErr: "< 0.5 \\times 10^{-2}" },
+  { value: "2.7183", digits: 5, relErr: "< 0.5 \\times 10^{-3}" },
 ];
 
 export default function ErrorPropagation() {
@@ -71,14 +72,14 @@ export default function ErrorPropagation() {
             오차 전파 <span className="text-amber-400">(Error Propagation)</span>
           </h3>
           <p className="text-slate-400 leading-relaxed">
-            입력값에 오차 Δx가 있을 때, 함수 출력의 오차 Δf는 어떻게 될까요?
+            입력값에 오차 <M>{"\\Delta x"}</M>가 있을 때, 함수 출력의 오차 <M>{"\\Delta f"}</M>는 어떻게 될까요?
           </p>
 
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
             <h4 className="text-lg font-semibold text-orange-400">단일 변수 (Single Variable)</h4>
-            <p className="font-mono text-white text-center text-lg py-2">
-              Δf ≈ f&apos;(x) · Δx
-            </p>
+            <div className="text-center py-2">
+              <MBlock>{"\\Delta f \\approx f'(x) \\cdot \\Delta x"}</MBlock>
+            </div>
             <p className="text-slate-400 text-sm">
               1차 테일러 근사를 사용하면 출력 오차는 도함수와 입력 오차의 곱으로 근사됩니다.
             </p>
@@ -86,9 +87,9 @@ export default function ErrorPropagation() {
 
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
             <h4 className="text-lg font-semibold text-orange-400">다변수 (Multi-variable)</h4>
-            <p className="font-mono text-white text-center text-lg py-2">
-              Δf ≈ Σ (∂f/∂x_i) · Δx_i
-            </p>
+            <div className="text-center py-2">
+              <MBlock>{"\\Delta f \\approx \\sum \\frac{\\partial f}{\\partial x_i} \\cdot \\Delta x_i"}</MBlock>
+            </div>
             <p className="text-slate-400 text-sm">
               각 변수의 편미분과 해당 입력 오차의 곱을 합산합니다.
             </p>
@@ -111,7 +112,7 @@ export default function ErrorPropagation() {
                   {item.op}
                   {item.danger && <span className="ml-2 text-xs">⚠ 위험</span>}
                 </h4>
-                <p className="font-mono text-white text-sm">{item.formula}</p>
+                <p className="text-white text-sm"><M>{item.formula}</M></p>
                 <p className="text-slate-400 text-xs leading-relaxed">{item.note}</p>
               </motion.div>
             ))}
@@ -126,9 +127,9 @@ export default function ErrorPropagation() {
 
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
             <h4 className="text-lg font-semibold text-orange-400">정의</h4>
-            <p className="font-mono text-white text-center text-xl py-3">
-              cond(f, x) = |x · f&apos;(x) / f(x)|
-            </p>
+            <div className="text-center py-3">
+              <MBlock>{"\\text{cond}(f, x) = \\left| \\frac{x \\cdot f'(x)}{f(x)} \\right|"}</MBlock>
+            </div>
             <p className="text-slate-400 text-sm leading-relaxed">
               조건수는 입력의 상대 오차가 출력의 상대 오차로 얼마나 증폭되는지를 나타냅니다.
             </p>
@@ -177,7 +178,7 @@ ans = 3.6744e+17`}
                 <p className="text-slate-400 text-sm">
                   hilb(<span className="text-amber-400 font-mono">{item.n}</span>)
                 </p>
-                <p className="font-mono text-white text-lg font-bold">{item.cond}</p>
+                <p className="text-white text-lg font-bold"><M>{item.cond}</M></p>
                 <div
                   className="h-2 rounded-full bg-gradient-to-r from-amber-400 to-red-500 mx-auto"
                   style={{ width: `${30 + i * 30}%` }}
@@ -306,11 +307,11 @@ ans = 3.6744e+17`}
               <ul className="space-y-1.5 text-slate-300">
                 <li className="flex gap-2">
                   <span className="text-red-400 shrink-0">•</span>
-                  <span><span className="text-red-400 font-semibold">Roundoff error ∝ ε/h</span> — h가 작을수록 증가 (나눗셈에서 유효숫자 손실)</span>
+                  <span><span className="text-red-400 font-semibold">Roundoff error <M>{"\\propto \\varepsilon/h"}</M></span> — h가 작을수록 증가 (나눗셈에서 유효숫자 손실)</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sky-400 shrink-0">•</span>
-                  <span><span className="text-sky-400 font-semibold">Truncation error ∝ h</span> — h가 클수록 증가 (급수 절단)</span>
+                  <span><span className="text-sky-400 font-semibold">Truncation error <M>{"\\propto h"}</M></span> — h가 클수록 증가 (급수 절단)</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-amber-400 shrink-0">•</span>
@@ -318,7 +319,7 @@ ans = 3.6744e+17`}
                 </li>
                 <li className="flex gap-2">
                   <span className="text-amber-400 shrink-0">•</span>
-                  <span>Forward difference: optimal h ≈ <span className="font-mono text-amber-400">√ε<sub>mach</sub> ≈ 10<sup>-8</sup></span></span>
+                  <span>Forward difference: optimal <M>{"h \\approx \\sqrt{\\varepsilon_{\\text{mach}}} \\approx 10^{-8}"}</M></span>
                 </li>
               </ul>
             </div>
@@ -346,7 +347,7 @@ grid on;
 % h가 더 작아지면 roundoff error가 지배`}
             </pre>
             <p className="text-slate-500 text-sm">
-              h ≈ 10⁻⁸ 부근에서 최소 오차가 나타나며, 이보다 작은 h에서는 반올림 오차가 급격히 증가합니다.
+              <M>{"h \\approx 10^{-8}"}</M> 부근에서 최소 오차가 나타나며, 이보다 작은 h에서는 반올림 오차가 급격히 증가합니다.
             </p>
           </div>
         </motion.div>
@@ -357,13 +358,13 @@ grid on;
             수렴 차수 <span className="text-amber-400">(Convergence Order)</span>
           </h3>
           <p className="text-slate-400 leading-relaxed">
-            오차가 error ∝ h<sup>n</sup>이면, 해당 방법은 <strong className="text-white">n차(nth-order)</strong> 방법입니다.
+            오차가 <M>{"\\text{error} \\propto h^{n}"}</M>이면, 해당 방법은 <strong className="text-white">n차(nth-order)</strong> 방법입니다.
           </p>
 
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
             <h4 className="text-lg font-semibold text-orange-400">Log-Log Plot 기법</h4>
             <p className="text-slate-400 text-sm leading-relaxed">
-              양변에 로그를 취하면 <span className="font-mono text-white">log(error) = n · log(h) + C</span> 형태의
+              양변에 로그를 취하면 <M>{"\\log(\\text{error}) = n \\cdot \\log(h) + C"}</M> 형태의
               직선이 됩니다. 기울기가 곧 수렴 차수 n입니다.
             </p>
           </div>
@@ -375,11 +376,11 @@ grid on;
                 <tr className="border-b border-slate-800 text-slate-400">
                   <th className="px-6 py-3 text-left font-mono">h</th>
                   <th className="px-6 py-3 text-left">
-                    O(h) error
+                    <M>{"O(h)"}</M> error
                     <span className="text-slate-600 ml-1">— 1차</span>
                   </th>
                   <th className="px-6 py-3 text-left">
-                    O(h²) error
+                    <M>{"O(h^{2})"}</M> error
                     <span className="text-slate-600 ml-1">— 2차</span>
                   </th>
                 </tr>
@@ -395,20 +396,20 @@ grid on;
               </tbody>
             </table>
             <div className="px-6 py-3 text-slate-500 text-xs border-t border-slate-800">
-              h를 반으로 줄이면: O(h)은 오차가 1/2, O(h²)은 오차가 1/4로 감소합니다.
+              h를 반으로 줄이면: <M>{"O(h)"}</M>은 오차가 1/2, <M>{"O(h^{2})"}</M>은 오차가 1/4로 감소합니다.
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-2">
-              <p className="text-amber-400 font-semibold">O(h) — 1차 방법</p>
+              <p className="text-amber-400 font-semibold"><M>{"O(h)"}</M> — 1차 방법</p>
               <p className="text-slate-400 text-sm">
                 h → h/2 일 때 error → error/2
               </p>
               <p className="font-mono text-white text-sm">Forward difference</p>
             </div>
             <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-2">
-              <p className="text-amber-400 font-semibold">O(h²) — 2차 방법</p>
+              <p className="text-amber-400 font-semibold"><M>{"O(h^{2})"}</M> — 2차 방법</p>
               <p className="text-slate-400 text-sm">
                 h → h/2 일 때 error → error/4
               </p>
@@ -460,9 +461,9 @@ disp(['Central slope: ', num2str(slope_ctr(1))]);   % ≈ 2`}
               근사값이 <strong className="text-white">n개의 유효 숫자</strong>를 가진다는 것은
               상대 오차가 다음 조건을 만족한다는 의미입니다:
             </p>
-            <p className="font-mono text-white text-center text-lg py-3">
-              |relative error| &lt; 0.5 × 10<sup>2−n</sup>
-            </p>
+            <div className="text-center py-3">
+              <MBlock>{"| \\text{relative error} | < 0.5 \\times 10^{2-n}"}</MBlock>
+            </div>
             <p className="text-slate-500 text-sm">
               즉 유효 숫자가 많을수록 상대 오차의 상한이 작아져 더 정확한 근사입니다.
             </p>
@@ -480,8 +481,8 @@ disp(['Central slope: ', num2str(slope_ctr(1))]);   % ≈ 2`}
                 <p className="text-amber-400 font-semibold">
                   {ex.digits} significant digits
                 </p>
-                <p className="text-slate-400 text-xs font-mono">
-                  rel. error {ex.relErr}
+                <p className="text-slate-400 text-xs">
+                  rel. error <M>{ex.relErr}</M>
                 </p>
               </motion.div>
             ))}
@@ -501,18 +502,18 @@ disp(['Central slope: ', num2str(slope_ctr(1))]);   % ≈ 2`}
                 <tbody className="font-mono text-white text-sm">
                   <tr className="border-b border-slate-800/50">
                     <td className="px-4 py-2 text-amber-400">3</td>
-                    <td className="px-4 py-2">0.5 × 10⁻¹ = 5%</td>
-                    <td className="px-4 py-2 text-slate-400">3.14 for π</td>
+                    <td className="px-4 py-2"><M>{"0.5 \\times 10^{-1} = 5\\%"}</M></td>
+                    <td className="px-4 py-2 text-slate-400">3.14 for <M>{"\\pi"}</M></td>
                   </tr>
                   <tr className="border-b border-slate-800/50">
                     <td className="px-4 py-2 text-amber-400">5</td>
-                    <td className="px-4 py-2">0.5 × 10⁻³ = 0.05%</td>
-                    <td className="px-4 py-2 text-slate-400">3.1416 for π</td>
+                    <td className="px-4 py-2"><M>{"0.5 \\times 10^{-3} = 0.05\\%"}</M></td>
+                    <td className="px-4 py-2 text-slate-400">3.1416 for <M>{"\\pi"}</M></td>
                   </tr>
                   <tr className="border-b border-slate-800/50">
                     <td className="px-4 py-2 text-amber-400">7</td>
-                    <td className="px-4 py-2">0.5 × 10⁻⁵ = 0.0005%</td>
-                    <td className="px-4 py-2 text-slate-400">3.141593 for π</td>
+                    <td className="px-4 py-2"><M>{"0.5 \\times 10^{-5} = 0.0005\\%"}</M></td>
+                    <td className="px-4 py-2 text-slate-400">3.141593 for <M>{"\\pi"}</M></td>
                   </tr>
                 </tbody>
               </table>
@@ -527,7 +528,7 @@ disp(['Central slope: ', num2str(slope_ctr(1))]);   % ≈ 2`}
             <li className="flex items-start gap-3">
               <span className="text-amber-400 font-bold mt-0.5">1.</span>
               <span>
-                <strong className="text-white">오차 전파:</strong> Δf ≈ f&apos;(x)·Δx — 뺄셈 시 catastrophic cancellation에 주의
+                <strong className="text-white">오차 전파:</strong> <M>{"\\Delta f \\approx f'(x) \\cdot \\Delta x"}</M> — 뺄셈 시 catastrophic cancellation에 주의
               </span>
             </li>
             <li className="flex items-start gap-3">
@@ -545,13 +546,13 @@ disp(['Central slope: ', num2str(slope_ctr(1))]);   % ≈ 2`}
             <li className="flex items-start gap-3">
               <span className="text-amber-400 font-bold mt-0.5">4.</span>
               <span>
-                <strong className="text-white">수렴 차수:</strong> log-log plot의 기울기로 확인 — O(h) vs O(h²)
+                <strong className="text-white">수렴 차수:</strong> log-log plot의 기울기로 확인 — <M>{"O(h)"}</M> vs <M>{"O(h^{2})"}</M>
               </span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-amber-400 font-bold mt-0.5">5.</span>
               <span>
-                <strong className="text-white">유효 숫자:</strong> n자리 유효 숫자 → 상대 오차 &lt; 0.5 × 10^(2−n)
+                <strong className="text-white">유효 숫자:</strong> n자리 유효 숫자 → 상대 오차 <M>{"< 0.5 \\times 10^{2-n}"}</M>
               </span>
             </li>
           </ul>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 // Bungee jumper parameters (from textbook Example 1.1)
 const g = 9.81;
@@ -167,15 +168,15 @@ export default function AnalyticalVsNumerical() {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
               <div className="text-emerald-400 font-bold text-sm mb-1">중력 (하향)</div>
-              <div className="font-mono text-gray-300 text-center text-lg mt-2">F<sub>D</sub> = mg</div>
+              <div className="text-gray-300 text-center text-lg mt-2"><M>{"F_{D} = mg"}</M></div>
             </div>
             <div className="bg-rose-500/5 border border-rose-500/20 rounded-xl p-4">
               <div className="text-rose-400 font-bold text-sm mb-1">공기저항 (상향)</div>
-              <div className="font-mono text-gray-300 text-center text-lg mt-2">F<sub>U</sub> = c<sub>d</sub>v²</div>
+              <div className="text-gray-300 text-center text-lg mt-2"><M>{"F_{U} = c_{d}v^{2}"}</M></div>
             </div>
           </div>
           <p className="text-xs text-gray-500">
-            c<sub>d</sub> = 0.25 kg/m (항력계수), v = 속도 (m/s)
+            <M>{"c_{d}"}</M> = 0.25 kg/m (항력계수), v = 속도 (m/s)
           </p>
         </div>
       ),
@@ -186,19 +187,19 @@ export default function AnalyticalVsNumerical() {
       content: (
         <div className="space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
-            뉴턴 제2법칙 <span className="font-mono text-blue-400">F = ma</span>를 적용합니다:
+            뉴턴 제2법칙 <M>{"F = ma"}</M>를 적용합니다:
           </p>
           <div className="space-y-3">
-            <div className="bg-slate-900/60 rounded-lg p-3 font-mono text-center text-gray-300">
-              ma = mg − c<sub>d</sub>v²
+            <div className="bg-slate-900/60 rounded-lg p-3 text-center text-gray-300">
+              <M>{"ma = mg - c_{d}v^{2}"}</M>
             </div>
             <div className="flex items-center justify-center text-gray-500">↓ 양변을 m으로 나누면</div>
-            <div className="bg-slate-900/60 rounded-lg p-3 font-mono text-center text-gray-300">
-              a = dv/dt = g − (c<sub>d</sub>/m)v²
+            <div className="bg-slate-900/60 rounded-lg p-3 text-center text-gray-300">
+              <M>{"a = \\frac{dv}{dt} = g - \\frac{c_{d}}{m}v^{2}"}</M>
             </div>
             <div className="flex items-center justify-center text-gray-500">↓ 값을 대입하면</div>
-            <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-3 font-mono text-center text-cyan-300 text-lg">
-              dv/dt = 9.81 − (0.003670)v²
+            <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-3 text-center text-cyan-300 text-lg">
+              <M>{"\\frac{dv}{dt} = 9.81 - (0.003670)v^{2}"}</M>
             </div>
           </div>
           <p className="text-xs text-gray-500">
@@ -216,16 +217,16 @@ export default function AnalyticalVsNumerical() {
             이 특정 ODE는 <span className="text-emerald-400">변수분리법</span>으로 풀 수 있습니다:
           </p>
           <div className="space-y-3">
-            <div className="bg-slate-900/60 rounded-lg p-3 font-mono text-sm text-center text-gray-300">
-              dv / (g − (c<sub>d</sub>/m)v²) = dt
+            <div className="bg-slate-900/60 rounded-lg p-3 text-sm text-center text-gray-300">
+              <M>{"\\frac{dv}{g - (c_{d}/m)v^{2}} = dt"}</M>
             </div>
             <div className="flex items-center justify-center text-gray-500">↓ 양변을 적분하면</div>
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 font-mono text-center text-emerald-300">
-              <div className="text-lg">v(t) = √(gm/c<sub>d</sub>) · tanh(√(gc<sub>d</sub>/m) · t)</div>
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 text-center text-emerald-300">
+              <div className="text-lg"><M>{"v(t) = \\sqrt{\\frac{gm}{c_{d}}} \\cdot \\tanh\\!\\left(\\sqrt{\\frac{gc_{d}}{m}} \\cdot t\\right)"}</M></div>
             </div>
             <div className="flex items-center justify-center text-gray-500">↓ 숫자를 넣으면</div>
-            <div className="bg-slate-900/60 rounded-lg p-3 font-mono text-center text-gray-300">
-              v(t) = <span className="text-emerald-400">51.6938</span> · tanh(<span className="text-emerald-400">0.18977</span> · t)
+            <div className="bg-slate-900/60 rounded-lg p-3 text-center text-gray-300">
+              <M>{"v(t) = 51.6938 \\cdot \\tanh(0.18977 \\cdot t)"}</M>
             </div>
           </div>
           <p className="text-xs text-gray-500">
@@ -243,12 +244,12 @@ export default function AnalyticalVsNumerical() {
             충분한 시간이 지나면 가속이 멈추고 <span className="text-amber-400">일정한 속도</span>에 도달합니다:
           </p>
           <div className="space-y-3">
-            <div className="bg-slate-900/60 rounded-lg p-3 font-mono text-center text-gray-300">
-              dv/dt = 0 → g = (c<sub>d</sub>/m)v²
+            <div className="bg-slate-900/60 rounded-lg p-3 text-center text-gray-300">
+              <M>{"\\frac{dv}{dt} = 0 \\;\\Rightarrow\\; g = \\frac{c_{d}}{m}v^{2}"}</M>
             </div>
             <div className="flex items-center justify-center text-gray-500">↓ v에 대해 풀면</div>
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 font-mono text-center">
-              <div className="text-amber-300 text-lg">v<sub>terminal</sub> = √(gm/c<sub>d</sub>)</div>
+            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-center">
+              <div className="text-amber-300 text-lg"><M>{"v_{\\text{terminal}} = \\sqrt{\\frac{gm}{c_{d}}}"}</M></div>
               <div className="text-amber-400 text-xl font-bold mt-2">= 51.6938 m/s</div>
               <div className="text-gray-500 text-sm mt-1">≈ 186 km/h</div>
             </div>
@@ -269,12 +270,12 @@ export default function AnalyticalVsNumerical() {
             만약 해석해를 구할 수 없다면? <span className="text-rose-400">미분을 근사</span>하는 것이 핵심 아이디어입니다:
           </p>
           <div className="space-y-3">
-            <div className="bg-slate-900/60 rounded-lg p-3 font-mono text-center text-gray-300">
-              dv/dt ≈ <span className="text-rose-400">Δv/Δt</span> = (v<sub>i+1</sub> − v<sub>i</sub>) / (t<sub>i+1</sub> − t<sub>i</sub>)
+            <div className="bg-slate-900/60 rounded-lg p-3 text-center text-gray-300">
+              <M>{"\\frac{dv}{dt} \\approx \\frac{\\Delta v}{\\Delta t} = \\frac{v_{i+1} - v_{i}}{t_{i+1} - t_{i}}"}</M>
             </div>
-            <div className="flex items-center justify-center text-gray-500">↓ v<sub>i+1</sub>에 대해 정리하면</div>
-            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4 font-mono text-center">
-              <div className="text-rose-300 text-lg">v<sub>i+1</sub> = v<sub>i</sub> + (dv<sub>i</sub>/dt) · Δt</div>
+            <div className="flex items-center justify-center text-gray-500">↓ <M>{"v_{i+1}"}</M>에 대해 정리하면</div>
+            <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4 text-center">
+              <div className="text-rose-300 text-lg"><M>{"v_{i+1} = v_{i} + \\frac{dv_{i}}{dt} \\cdot \\Delta t"}</M></div>
               <div className="text-gray-400 text-sm mt-2">New Value = Old Value + Slope × Step Size</div>
             </div>
           </div>
@@ -355,8 +356,8 @@ export default function AnalyticalVsNumerical() {
             {/* Parameters summary (always visible) */}
             <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs">
               <span className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300">m = 68.1 kg</span>
-              <span className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300">c<sub>d</sub> = 0.25 kg/m</span>
-              <span className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300">g = 9.81 m/s²</span>
+              <span className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300"><M>{"c_{d}"}</M> = 0.25 kg/m</span>
+              <span className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300">g = 9.81 m/s<M>{"^{2}"}</M></span>
               <span className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300">v(0) = 0</span>
             </div>
           </motion.div>
@@ -481,7 +482,7 @@ export default function AnalyticalVsNumerical() {
               <p className="text-sm text-gray-400 mt-2">
                 그러나 수치해의 진정한 힘은 — 해석해가 존재하지 않는 경우에도 적용할 수 있다는 점입니다.
                 <br />
-                만약 c<sub>d</sub>가 속도의 복잡한 함수라면? 해석해는 불가능하지만, 수치해는 동일한 방법으로 구할 수 있습니다.
+                만약 <M>{"c_{d}"}</M>가 속도의 복잡한 함수라면? 해석해는 불가능하지만, 수치해는 동일한 방법으로 구할 수 있습니다.
               </p>
             </div>
           </motion.div>
@@ -559,7 +560,7 @@ end`}</code>
                           <span className="text-amber-300">{step.slope}</span>
                         </div>
                         <div className="text-gray-400">
-                          <span className="text-gray-600">v<sub>next</sub>:</span>{" "}
+                          <span className="text-gray-600"><M>{"v_{\\text{next}}"}</M>:</span>{" "}
                           <span className="text-rose-300">{step.next}</span>
                         </div>
                       </div>
@@ -694,7 +695,7 @@ grid on`}</code>
               파라미터 실험실
             </h3>
             <p className="text-gray-400 text-sm mb-8">
-              질량(m)과 항력계수(c<sub>d</sub>)를 바꾸고, 해석해/수치해를 선택하여 두 케이스를 비교해보세요.
+              질량(m)과 항력계수(<M>{"c_{d}"}</M>)를 바꾸고, 해석해/수치해를 선택하여 두 케이스를 비교해보세요.
             </p>
 
             {/* Global Δt selector */}
@@ -752,7 +753,7 @@ grid on`}</code>
                   </div>
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">항력계수 c<sub>d</sub></span>
+                      <span className="text-gray-400">항력계수 <M>{"c_{d}"}</M></span>
                       <span className="text-cyan-300 font-mono font-bold">{caseA.cd.toFixed(2)} kg/m</span>
                     </div>
                     <input type="range" min={0.05} max={1.0} step={0.01} value={caseA.cd}
@@ -804,7 +805,7 @@ grid on`}</code>
                   </div>
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">항력계수 c<sub>d</sub></span>
+                      <span className="text-gray-400">항력계수 <M>{"c_{d}"}</M></span>
                       <span className="text-rose-300 font-mono font-bold">{caseB.cd.toFixed(2)} kg/m</span>
                     </div>
                     <input type="range" min={0.05} max={1.0} step={0.01} value={caseB.cd}
@@ -939,7 +940,7 @@ grid on`}</code>
                   <p className="text-gray-400 mt-1">종단속도 ↑, 가속 초기에 더 빠르게 속도 증가. 무거운 사람이 더 빨리 떨어집니다.</p>
                 </div>
                 <div>
-                  <span className="text-white font-medium">항력계수(c<sub>d</sub>)가 클수록:</span>
+                  <span className="text-white font-medium">항력계수(<M>{"c_{d}"}</M>)가 클수록:</span>
                   <p className="text-gray-400 mt-1">종단속도 ↓, 공기저항이 커서 더 빨리 감속. 낙하산을 펼친 효과입니다.</p>
                 </div>
               </div>

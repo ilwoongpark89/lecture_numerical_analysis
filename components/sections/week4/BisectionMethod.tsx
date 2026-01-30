@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 // --- Bisection logic ---
 const f = (x: number) => x * x * x - x - 2;
@@ -166,10 +167,10 @@ export default function BisectionMethod() {
           <h3 className="text-2xl font-bold text-rose-400">알고리즘 (Algorithm)</h3>
           <div className="flex flex-col items-center gap-3">
             {[
-              { label: "Start", desc: "f(a)·f(b) < 0 인 구간 [a, b] 설정" },
-              { label: "Midpoint", desc: "c = (a + b) / 2 계산" },
-              { label: "Check", desc: "f(c) = 0 또는 |b−a|/2 < tol?" },
-              { label: "Sign Test", desc: "f(a)·f(c) < 0 이면 b ← c, 아니면 a ← c" },
+              { label: "Start", desc: <><M>{"f(a) \\cdot f(b) < 0"}</M> 인 구간 <M>{"[a, b]"}</M> 설정</> },
+              { label: "Midpoint", desc: <><M>{"c = (a + b) / 2"}</M> 계산</> },
+              { label: "Check", desc: <><M>{"f(c) = 0"}</M> 또는 <M>{"|b - a| / 2 < \\text{tol}"}</M>?</> },
+              { label: "Sign Test", desc: <><M>{"f(a) \\cdot f(c) < 0"}</M> 이면 <M>{"b \\leftarrow c"}</M>, 아니면 <M>{"a \\leftarrow c"}</M></> },
               { label: "Repeat", desc: "수렴할 때까지 반복" },
             ].map((item, i) => (
               <div key={i} className="flex flex-col items-center gap-3 w-full max-w-md">
@@ -198,8 +199,8 @@ export default function BisectionMethod() {
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6">
           <h3 className="text-2xl font-bold text-rose-400">인터랙티브 데모 (Interactive Demo)</h3>
           <p className="text-slate-400 text-sm">
-            <span className="font-mono text-pink-400">f(x) = x³ − x − 2</span>, 초기 구간{" "}
-            <span className="font-mono text-pink-400">[1, 2]</span> (근 ≈ 1.5214)
+            <M>{"f(x) = x^{3} - x - 2"}</M>, 초기 구간{" "}
+            <M>{"[1, 2]"}</M> (근 <M>{"\\approx 1.5214"}</M>)
           </p>
 
           {/* Controls */}
@@ -303,19 +304,19 @@ export default function BisectionMethod() {
             {/* Error bound */}
             <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 space-y-3">
               <h4 className="text-pink-400 font-semibold">오차 한계 (Error Bound)</h4>
-              <div className="bg-slate-950 rounded-xl p-4 font-mono text-slate-200 text-center text-lg">
-                |&epsilon;<sub>n</sub>| &le; (b &minus; a) / 2<sup>n</sup>
+              <div className="bg-slate-950 rounded-xl p-4 text-slate-200 text-center text-lg">
+                <MBlock>{"|\\varepsilon_{n}| \\leq \\frac{b - a}{2^{n}}"}</MBlock>
               </div>
               <p className="text-slate-400 text-sm">
-                n번 반복 후 오차의 상한은 초기 구간 길이를 2<sup>n</sup>으로 나눈 값입니다.
+                <M>{"n"}</M>번 반복 후 오차의 상한은 초기 구간 길이를 <M>{"2^{n}"}</M>으로 나눈 값입니다.
               </p>
             </div>
 
             {/* Iterations needed */}
             <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 space-y-3">
               <h4 className="text-pink-400 font-semibold">필요 반복 횟수</h4>
-              <div className="bg-slate-950 rounded-xl p-4 font-mono text-slate-200 text-center text-lg">
-                n &ge; log<sub>2</sub>((b &minus; a) / tol)
+              <div className="bg-slate-950 rounded-xl p-4 text-slate-200 text-center text-lg">
+                <MBlock>{"n \\geq \\log_{2}\\!\\left(\\frac{b - a}{\\text{tol}}\\right)"}</MBlock>
               </div>
               <p className="text-slate-400 text-sm">
                 허용 오차 tol을 만족하기 위해 필요한 최소 반복 횟수를 사전에 계산할 수 있습니다.
@@ -336,17 +337,17 @@ export default function BisectionMethod() {
             {/* Example calculation */}
             <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 space-y-3">
               <h4 className="text-pink-400 font-semibold">예제 계산</h4>
-              <div className="bg-slate-950 rounded-xl p-4 font-mono text-sm text-slate-300 space-y-1">
+              <div className="bg-slate-950 rounded-xl p-4 text-sm text-slate-300 space-y-2">
                 <p>
-                  [a, b] = [1, 2], tol = 10<sup>-6</sup>
+                  <M>{"[a, b] = [1, 2],\\; \\text{tol} = 10^{-6}"}</M>
                 </p>
                 <p>
-                  n &ge; log<sub>2</sub>(1 / 10<sup>-6</sup>) = log<sub>2</sub>(10<sup>6</sup>)
+                  <M>{"n \\geq \\log_{2}(1 / 10^{-6}) = \\log_{2}(10^{6})"}</M>
                 </p>
-                <p className="text-rose-400 font-bold">n &ge; 19.93 &rarr; 20 iterations</p>
+                <p className="text-rose-400 font-bold"><M>{"n \\geq 19.93 \\rightarrow 20"}</M> iterations</p>
               </div>
               <p className="text-slate-400 text-sm">
-                구간 [1,2]에서 10<sup>-6</sup> 정밀도를 얻으려면 최소 20회 반복이 필요합니다.
+                구간 <M>{"[1,2]"}</M>에서 <M>{"10^{-6}"}</M> 정밀도를 얻으려면 최소 20회 반복이 필요합니다.
               </p>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { M } from "@/components/Math";
 
 const tabs = ["Secant Method", "Fixed-Point", "비선형 연립방정식", "다중근 처리"];
 
@@ -357,7 +358,7 @@ import numpy as np`}
             Complete Example — 비선형 연립방정식 풀기
           </h3>
           <p className="text-sm text-slate-400 mb-5 font-mono">
-            x² + y² = 4, x·y = 1
+            <M>{"x^{2} + y^{2} = 4,\\quad x \\cdot y = 1"}</M>
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="rounded-xl border border-slate-700 bg-slate-800/50 p-4">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ── Helper: code block with line numbers ── */
 function CodeBlock({ code, output }: { code: string; output?: string }) {
@@ -73,8 +74,8 @@ export default function MachineEpsilon() {
         {/* ── 2. Machine Epsilon Definition ── */}
         <motion.div {...fade} className="space-y-6">
           <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">ε</span>
-            Machine Epsilon (ε<sub>mach</sub>)
+            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base"><M>{"\\varepsilon"}</M></span>
+            Machine Epsilon (<M>{"\\varepsilon_{\\text{mach}}"}</M>)
           </h3>
 
           <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
@@ -82,15 +83,14 @@ export default function MachineEpsilon() {
             <div className="space-y-3">
               <p className="text-slate-300 leading-relaxed">
                 <span className="text-amber-400 font-semibold">정의:</span>{" "}
-                <span className="font-mono text-orange-300">fl(1 + ε) ≠ 1</span>을 만족하는{" "}
-                <span className="text-white font-semibold">가장 작은 양수 ε</span>.
+                <M>{"\\text{fl}(1 + \\varepsilon) \\neq 1"}</M>을 만족하는{" "}
+                <span className="text-white font-semibold">가장 작은 양수 <M>{"\\varepsilon"}</M></span>.
                 즉, 1에 더했을 때 부동소수점 연산에서 구별 가능한 최소값입니다.
               </p>
               <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 text-center">
-                <p className="font-mono text-lg text-white">
-                  ε<sub className="text-amber-400">mach</sub> = 2<sup className="text-orange-400">−52</sup> ≈{" "}
-                  <span className="text-amber-300">2.2204 × 10<sup>−16</sup></span>
-                </p>
+                <div className="text-center">
+                  <MBlock>{"\\varepsilon_{\\text{mach}} = 2^{-52} \\approx 2.2204 \\times 10^{-16}"}</MBlock>
+                </div>
                 <p className="text-slate-500 text-sm mt-2">IEEE 754 double precision (64-bit)</p>
               </div>
             </div>
@@ -114,12 +114,12 @@ export default function MachineEpsilon() {
                   </div>
                   {/* 1 + eps_mach */}
                   <div className="absolute top-0 right-8 flex flex-col items-center">
-                    <span className="font-mono text-sm text-amber-400 font-bold">1 + ε<sub>mach</sub></span>
+                    <span className="font-mono text-sm text-amber-400 font-bold"><M>{"1 + \\varepsilon_{\\text{mach}}"}</M></span>
                     <div className="w-0.5 h-4 bg-amber-400 mt-1" />
                   </div>
                 </div>
                 <p className="text-xs text-slate-500 text-center mt-4">
-                  1과 그 다음 표현 가능한 수 사이의 간격이 바로 ε<sub>mach</sub>입니다.
+                  1과 그 다음 표현 가능한 수 사이의 간격이 바로 <M>{"\\varepsilon_{\\text{mach}}"}</M>입니다.
                 </p>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function MachineEpsilon() {
         <motion.div {...fade} className="space-y-6">
           <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">⚙</span>
-            ε<sub>mach</sub> 계산 알고리즘
+            <M>{"\\varepsilon_{\\text{mach}}"}</M> 계산 알고리즘
           </h3>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -221,9 +221,9 @@ export default function MachineEpsilon() {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-3">
                 <h4 className="text-orange-400 font-semibold text-sm">Absolute Error (절대 오차)</h4>
-                <p className="font-mono text-xl text-white text-center py-2">
-                  E<sub>abs</sub> = |x − fl(x)|
-                </p>
+                <div className="text-center py-2">
+                  <MBlock>{"E_{\\text{abs}} = |x - \\text{fl}(x)|"}</MBlock>
+                </div>
                 <p className="text-slate-400 text-sm">
                   실제 값 <span className="font-mono text-slate-300">x</span>와
                   부동소수점 표현 <span className="font-mono text-slate-300">fl(x)</span> 사이의 절대적 차이
@@ -231,9 +231,9 @@ export default function MachineEpsilon() {
               </div>
               <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-3">
                 <h4 className="text-orange-400 font-semibold text-sm">Relative Error (상대 오차)</h4>
-                <p className="font-mono text-xl text-white text-center py-2">
-                  E<sub>rel</sub> = |x − fl(x)| / |x|
-                </p>
+                <div className="text-center py-2">
+                  <MBlock>{"E_{\\text{rel}} = \\frac{|x - \\text{fl}(x)|}{|x|}"}</MBlock>
+                </div>
                 <p className="text-slate-400 text-sm">
                   절대 오차를 실제 값의 크기로 나눈 것. 스케일에 무관한 오차 측정법
                 </p>
@@ -243,14 +243,11 @@ export default function MachineEpsilon() {
             {/* Bound */}
             <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-5 text-center space-y-2">
               <p className="text-sm text-amber-200 font-semibold">핵심 부등식 (Fundamental Bound)</p>
-              <p className="font-mono text-2xl text-white">
-                E<sub>rel</sub> ≤{" "}
-                <span className="text-amber-400">
-                  ε<sub>mach</sub> / 2
-                </span>
-              </p>
+              <div className="text-center">
+                <MBlock>{"E_{\\text{rel}} \\leq \\frac{\\varepsilon_{\\text{mach}}}{2}"}</MBlock>
+              </div>
               <p className="text-slate-400 text-sm">
-                모든 부동소수점 변환의 상대 오차는 ε<sub>mach</sub>/2 이하로 보장됩니다.
+                모든 부동소수점 변환의 상대 오차는 <M>{"\\varepsilon_{\\text{mach}}/2"}</M> 이하로 보장됩니다.
               </p>
             </div>
 
@@ -263,7 +260,7 @@ export default function MachineEpsilon() {
               />
               <p className="text-xs text-slate-500">
                 * 같은 변수를 비교하면 오차가 0입니다.
-                실제로는 수학적 값 1/3과 fl(1/3) 사이에 약 1.85 × 10<sup>−17</sup>의 상대 오차가 존재합니다.
+                실제로는 수학적 값 1/3과 fl(1/3) 사이에 약 <M>{"1.85 \\times 10^{-17}"}</M>의 상대 오차가 존재합니다.
               </p>
             </div>
           </div>
@@ -286,10 +283,10 @@ export default function MachineEpsilon() {
               </p>
               <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 font-mono text-sm space-y-1">
                 <p className="text-slate-400">예: 유효숫자 5자리 산술</p>
-                <p className="text-white">  1.23456 × 10<sup>5</sup></p>
-                <p className="text-white">− 1.23447 × 10<sup>5</sup></p>
+                <p className="text-white">  <M>{"1.23456 \\times 10^{5}"}</M></p>
+                <p className="text-white"><M>{"-\\, 1.23447 \\times 10^{5}"}</M></p>
                 <p className="text-slate-600">─────────────────</p>
-                <p className="text-amber-300">= 0.00009 × 10<sup>5</sup> = 9.0000 × 10<sup>0</sup></p>
+                <p className="text-amber-300"><M>{"= 0.00009 \\times 10^{5} = 9.0000 \\times 10^{0}"}</M></p>
                 <p className="text-red-400 text-xs mt-2">→ 유효숫자 5자리 → 1자리로 감소!</p>
               </div>
             </div>
@@ -306,14 +303,12 @@ export default function MachineEpsilon() {
                     <span className="w-5 h-5 rounded bg-red-400/10 flex items-center justify-center text-xs">✗</span>
                     표준 공식 (문제 발생)
                   </h4>
-                  <div className="bg-slate-950 rounded-lg p-3 font-mono text-center">
-                    <p className="text-white text-sm">
-                      x = (−b + √(b² − 4ac)) / 2a
-                    </p>
+                  <div className="bg-slate-950 rounded-lg p-3 text-center">
+                    <MBlock>{"x = \\frac{-b + \\sqrt{b^{2} - 4ac}}{2a}"}</MBlock>
                   </div>
                   <p className="text-slate-400 text-xs">
-                    b² ≫ 4ac 일 때, √(b²−4ac) ≈ |b| 이므로
-                    <span className="text-red-300"> −b + |b| ≈ 0</span> → 상쇄 오차 발생!
+                    <M>{"b^{2} \\gg 4ac"}</M> 일 때, <M>{"\\sqrt{b^{2}-4ac} \\approx |b|"}</M> 이므로
+                    <span className="text-red-300"> <M>{"-b + |b| \\approx 0"}</M></span> → 상쇄 오차 발생!
                   </p>
                 </div>
 
@@ -322,10 +317,8 @@ export default function MachineEpsilon() {
                     <span className="w-5 h-5 rounded bg-green-400/10 flex items-center justify-center text-xs">✓</span>
                     대안 공식 (안정적)
                   </h4>
-                  <div className="bg-slate-950 rounded-lg p-3 font-mono text-center">
-                    <p className="text-white text-sm">
-                      x = −2c / (b + √(b² − 4ac))
-                    </p>
+                  <div className="bg-slate-950 rounded-lg p-3 text-center">
+                    <MBlock>{"x = \\frac{-2c}{b + \\sqrt{b^{2} - 4ac}}"}</MBlock>
                   </div>
                   <p className="text-slate-400 text-xs">
                     분모가 <span className="text-green-300">b + |b|</span>로 커지므로
@@ -338,7 +331,7 @@ export default function MachineEpsilon() {
             {/* MATLAB comparison */}
             <div className="space-y-2">
               <p className="text-sm text-slate-400 font-semibold">
-                MATLAB 비교: a=1, b=−10<sup>8</sup>, c=1
+                MATLAB 비교: <M>{"a=1,\\, b=-10^{8},\\, c=1"}</M>
               </p>
               <CodeBlock
                 code={`a = 1; b = -1e8; c = 1;\n\n% 표준 공식 (상쇄 오차 발생)\ndisc = sqrt(b^2 - 4*a*c);\nx_standard = (-b - disc) / (2*a);\nfprintf('표준 공식: x = %.15e\\n', x_standard);\n\n% 대안 공식 (안정적)\nx_stable = (-2*c) / (b - disc);\n% (b<0이므로 b - disc = b - |b| 대신 부호 고려)\n% 더 큰 근: (-b + disc)/(2a)\nx1 = (-b + disc) / (2*a);\n% 작은 근 via: x2 = c / (a * x1)\nx2 = c / (a * x1);\n\nfprintf('안정 공식: x = %.15e\\n', x2);\n\n% 참값 (Symbolic)\nfprintf('참값:      x = 1.00000000000000e-08\\n');`}
@@ -447,7 +440,7 @@ export default function MachineEpsilon() {
             <div className="space-y-3">
               <h4 className="text-orange-400 font-semibold">Hole at Zero (0 근처의 간격)</h4>
               <p className="text-slate-300 text-sm leading-relaxed">
-                정규화된 수의 최솟값은 <span className="font-mono text-amber-300">realmin ≈ 2.2 × 10<sup>-308</sup></span>입니다.
+                정규화된 수의 최솟값은 <M>{"\\text{realmin} \\approx 2.2 \\times 10^{-308}"}</M>입니다.
                 만약 비정규화 수(denormalized/subnormal)가 없다면, 0과 realmin 사이에{" "}
                 <span className="text-orange-400 font-semibold">거대한 빈 공간(hole)</span>이 생깁니다.
               </p>
@@ -734,7 +727,7 @@ export default function MachineEpsilon() {
             <li className="flex gap-3">
               <span className="text-amber-400 shrink-0">•</span>
               <span>
-                <span className="font-mono text-amber-300">ε_mach = 2^(-52)</span> —
+                <M>{"\\varepsilon_{\\text{mach}} = 2^{-52}"}</M> —
                 double precision에서 1에 더해 구별 가능한 최소값
               </span>
             </li>
@@ -742,7 +735,7 @@ export default function MachineEpsilon() {
               <span className="text-amber-400 shrink-0">•</span>
               <span>
                 모든 부동소수점 연산의 상대 오차는{" "}
-                <span className="font-mono text-amber-300">ε_mach / 2</span> 이하로 제한됨
+                <M>{"\\varepsilon_{\\text{mach}} / 2"}</M> 이하로 제한됨
               </span>
             </li>
             <li className="flex gap-3">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ── Bit layout data ── */
 const exampleBits = {
@@ -22,14 +23,14 @@ const conceptCards = [
     eng: "Normalization",
     icon: "1.",
     body: "IEEE 754는 가수부를 항상 1.xxxxx₂ 형태로 정규화합니다. 정수 부분의 1은 저장하지 않는 'hidden bit'으로, 실제 52비트에 53비트의 정밀도를 확보합니다.",
-    formula: "(-1)^s × 1.f × 2^(e - 1023)",
+    formula: "(-1)^{s} \\times 1.f \\times 2^{e - 1023}",
   },
   {
     tag: "비정규화",
     eng: "Denormalized",
     icon: "0.",
     body: "지수가 모두 0인 경우, hidden bit 없이 0.xxxxx₂ × 2^(-1022) 형태로 표현합니다. 이를 통해 0 근처의 매우 작은 수를 점진적으로(gradual underflow) 나타낼 수 있습니다.",
-    formula: "(-1)^s × 0.f × 2^(-1022)",
+    formula: "(-1)^{s} \\times 0.f \\times 2^{-1022}",
   },
   {
     tag: "특수값",
@@ -42,7 +43,7 @@ const conceptCards = [
     tag: "표현 범위",
     eng: "Representable Range",
     icon: "R",
-    body: "Double precision의 양수 표현 범위는 약 2.2 × 10⁻³⁰⁸ ~ 1.8 × 10³⁰⁸ 입니다. MATLAB에서 realmin, realmax로 확인할 수 있습니다.",
+    body: "Double precision의 양수 표현 범위는 약 2.2e-308 ~ 1.8e+308 입니다. MATLAB에서 realmin, realmax로 확인할 수 있습니다.",
     formula: "realmin ≈ 2.2e-308, realmax ≈ 1.8e+308",
   },
 ];
@@ -94,21 +95,15 @@ export default function FloatingPoint() {
             <span className="text-amber-400">— Scientific Notation</span>
           </h3>
           <p className="text-slate-400 leading-relaxed">
-            과학적 표기법 <span className="font-mono text-orange-400">±M × β^E</span>와 동일한 원리입니다.
-            컴퓨터는 β = 2(이진수)를 사용하여 부호(sign), 지수(exponent), 가수(mantissa)를 각각 저장합니다.
+            과학적 표기법 <M>{"\\pm M \\times \\beta^{E}"}</M>와 동일한 원리입니다.
+            컴퓨터는 <M>{"\\beta = 2"}</M>(이진수)를 사용하여 부호(sign), 지수(exponent), 가수(mantissa)를 각각 저장합니다.
           </p>
 
           {/* formula card */}
           <div className="rounded-2xl bg-slate-900/60 border border-slate-800 p-6 text-center">
-            <p className="font-mono text-2xl sm:text-3xl text-white">
-              <span className="text-rose-400">(-1)</span>
-              <sup className="text-rose-400">s</sup>
-              <span className="text-slate-500 mx-2">×</span>
-              <span className="text-blue-400">1.f</span>
-              <span className="text-slate-500 mx-2">×</span>
-              <span className="text-amber-400">2</span>
-              <sup className="text-amber-400">(e − 1023)</sup>
-            </p>
+            <div className="text-center">
+              <MBlock>{"(-1)^{s} \\times 1.f \\times 2^{(e - 1023)}"}</MBlock>
+            </div>
             <p className="mt-3 text-sm text-slate-500">Double precision (64-bit) 정규화 표현</p>
           </div>
 
@@ -280,13 +275,13 @@ export default function FloatingPoint() {
                       </p>
                       <p className="text-slate-400 text-sm leading-relaxed">{card.body}</p>
                       {isOpen && (
-                        <motion.p
+                        <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="mt-2 font-mono text-xs text-orange-400 bg-orange-500/5 border border-orange-500/20 rounded-lg px-3 py-2"
+                          className="mt-2 text-xs bg-orange-500/5 border border-orange-500/20 rounded-lg px-3 py-2"
                         >
-                          {card.formula}
-                        </motion.p>
+                          <M>{card.formula}</M>
+                        </motion.div>
                       )}
                     </div>
                   </div>
@@ -418,7 +413,7 @@ export default function FloatingPoint() {
             <p className="text-amber-400 font-semibold mb-2">핵심 정리</p>
             <ul className="text-slate-400 text-sm space-y-1 list-disc list-inside">
               <li>
-                <span className="font-mono text-amber-300">eps</span> (≈ 2.2 × 10⁻¹⁶): 1.0 옆의 가장 가까운 double과의 차이 — 상대 정밀도의 척도
+                <span className="font-mono text-amber-300">eps</span> (<M>{"\\approx 2.2 \\times 10^{-16}"}</M>): 1.0 옆의 가장 가까운 double과의 차이 — 상대 정밀도의 척도
               </li>
               <li>
                 부동소수점 비교는 <span className="font-mono text-white">abs(a - b) &lt; tol</span> 형태로 해야 안전합니다

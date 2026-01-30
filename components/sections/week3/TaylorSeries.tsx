@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 const factorial = (n: number): number => {
   if (n <= 1) return 1;
@@ -53,10 +54,10 @@ export default function TaylorSeries() {
   const termLabels = [
     "1",
     "x",
-    "x²/2!",
-    "x³/3!",
-    "x⁴/4!",
-    "x⁵/5!",
+    "\\frac{x^{2}}{2!}",
+    "\\frac{x^{3}}{3!}",
+    "\\frac{x^{4}}{4!}",
+    "\\frac{x^{5}}{5!}",
   ];
 
   const termValues = Array.from({ length: 6 }, (_, n) =>
@@ -107,23 +108,23 @@ export default function TaylorSeries() {
           </h3>
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6">
             <p className="text-slate-300 leading-relaxed">
-              함수 <span className="font-mono text-amber-400">f(x)</span>를{" "}
-              <span className="font-mono text-amber-400">x = xᵢ</span> 근방에서
+              함수 <M>{"f(x)"}</M>를{" "}
+              <M>{"x = x_i"}</M> 근방에서
               전개하면 다음과 같이 표현할 수 있습니다.
             </p>
 
             {/* Main formula as term cards */}
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <span className="font-mono text-white text-lg">
-                f(x<sub>i+1</sub>) =
+              <span className="text-white text-lg">
+                <M>{"f(x_{i+1}) ="}</M>
               </span>
               {[
-                { label: "f(xᵢ)", color: "amber" },
-                { label: "f'(xᵢ)·h", color: "amber" },
-                { label: "f''(xᵢ)·h²/2!", color: "orange" },
-                { label: "f'''(xᵢ)·h³/3!", color: "orange" },
-                { label: "⋯", color: "slate" },
-                { label: "Rₙ", color: "red" },
+                { label: "f(x_i)", color: "amber" },
+                { label: "f'(x_i) \\cdot h", color: "amber" },
+                { label: "\\frac{f''(x_i) \\cdot h^{2}}{2!}", color: "orange" },
+                { label: "\\frac{f'''(x_i) \\cdot h^{3}}{3!}", color: "orange" },
+                { label: "\\cdots", color: "slate" },
+                { label: "R_{n}", color: "red" },
               ].map((term, i) => (
                 <div key={i} className="flex items-center gap-2">
                   {i > 0 && (
@@ -140,7 +141,7 @@ export default function TaylorSeries() {
                         : "bg-slate-800 text-slate-400 border-slate-700"
                     }`}
                   >
-                    {term.label}
+                    <M>{term.label}</M>
                   </span>
                 </div>
               ))}
@@ -149,11 +150,9 @@ export default function TaylorSeries() {
             <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
               <p className="text-slate-300 font-mono text-sm">
                 여기서{" "}
-                <span className="text-amber-400">
-                  h = x<sub>i+1</sub> − xᵢ
-                </span>{" "}
+                <M>{"h = x_{i+1} - x_i"}</M>{" "}
                 는 스텝 크기(step size)이며,{" "}
-                <span className="text-red-400">Rₙ</span>은 나머지 항(remainder
+                <M>{"R_{n}"}</M>은 나머지 항(remainder
                 term)입니다.
               </p>
             </div>
@@ -174,7 +173,7 @@ export default function TaylorSeries() {
           {/* Mean Value Theorem → ξ explanation */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-6">
             <h4 className="text-lg font-semibold text-amber-400">
-              평균값 정리에서 ξ까지 — 왜 &quot;어떤 값&quot;이 등장하는가
+              평균값 정리에서 <M>{"\\xi"}</M>까지 — 왜 &quot;어떤 값&quot;이 등장하는가
             </h4>
 
             {/* Step 1: MVT */}
@@ -187,11 +186,9 @@ export default function TaylorSeries() {
                 <p className="text-slate-300 text-sm">
                   f가 [a, b]에서 연속이고 (a, b)에서 미분 가능하면,
                 </p>
-                <p className="font-mono text-xl text-amber-400">
-                  f(b) − f(a) = f&apos;(ξ) · (b − a)
-                </p>
+                <MBlock>{"f(b) - f(a) = f'(\\xi) \\cdot (b - a)"}</MBlock>
                 <p className="text-slate-300 text-sm">
-                  를 만족하는 <span className="font-mono text-orange-400">ξ ∈ (a, b)</span>가 <span className="text-white font-semibold">반드시 존재</span>합니다.
+                  를 만족하는 <M>{"\\xi \\in (a, b)"}</M>가 <span className="text-white font-semibold">반드시 존재</span>합니다.
                 </p>
               </div>
 
@@ -268,7 +265,7 @@ export default function TaylorSeries() {
                   <text x="178" y="115" fill="#a78bfa" fontSize="9" fontWeight="bold">∥ 평행</text>
                 </svg>
                 <p className="text-xs text-slate-500 text-center mt-2">
-                  ξ에서 곡선에 <span className="text-orange-400 font-semibold">접하는 직선</span>의 기울기가
+                  <M>{"\\xi"}</M>에서 곡선에 <span className="text-orange-400 font-semibold">접하는 직선</span>의 기울기가
                   a→b <span className="text-slate-300">할선</span>의 기울기와 정확히 같습니다 (<span className="text-purple-400 font-semibold">평행</span>).
                 </p>
               </div>
@@ -276,7 +273,7 @@ export default function TaylorSeries() {
               <p className="text-slate-400 text-sm leading-relaxed">
                 기하학적 의미: a와 b를 잇는 <span className="text-slate-200">할선(secant)</span>의 기울기와
                 정확히 같은 <span className="text-orange-400">접선(tangent)</span> 기울기를 갖는 점이
-                (a, b) 구간 안에 반드시 존재합니다. 그 점이 바로 <span className="font-mono text-orange-400">ξ</span>입니다.
+                (a, b) 구간 안에 반드시 존재합니다. 그 점이 바로 <M>{"\\xi"}</M>입니다.
               </p>
             </div>
 
@@ -291,28 +288,26 @@ export default function TaylorSeries() {
                 f(x)를 n차까지 전개했을 때 나머지 항은:
               </p>
               <div className="bg-slate-800/50 rounded-xl p-5 text-center space-y-3">
-                <p className="font-mono text-xl text-orange-400">
-                  R<sub>n</sub> = f<sup>(n+1)</sup>(ξ) · h<sup>n+1</sup> / (n+1)!
-                </p>
+                <MBlock>{"R_{n} = \\frac{f^{(n+1)}(\\xi) \\cdot h^{n+1}}{(n+1)!}"}</MBlock>
                 <p className="text-slate-300 text-sm">
-                  여기서 <span className="font-mono text-orange-400 font-bold">ξ ∈ (xᵢ, x<sub>i+1</sub>)</span>{" "}
+                  여기서 <M>{"\\xi \\in (x_i,\\, x_{i+1})"}</M>{" "}
                   는 구간 내의 &quot;어떤 값&quot;
                 </p>
               </div>
               <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-4 space-y-2 text-sm">
-                <p className="text-amber-200 font-semibold">ξ에 대한 핵심 포인트:</p>
+                <p className="text-amber-200 font-semibold"><M>{"\\xi"}</M>에 대한 핵심 포인트:</p>
                 <ul className="space-y-1.5 text-slate-300">
                   <li className="flex gap-2">
                     <span className="text-amber-400 shrink-0">•</span>
-                    <span>ξ의 <span className="text-white font-semibold">정확한 값은 알 수 없습니다</span> — 존재한다는 것만 보장됩니다.</span>
+                    <span><M>{"\\xi"}</M>의 <span className="text-white font-semibold">정확한 값은 알 수 없습니다</span> — 존재한다는 것만 보장됩니다.</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-amber-400 shrink-0">•</span>
-                    <span>MVT가 &quot;기울기가 같은 점이 있다&quot;를 보장하듯, Taylor 정리는 &quot;나머지를 정확히 표현하는 ξ가 있다&quot;를 보장합니다.</span>
+                    <span>MVT가 &quot;기울기가 같은 점이 있다&quot;를 보장하듯, Taylor 정리는 &quot;나머지를 정확히 표현하는 <M>{"\\xi"}</M>가 있다&quot;를 보장합니다.</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-amber-400 shrink-0">•</span>
-                    <span>실용적으로는 ξ를 직접 구하지 않고, f<sup>(n+1)</sup>의 <span className="text-amber-400">최댓값</span>으로 <span className="text-white font-semibold">오차의 상한(upper bound)</span>을 구합니다.</span>
+                    <span>실용적으로는 <M>{"\\xi"}</M>를 직접 구하지 않고, <M>{"f^{(n+1)}"}</M>의 <span className="text-amber-400">최댓값</span>으로 <span className="text-white font-semibold">오차의 상한(upper bound)</span>을 구합니다.</span>
                   </li>
                 </ul>
               </div>
@@ -322,32 +317,32 @@ export default function TaylorSeries() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 rounded-full bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-400 text-sm font-bold">3</span>
-                <h5 className="text-white font-semibold">구체적 예: e<sup>x</sup>의 1차 근사 오차</h5>
+                <h5 className="text-white font-semibold">구체적 예: <M>{"e^{x}"}</M>의 1차 근사 오차</h5>
               </div>
               <div className="bg-slate-800/50 rounded-xl p-5 space-y-3">
                 <p className="text-slate-300 text-sm leading-relaxed">
-                  f(x) = e<sup>x</sup>를 x = 0에서 1차까지 전개하면:{" "}
-                  <span className="font-mono text-amber-300">e<sup>x</sup> ≈ 1 + x</span>
+                  <M>{"f(x) = e^{x}"}</M>를 x = 0에서 1차까지 전개하면:{" "}
+                  <M>{"e^{x} \\approx 1 + x"}</M>
                 </p>
                 <div className="font-mono text-sm space-y-1 text-slate-300">
-                  <p>나머지: R₁ = f&apos;&apos;(ξ) · x² / 2! = <span className="text-orange-400">e<sup>ξ</sup> · x² / 2</span></p>
-                  <p className="text-slate-500">여기서 ξ ∈ (0, x)</p>
+                  <p>나머지: <M>{"R_1 = \\frac{f''(\\xi) \\cdot x^{2}}{2!} = \\frac{e^{\\xi} \\cdot x^{2}}{2}"}</M></p>
+                  <p className="text-slate-500">여기서 <M>{"\\xi \\in (0, x)"}</M></p>
                 </div>
                 <div className="bg-slate-950 rounded-lg p-3 text-sm space-y-1">
                   <p className="text-slate-500">x = 0.5일 때 오차 상한:</p>
-                  <p className="font-mono text-slate-300">
-                    |R₁| ≤ max|e<sup>ξ</sup>| · (0.5)² / 2, &nbsp; ξ ∈ (0, 0.5)
+                  <p className="text-slate-300">
+                    <M>{"|R_1| \\leq \\max|e^{\\xi}| \\cdot (0.5)^{2} / 2, \\quad \\xi \\in (0,\\, 0.5)"}</M>
                   </p>
-                  <p className="font-mono text-slate-300">
-                    &nbsp;&nbsp;&nbsp;&nbsp;≤ e<sup>0.5</sup> · 0.25 / 2 = <span className="text-amber-400 font-bold">0.2061</span>
+                  <p className="text-slate-300">
+                    <M>{"\\leq e^{0.5} \\cdot 0.25 / 2 = "}</M><span className="text-amber-400 font-bold">0.2061</span>
                   </p>
-                  <p className="font-mono text-slate-300">
-                    실제 오차: |e<sup>0.5</sup> − 1.5| = <span className="text-orange-400 font-bold">0.1487</span> &nbsp; ✓ 상한 이내
+                  <p className="text-slate-300">
+                    실제 오차: <M>{"|e^{0.5} - 1.5| = "}</M><span className="text-orange-400 font-bold">0.1487</span> -- 상한 이내
                   </p>
                 </div>
                 <p className="text-slate-400 text-xs">
-                  ξ의 정확한 값은 모르지만, f<sup>(n+1)</sup>(ξ)의 최댓값을 사용하면 오차의 상한을 구할 수 있습니다.
-                  이것이 수치해석에서 ξ를 활용하는 실용적 방법입니다.
+                  <M>{"\\xi"}</M>의 정확한 값은 모르지만, <M>{"f^{(n+1)}(\\xi)"}</M>의 최댓값을 사용하면 오차의 상한을 구할 수 있습니다.
+                  이것이 수치해석에서 <M>{"\\xi"}</M>를 활용하는 실용적 방법입니다.
                 </p>
               </div>
             </div>
@@ -357,7 +352,7 @@ export default function TaylorSeries() {
               <p className="text-slate-300 leading-relaxed">
                 <span className="text-amber-400 font-semibold">참고:</span>{" "}
                 평균값 정리는 사실 Taylor 나머지 정리의 <span className="text-white">n = 0인 특수한 경우</span>입니다.
-                n = 0이면: f(b) = f(a) + f&apos;(ξ)(b − a) — 바로 MVT입니다.
+                n = 0이면: <M>{"f(b) = f(a) + f'(\\xi)(b - a)"}</M> — 바로 MVT입니다.
               </p>
             </div>
           </div>
@@ -369,9 +364,7 @@ export default function TaylorSeries() {
                 나머지 항 요약
               </h4>
               <div className="bg-slate-800/50 rounded-xl p-4 text-center">
-                <p className="font-mono text-xl text-orange-400">
-                  R<sub>n</sub> = f<sup>(n+1)</sup>(ξ) · h<sup>n+1</sup> / (n+1)!
-                </p>
+                <MBlock>{"R_{n} = \\frac{f^{(n+1)}(\\xi) \\cdot h^{n+1}}{(n+1)!}"}</MBlock>
               </div>
               <p className="text-slate-300 text-sm leading-relaxed">
                 급수를 유한 개의 항에서 잘라냄으로써
@@ -379,8 +372,8 @@ export default function TaylorSeries() {
                 <span className="text-amber-400 font-semibold">
                   절단 오차
                 </span>
-                라고 합니다. ξ의 정확한 값은 모르지만,
-                오차의 차수 <span className="font-mono text-amber-300">O(h<sup>n+1</sup>)</span>는 알 수 있습니다.
+                라고 합니다. <M>{"\\xi"}</M>의 정확한 값은 모르지만,
+                오차의 차수 <M>{"O(h^{n+1})"}</M>는 알 수 있습니다.
               </p>
             </div>
 
@@ -434,15 +427,15 @@ export default function TaylorSeries() {
           className="space-y-6"
         >
           <h3 className="text-2xl font-bold text-white">
-            Interactive: e<sup>x</sup> 근사 (Maclaurin 급수)
+            Interactive: <M>{"e^{x}"}</M> 근사 (Maclaurin 급수)
           </h3>
 
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-8">
             {/* Formula */}
             <div className="text-center space-y-2">
-              <p className="font-mono text-lg text-slate-300">
-                e<sup>x</sup> = 1 + x + x²/2! + x³/3! + x⁴/4! + ⋯
-              </p>
+              <div>
+                <MBlock>{"e^{x} = 1 + x + \\frac{x^{2}}{2!} + \\frac{x^{3}}{3!} + \\frac{x^{4}}{4!} + \\cdots"}</MBlock>
+              </div>
               <p className="text-slate-400 text-sm">
                 x = 0 에서의 Taylor 전개 (Maclaurin 급수). 평가점:{" "}
                 <span className="font-mono text-amber-400">x = {xVal}</span>
@@ -479,8 +472,8 @@ export default function TaylorSeries() {
               <p className="font-mono text-slate-300 text-sm mb-2">
                 현재 전개식:
               </p>
-              <p className="font-mono text-amber-400 text-lg">
-                {termLabels.slice(0, numTerms).join(" + ")}
+              <p className="text-amber-400 text-lg">
+                <M>{termLabels.slice(0, numTerms).join(" + ")}</M>
               </p>
               <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
                 <div>
@@ -519,7 +512,7 @@ export default function TaylorSeries() {
                         : "bg-slate-800/30 border-slate-700/50 opacity-40"
                     }`}
                   >
-                    <p className="font-mono text-xs text-slate-400">{label}</p>
+                    <p className="text-xs text-slate-400"><M>{label}</M></p>
                     <p
                       className={`font-mono text-sm mt-1 ${
                         i < numTerms ? "text-amber-400" : "text-slate-600"
@@ -589,7 +582,7 @@ export default function TaylorSeries() {
           className="space-y-6"
         >
           <h3 className="text-2xl font-bold text-white">
-            근사 차수: O(h<sup>n</sup>) 표기법
+            근사 차수: <M>{"O(h^{n})"}</M> 표기법
           </h3>
 
           <p className="text-slate-400 leading-relaxed">
@@ -611,9 +604,7 @@ export default function TaylorSeries() {
                 </span>
               </div>
               <div className="bg-slate-800/50 rounded-xl p-4 text-center">
-                <p className="font-mono text-amber-400 text-lg">
-                  f&apos;(x) ≈ [f(x+h) − f(x)] / h
-                </p>
+                <MBlock>{"f'(x) \\approx \\frac{f(x+h) - f(x)}{h}"}</MBlock>
               </div>
               <p className="text-slate-400 text-sm">
                 <span className="text-white font-semibold">전진 차분</span>{" "}
@@ -633,9 +624,7 @@ export default function TaylorSeries() {
                 </span>
               </div>
               <div className="bg-slate-800/50 rounded-xl p-4 text-center">
-                <p className="font-mono text-orange-400 text-lg">
-                  f&apos;(x) ≈ [f(x+h) − f(x−h)] / (2h)
-                </p>
+                <MBlock>{"f'(x) \\approx \\frac{f(x+h) - f(x-h)}{2h}"}</MBlock>
               </div>
               <p className="text-slate-400 text-sm">
                 <span className="text-white font-semibold">중심 차분</span>{" "}
@@ -719,7 +708,7 @@ export default function TaylorSeries() {
           {/* Convergence table */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
             <h4 className="text-lg font-semibold text-white">
-              수렴 비교표: f(x) = sin(x), x₀ = π/4
+              수렴 비교표: <M>{"f(x) = \\sin(x),\\, x_0 = \\pi/4"}</M>
             </h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -729,10 +718,10 @@ export default function TaylorSeries() {
                       h
                     </th>
                     <th className="text-left py-3 px-4 font-mono text-amber-400">
-                      Forward Error (O(h))
+                      Forward Error (<M>{"O(h)"}</M>)
                     </th>
                     <th className="text-left py-3 px-4 font-mono text-orange-400">
-                      Central Error (O(h²))
+                      Central Error (<M>{"O(h^{2})"}</M>)
                     </th>
                   </tr>
                 </thead>
@@ -762,7 +751,7 @@ export default function TaylorSeries() {
                 <span className="text-amber-400">10배</span> 감소, 중심 차분
                 오차는 약{" "}
                 <span className="text-orange-400">100배</span> 감소합니다.
-                이것이 O(h) vs O(h²)의 차이입니다.
+                이것이 <M>{"O(h)"}</M> vs <M>{"O(h^{2})"}</M>의 차이입니다.
               </p>
             </div>
           </div>
@@ -857,7 +846,7 @@ export default function TaylorSeries() {
                 <span className="text-amber-400 font-semibold">
                   기하급수적으로
                 </span>{" "}
-                감소하는 것을 확인할 수 있습니다. 이는 e<sup>x</sup>의
+                감소하는 것을 확인할 수 있습니다. 이는 <M>{"e^{x}"}</M>의
                 Taylor 급수가 모든 실수에서 수렴하기 때문입니다. 하지만 모든
                 함수가 이렇게 빠르게 수렴하지는 않습니다 — 수렴 반경(radius
                 of convergence)에 주의해야 합니다.

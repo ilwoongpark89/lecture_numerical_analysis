@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ------------------------------------------------------------------ */
 /*  Fade-up animation preset                                           */
@@ -241,9 +242,7 @@ export default function ModifiedMethods() {
 
           <div className="bg-slate-950 rounded-xl p-4 border border-slate-800">
             <p className="font-mono text-sm text-pink-400 mb-2">공식 (Formula):</p>
-            <p className="font-mono text-fuchsia-300 text-center text-lg">
-              c = a − f(a) · (b − a) / (f(b) − f(a))
-            </p>
+            <MBlock>{"c = a - f(a) \\cdot \\frac{b - a}{f(b) - f(a)}"}</MBlock>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
@@ -290,23 +289,19 @@ export default function ModifiedMethods() {
               <p className="text-slate-300 text-sm">
                 근의 중복도 m을 알고 있는 경우:
               </p>
-              <p className="font-mono text-fuchsia-300 text-center">
-                x<sub>n+1</sub> = x<sub>n</sub> − m · f(x<sub>n</sub>) / f&apos;(x<sub>n</sub>)
-              </p>
+              <MBlock>{"x_{n+1} = x_{n} - m \\cdot \\frac{f(x_{n})}{f'(x_{n})}"}</MBlock>
               <p className="text-slate-400 text-xs">
                 → 2차 수렴 복원. 단, m을 미리 알아야 함.
               </p>
             </div>
             <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3">
-              <p className="text-fuchsia-400 font-semibold font-mono text-sm">방법 B: u(x) = f(x)/f&apos;(x)</p>
+              <p className="text-fuchsia-400 font-semibold font-mono text-sm">방법 B: <M>{"u(x) = f(x)/f'(x)"}</M></p>
               <p className="text-slate-300 text-sm">
-                u(x)는 원래 중근을 단근(simple root)으로 변환:
+                <M>{"u(x)"}</M>는 원래 중근을 단근(simple root)으로 변환:
               </p>
-              <p className="font-mono text-fuchsia-300 text-center">
-                x<sub>n+1</sub> = x<sub>n</sub> − u(x<sub>n</sub>) / u&apos;(x<sub>n</sub>)
-              </p>
+              <MBlock>{"x_{n+1} = x_{n} - \\frac{u(x_{n})}{u'(x_{n})}"}</MBlock>
               <p className="text-slate-400 text-xs">
-                → m을 몰라도 2차 수렴. f&apos;&apos;(x) 필요.
+                → m을 몰라도 2차 수렴. <M>{"f''(x)"}</M> 필요.
               </p>
             </div>
           </div>
@@ -335,7 +330,7 @@ x = modified_newton(f, df, 2.0, 3, 1e-12, 50);`}
           </div>
 
           <div className="bg-slate-950 rounded-xl p-5 border border-slate-800">
-            <p className="text-fuchsia-400 font-mono text-sm mb-3">% MATLAB — u(x) = f(x)/f&apos;(x) 기법 (방법 B)</p>
+            <p className="text-fuchsia-400 font-mono text-sm mb-3">% MATLAB — <M>{"u(x) = f(x)/f'(x)"}</M> 기법 (방법 B)</p>
             <pre className="font-mono text-sm text-slate-300 overflow-x-auto whitespace-pre leading-relaxed">
 {`function x = newton_ux(f, df, d2f, x0, tol, maxiter)
     x = x0;
@@ -416,39 +411,39 @@ x = fzero(f, [1, 2], opts)`}
             4. Fixed-Point Iteration (고정점 반복법)
           </h3>
           <p className="text-slate-300 leading-relaxed">
-            f(x) = 0 을{" "}
-            <span className="text-fuchsia-400 font-mono">x = g(x)</span> 형태로 변환한 뒤,
-            x<sub>n+1</sub> = g(x<sub>n</sub>)을 반복합니다.
+            <M>{"f(x) = 0"}</M> 을{" "}
+            <M>{"x = g(x)"}</M> 형태로 변환한 뒤,
+            <M>{"x_{n+1} = g(x_{n})"}</M>을 반복합니다.
             수렴 조건은 고정점 근처에서{" "}
-            <span className="text-pink-400 font-mono">|g&apos;(x)| &lt; 1</span>입니다.
+            <M>{"|g'(x)| < 1"}</M>입니다.
           </p>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3">
               <p className="text-pink-400 font-semibold font-mono text-sm">수렴 정리</p>
               <ul className="text-slate-300 text-sm space-y-2 list-disc list-inside">
-                <li>g가 [a,b]에서 연속이고 g([a,b]) ⊂ [a,b]</li>
-                <li>|g&apos;(x)| ≤ L &lt; 1 for all x in (a,b)</li>
-                <li>→ 유일한 고정점 x* 존재하며 수렴</li>
-                <li>수렴 속도: |x<sub>n+1</sub> − x*| ≤ L|x<sub>n</sub> − x*|</li>
+                <li><M>{"g"}</M>가 <M>{"[a,b]"}</M>에서 연속이고 <M>{"g([a,b]) \\subset [a,b]"}</M></li>
+                <li><M>{"|g'(x)| \\leq L < 1"}</M> for all <M>{"x \\in (a,b)"}</M></li>
+                <li>→ 유일한 고정점 <M>{"x^*"}</M> 존재하며 수렴</li>
+                <li>수렴 속도: <M>{"|x_{n+1} - x^*| \\leq L|x_{n} - x^*|"}</M></li>
               </ul>
             </div>
             <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3">
-              <p className="text-fuchsia-400 font-semibold font-mono text-sm">예제: x = cos(x)</p>
+              <p className="text-fuchsia-400 font-semibold font-mono text-sm">예제: <M>{"x = \\cos(x)"}</M></p>
               <ul className="text-slate-300 text-sm space-y-1 font-mono">
-                <li>x₀ = 0.2</li>
-                <li>x₁ = cos(0.2) = 0.9801</li>
-                <li>x₂ = cos(0.9801) = 0.5570</li>
-                <li>x₃ = cos(0.5570) = 0.8486</li>
+                <li><M>{"x_0 = 0.2"}</M></li>
+                <li><M>{"x_1 = \\cos(0.2) = 0.9801"}</M></li>
+                <li><M>{"x_2 = \\cos(0.9801) = 0.5570"}</M></li>
+                <li><M>{"x_3 = \\cos(0.5570) = 0.8486"}</M></li>
                 <li className="text-slate-500">...</li>
-                <li className="text-pink-400">x* ≈ 0.7391 (Dottie number)</li>
+                <li className="text-pink-400"><M>{"x^* \\approx 0.7391"}</M> (Dottie number)</li>
               </ul>
             </div>
           </div>
 
           <div className="bg-slate-950 rounded-xl p-4 border border-slate-800">
             <p className="text-slate-400 text-xs text-center mb-2 font-mono">
-              Cobweb Diagram: y = x ∩ y = cos(x)
+              Cobweb Diagram: <M>{"y = x \\cap y = \\cos(x)"}</M>
             </p>
             <CobwebSvg />
           </div>
@@ -515,20 +510,20 @@ g = @(x) cos(x);
                 <tr className="border-b border-slate-800/50">
                   <td className="py-2.5 px-3 text-slate-100">Newton-Raphson</td>
                   <td className="py-2.5 px-3">Quadratic (2)</td>
-                  <td className="py-2.5 px-3 text-red-400">f&apos;</td>
+                  <td className="py-2.5 px-3 text-red-400"><M>{"f'"}</M></td>
                   <td className="py-2.5 px-3 text-red-400">No</td>
                   <td className="py-2.5 px-3">도함수 계산 가능할 때</td>
                 </tr>
                 <tr className="border-b border-slate-800/50">
                   <td className="py-2.5 px-3 text-slate-100">Mod. Newton</td>
                   <td className="py-2.5 px-3">Quadratic (2)</td>
-                  <td className="py-2.5 px-3 text-red-400">f&apos;, f&apos;&apos;</td>
+                  <td className="py-2.5 px-3 text-red-400"><M>{"f',\\, f''"}</M></td>
                   <td className="py-2.5 px-3 text-red-400">No</td>
                   <td className="py-2.5 px-3">중근 존재 시</td>
                 </tr>
                 <tr className="border-b border-slate-800/50">
                   <td className="py-2.5 px-3 text-slate-100">Secant</td>
-                  <td className="py-2.5 px-3">≈ 1.618</td>
+                  <td className="py-2.5 px-3"><M>{"\\approx 1.618"}</M></td>
                   <td className="py-2.5 px-3 text-green-400">No</td>
                   <td className="py-2.5 px-3 text-red-400">No</td>
                   <td className="py-2.5 px-3">도함수 없을 때</td>
@@ -545,7 +540,7 @@ g = @(x) cos(x);
                   <td className="py-2.5 px-3">Linear (1)</td>
                   <td className="py-2.5 px-3 text-green-400">No</td>
                   <td className="py-2.5 px-3 text-yellow-400">조건부</td>
-                  <td className="py-2.5 px-3">x = g(x) 형태 자연스러울 때</td>
+                  <td className="py-2.5 px-3"><M>{"x = g(x)"}</M> 형태 자연스러울 때</td>
                 </tr>
               </tbody>
             </table>
@@ -554,7 +549,7 @@ g = @(x) cos(x);
           <div className="bg-slate-950 rounded-xl p-5 border border-slate-800">
             <p className="text-pink-400 font-semibold font-mono text-sm mb-3">Decision Tree (빠른 선택)</p>
             <div className="text-slate-300 text-sm font-mono space-y-1 leading-relaxed">
-              <p>구간 [a,b]를 알고 f(a)·f(b) &lt; 0 인가?</p>
+              <p>구간 <M>{"[a,b]"}</M>를 알고 <M>{"f(a) \\cdot f(b) < 0"}</M> 인가?</p>
               <p className="pl-4 text-fuchsia-400">├─ Yes → 도함수 계산 가능?</p>
               <p className="pl-8 text-pink-300">│  ├─ Yes → Newton + Bisection hybrid</p>
               <p className="pl-8 text-slate-400">│  └─ No  → <span className="text-green-400">Brent&apos;s method (fzero)</span></p>

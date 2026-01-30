@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ───────── Data ───────── */
 
@@ -35,10 +36,10 @@ const newtonData = (() => {
 
 const comparisonRows = [
   { feature: "수렴 차수", bisection: "1차 (선형)", newton: "2차 (이차)" },
-  { feature: "초기 조건", bisection: "구간 [a, b]", newton: "초기 추측 x₀" },
-  { feature: "f' 필요", bisection: "아니오", newton: "예" },
+  { feature: "초기 조건", bisection: "구간 [a, b]", newton: <>초기 추측 <M>{"x_{0}"}</M></> },
+  { feature: <>f&apos; 필요</>, bisection: "아니오", newton: "예" },
   { feature: "수렴 보장", bisection: "항상 (IVT)", newton: "조건부" },
-  { feature: "반복 횟수 (10⁻⁶)", bisection: "~20", newton: "~5" },
+  { feature: <>반복 횟수 (<M>{"10^{-6}"}</M>)</>, bisection: "~20", newton: "~5" },
   { feature: "적용", bisection: "안전한 초기 탐색", newton: "빠른 정밀 수렴" },
 ];
 
@@ -80,7 +81,7 @@ const anim = (d = 0) => ({
 
 function fmtErr(e: number) {
   if (e === 0) return "0";
-  if (e < 1e-15) return "< 10⁻¹⁵";
+  if (e < 1e-15) return "< 1e-15";
   return e.toExponential(2);
 }
 
@@ -136,8 +137,8 @@ export default function ConvergenceComparison() {
 
         {/* ── 2. Side-by-side iteration tables ── */}
         <motion.div {...anim(0.1)}>
-          <h3 className="text-xl font-bold text-rose-400 mb-2 font-mono">
-            f(x) = x³ − x − 2, &nbsp;root ≈ 1.52138
+          <h3 className="text-xl font-bold text-rose-400 mb-2">
+            <M>{"f(x) = x^{3} - x - 2"}</M>, root <M>{"\\approx 1.52138"}</M>
           </h3>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Bisection table */}
@@ -180,13 +181,13 @@ export default function ConvergenceComparison() {
             {/* Newton table */}
             <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 overflow-x-auto">
               <h4 className="text-pink-400 font-mono font-semibold mb-3">
-                Newton-Raphson &nbsp;x₀ = 1.5 — 수렴 완료
+                Newton-Raphson <M>{"x_{0} = 1.5"}</M> — 수렴 완료
               </h4>
               <table className="w-full text-xs font-mono text-slate-300">
                 <thead>
                   <tr className="text-slate-500 border-b border-slate-800">
                     <th className="py-1 text-left">n</th>
-                    <th className="py-1 text-left">xₙ</th>
+                    <th className="py-1 text-left"><M>{"x_{n}"}</M></th>
                     <th className="py-1 text-left">|error|</th>
                     <th className="py-1 text-left">비고</th>
                   </tr>
@@ -198,7 +199,7 @@ export default function ConvergenceComparison() {
                       <td className="py-0.5">{r.x.toFixed(12)}</td>
                       <td className="py-0.5 text-rose-400">{fmtErr(r.error)}</td>
                       <td className="py-0.5 text-slate-500">
-                        {r.n === 0 ? "초기값" : "ε² 수렴"}
+                        {r.n === 0 ? "초기값" : <><M>{"\\varepsilon^{2}"}</M> 수렴</>}
                       </td>
                     </tr>
                   ))}
@@ -219,27 +220,27 @@ export default function ConvergenceComparison() {
               {
                 title: "Linear (p = 1)",
                 method: "Bisection",
-                formula: "|εₙ₊₁| ≈ C · |εₙ|",
+                formula: <M>{"|\\varepsilon_{n+1}| \\approx C \\cdot |\\varepsilon_{n}|"}</M>,
                 detail: "C = 0.5 — 매 반복마다 오차가 절반으로 줄어듦",
                 accent: "rose",
               },
               {
                 title: "Quadratic (p = 2)",
                 method: "Newton-Raphson",
-                formula: "|εₙ₊₁| ≈ C · |εₙ|²",
+                formula: <M>{"|\\varepsilon_{n+1}| \\approx C \\cdot |\\varepsilon_{n}|^{2}"}</M>,
                 detail: "오차의 유효숫자가 매 반복마다 약 2배 증가",
                 accent: "pink",
               },
               {
-                title: "Superlinear (p ≈ 1.618)",
+                title: <><M>{"\\text{Superlinear}\\;(p \\approx 1.618)"}</M></>,
                 method: "Secant Method",
-                formula: "|εₙ₊₁| ≈ C · |εₙ|^φ",
-                detail: "φ = (1+√5)/2 — Week 5에서 다룰 예정",
+                formula: <M>{"|\\varepsilon_{n+1}| \\approx C \\cdot |\\varepsilon_{n}|^{\\varphi}"}</M>,
+                detail: <><M>{"\\varphi = (1+\\sqrt{5})/2"}</M> — Week 5에서 다룰 예정</>,
                 accent: "rose",
               },
             ].map((c, i) => (
               <motion.div
-                key={c.title}
+                key={c.method}
                 {...anim(0.1 + i * 0.08)}
                 className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-3"
               >
@@ -256,8 +257,8 @@ export default function ConvergenceComparison() {
 
         {/* ── 4. SVG error vs iteration plot ── */}
         <motion.div {...anim(0.1)} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h3 className="text-xl font-bold text-white font-mono">
-            log₁₀(error) vs Iteration
+          <h3 className="text-xl font-bold text-white">
+            <M>{"\\log_{10}(\\text{error})"}</M> vs Iteration
           </h3>
           <div className="overflow-x-auto flex justify-center">
             <svg
@@ -322,7 +323,7 @@ export default function ConvergenceComparison() {
             </svg>
           </div>
           <p className="text-sm text-slate-400 text-center">
-            Newton-Raphson은 단 5회 반복으로 machine precision에 도달 — Bisection은 20회에도 10⁻⁶ 수준
+            Newton-Raphson은 단 5회 반복으로 machine precision에 도달 — Bisection은 20회에도 <M>{"10^{-6}"}</M> 수준
           </p>
         </motion.div>
 
@@ -338,8 +339,8 @@ export default function ConvergenceComparison() {
               </tr>
             </thead>
             <tbody className="text-slate-300">
-              {comparisonRows.map((r) => (
-                <tr key={r.feature} className="border-b border-slate-800/50 hover:bg-slate-800/20">
+              {comparisonRows.map((r, i) => (
+                <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/20">
                   <td className="py-2 text-slate-400">{r.feature}</td>
                   <td className="py-2">{r.bisection}</td>
                   <td className="py-2">{r.newton}</td>

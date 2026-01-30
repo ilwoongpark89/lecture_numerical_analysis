@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ------------------------------------------------------------------ */
 /*  Helper: f(x) = x^3 - x - 2                                        */
@@ -244,7 +245,7 @@ export default function SecantMethod() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4 font-mono text-sm text-slate-300">
               <p className="leading-relaxed">
-                Newton&ndash;Raphson 방법은 매 반복마다 <span className="text-fuchsia-400">f&apos;(x)</span>를
+                Newton&ndash;Raphson 방법은 매 반복마다 <M>{"f'(x)"}</M>를
                 계산해야 합니다. 그러나:
               </p>
               <ul className="space-y-2 text-slate-400 text-xs">
@@ -269,17 +270,7 @@ export default function SecantMethod() {
 
             <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 font-mono text-sm space-y-3">
               <p className="text-slate-500 text-xs uppercase tracking-wider">Finite difference approximation</p>
-              <p className="text-lg text-pink-400">
-                f&apos;(x<sub>n</sub>) &asymp;{" "}
-                <span className="inline-flex flex-col items-center leading-tight">
-                  <span className="border-b border-slate-600 px-1">
-                    f(x<sub>n</sub>) &minus; f(x<sub>n&minus;1</sub>)
-                  </span>
-                  <span className="px-1">
-                    x<sub>n</sub> &minus; x<sub>n&minus;1</sub>
-                  </span>
-                </span>
-              </p>
+              <MBlock>{"f'(x_{n}) \\approx \\frac{f(x_{n}) - f(x_{n-1})}{x_{n} - x_{n-1}}"}</MBlock>
               <p className="text-slate-400 text-xs leading-relaxed">
                 두 점의 함수값만으로 기울기를 근사합니다.
                 접선(tangent) 대신 할선(secant)을 사용하는 것입니다.
@@ -300,53 +291,25 @@ export default function SecantMethod() {
 
           <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 font-mono text-sm space-y-3">
             <p className="text-slate-500 text-xs uppercase tracking-wider">From Newton&rsquo;s formula</p>
-            <p className="text-slate-300">
-              x<sub>n+1</sub> = x<sub>n</sub> &minus; f(x<sub>n</sub>) / f&apos;(x<sub>n</sub>)
-            </p>
-            <p className="text-slate-500">&darr; Replace f&apos;(x<sub>n</sub>) with secant approximation</p>
-            <p className="text-slate-300">
-              x<sub>n+1</sub> = x<sub>n</sub> &minus; f(x<sub>n</sub>) &middot;{" "}
-              <span className="inline-flex flex-col items-center leading-tight">
-                <span className="border-b border-slate-600 px-1">
-                  x<sub>n</sub> &minus; x<sub>n&minus;1</sub>
-                </span>
-                <span className="px-1">
-                  f(x<sub>n</sub>) &minus; f(x<sub>n&minus;1</sub>)
-                </span>
-              </span>
-            </p>
+            <MBlock>{"x_{n+1} = x_{n} - \\frac{f(x_{n})}{f'(x_{n})}"}</MBlock>
+            <p className="text-slate-500">↓ Replace <M>{"f'(x_{n})"}</M> with secant approximation</p>
+            <MBlock>{"x_{n+1} = x_{n} - f(x_{n}) \\cdot \\frac{x_{n} - x_{n-1}}{f(x_{n}) - f(x_{n-1})}"}</MBlock>
           </div>
 
           {/* Large styled formula */}
           <div className="text-center py-6">
-            <div className="inline-flex items-baseline gap-2 text-2xl md:text-3xl font-mono font-bold">
-              <span className="text-slate-300">x</span>
-              <sub className="text-slate-500 text-base">n+1</sub>
-              <span className="text-slate-500 mx-1">=</span>
-              <span className="text-sky-400">x<sub className="text-base">n</sub></span>
-              <span className="text-slate-500 mx-1">&minus;</span>
-              <span className="text-pink-400">f(x<sub className="text-base">n</sub>)</span>
-              <span className="text-slate-500 mx-1">&middot;</span>
-              <span className="flex flex-col items-center leading-tight">
-                <span className="text-fuchsia-400 border-b-2 border-slate-600 pb-1 px-2">
-                  x<sub className="text-base">n</sub> &minus; x<sub className="text-base">n&minus;1</sub>
-                </span>
-                <span className="text-pink-400 pt-1 px-2">
-                  f(x<sub className="text-base">n</sub>) &minus; f(x<sub className="text-base">n&minus;1</sub>)
-                </span>
-              </span>
-            </div>
+            <MBlock>{"x_{n+1} = x_{n} - f(x_{n}) \\cdot \\frac{x_{n} - x_{n-1}}{f(x_{n}) - f(x_{n-1})}"}</MBlock>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 text-xs font-mono">
             <span className="px-3 py-1.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">
-              x_n &mdash; 현재 근사값
+              <M>{"x_n"}</M> &mdash; 현재 근사값
             </span>
             <span className="px-3 py-1.5 rounded-full bg-pink-500/15 text-pink-400 border border-pink-500/30">
-              f(x_n) &mdash; 함수값
+              <M>{"f(x_n)"}</M> &mdash; 함수값
             </span>
             <span className="px-3 py-1.5 rounded-full bg-fuchsia-500/15 text-fuchsia-400 border border-fuchsia-500/30">
-              x_n-1 &mdash; 이전 근사값
+              <M>{"x_{n-1}"}</M> &mdash; 이전 근사값
             </span>
           </div>
         </motion.div>
@@ -364,20 +327,20 @@ export default function SecantMethod() {
           <div className="grid md:grid-cols-2 gap-8 items-start">
             <div className="space-y-4 font-mono text-sm text-slate-300">
               <p className="leading-relaxed">
-                두 점 <span className="text-fuchsia-400">(x<sub>n&minus;1</sub>, f(x<sub>n&minus;1</sub>))</span>과{" "}
-                <span className="text-pink-400">(x<sub>n</sub>, f(x<sub>n</sub>))</span>을
+                두 점 <M>{"(x_{n-1},\\, f(x_{n-1}))"}</M>과{" "}
+                <M>{"(x_{n},\\, f(x_{n}))"}</M>을
                 지나는 <span className="text-pink-400">할선(secant line)</span>을 그립니다.
               </p>
               <p className="text-slate-400 text-xs leading-relaxed">
                 이 할선이 x축과 만나는 점이 다음 근사값
-                <span className="text-sky-400"> x<sub>n+1</sub></span>이 됩니다.
+                <M>{" x_{n+1}"}</M>이 됩니다.
                 Newton 법이 접선(tangent)을 사용하는 것과 대비됩니다.
               </p>
               <div className="bg-slate-950 rounded-xl p-4 border border-slate-800 text-xs text-slate-400 space-y-1">
-                <p><span className="text-fuchsia-400">&#x25CF;</span> (x<sub>n-1</sub>, f(x<sub>n-1</sub>)) &mdash; 이전 점</p>
-                <p><span className="text-pink-400">&#x25CF;</span> (x<sub>n</sub>, f(x<sub>n</sub>)) &mdash; 현재 점</p>
-                <p><span className="text-sky-400">&#x25CF;</span> x<sub>n+1</sub> &mdash; 할선의 x절편 (다음 근사값)</p>
-                <p><span className="text-purple-300">&#x2500;</span> f(x) 곡선</p>
+                <p><span className="text-fuchsia-400">&#x25CF;</span> <M>{"(x_{n-1},\\, f(x_{n-1}))"}</M> &mdash; 이전 점</p>
+                <p><span className="text-pink-400">&#x25CF;</span> <M>{"(x_{n},\\, f(x_{n}))"}</M> &mdash; 현재 점</p>
+                <p><span className="text-sky-400">&#x25CF;</span> <M>{"x_{n+1}"}</M> &mdash; 할선의 x절편 (다음 근사값)</p>
+                <p><span className="text-purple-300">&#x2500;</span> <M>{"f(x)"}</M> 곡선</p>
                 <p><span className="text-pink-400">- -</span> 할선 (secant line)</p>
               </div>
             </div>
@@ -395,10 +358,10 @@ export default function SecantMethod() {
           className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6"
         >
           <h3 className="text-2xl font-bold text-pink-400">
-            Interactive Demo &mdash; f(x) = x&sup3; &minus; x &minus; 2
+            Interactive Demo &mdash; <M>{"f(x) = x^{3} - x - 2"}</M>
           </h3>
           <p className="font-mono text-sm text-slate-400">
-            x<sub>0</sub> = 1, &nbsp; x<sub>1</sub> = 2 &nbsp;|&nbsp; 실제 근 &asymp; 1.52138
+            <M>{"x_0 = 1,\\; x_1 = 2"}</M> &nbsp;|&nbsp; 실제 근 <M>{"\\approx 1.52138"}</M>
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -427,10 +390,10 @@ export default function SecantMethod() {
                 <thead>
                   <tr className="text-slate-500 text-xs border-b border-slate-800">
                     <th className="py-2 px-2 text-left">n</th>
-                    <th className="py-2 px-2 text-right">x<sub>n-1</sub></th>
-                    <th className="py-2 px-2 text-right">x<sub>n</sub></th>
-                    <th className="py-2 px-2 text-right">f(x<sub>n</sub>)</th>
-                    <th className="py-2 px-2 text-right">x<sub>n+1</sub></th>
+                    <th className="py-2 px-2 text-right"><M>{"x_{n-1}"}</M></th>
+                    <th className="py-2 px-2 text-right"><M>{"x_{n}"}</M></th>
+                    <th className="py-2 px-2 text-right"><M>{"f(x_{n})"}</M></th>
+                    <th className="py-2 px-2 text-right"><M>{"x_{n+1}"}</M></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -480,12 +443,8 @@ export default function SecantMethod() {
             <div className="space-y-4">
               <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 font-mono text-sm space-y-3">
                 <p className="text-slate-500 text-xs uppercase tracking-wider">Superlinear convergence</p>
-                <p className="text-lg text-pink-400">
-                  |&epsilon;<sub>n+1</sub>| &asymp; C &middot; |&epsilon;<sub>n</sub>|<sup className="text-fuchsia-400">p</sup>
-                </p>
-                <p className="text-2xl text-fuchsia-400 font-bold">
-                  p = (1 + &radic;5) / 2 &asymp; 1.618
-                </p>
+                <MBlock>{"|\\varepsilon_{n+1}| \\approx C \\cdot |\\varepsilon_{n}|^{p}"}</MBlock>
+                <MBlock>{"p = \\frac{1 + \\sqrt{5}}{2} \\approx 1.618"}</MBlock>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   수렴 차수가 <span className="text-fuchsia-400">황금비(Golden Ratio)</span>와 같습니다!
                   선형(Bisection)보다 빠르고 이차(Newton)보다는 느리지만,
@@ -495,7 +454,7 @@ export default function SecantMethod() {
 
               <p className="text-xs text-slate-400 font-mono leading-relaxed">
                 주의: Secant 법은 초기값 2개가 필요하지만, Bisection과 달리
-                구간(bracket)이 필요하지 않습니다. 즉, f(x<sub>0</sub>)와 f(x<sub>1</sub>)의
+                구간(bracket)이 필요하지 않습니다. 즉, <M>{"f(x_0)"}</M>와 <M>{"f(x_1)"}</M>의
                 부호가 다를 필요가 없습니다.
               </p>
             </div>
@@ -577,13 +536,13 @@ export default function SecantMethod() {
                   <td className="py-3 px-3 text-slate-400">반복당 함수 평가</td>
                   <td className="py-3 px-3 text-center">1</td>
                   <td className="py-3 px-3 text-center text-pink-400">1</td>
-                  <td className="py-3 px-3 text-center">1 (f) + 1 (f&apos;)</td>
+                  <td className="py-3 px-3 text-center">1 (<M>{"f"}</M>) + 1 (<M>{"f'"}</M>)</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-3 text-slate-400">사용 시기</td>
                   <td className="py-3 px-3 text-center text-xs">안전한 초기 탐색</td>
-                  <td className="py-3 px-3 text-center text-xs text-pink-400">f&apos; 계산 불가/비싼 경우</td>
-                  <td className="py-3 px-3 text-center text-xs">f&apos; 사용 가능할 때</td>
+                  <td className="py-3 px-3 text-center text-xs text-pink-400"><M>{"f'"}</M> 계산 불가/비싼 경우</td>
+                  <td className="py-3 px-3 text-center text-xs"><M>{"f'"}</M> 사용 가능할 때</td>
                 </tr>
               </tbody>
             </table>
@@ -595,7 +554,7 @@ export default function SecantMethod() {
               <li>&#x2022; 도함수를 해석적으로 구하기 어려울 때</li>
               <li>&#x2022; 함수가 블랙박스(시뮬레이션, 실험)일 때</li>
               <li>&#x2022; 도함수 계산이 함수 평가보다 훨씬 비쌀 때</li>
-              <li>&#x2022; Newton 수준의 빠른 수렴이 필요하지만 f&apos;를 쓸 수 없을 때</li>
+              <li>&#x2022; Newton 수준의 빠른 수렴이 필요하지만 <M>{"f'"}</M>를 쓸 수 없을 때</li>
             </ul>
           </div>
         </motion.div>
@@ -687,8 +646,8 @@ fprintf('Root = %.15f (after %d iterations)\\n', root, iter);
 
           <p className="text-xs text-slate-500 font-mono leading-relaxed">
             Newton 법(3 iterations)보다 약간 더 걸리지만,
-            도함수 f&apos;(x)를 전혀 사용하지 않습니다.
-            반복당 함수 평가는 1회로 Newton(f + f&apos; = 2회)보다 효율적입니다.
+            도함수 <M>{"f'(x)"}</M>를 전혀 사용하지 않습니다.
+            반복당 함수 평가는 1회로 Newton(<M>{"f + f' = 2"}</M>회)보다 효율적입니다.
           </p>
         </motion.div>
       </div>

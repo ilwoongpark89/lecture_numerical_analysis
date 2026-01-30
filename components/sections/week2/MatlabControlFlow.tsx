@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { M } from "@/components/Math";
 
 /* ================================================================
    Week 2 — 제어문 (Control Flow) Section
@@ -393,7 +394,7 @@ fprintf('반복 횟수: %d\\n', count);`}
         />
         <div className="mt-3 p-3 rounded-lg bg-teal-950/30 border border-teal-800/50 text-sm text-teal-300">
           컴퓨터가 1과 구별할 수 있는 가장 작은 수를 찾는 예제입니다.
-          IEEE 754 배정밀도에서 약 2.2 x 10<sup>-16</sup> 입니다.
+          IEEE 754 배정밀도에서 약 <M>{"2.2 \\times 10^{-16}"}</M> 입니다.
         </div>
       </div>
 

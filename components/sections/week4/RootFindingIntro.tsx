@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 const anim = {
   initial: { opacity: 0, y: 20 },
@@ -165,8 +166,8 @@ export default function RootFindingIntro() {
         <motion.div {...anim} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6">
           <h3 className="text-2xl font-bold text-rose-400">Root Finding이란?</h3>
           <p className="text-slate-300 leading-relaxed">
-            주어진 함수 <span className="font-mono text-pink-400">f(x) = 0</span>을 만족하는{" "}
-            <span className="font-mono text-pink-400">x</span>를 찾는 문제입니다.
+            주어진 함수 <M>{"f(x) = 0"}</M>을 만족하는{" "}
+            <M>{"x"}</M>를 찾는 문제입니다.
             대수적(해석적) 풀이가 불가능한 경우가 대부분이므로 수치적 방법이 필요합니다.
           </p>
 
@@ -185,13 +186,13 @@ export default function RootFindingIntro() {
               <h4 className="text-sm font-mono text-rose-400 mb-2">대표적 예시</h4>
               <div className="space-y-2 font-mono text-sm">
                 <p className="text-pink-300">
-                  e<sup>-x</sup> = x &nbsp;&rarr;&nbsp; e<sup>-x</sup> - x = 0
+                  <M>{"e^{-x} = x \\;\\rightarrow\\; e^{-x} - x = 0"}</M>
                 </p>
                 <p className="text-pink-300">
-                  x - cos(x) = 0
+                  <M>{"x - \\cos(x) = 0"}</M>
                 </p>
                 <p className="text-pink-300">
-                  x<sup>3</sup> - 2x - 5 = 0
+                  <M>{"x^{3} - 2x - 5 = 0"}</M>
                 </p>
               </div>
               <p className="text-slate-500 text-xs mt-2">
@@ -207,14 +208,14 @@ export default function RootFindingIntro() {
 
           <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-6">
             <p className="text-slate-200 leading-relaxed">
-              함수 <span className="font-mono text-pink-400">f</span>가 닫힌 구간{" "}
-              <span className="font-mono text-pink-400">[a, b]</span>에서 <strong>연속</strong>이고,{" "}
-              <span className="font-mono text-pink-400">f(a) &middot; f(b) &lt; 0</span>이면,{" "}
-              구간 <span className="font-mono text-pink-400">(a, b)</span> 안에 적어도 하나의 근{" "}
-              <span className="font-mono text-pink-400">c</span>가 존재한다.
+              함수 <M>{"f"}</M>가 닫힌 구간{" "}
+              <M>{"[a, b]"}</M>에서 <strong>연속</strong>이고,{" "}
+              <M>{"f(a) \\cdot f(b) < 0"}</M>이면,{" "}
+              구간 <M>{"(a, b)"}</M> 안에 적어도 하나의 근{" "}
+              <M>{"c"}</M>가 존재한다.
             </p>
-            <p className="font-mono text-sm text-rose-300 mt-3">
-              &exist; c &isin; (a, b) such that f(c) = 0
+            <p className="text-sm text-rose-300 mt-3">
+              <M>{"\\exists\\, c \\in (a, b) \\;\\text{such that}\\; f(c) = 0"}</M>
             </p>
           </div>
 
@@ -255,7 +256,7 @@ export default function RootFindingIntro() {
         <motion.div {...anim} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 space-y-6">
           <h3 className="text-2xl font-bold text-rose-400">Bracketing (구간 탐색)</h3>
           <p className="text-slate-300 leading-relaxed">
-            부호 변화가 일어나는 구간 <span className="font-mono text-pink-400">[a, b]</span>를 찾은 뒤,
+            부호 변화가 일어나는 구간 <M>{"[a, b]"}</M>를 찾은 뒤,
             그 구간을 점차 좁혀 가며 근에 접근합니다.
           </p>
 
@@ -360,7 +361,7 @@ f = @(x) exp(-x) - x;
                 <tr className="border-b border-slate-800">
                   <td className="py-2 pr-4 font-mono text-slate-400">초기 조건</td>
                   <td className="py-2 pr-4">Bracket [a, b]</td>
-                  <td className="py-2">초기 추정값 x₀</td>
+                  <td className="py-2">초기 추정값 <M>{"x_{0}"}</M></td>
                 </tr>
                 <tr>
                   <td className="py-2 pr-4 font-mono text-slate-400">적합한 상황</td>
@@ -434,9 +435,9 @@ f = @(x) exp(-x) - x;
           <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-5">
             <p className="text-slate-300 text-sm leading-relaxed">
               <strong className="text-rose-400">실전 전략:</strong> 먼저 Bracketing으로 대략적 근의 위치를 파악한 뒤,
-              Open method로 정밀하게 수렴시키는 <span className="font-mono text-pink-400">하이브리드 접근</span>이
+              Open method로 정밀하게 수렴시키는 하이브리드 접근이
               가장 안정적이고 효율적입니다. MATLAB의{" "}
-              <span className="font-mono text-pink-400">fzero</span> 함수가 이 전략을 사용합니다.
+              <code className="text-pink-400">fzero</code> 함수가 이 전략을 사용합니다.
             </p>
           </div>
         </motion.div>

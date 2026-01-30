@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 /* ------------------------------------------------------------------ */
 /*  SVG: Circle x^2+y^2=4 and Hyperbola xy=1 intersection            */
@@ -93,7 +94,7 @@ function IntersectionSvg() {
       <text x={W - pad - 10} y={axisY - 8} fill="#64748b" fontSize={11} fontFamily="monospace">x</text>
       <text x={axisX + 6} y={pad + 12} fill="#64748b" fontSize={11} fontFamily="monospace">y</text>
       <text x={W - pad - 60} y={pad + 20} fill="#f472b6" fontSize={11} fontFamily="monospace">
-        x&sup2;+y&sup2;=4
+        x²+y²=4
       </text>
       <text x={W - pad - 45} y={pad + 36} fill="#c084fc" fontSize={11} fontFamily="monospace">
         xy=1
@@ -144,19 +145,19 @@ export default function NonlinearSystems() {
               <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3">
                 <p className="text-slate-400 text-xs uppercase tracking-wider">General form</p>
                 <p className="text-lg text-pink-400">
-                  Find <span className="text-fuchsia-400">x</span> such that{" "}
-                  <span className="text-fuchsia-400">F(x) = 0</span>
+                  Find <M>{"\\mathbf{x}"}</M> such that{" "}
+                  <M>{"\\mathbf{F}(\\mathbf{x}) = \\mathbf{0}"}</M>
                 </p>
                 <p className="text-slate-400">
-                  where F: R<sup>n</sup> &rarr; R<sup>n</sup>
+                  where <M>{"\\mathbf{F}: \\mathbb{R}^{n} \\to \\mathbb{R}^{n}"}</M>
                 </p>
               </div>
 
               <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3">
                 <p className="text-slate-400 text-xs uppercase tracking-wider">Example system (n=2)</p>
                 <div className="space-y-1 text-base">
-                  <p>F<sub>1</sub>(x,y) = x&sup2; + y&sup2; &minus; 4 = 0</p>
-                  <p>F<sub>2</sub>(x,y) = x &middot; y &minus; 1 = 0</p>
+                  <MBlock>{"F_1(x,y) = x^{2} + y^{2} - 4 = 0"}</MBlock>
+                  <MBlock>{"F_2(x,y) = x \\cdot y - 1 = 0"}</MBlock>
                 </div>
                 <p className="text-slate-500 text-xs">
                   원(circle)과 쌍곡선(hyperbola)의 교점을 구하는 문제
@@ -164,7 +165,7 @@ export default function NonlinearSystems() {
               </div>
 
               <p className="text-slate-400 text-xs leading-relaxed">
-                1차원 방정식 f(x)=0의 확장입니다. 변수가 n개이고 방정식도 n개인 연립방정식을 풀어야 합니다.
+                1차원 방정식 <M>{"f(x)=0"}</M>의 확장입니다. 변수가 n개이고 방정식도 n개인 연립방정식을 풀어야 합니다.
                 해가 여러 개 존재할 수 있으며, 초기값에 따라 다른 해로 수렴합니다.
               </p>
             </div>
@@ -185,13 +186,10 @@ export default function NonlinearSystems() {
           {/* Jacobian */}
           <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3 font-mono text-sm">
             <p className="text-slate-400 text-xs uppercase tracking-wider">Jacobian Matrix</p>
-            <p className="text-pink-400 text-base">
-              J(x) = [&part;F<sub>i</sub> / &part;x<sub>j</sub>] &nbsp;&isin;&nbsp; R<sup>n&times;n</sup>
-            </p>
+            <MBlock>{"J(\\mathbf{x}) = \\left[\\frac{\\partial F_i}{\\partial x_j}\\right] \\in \\mathbb{R}^{n \\times n}"}</MBlock>
             <div className="text-slate-300 bg-slate-900/80 rounded-lg p-4 space-y-1">
               <p className="text-slate-500 text-xs mb-2">Example system 의 Jacobian:</p>
-              <p>J(x,y) = [ 2x &nbsp; 2y ]</p>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ &nbsp;y &nbsp;&nbsp; x ]</p>
+              <MBlock>{"J(x,y) = \\begin{bmatrix} 2x & 2y \\\\ y & x \\end{bmatrix}"}</MBlock>
             </div>
           </div>
 
@@ -199,17 +197,15 @@ export default function NonlinearSystems() {
           <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-4 font-mono text-sm">
             <p className="text-slate-400 text-xs uppercase tracking-wider">Iteration Formula</p>
             <div className="space-y-2">
-              <p className="text-lg text-fuchsia-400">
-                x<sub>n+1</sub> = x<sub>n</sub> &minus; J(x<sub>n</sub>)<sup>&minus;1</sup> &middot; F(x<sub>n</sub>)
-              </p>
-              <p className="text-slate-500">&darr; In practice (역행렬을 직접 구하지 않음)</p>
+              <MBlock>{"\\mathbf{x}_{n+1} = \\mathbf{x}_{n} - J(\\mathbf{x}_{n})^{-1} \\cdot \\mathbf{F}(\\mathbf{x}_{n})"}</MBlock>
+              <p className="text-slate-500">↓ In practice (역행렬을 직접 구하지 않음)</p>
               <div className="text-pink-400 text-base space-y-1">
-                <p>Step 1: Solve &nbsp; J(x<sub>n</sub>) &middot; &Delta;x = &minus;F(x<sub>n</sub>)</p>
-                <p>Step 2: Update &nbsp; x<sub>n+1</sub> = x<sub>n</sub> + &Delta;x</p>
+                <MBlock>{"\\text{Step 1: Solve }\\; J(\\mathbf{x}_{n}) \\cdot \\Delta\\mathbf{x} = -\\mathbf{F}(\\mathbf{x}_{n})"}</MBlock>
+                <MBlock>{"\\text{Step 2: Update }\\; \\mathbf{x}_{n+1} = \\mathbf{x}_{n} + \\Delta\\mathbf{x}"}</MBlock>
               </div>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed">
-              역행렬 계산은 O(n&sup3;)으로 비용이 크므로, 실제로는 선형 시스템을 풀어 &Delta;x를 구합니다.
+              역행렬 계산은 <M>{"O(n^{3})"}</M>으로 비용이 크므로, 실제로는 선형 시스템을 풀어 <M>{"\\Delta\\mathbf{x}"}</M>를 구합니다.
               MATLAB에서는 backslash 연산자(<span className="text-pink-400">\</span>)를 사용합니다.
             </p>
           </div>
@@ -217,47 +213,52 @@ export default function NonlinearSystems() {
           {/* Step-by-step iteration example */}
           <div className="bg-slate-950 rounded-xl p-5 border border-slate-800 space-y-3 font-mono text-sm">
             <p className="text-slate-400 text-xs uppercase tracking-wider">
-              Step-by-step: 1st iteration with x<sub>0</sub> = (1, 1)
+              Step-by-step: 1st iteration with <M>{"\\mathbf{x}_0 = (1, 1)"}</M>
             </p>
             <div className="space-y-2 text-slate-300">
               <p>
-                <span className="text-slate-500">F(x<sub>0</sub>) =</span>{" "}
-                [1&sup2; + 1&sup2; &minus; 4, 1&middot;1 &minus; 1] = [&minus;2, 0]
+                <span className="text-slate-500"><M>{"F(\\mathbf{x}_0) ="}</M></span>{" "}
+                <M>{"[1^{2} + 1^{2} - 4,\\; 1 \\cdot 1 - 1] = [-2,\\; 0]"}</M>
               </p>
               <p>
-                <span className="text-slate-500">J(x<sub>0</sub>) =</span>{" "}
-                [ 2 &nbsp; 2 ]&nbsp;&nbsp;&nbsp;det = 2&middot;1 &minus; 2&middot;1 = 0 &nbsp;
+                <span className="text-slate-500"><M>{"J(\\mathbf{x}_0) ="}</M></span>{" "}
+                <M>{"\\begin{bmatrix} 2 & 2 \\\\ 1 & 1 \\end{bmatrix}"}</M>,{" "}
+                <M>{"\\det = 2 \\cdot 1 - 2 \\cdot 1 = 0"}</M>{" "}
                 <span className="text-yellow-400">(singular!)</span>
               </p>
               <p className="text-slate-400 text-xs">
-                x<sub>0</sub>=(1,1)은 Jacobian이 특이(singular)하므로 초기값을 바꿔야 합니다.
+                <M>{"\\mathbf{x}_0=(1,1)"}</M>은 Jacobian이 특이(singular)하므로 초기값을 바꿔야 합니다.
               </p>
-              <p className="text-slate-500 mt-2">Try x<sub>0</sub> = (1.5, 0.8):</p>
+              <p className="text-slate-500 mt-2">Try <M>{"\\mathbf{x}_0 = (1.5, 0.8)"}</M>:</p>
               <p>
-                <span className="text-slate-500">F =</span> [1.5&sup2; + 0.8&sup2; &minus; 4, 1.5&middot;0.8 &minus; 1] = [&minus;1.11, 0.20]
+                <span className="text-slate-500"><M>{"F ="}</M></span>{" "}
+                <M>{"[1.5^{2} + 0.8^{2} - 4,\\; 1.5 \\cdot 0.8 - 1] = [-1.11,\\; 0.20]"}</M>
               </p>
               <p>
-                <span className="text-slate-500">J =</span> [ 3.0 &nbsp; 1.6 ] &nbsp;&rArr;&nbsp;
-                <span className="text-slate-500">det =</span> 3.0&middot;0.8 &minus; 1.6&middot;1.5 = 0
+                <span className="text-slate-500"><M>{"J ="}</M></span>{" "}
+                <M>{"\\begin{bmatrix} 3.0 & 1.6 \\\\ 0.8 & 1.5 \\end{bmatrix}"}</M>{" "}
+                → <M>{"\\det = 3.0 \\cdot 0.8 - 1.6 \\cdot 1.5 = 0"}</M>
                 <span className="text-yellow-400"> (also singular!)</span>
               </p>
               <p className="text-slate-400 text-xs">
-                Try x<sub>0</sub> = (2, 0.5):
+                Try <M>{"\\mathbf{x}_0 = (2, 0.5)"}</M>:
               </p>
               <p>
-                <span className="text-slate-500">F =</span> [4.25 &minus; 4, 1.0 &minus; 1] = [0.25, 0.0]
+                <span className="text-slate-500"><M>{"F ="}</M></span>{" "}
+                <M>{"[4.25 - 4,\\; 1.0 - 1] = [0.25,\\; 0.0]"}</M>
               </p>
               <p>
-                <span className="text-slate-500">J =</span> [ 4.0 &nbsp; 1.0 ; 0.5 &nbsp; 2.0 ] &nbsp;
-                <span className="text-slate-500">det =</span> 7.5
+                <span className="text-slate-500"><M>{"J ="}</M></span>{" "}
+                <M>{"\\begin{bmatrix} 4.0 & 1.0 \\\\ 0.5 & 2.0 \\end{bmatrix}"}</M>,{" "}
+                <M>{"\\det = 7.5"}</M>
               </p>
               <p>
-                <span className="text-slate-500">&Delta;x = &minus;J\F =</span>{" "}
-                <span className="text-fuchsia-400">[&minus;0.0667, 0.0167]</span>
+                <span className="text-slate-500"><M>{"\\Delta\\mathbf{x} = -J \\backslash F ="}</M></span>{" "}
+                <span className="text-fuchsia-400"><M>{"[-0.0667,\\; 0.0167]"}</M></span>
               </p>
               <p>
-                <span className="text-slate-500">x<sub>1</sub> =</span>{" "}
-                <span className="text-emerald-400">(1.9333, 0.5167)</span>
+                <span className="text-slate-500"><M>{"\\mathbf{x}_1 ="}</M></span>{" "}
+                <span className="text-emerald-400"><M>{"(1.9333,\\; 0.5167)"}</M></span>
               </p>
             </div>
           </div>
@@ -380,7 +381,7 @@ x = fsolve(@myfun, [2; 0.5], opts);`}</pre>
             도전 과제 &mdash; Challenges &amp; Alternatives
           </h3>
           <p className="text-center text-slate-400 font-mono text-sm max-w-2xl mx-auto">
-            Jacobian 계산은 n&sup2;개의 편미분을 필요로 하며, 시스템이 클수록 비용이 급증합니다.
+            Jacobian 계산은 <M>{"n^{2}"}</M>개의 편미분을 필요로 하며, 시스템이 클수록 비용이 급증합니다.
             이를 대체하는 방법들이 있습니다.
           </p>
 
@@ -388,13 +389,13 @@ x = fsolve(@myfun, [2; 0.5], opts);`}</pre>
             {/* Card: Finite-difference Jacobian */}
             <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-3">
               <div className="w-10 h-10 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-400 font-mono font-bold text-lg">
-                &Delta;
+                <M>{"\\Delta"}</M>
               </div>
               <h4 className="font-bold text-pink-400 font-mono text-sm">
                 Finite-Difference Jacobian
               </h4>
               <div className="font-mono text-xs text-slate-300 bg-slate-950 rounded-lg p-3 border border-slate-800">
-                &part;F<sub>i</sub>/&part;x<sub>j</sub> &asymp; [F<sub>i</sub>(x+h&middot;e<sub>j</sub>) &minus; F<sub>i</sub>(x)] / h
+                <M>{"\\frac{\\partial F_i}{\\partial x_j} \\approx \\frac{F_i(\\mathbf{x} + h \\cdot \\mathbf{e}_j) - F_i(\\mathbf{x})}{h}"}</M>
               </div>
               <p className="text-slate-400 text-xs font-mono leading-relaxed">
                 해석적 도함수 대신 수치적 근사를 사용합니다.
@@ -412,7 +413,7 @@ x = fsolve(@myfun, [2; 0.5], opts);`}</pre>
                 Broyden&rsquo;s Method (Quasi-Newton)
               </h4>
               <div className="font-mono text-xs text-slate-300 bg-slate-950 rounded-lg p-3 border border-slate-800">
-                B<sub>n+1</sub> = B<sub>n</sub> + (&Delta;F &minus; B<sub>n</sub>&Delta;x)&Delta;x<sup>T</sup> / ||&Delta;x||&sup2;
+                <M>{"B_{n+1} = B_{n} + \\frac{(\\Delta F - B_{n}\\Delta\\mathbf{x})\\Delta\\mathbf{x}^{T}}{\\|\\Delta\\mathbf{x}\\|^{2}}"}</M>
               </div>
               <p className="text-slate-400 text-xs font-mono leading-relaxed">
                 Jacobian을 매 반복마다 rank-1 update로 근사합니다.
@@ -433,7 +434,7 @@ x = fsolve(@myfun, [2; 0.5], opts);`}</pre>
                 <li>초기값 의존성이 1차원보다 심함</li>
                 <li>Jacobian이 singular하면 실패</li>
                 <li>여러 해 중 원하는 해 선택이 어려움</li>
-                <li>대규모 시스템에서 O(n&sup3;) 비용</li>
+                <li>대규모 시스템에서 <M>{"O(n^{3})"}</M> 비용</li>
               </ul>
               <p className="text-slate-500 text-xs font-mono">
                 해결: line search, trust region, continuation methods

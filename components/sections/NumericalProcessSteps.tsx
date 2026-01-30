@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { M, MBlock } from "@/components/Math";
 
 // Step 3 gets its own rich component
 function FiniteDifferenceExplainer() {
@@ -37,7 +38,7 @@ function FiniteDifferenceExplainer() {
           <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">미적분에서 배운 미분의 정의</p>
           <div className="bg-slate-800 rounded-lg p-4 font-mono text-center">
             <div className="text-gray-400 text-sm">
-              <span className="text-cyan-400">dv</span>/<span className="text-cyan-400">dt</span> = lim<sub>Δt→0</sub> <span className="text-amber-400">Δv</span>/<span className="text-amber-400">Δt</span>
+              <M>{"\\frac{dv}{dt} = \\lim_{\\Delta t \\to 0} \\frac{\\Delta v}{\\Delta t}"}</M>
             </div>
           </div>
           <p className="text-sm text-gray-400 mt-3 leading-relaxed">
@@ -50,12 +51,10 @@ function FiniteDifferenceExplainer() {
           <p className="text-xs text-amber-400 uppercase tracking-wider font-bold mb-3">수치해석의 핵심 아이디어</p>
           <div className="bg-slate-900/60 rounded-lg p-4 font-mono text-center">
             <div className="text-lg">
-              <span className="text-cyan-400">dv/dt</span>
-              <span className="text-gray-500 mx-2">≈</span>
-              <span className="text-amber-400">Δv/Δt</span>
+              <M>{"\\frac{dv}{dt} \\approx \\frac{\\Delta v}{\\Delta t}"}</M>
             </div>
             <div className="text-sm text-gray-400 mt-2">
-              = (<span className="text-amber-400">v<sub>나중</sub></span> − <span className="text-amber-400">v<sub>지금</sub></span>) / <span className="text-amber-400">Δt</span>
+              <M>{"= \\frac{v_{\\text{나중}} - v_{\\text{지금}}}{\\Delta t}"}</M>
             </div>
           </div>
           <p className="text-sm text-gray-300 mt-3 leading-relaxed">
@@ -68,7 +67,7 @@ function FiniteDifferenceExplainer() {
           <p className="text-xs text-emerald-400 uppercase tracking-wider font-bold mb-3">이것을 뒤집으면</p>
           <div className="bg-slate-900/60 rounded-lg p-4 font-mono text-center">
             <div className="text-lg text-emerald-300">
-              v<sub>나중</sub> = v<sub>지금</sub> + (기울기) × Δt
+              <M>{"v_{\\text{나중}} = v_{\\text{지금}} + (\\text{기울기}) \\times \\Delta t"}</M>
             </div>
             <div className="text-sm text-gray-400 mt-2">
               <span className="text-emerald-400">New</span> = <span className="text-gray-300">Old</span> + <span className="text-rose-400">Slope</span> × <span className="text-amber-400">Step</span>

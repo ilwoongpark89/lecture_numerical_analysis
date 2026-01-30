@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { M } from "@/components/Math";
 
 /* ── Types ── */
 interface CodeLine {
@@ -467,7 +468,7 @@ export default function Week5Practice() {
               Fixed-Point / 다중근
             </h4>
             <p className="text-slate-500 text-xs leading-relaxed">
-              고정점 반복은 |g&apos;(x*)| &lt; 1이면 수렴합니다. 다중근에서 Newton법은
+              고정점 반복은 <M>{"|g'(x^*)| < 1"}</M>이면 수렴합니다. 다중근에서 Newton법은
               선형 수렴으로 퇴화하며, modified Newton법으로 복원 가능합니다.
             </p>
           </div>
