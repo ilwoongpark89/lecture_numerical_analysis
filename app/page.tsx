@@ -13,12 +13,12 @@ const career = [
 ];
 
 const courseInfo = [
-  { label: "강의 시간", value: "Mon/Tue 13:30–14:45" },
-  { label: "강의실", value: "2N378A" },
-  { label: "평가", value: "Mid-term 50% + Final 50%" },
-  { label: "교재", value: "Chapra, Applied Numerical Methods with MATLAB (4th)" },
-  { label: "소프트웨어", value: "MATLAB" },
-  { label: "조교", value: "고경주 (kyeongju@inha.edu)" },
+  { label: "강의 시간", value: "TBD" },
+  { label: "강의실", value: "TBD" },
+  { label: "평가", value: "TBD" },
+  { label: "교재", value: "TBD" },
+  { label: "소프트웨어", value: "TBD" },
+  { label: "조교", value: "TBD" },
 ];
 
 const weeks = [
@@ -28,17 +28,17 @@ const weeks = [
     details: ["수치해석이란 무엇인가", "해석해 vs 수치해", "공학 응용 사례", "강의 로드맵"],
   },
   {
-    week: 2, topic: "MATLAB Fundamentals", color: "from-emerald-500 to-teal-500", ready: false,
+    week: 2, topic: "MATLAB Fundamentals", color: "from-emerald-500 to-teal-500", ready: true,
     desc: "MATLAB 기초",
     details: ["MATLAB 환경과 기본 문법", "벡터/행렬 연산", "스크립트 및 함수 작성", "그래프 시각화"],
   },
   {
-    week: 3, topic: "Errors", color: "from-amber-500 to-orange-500", ready: false,
+    week: 3, topic: "Errors", color: "from-amber-500 to-orange-500", ready: true,
     desc: "반올림 오차와 절단 오차",
     details: ["IEEE 754 부동소수점", "머신 엡실론, 상쇄 오차", "Taylor 급수와 절단 오차", "오차 전파, 수렴 차수 O(h^n)"],
   },
   {
-    week: 4, topic: "Nonlinear Equations I", color: "from-rose-500 to-pink-500", ready: false,
+    week: 4, topic: "Nonlinear Equations I", color: "from-rose-500 to-pink-500", ready: true,
     desc: "Bisection & Newton-Raphson",
     details: ["근의 존재성 (중간값 정리)", "이분법 알고리즘과 수렴 속도", "Newton-Raphson 유도와 구현", "2차 수렴의 의미"],
   },

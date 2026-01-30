@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import WhatIsNumericalAnalysis from "@/components/sections/WhatIsNumericalAnalysis";
-import AnalyticalVsNumericalTabs from "@/components/sections/AnalyticalVsNumericalTabs";
-import NumericalProcessSteps from "@/components/sections/NumericalProcessSteps";
-import AnalyticalVsNumerical from "@/components/sections/AnalyticalVsNumerical";
-import EngineeringApplicationCards from "@/components/sections/EngineeringApplicationCards";
-import CourseRoadmap from "@/components/sections/CourseRoadmap";
-import MatlabPractice from "@/components/sections/MatlabPractice";
+import RootFindingIntro from "@/components/sections/week4/RootFindingIntro";
+import BisectionMethod from "@/components/sections/week4/BisectionMethod";
+import NewtonRaphson from "@/components/sections/week4/NewtonRaphson";
+import ConvergenceComparison from "@/components/sections/week4/ConvergenceComparison";
+import RootFindingPractice from "@/components/sections/week4/RootFindingPractice";
+import RootFindingPython from "@/components/sections/week4/RootFindingPython";
 
-export default function Lecture1() {
+export default function Lecture4() {
   return (
     <main className="min-h-screen bg-slate-950">
       {/* Top Nav */}
@@ -22,7 +21,7 @@ export default function Lecture1() {
             </svg>
             <span className="text-sm font-medium">강의 목록</span>
           </Link>
-          <span className="text-sm text-gray-500">Week 1 — Introduction</span>
+          <span className="text-sm text-gray-500">Week 4 — Nonlinear Equations I</span>
         </div>
       </nav>
 
@@ -30,14 +29,14 @@ export default function Lecture1() {
         {/* Hero */}
         <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-slate-950">
           <div className="absolute inset-0 z-[1]">
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/15 rounded-full blur-3xl opacity-60 translate-x-1/3 -translate-y-1/3" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-600/15 rounded-full blur-3xl opacity-60 -translate-x-1/3 translate-y-1/3" />
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/15 rounded-full blur-3xl opacity-60 translate-x-1/3 -translate-y-1/3" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-pink-600/15 rounded-full blur-3xl opacity-60 -translate-x-1/3 translate-y-1/3" />
           </div>
           <div className="container relative z-10 mx-auto px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm text-gray-300">
-                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                Week 1
+                <span className="w-2 h-2 bg-rose-400 rounded-full animate-pulse" />
+                Week 4
               </span>
             </motion.div>
             <motion.h1
@@ -46,9 +45,8 @@ export default function Lecture1() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-4"
             >
-              Introduction to<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                Numerical Analysis
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-pink-400">
+                Nonlinear Equations I
               </span>
             </motion.h1>
             <motion.p
@@ -57,18 +55,42 @@ export default function Lecture1() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-xl text-gray-400 max-w-2xl mx-auto"
             >
-              수치해석이란 무엇이며, 왜 공학에서 필수적인가
+              비선형 방정식의 근을 수치적으로 찾는 방법
             </motion.p>
+
+            {/* Table of Contents */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="mt-10 flex flex-wrap justify-center gap-3 text-sm"
+            >
+              {[
+                { label: "근의 존재성", icon: "📍" },
+                { label: "이분법", icon: "✂️" },
+                { label: "Newton-Raphson", icon: "📐" },
+                { label: "수렴 비교", icon: "📊" },
+                { label: "실습", icon: "🧪" },
+                { label: "Python", icon: "🐍" },
+              ].map((item) => (
+                <span
+                  key={item.label}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/60 border border-slate-700 text-gray-400"
+                >
+                  <span>{item.icon}</span>
+                  {item.label}
+                </span>
+              ))}
+            </motion.div>
           </div>
         </section>
 
-        <WhatIsNumericalAnalysis />
-        <AnalyticalVsNumericalTabs />
-        <NumericalProcessSteps />
-        <AnalyticalVsNumerical />
-        <MatlabPractice />
-        <EngineeringApplicationCards />
-        <CourseRoadmap />
+        <RootFindingIntro />
+        <BisectionMethod />
+        <NewtonRaphson />
+        <ConvergenceComparison />
+        <RootFindingPractice />
+        <RootFindingPython />
 
         {/* Next Lecture Teaser */}
         <section className="py-20 bg-slate-950">
@@ -81,10 +103,10 @@ export default function Lecture1() {
             >
               <p className="text-gray-500 mb-4">다음 시간</p>
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                Week 2: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">MATLAB Fundamentals</span>
+                Week 5: <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-fuchsia-400">Nonlinear Equations II</span>
               </h3>
               <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-                수치해석의 핵심 도구인 MATLAB의 기초를 배웁니다
+                Secant Method와 다양한 근 찾기 기법을 배웁니다
               </p>
             </motion.div>
           </div>

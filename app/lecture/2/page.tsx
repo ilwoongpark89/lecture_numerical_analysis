@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import WhatIsNumericalAnalysis from "@/components/sections/WhatIsNumericalAnalysis";
-import AnalyticalVsNumericalTabs from "@/components/sections/AnalyticalVsNumericalTabs";
-import NumericalProcessSteps from "@/components/sections/NumericalProcessSteps";
-import AnalyticalVsNumerical from "@/components/sections/AnalyticalVsNumerical";
-import EngineeringApplicationCards from "@/components/sections/EngineeringApplicationCards";
-import CourseRoadmap from "@/components/sections/CourseRoadmap";
-import MatlabPractice from "@/components/sections/MatlabPractice";
+import MatlabOverview from "@/components/sections/week2/MatlabOverview";
+import MatlabBasics from "@/components/sections/week2/MatlabBasics";
+import MatlabVectorMatrix from "@/components/sections/week2/MatlabVectorMatrix";
+import MatlabControlFlow from "@/components/sections/week2/MatlabControlFlow";
+import MatlabFunctions from "@/components/sections/week2/MatlabFunctions";
+import MatlabPlotting from "@/components/sections/week2/MatlabPlotting";
+import MatlabPracticeW2 from "@/components/sections/week2/MatlabPracticeW2";
+import PythonComparison from "@/components/sections/week2/PythonComparison";
 
-export default function Lecture1() {
+export default function Lecture2() {
   return (
     <main className="min-h-screen bg-slate-950">
       {/* Top Nav */}
@@ -22,7 +23,7 @@ export default function Lecture1() {
             </svg>
             <span className="text-sm font-medium">강의 목록</span>
           </Link>
-          <span className="text-sm text-gray-500">Week 1 — Introduction</span>
+          <span className="text-sm text-gray-500">Week 2 — MATLAB Fundamentals</span>
         </div>
       </nav>
 
@@ -30,14 +31,14 @@ export default function Lecture1() {
         {/* Hero */}
         <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-slate-950">
           <div className="absolute inset-0 z-[1]">
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/15 rounded-full blur-3xl opacity-60 translate-x-1/3 -translate-y-1/3" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-600/15 rounded-full blur-3xl opacity-60 -translate-x-1/3 translate-y-1/3" />
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/15 rounded-full blur-3xl opacity-60 translate-x-1/3 -translate-y-1/3" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-teal-600/15 rounded-full blur-3xl opacity-60 -translate-x-1/3 translate-y-1/3" />
           </div>
           <div className="container relative z-10 mx-auto px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm text-gray-300">
-                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                Week 1
+                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                Week 2
               </span>
             </motion.div>
             <motion.h1
@@ -46,10 +47,10 @@ export default function Lecture1() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-4"
             >
-              Introduction to<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                Numerical Analysis
-              </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+                MATLAB
+              </span>{" "}
+              Fundamentals
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -57,18 +58,46 @@ export default function Lecture1() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-xl text-gray-400 max-w-2xl mx-auto"
             >
-              수치해석이란 무엇이며, 왜 공학에서 필수적인가
+              수치해석의 핵심 도구, MATLAB의 기초를 완벽하게 익히기
             </motion.p>
+
+            {/* Table of Contents */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="mt-10 flex flex-wrap justify-center gap-3 text-sm"
+            >
+              {[
+                { label: "MATLAB 소개", icon: "💻" },
+                { label: "기본 문법", icon: "🔤" },
+                { label: "벡터/행렬", icon: "📊" },
+                { label: "제어문", icon: "🔄" },
+                { label: "함수", icon: "⚙️" },
+                { label: "시각화", icon: "📈" },
+                { label: "실습", icon: "🧪" },
+                { label: "Python", icon: "🐍" },
+              ].map((item) => (
+                <span
+                  key={item.label}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/60 border border-slate-700 text-gray-400"
+                >
+                  <span>{item.icon}</span>
+                  {item.label}
+                </span>
+              ))}
+            </motion.div>
           </div>
         </section>
 
-        <WhatIsNumericalAnalysis />
-        <AnalyticalVsNumericalTabs />
-        <NumericalProcessSteps />
-        <AnalyticalVsNumerical />
-        <MatlabPractice />
-        <EngineeringApplicationCards />
-        <CourseRoadmap />
+        <MatlabOverview />
+        <MatlabBasics />
+        <MatlabVectorMatrix />
+        <MatlabControlFlow />
+        <MatlabFunctions />
+        <MatlabPlotting />
+        <MatlabPracticeW2 />
+        <PythonComparison />
 
         {/* Next Lecture Teaser */}
         <section className="py-20 bg-slate-950">
@@ -81,10 +110,10 @@ export default function Lecture1() {
             >
               <p className="text-gray-500 mb-4">다음 시간</p>
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                Week 2: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">MATLAB Fundamentals</span>
+                Week 3: <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Errors</span>
               </h3>
               <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-                수치해석의 핵심 도구인 MATLAB의 기초를 배웁니다
+                반올림 오차와 절단 오차 — 수치해석의 정확도를 이해합니다
               </p>
             </motion.div>
           </div>
