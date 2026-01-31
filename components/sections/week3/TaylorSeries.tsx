@@ -170,10 +170,29 @@ export default function TaylorSeries() {
           <h3 className="text-2xl font-bold text-white">
             절단 오차 (Truncation Error)
           </h3>
+
+          {/* Intuitive intro */}
+          <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-5 text-sm text-slate-400 leading-relaxed space-y-3">
+            <p>
+              Taylor 급수는 무한히 많은 항을 더해야 정확한 값이 됩니다.
+              하지만 컴퓨터는 <span className="text-white font-semibold">유한한 항만 계산</span>할 수 있으므로, 나머지 항을 잘라냅니다.
+            </p>
+            <div className="bg-slate-950 rounded-lg border border-slate-800 p-4 font-mono text-xs space-y-1">
+              <p className="text-slate-300"><M>{"e^x = 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\cdots"}</M> <span className="text-slate-500">(무한 항 = 정확)</span></p>
+              <p className="text-slate-300"><M>{"e^x \\approx 1 + x + \\frac{x^2}{2!}"}</M> <span className="text-rose-400">(2차에서 자름 = 근사)</span></p>
+              <p className="text-slate-500 mt-2">잘라낸 나머지 = <span className="text-amber-300 font-bold">Truncation Error (절단 오차)</span></p>
+            </div>
+            <p>
+              이 오차는 <span className="text-amber-300 font-bold">알고리즘의 선택</span>에 의해 결정됩니다 (몇 항까지 쓸 것인가?).
+              반올림 오차와 달리 <span className="text-white">컴퓨터의 비트 수와 무관</span>하며,
+              항을 더 많이 포함하거나 더 나은 근사 방법을 사용하면 줄일 수 있습니다.
+            </p>
+          </div>
+
           {/* Mean Value Theorem → ξ explanation */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-6">
             <h4 className="text-lg font-semibold text-amber-400">
-              평균값 정리에서 <M>{"\\xi"}</M>까지 — 왜 &quot;어떤 값&quot;이 등장하는가
+              잘라낸 오차를 어떻게 추정할까? — 평균값 정리에서 <M>{"\\xi"}</M>까지
             </h4>
 
             {/* Step 1: MVT */}
@@ -573,7 +592,7 @@ export default function TaylorSeries() {
           </div>
         </motion.div>
 
-        {/* ─── 5. Order of Approximation O(h^n) ─── */}
+        {/* ─── 5. From Remainder to Big-O ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -582,14 +601,163 @@ export default function TaylorSeries() {
           className="space-y-6"
         >
           <h3 className="text-2xl font-bold text-white">
-            근사 차수: <M>{"O(h^{n})"}</M> 표기법
+            절단 오차의 크기는 어떻게 결정되는가
+          </h3>
+
+          {/* h definition FIRST */}
+          <div className="bg-sky-500/5 border border-sky-500/20 rounded-xl p-5 text-sm space-y-3">
+            <p className="text-sky-300 font-bold text-base">먼저: h란 무엇인가?</p>
+            <p className="text-slate-400 leading-relaxed">
+              Taylor 급수에서 <M>{"f(x_i + h)"}</M>를 전개할 때,
+              <M>{"h = x_{i+1} - x_i"}</M>는 전개 중심 <M>{"x_i"}</M>로부터 근사하려는 점까지의 거리입니다.
+              이것을 <span className="text-white font-semibold">스텝 크기(step size)</span>라고 부릅니다.
+            </p>
+            <div className="bg-slate-950 rounded-lg border border-slate-800 p-3 text-center">
+              <MBlock>{"f(\\underbrace{x_i}_{\\text{알고 있는 점}} + \\underbrace{h}_{\\text{스텝 크기}}) = f(x_i) + f'(x_i)\\,h + \\frac{f''(x_i)}{2!}\\,h^2 + \\cdots"}</MBlock>
+            </div>
+            <p className="text-slate-400 leading-relaxed">
+              h가 작을수록 <M>{"x_i"}</M>에서 가까운 점을 근사하는 것이므로 더 정확합니다.
+              그런데 <span className="text-white font-semibold">얼마나 더 정확해지는지</span>는 어떻게 알 수 있을까요?
+              이것은 <span className="text-amber-300">잘라낸 나머지 항의 구조</span>를 보면 알 수 있습니다.
+            </p>
+          </div>
+
+          {/* Step-by-step term addition */}
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-5">
+            <h4 className="text-amber-400 font-bold">한 항씩 추가할 때 나머지는 어떻게 변하는가</h4>
+
+            <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-4 text-sm">
+              {/* 0th order */}
+              <div className="space-y-1">
+                <p className="text-slate-500 text-xs font-bold">0차 근사 (상수만 사용):</p>
+                <p className="text-slate-300">
+                  <M>{"f(x_i + h) \\approx f(x_i)"}</M>
+                </p>
+                <p className="text-rose-400 text-xs">
+                  버린 나머지: <M>{"f'h + \\frac{f''}{2!}h^2 + \\frac{f'''}{3!}h^3 + \\cdots"}</M>
+                </p>
+                <p className="text-amber-300 text-xs">
+                  → 버린 것 중 <span className="text-white font-bold">첫 항</span>: <M>{"f' \\cdot h"}</M>
+                </p>
+              </div>
+
+              <div className="border-t border-slate-800" />
+
+              {/* 1st order */}
+              <div className="space-y-1">
+                <p className="text-slate-500 text-xs font-bold">1차 근사 (1차 항까지 사용):</p>
+                <p className="text-slate-300">
+                  <M>{"f(x_i + h) \\approx f(x_i) + f'(x_i)\\,h"}</M>
+                </p>
+                <p className="text-rose-400 text-xs">
+                  버린 나머지: <M>{"\\frac{f''}{2!}h^2 + \\frac{f'''}{3!}h^3 + \\cdots"}</M>
+                </p>
+                <p className="text-amber-300 text-xs">
+                  → 버린 것 중 <span className="text-white font-bold">첫 항</span>: <M>{"\\frac{f''}{2!} \\cdot h^2"}</M>
+                </p>
+              </div>
+
+              <div className="border-t border-slate-800" />
+
+              {/* 2nd order */}
+              <div className="space-y-1">
+                <p className="text-slate-500 text-xs font-bold">2차 근사 (2차 항까지 사용):</p>
+                <p className="text-slate-300">
+                  <M>{"f(x_i + h) \\approx f(x_i) + f'h + \\frac{f''}{2!}h^2"}</M>
+                </p>
+                <p className="text-rose-400 text-xs">
+                  버린 나머지: <M>{"\\frac{f'''}{3!}h^3 + \\frac{f^{(4)}}{4!}h^4 + \\cdots"}</M>
+                </p>
+                <p className="text-amber-300 text-xs">
+                  → 버린 것 중 <span className="text-white font-bold">첫 항</span>: <M>{"\\frac{f'''}{3!} \\cdot h^3"}</M>
+                </p>
+              </div>
+            </div>
+
+            <p className="text-slate-400 text-sm">
+              패턴이 보입니다: n차까지 사용하면, 버린 나머지의 첫 항은 항상 <M>{"h^{n+1}"}</M>을 포함합니다.
+              그런데 이 <span className="text-white font-semibold">첫 항 하나</span>로 나머지 전체를 대표해도 될까요?
+            </p>
+
+            {/* Why first term dominates — with concrete numbers */}
+            <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-5 text-sm space-y-3">
+              <p className="text-amber-300 font-bold">왜 첫 번째 버린 항이 나머지 전체를 대변하는가</p>
+              <p className="text-slate-400 leading-relaxed">
+                구체적인 숫자로 확인해봅시다. 1차 근사의 나머지를 봅니다:
+              </p>
+              <div className="bg-slate-950 rounded-lg border border-slate-800 p-4 space-y-2">
+                <p className="text-slate-400 text-xs">h = 0.1이라 하고, 모든 도함수 값이 대략 1이라 가정하면:</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs font-mono">
+                    <thead>
+                      <tr className="text-slate-500 border-b border-slate-700">
+                        <th className="py-1 px-2 text-left">항</th>
+                        <th className="py-1 px-2 text-right">h의 거듭제곱</th>
+                        <th className="py-1 px-2 text-right">계수 (1/n!)</th>
+                        <th className="py-1 px-2 text-right">크기</th>
+                        <th className="py-1 px-2 text-right">비율</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-slate-300">
+                      <tr className="border-b border-slate-800/50 bg-amber-500/5">
+                        <td className="py-1 px-2 text-amber-300 font-bold">첫 항 (h²)</td>
+                        <td className="py-1 px-2 text-right">0.01</td>
+                        <td className="py-1 px-2 text-right">1/2</td>
+                        <td className="py-1 px-2 text-right text-amber-300 font-bold">0.005</td>
+                        <td className="py-1 px-2 text-right text-white">기준</td>
+                      </tr>
+                      <tr className="border-b border-slate-800/50">
+                        <td className="py-1 px-2">둘째 항 (h³)</td>
+                        <td className="py-1 px-2 text-right">0.001</td>
+                        <td className="py-1 px-2 text-right">1/6</td>
+                        <td className="py-1 px-2 text-right">0.000167</td>
+                        <td className="py-1 px-2 text-right text-slate-500">3.3%</td>
+                      </tr>
+                      <tr className="border-b border-slate-800/50">
+                        <td className="py-1 px-2">셋째 항 (h⁴)</td>
+                        <td className="py-1 px-2 text-right">0.0001</td>
+                        <td className="py-1 px-2 text-right">1/24</td>
+                        <td className="py-1 px-2 text-right">0.0000042</td>
+                        <td className="py-1 px-2 text-right text-slate-500">0.08%</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1 px-2 text-slate-500">그 이후…</td>
+                        <td className="py-1 px-2 text-right text-slate-600">→ 0</td>
+                        <td className="py-1 px-2 text-right text-slate-600">→ 0</td>
+                        <td className="py-1 px-2 text-right text-slate-600">무시 가능</td>
+                        <td className="py-1 px-2 text-right text-slate-600">&lt; 0.01%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-slate-400 text-xs mt-2">
+                  나머지 전체 합 ≈ 0.005 + 0.000167 + 0.0000042 + … ≈ <span className="text-amber-300 font-bold">0.00517</span>
+                </p>
+                <p className="text-slate-400 text-xs">
+                  첫 항(0.005)만으로 전체의 <span className="text-white font-bold">96.7%</span>를 설명합니다.
+                </p>
+              </div>
+              <p className="text-slate-400 leading-relaxed">
+                이유는 간단합니다: h가 1보다 작으면, 거듭제곱할수록 값이 급격히 작아지고(<M>{"h^2 \\gg h^3 \\gg h^4"}</M>),
+                factorial(n!)은 분모를 더 크게 만듭니다. 두 효과가 합쳐져서
+                <span className="text-white font-semibold"> 뒤의 항들은 첫 항에 비해 무시할 수 있을 만큼 작습니다</span>.
+              </p>
+              <p className="text-slate-400 leading-relaxed">
+                따라서 n차까지 사용했을 때의 절단 오차는 <span className="text-amber-300 font-bold">버린 나머지의 첫 항</span>,
+                즉 <M>{"h^{n+1}"}</M>을 포함하는 항으로 대표할 수 있습니다.
+              </p>
+            </div>
+          </div>
+
+          {/* Big-O notation */}
+          <h3 className="text-2xl font-bold text-white">
+            Big-O 표기법: <M>{"O(h^{n})"}</M>
           </h3>
 
           <p className="text-slate-400 leading-relaxed">
-            Big-O 표기법은 절단 오차가 스텝 크기{" "}
-            <span className="font-mono text-amber-400">h</span>에 대해 어떤
-            비율로 감소하는지를 나타냅니다. 차수가 높을수록 h를 줄였을 때
-            오차가 더 빠르게 줄어듭니다.
+            위에서 확인했듯이, n차 근사의 절단 오차 ≈ 첫 번째 버린 항 ∝ <M>{"h^{n+1}"}</M>입니다.
+            이를 간결하게 <span className="text-amber-300 font-bold"><M>{"O(h^{n+1})"}</M></span>로 표기합니다.
+            <M>{"O(h^{n+1})"}</M>는 &quot;h를 줄이면 오차가 <M>{"h^{n+1}"}</M>의 비율로 줄어든다&quot;는 뜻입니다.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -603,12 +771,27 @@ export default function TaylorSeries() {
                   1차 정확도 (First-order)
                 </span>
               </div>
+
+              <p className="text-slate-500 text-xs font-bold">유도 — Taylor 전개에서 시작:</p>
+              <div className="bg-slate-950 rounded-xl p-4 space-y-2 text-sm">
+                <p className="text-slate-300">
+                  <M>{"f(x+h) = f(x) + f'(x)\\,h + \\frac{f''(\\xi)}{2}\\,h^2"}</M>
+                </p>
+                <p className="text-slate-400">양변에서 <M>{"f(x)"}</M>를 빼고 <M>{"h"}</M>로 나누면:</p>
+                <p className="text-slate-300">
+                  <M>{"f'(x) = \\frac{f(x+h) - f(x)}{h} - \\underbrace{\\frac{f''(\\xi)}{2}\\,h}_{\\text{이것이 } O(h)}"}</M>
+                </p>
+              </div>
+
               <div className="bg-slate-800/50 rounded-xl p-4 text-center">
-                <MBlock>{"f'(x) \\approx \\frac{f(x+h) - f(x)}{h}"}</MBlock>
+                <MBlock>{"f'(x) \\approx \\frac{f(x+h) - f(x)}{h} + O(h)"}</MBlock>
+                <p className="text-amber-300 text-xs mt-1">
+                  여기서 <M>{"O(h) = -\\frac{f''(\\xi)}{2}\\,h"}</M>
+                </p>
               </div>
               <p className="text-slate-400 text-sm">
                 <span className="text-white font-semibold">전진 차분</span>{" "}
-                (Forward Difference): Taylor 전개에서 1차 항까지만 사용.
+                (Forward Difference): 오차가 <M>{"h"}</M>에 비례하므로,
                 h를 반으로 줄이면 오차도 약 반으로 줄어듭니다.
               </p>
             </div>
@@ -623,13 +806,35 @@ export default function TaylorSeries() {
                   2차 정확도 (Second-order)
                 </span>
               </div>
+
+              <p className="text-slate-500 text-xs font-bold">유도 — 양쪽 Taylor 전개:</p>
+              <div className="bg-slate-950 rounded-xl p-4 space-y-2 text-sm">
+                <p className="text-slate-300">
+                  <M>{"f(x+h) = f(x) + f'h + \\frac{f''}{2}h^2 + \\frac{f'''}{6}h^3 + \\cdots"}</M>
+                </p>
+                <p className="text-slate-300">
+                  <M>{"f(x-h) = f(x) - f'h + \\frac{f''}{2}h^2 - \\frac{f'''}{6}h^3 + \\cdots"}</M>
+                </p>
+                <p className="text-slate-400">위에서 아래를 빼면 <M>{"f''"}</M> 항이 상쇄:</p>
+                <p className="text-slate-300">
+                  <M>{"f(x+h) - f(x-h) = 2f'h + \\frac{f'''}{3}h^3 + \\cdots"}</M>
+                </p>
+                <p className="text-slate-400"><M>{"2h"}</M>로 나누면:</p>
+                <p className="text-slate-300">
+                  <M>{"f'(x) = \\frac{f(x+h) - f(x-h)}{2h} - \\underbrace{\\frac{f'''(\\xi)}{6}\\,h^2}_{\\text{이것이 } O(h^2)}"}</M>
+                </p>
+              </div>
+
               <div className="bg-slate-800/50 rounded-xl p-4 text-center">
-                <MBlock>{"f'(x) \\approx \\frac{f(x+h) - f(x-h)}{2h}"}</MBlock>
+                <MBlock>{"f'(x) \\approx \\frac{f(x+h) - f(x-h)}{2h} + O(h^2)"}</MBlock>
+                <p className="text-orange-300 text-xs mt-1">
+                  여기서 <M>{"O(h^2) = -\\frac{f'''(\\xi)}{6}\\,h^2"}</M>
+                </p>
               </div>
               <p className="text-slate-400 text-sm">
                 <span className="text-white font-semibold">중심 차분</span>{" "}
-                (Central Difference): 양쪽 방향의 정보를 활용. h를 반으로
-                줄이면 오차는 약 1/4로 줄어듭니다.
+                (Central Difference): <M>{"f''"}</M> 항이 상쇄되어 오차가 <M>{"h^2"}</M>에 비례.
+                h를 반으로 줄이면 오차는 약 1/4로 줄어듭니다.
               </p>
             </div>
           </div>

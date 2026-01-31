@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { M, MBlock } from "@/components/Math";
 
 // --- Bisection logic ---
 const f = (x: number) => x * x * x - x - 2;
+const TRUE_ROOT = 1.5213797068;
 
 interface IterationRow {
   step: number;
@@ -44,100 +45,218 @@ function mapY(y: number, yMin: number, yMax: number, h: number) {
   return h - ((y - yMin) / (yMax - yMin)) * h;
 }
 
-function CurveSVG({ currentStep }: { currentStep: number }) {
-  const w = 500;
-  const h = 260;
+/* ===== Enhanced interactive SVG ===== */
+function BisectionSVG({ currentStep }: { currentStep: number }) {
+  const w = 560;
+  const h = 320;
+  const pad = { top: 20, bottom: 55, left: 10, right: 10 };
+  const plotW = w - pad.left - pad.right;
+  const plotH = h - pad.top - pad.bottom;
   const xMin = 0.5;
   const xMax = 2.5;
   const yMin = -3;
   const yMax = 6;
 
-  const points: string[] = [];
-  for (let px = 0; px <= 200; px++) {
-    const x = xMin + (px / 200) * (xMax - xMin);
-    const y = f(x);
-    points.push(`${mapX(x, xMin, xMax, w)},${mapY(y, yMin, yMax, h)}`);
-  }
-  const polyline = points.join(" ");
+  const mx = (x: number) => pad.left + ((x - xMin) / (xMax - xMin)) * plotW;
+  const my = (y: number) => pad.top + plotH - ((y - yMin) / (yMax - yMin)) * plotH;
 
+  // curve
+  const points: string[] = [];
+  for (let px = 0; px <= 300; px++) {
+    const x = xMin + (px / 300) * (xMax - xMin);
+    points.push(`${mx(x)},${my(f(x))}`);
+  }
+
+  const zeroY = my(0);
   const iter = currentStep > 0 ? allIterations[currentStep - 1] : null;
-  const aX = iter ? mapX(iter.a, xMin, xMax, w) : 0;
-  const bX = iter ? mapX(iter.b, xMin, xMax, w) : 0;
-  const cX = iter ? mapX(iter.c, xMin, xMax, w) : 0;
-  const cY = iter ? mapY(iter.fc, yMin, yMax, h) : 0;
-  const zeroY = mapY(0, yMin, yMax, h);
+  // show previous brackets as faded layers
+  const prevBrackets = allIterations.slice(0, Math.max(0, currentStep - 1));
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-auto">
-      {/* background grid */}
-      {[0, 1, 2].map((v) => (
-        <line
-          key={`gx-${v}`}
-          x1={mapX(v, xMin, xMax, w)}
-          y1={0}
-          x2={mapX(v, xMin, xMax, w)}
-          y2={h}
-          stroke="#334155"
-          strokeWidth={0.5}
-        />
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-auto" style={{ maxHeight: 400 }}>
+      <defs>
+        <linearGradient id="bracketGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fb7185" stopOpacity={0.15} />
+          <stop offset="100%" stopColor="#fb7185" stopOpacity={0.02} />
+        </linearGradient>
+      </defs>
+
+      {/* grid */}
+      {[1, 1.5, 2].map((v) => (
+        <line key={`gx-${v}`} x1={mx(v)} y1={pad.top} x2={mx(v)} y2={pad.top + plotH} stroke="#1e293b" strokeWidth={0.5} />
       ))}
       {[-2, 0, 2, 4].map((v) => (
-        <line
-          key={`gy-${v}`}
-          x1={0}
-          y1={mapY(v, yMin, yMax, h)}
-          x2={w}
-          y2={mapY(v, yMin, yMax, h)}
-          stroke="#334155"
-          strokeWidth={0.5}
+        <line key={`gy-${v}`} x1={pad.left} y1={my(v)} x2={pad.left + plotW} y2={my(v)} stroke="#1e293b" strokeWidth={0.5} />
+      ))}
+
+      {/* x-axis */}
+      <line x1={pad.left} y1={zeroY} x2={pad.left + plotW} y2={zeroY} stroke="#475569" strokeWidth={1} />
+      {/* y-axis labels */}
+      {[-2, 0, 2, 4].map((v) => (
+        <text key={`yl-${v}`} x={pad.left + 4} y={my(v) - 4} fill="#475569" fontSize={9} fontFamily="monospace">{v}</text>
+      ))}
+
+      {/* previous brackets — fading history */}
+      {prevBrackets.map((row, i) => (
+        <rect
+          key={`prev-${i}`}
+          x={mx(row.a)}
+          y={pad.top}
+          width={mx(row.b) - mx(row.a)}
+          height={plotH}
+          fill="#fb7185"
+          fillOpacity={0.03 + 0.02 * (i / Math.max(prevBrackets.length, 1))}
+          rx={2}
         />
       ))}
-      {/* x-axis */}
-      <line x1={0} y1={zeroY} x2={w} y2={zeroY} stroke="#64748b" strokeWidth={1} />
-      {/* bracket highlight */}
-      {iter && (
-        <rect
-          x={aX}
-          y={0}
-          width={bX - aX}
-          height={h}
-          fill="rgba(251,113,133,0.10)"
-          stroke="#fb7185"
-          strokeWidth={1}
-          strokeDasharray="4 2"
-        />
-      )}
-      {/* curve */}
-      <polyline points={polyline} fill="none" stroke="#f472b6" strokeWidth={2.5} />
-      {/* midpoint marker */}
+
+      {/* current bracket */}
       {iter && (
         <>
-          <line x1={cX} y1={0} x2={cX} y2={h} stroke="#fbbf24" strokeWidth={1} strokeDasharray="3 3" />
-          <circle cx={cX} cy={cY} r={5} fill="#fbbf24" />
-          <text x={cX + 8} y={cY - 8} fill="#fbbf24" fontSize={12} fontFamily="monospace">
-            c={iter.c.toFixed(4)}
+          <rect
+            x={mx(iter.a)}
+            y={pad.top}
+            width={mx(iter.b) - mx(iter.a)}
+            height={plotH}
+            fill="url(#bracketGrad)"
+            stroke="#fb7185"
+            strokeWidth={1.5}
+            strokeDasharray="6 3"
+            rx={3}
+          />
+          {/* a marker */}
+          <line x1={mx(iter.a)} y1={pad.top} x2={mx(iter.a)} y2={pad.top + plotH} stroke="#f87171" strokeWidth={2} />
+          <text x={mx(iter.a)} y={pad.top + plotH + 14} fill="#f87171" fontSize={11} fontFamily="monospace" textAnchor="middle" fontWeight="bold">a</text>
+          <text x={mx(iter.a)} y={pad.top + plotH + 26} fill="#94a3b8" fontSize={9} fontFamily="monospace" textAnchor="middle">{iter.a.toFixed(4)}</text>
+
+          {/* b marker */}
+          <line x1={mx(iter.b)} y1={pad.top} x2={mx(iter.b)} y2={pad.top + plotH} stroke="#60a5fa" strokeWidth={2} />
+          <text x={mx(iter.b)} y={pad.top + plotH + 14} fill="#60a5fa" fontSize={11} fontFamily="monospace" textAnchor="middle" fontWeight="bold">b</text>
+          <text x={mx(iter.b)} y={pad.top + plotH + 26} fill="#94a3b8" fontSize={9} fontFamily="monospace" textAnchor="middle">{iter.b.toFixed(4)}</text>
+
+          {/* c midpoint */}
+          <line x1={mx(iter.c)} y1={pad.top} x2={mx(iter.c)} y2={pad.top + plotH} stroke="#fbbf24" strokeWidth={1.5} strokeDasharray="4 3" />
+          <circle cx={mx(iter.c)} cy={my(iter.fc)} r={5} fill="#fbbf24" stroke="#000" strokeWidth={1} />
+          <text x={mx(iter.c)} y={pad.top + plotH + 14} fill="#fbbf24" fontSize={11} fontFamily="monospace" textAnchor="middle" fontWeight="bold">c</text>
+          <text x={mx(iter.c)} y={pad.top + plotH + 26} fill="#fbbf24" fontSize={9} fontFamily="monospace" textAnchor="middle">{iter.c.toFixed(4)}</text>
+
+          {/* sign indicators on curve */}
+          <circle cx={mx(iter.a)} cy={my(f(iter.a))} r={4} fill={f(iter.a) < 0 ? "#f87171" : "#34d399"} stroke="#000" strokeWidth={0.5} />
+          <circle cx={mx(iter.b)} cy={my(f(iter.b))} r={4} fill={f(iter.b) < 0 ? "#f87171" : "#34d399"} stroke="#000" strokeWidth={0.5} />
+          <text x={mx(iter.a) - 10} y={my(f(iter.a)) - 8} fill={f(iter.a) < 0 ? "#f87171" : "#34d399"} fontSize={10} fontWeight="bold" textAnchor="end">
+            {f(iter.a) < 0 ? "−" : "+"}
+          </text>
+          <text x={mx(iter.b) + 10} y={my(f(iter.b)) - 8} fill={f(iter.b) < 0 ? "#f87171" : "#34d399"} fontSize={10} fontWeight="bold">
+            {f(iter.b) < 0 ? "−" : "+"}
           </text>
         </>
       )}
-      {/* axis labels */}
+
+      {/* true root line */}
+      <line x1={mx(TRUE_ROOT)} y1={pad.top} x2={mx(TRUE_ROOT)} y2={pad.top + plotH} stroke="#a78bfa" strokeWidth={1} strokeDasharray="2 4" opacity={0.5} />
+
+      {/* curve */}
+      <polyline points={points.join(" ")} fill="none" stroke="#f472b6" strokeWidth={2.5} strokeLinejoin="round" />
+
+      {/* x-axis labels */}
       {[1, 1.5, 2].map((v) => (
-        <text key={v} x={mapX(v, xMin, xMax, w)} y={zeroY + 14} fill="#94a3b8" fontSize={10} textAnchor="middle">
-          {v}
-        </text>
+        <text key={v} x={mx(v)} y={pad.top + plotH + 42} fill="#64748b" fontSize={10} textAnchor="middle" fontFamily="monospace">{v}</text>
       ))}
+
+      {/* legend */}
+      {currentStep === 0 && (
+        <text x={w / 2} y={h / 2} fill="#475569" fontSize={14} textAnchor="middle" fontFamily="sans-serif">
+          &quot;다음 단계&quot; 버튼을 눌러 시작하세요
+        </text>
+      )}
     </svg>
+  );
+}
+
+/* ===== Bracket bar — horizontal zoom strip ===== */
+function BracketBar({ currentStep }: { currentStep: number }) {
+  const barW = 100; // percentage-based
+  if (currentStep === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <p className="text-slate-500 text-xs font-mono">구간 [a, b] 축소 과정</p>
+      <div className="relative w-full h-8 bg-slate-950 rounded-lg border border-slate-800 overflow-hidden">
+        {/* initial bracket */}
+        <div className="absolute inset-0 flex items-center">
+          <span className="absolute left-1 text-[10px] text-slate-600 font-mono">1.0</span>
+          <span className="absolute right-1 text-[10px] text-slate-600 font-mono">2.0</span>
+        </div>
+        {/* show each bracket as a layered bar */}
+        {allIterations.slice(0, currentStep).map((row, i) => {
+          const left = ((row.a - 1) / 1) * barW;
+          const width = ((row.b - row.a) / 1) * barW;
+          const isLast = i === currentStep - 1;
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute top-0 h-full rounded"
+              style={{
+                left: `${left}%`,
+                width: `${width}%`,
+                background: isLast ? "rgba(251,113,133,0.3)" : "rgba(251,113,133,0.06)",
+                borderLeft: isLast ? "2px solid #f87171" : "none",
+                borderRight: isLast ? "2px solid #60a5fa" : "none",
+              }}
+            />
+          );
+        })}
+        {/* midpoint marker for current */}
+        {currentStep > 0 && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute top-0 h-full w-0.5 bg-amber-400"
+            style={{
+              left: `${((allIterations[currentStep - 1].c - 1) / 1) * barW}%`,
+            }}
+          />
+        )}
+      </div>
+    </div>
   );
 }
 
 // --- Main component ---
 export default function BisectionMethod() {
   const [step, setStep] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const maxStep = allIterations.length;
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const visibleRows = useMemo(() => allIterations.slice(0, step), [step]);
 
-  const advance = () => setStep((s) => Math.min(s + 1, maxStep));
-  const reset = () => setStep(0);
+  const advance = useCallback(() => {
+    setStep((s) => {
+      if (s >= maxStep) {
+        setPlaying(false);
+        return s;
+      }
+      return s + 1;
+    });
+  }, [maxStep]);
+
+  const reset = () => { setStep(0); setPlaying(false); };
+
+  // auto-play
+  useEffect(() => {
+    if (playing) {
+      timerRef.current = setInterval(advance, 800);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [playing, advance]);
+
+  // stop playing when we reach the end
+  useEffect(() => {
+    if (step >= maxStep) setPlaying(false);
+  }, [step, maxStep]);
 
   const fadeUp = {
     initial: { opacity: 0, y: 30 },
@@ -204,66 +323,102 @@ export default function BisectionMethod() {
           </p>
 
           {/* Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={advance}
-              disabled={step >= maxStep}
+              disabled={step >= maxStep || playing}
               className="px-5 py-2 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-400 font-medium text-sm hover:bg-rose-500/30 transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               다음 단계 (Step {step + 1})
             </button>
             <button
+              onClick={() => setPlaying((p) => !p)}
+              disabled={step >= maxStep && !playing}
+              className="px-5 py-2 rounded-xl bg-pink-500/20 border border-pink-500/40 text-pink-400 font-medium text-sm hover:bg-pink-500/30 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {playing ? "일시정지" : "자동 재생"}
+            </button>
+            <button
               onClick={reset}
               className="px-5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 font-medium text-sm hover:bg-slate-700 transition"
             >
-              초기화 (Reset)
+              초기화
             </button>
-            <span className="text-slate-500 text-sm font-mono">
-              {step}/{maxStep} iterations
+            <span className="text-slate-500 text-sm font-mono ml-auto">
+              {step}/{maxStep}
             </span>
           </div>
 
-          {/* Current bracket info */}
-          {step > 0 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="grid grid-cols-2 md:grid-cols-5 gap-3"
-            >
-              {[
-                { label: "a", value: allIterations[step - 1].a.toFixed(6) },
-                { label: "b", value: allIterations[step - 1].b.toFixed(6) },
-                { label: "c", value: allIterations[step - 1].c.toFixed(6) },
-                {
-                  label: "f(c)",
-                  value: allIterations[step - 1].fc.toExponential(3),
-                },
-                {
-                  label: "|b−a|",
-                  value: allIterations[step - 1].width.toExponential(3),
-                },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="bg-slate-800/80 border border-slate-700 rounded-xl p-3 text-center"
-                >
-                  <div className="text-slate-500 text-xs">{item.label}</div>
-                  <div className="text-pink-400 font-mono text-sm mt-1">{item.value}</div>
-                </div>
-              ))}
-            </motion.div>
-          )}
+          {/* Step slider */}
+          <div className="flex items-center gap-4">
+            <span className="text-slate-500 text-xs font-mono w-6">0</span>
+            <input
+              type="range"
+              min={0}
+              max={maxStep}
+              value={step}
+              onChange={(e) => { setPlaying(false); setStep(Number(e.target.value)); }}
+              className="flex-1 h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-rose-500"
+            />
+            <span className="text-slate-500 text-xs font-mono w-6">{maxStep}</span>
+          </div>
 
           {/* SVG curve */}
           <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 overflow-hidden">
-            <CurveSVG currentStep={step} />
+            <BisectionSVG currentStep={step} />
           </div>
+
+          {/* Bracket bar visualization */}
+          <BracketBar currentStep={step} />
+
+          {/* Current bracket info */}
+          <AnimatePresence mode="wait">
+            {step > 0 && (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-3"
+              >
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  {[
+                    { label: "a", value: allIterations[step - 1].a.toFixed(6), color: "text-red-400" },
+                    { label: "b", value: allIterations[step - 1].b.toFixed(6), color: "text-blue-400" },
+                    { label: "c = (a+b)/2", value: allIterations[step - 1].c.toFixed(6), color: "text-amber-400" },
+                    { label: "f(c)", value: allIterations[step - 1].fc.toExponential(3), color: allIterations[step - 1].fc < 0 ? "text-red-400" : "text-emerald-400" },
+                    { label: "|b−a|", value: allIterations[step - 1].width.toExponential(3), color: "text-pink-400" },
+                  ].map((item) => (
+                    <div key={item.label} className="bg-slate-800/80 border border-slate-700 rounded-xl p-3 text-center">
+                      <div className="text-slate-500 text-xs">{item.label}</div>
+                      <div className={`${item.color} font-mono text-sm mt-1`}>{item.value}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Decision explanation */}
+                <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 text-sm">
+                  <span className="text-rose-400 font-semibold">판정: </span>
+                  {allIterations[step - 1].fc < 0 ? (
+                    <span className="text-slate-300">
+                      f(c) &lt; 0 이고 f(b) &gt; 0 이므로 근은 [c, b] 구간에 존재 → <span className="text-red-400 font-bold">a ← c</span>
+                    </span>
+                  ) : (
+                    <span className="text-slate-300">
+                      f(a) &lt; 0 이고 f(c) &gt; 0 이므로 근은 [a, c] 구간에 존재 → <span className="text-blue-400 font-bold">b ← c</span>
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Iteration table */}
           {visibleRows.length > 0 && (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-64 overflow-y-auto rounded-xl border border-slate-800">
               <table className="w-full text-sm font-mono">
-                <thead>
+                <thead className="sticky top-0 bg-slate-900">
                   <tr className="text-slate-500 border-b border-slate-800">
                     {["Step", "a", "b", "c", "f(c)", "|b−a|"].map((h) => (
                       <th key={h} className="py-2 px-3 text-left font-medium">
@@ -278,12 +433,12 @@ export default function BisectionMethod() {
                       key={row.step}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="border-b border-slate-800/50 text-slate-300"
+                      className={`border-b border-slate-800/50 text-slate-300 ${row.step === step ? "bg-rose-500/5" : ""}`}
                     >
                       <td className="py-2 px-3 text-rose-400">{row.step}</td>
-                      <td className="py-2 px-3">{row.a.toFixed(6)}</td>
-                      <td className="py-2 px-3">{row.b.toFixed(6)}</td>
-                      <td className="py-2 px-3 text-pink-400">{row.c.toFixed(6)}</td>
+                      <td className="py-2 px-3 text-red-400/80">{row.a.toFixed(6)}</td>
+                      <td className="py-2 px-3 text-blue-400/80">{row.b.toFixed(6)}</td>
+                      <td className="py-2 px-3 text-amber-400">{row.c.toFixed(6)}</td>
                       <td className="py-2 px-3">{row.fc.toExponential(3)}</td>
                       <td className="py-2 px-3">{row.width.toExponential(3)}</td>
                     </motion.tr>

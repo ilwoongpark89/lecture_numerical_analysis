@@ -1,2 +1,8 @@
-@import "katex/dist/katex.min.css";
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+/* KaTeX 수식: 어두운 배경에서 보이도록 흰색 강제 */
+.katex,
+.katex * {
+  color: #e2e8f0 !important;
+}

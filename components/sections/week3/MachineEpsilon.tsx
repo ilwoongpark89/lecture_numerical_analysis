@@ -71,486 +71,52 @@ export default function MachineEpsilon() {
           </p>
         </motion.div>
 
-        {/* ── 2. Machine Epsilon Definition ── */}
-        <motion.div {...fade} className="space-y-6">
-          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base"><M>{"\\varepsilon"}</M></span>
-            Machine Epsilon (<M>{"\\varepsilon_{\\text{mach}}"}</M>)
-          </h3>
-
-          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
-            {/* Definition */}
-            <div className="space-y-3">
-              <p className="text-slate-300 leading-relaxed">
-                <span className="text-amber-400 font-semibold">정의:</span>{" "}
-                <M>{"\\text{fl}(1 + \\varepsilon) \\neq 1"}</M>을 만족하는{" "}
-                <span className="text-white font-semibold">가장 작은 양수 <M>{"\\varepsilon"}</M></span>.
-                즉, 1에 더했을 때 부동소수점 연산에서 구별 가능한 최소값입니다.
-              </p>
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 text-center">
-                <div className="text-center">
-                  <MBlock>{"\\varepsilon_{\\text{mach}} = 2^{-52} \\approx 2.2204 \\times 10^{-16}"}</MBlock>
-                </div>
-                <p className="text-slate-500 text-sm mt-2">IEEE 754 double precision (64-bit)</p>
-              </div>
-            </div>
-
-            {/* Number line visualization */}
-            <div className="space-y-2">
-              <p className="text-sm text-slate-400 font-semibold">Number Line Visualization:</p>
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-6">
-                <div className="relative h-16">
-                  {/* Line */}
-                  <div className="absolute top-8 left-8 right-8 h-0.5 bg-slate-700" />
-                  {/* 1.0 */}
-                  <div className="absolute top-0 left-8 flex flex-col items-center">
-                    <span className="font-mono text-sm text-white font-bold">1.0</span>
-                    <div className="w-0.5 h-4 bg-white mt-1" />
-                  </div>
-                  {/* 1 + eps (not representable) */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                    <span className="font-mono text-xs text-red-400">← gap: numbers here are rounded to 1 →</span>
-                    <div className="w-full h-3 mt-1 border-x border-dashed border-red-400/40" />
-                  </div>
-                  {/* 1 + eps_mach */}
-                  <div className="absolute top-0 right-8 flex flex-col items-center">
-                    <span className="font-mono text-sm text-amber-400 font-bold"><M>{"1 + \\varepsilon_{\\text{mach}}"}</M></span>
-                    <div className="w-0.5 h-4 bg-amber-400 mt-1" />
-                  </div>
-                </div>
-                <p className="text-xs text-slate-500 text-center mt-4">
-                  1과 그 다음 표현 가능한 수 사이의 간격이 바로 <M>{"\\varepsilon_{\\text{mach}}"}</M>입니다.
-                </p>
-              </div>
-            </div>
-
-            {/* MATLAB command */}
-            <div className="space-y-2">
-              <p className="text-sm text-slate-400 font-semibold">MATLAB에서 확인:</p>
-              <CodeBlock
-                code={`>> eps\n\nans =\n   2.2204e-16\n\n>> 2^(-52)\n\nans =\n   2.2204e-16`}
-                output="eps와 2^(-52)는 동일한 값입니다."
-              />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── 3. Algorithm to find eps ── */}
-        <motion.div {...fade} className="space-y-6">
-          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">⚙</span>
-            <M>{"\\varepsilon_{\\text{mach}}"}</M> 계산 알고리즘
-          </h3>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Code */}
-            <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-4">
-              <p className="text-sm text-slate-400 font-semibold">MATLAB Code — Iterative Halving:</p>
-              <CodeBlock
-                code={`e = 1;\nwhile (1 + e) > 1\n    e = e / 2;\nend\ne = e * 2;  % 마지막으로 구별된 값\nfprintf('eps = %.16e\\n', e);`}
-                output="eps = 2.2204460492503131e-16"
-              />
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 text-sm text-slate-400 space-y-1">
-                <p><span className="text-amber-400">원리:</span> e를 절반씩 줄이면서</p>
-                <p className="font-mono text-xs text-slate-300 ml-4">1 + e == 1</p>
-                <p>이 되는 순간을 찾습니다. 루프가 끝나면 e는 너무 작아진 상태이므로,</p>
-                <p>마지막에 <span className="font-mono text-orange-300">e * 2</span>로 복원합니다.</p>
-              </div>
-            </div>
-
-            {/* Iteration table */}
-            <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-4">
-              <p className="text-sm text-slate-400 font-semibold">반복 과정 (Step-by-step):</p>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-700">
-                      <th className="text-left text-slate-500 pb-2 pr-3">Step</th>
-                      <th className="text-left text-slate-500 pb-2 pr-3">e</th>
-                      <th className="text-left text-slate-500 pb-2 pr-3">1+e</th>
-                      <th className="text-left text-slate-500 pb-2">{">"}1?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(showAllSteps ? epsIterations : epsIterations.slice(0, 5).concat(epsIterations.slice(-2))).map(
-                      (row, i) => (
-                        <tr key={i} className="border-b border-slate-800/50">
-                          <td className="py-1.5 pr-3 font-mono text-slate-400">{row.step}</td>
-                          <td className="py-1.5 pr-3 font-mono text-amber-300 text-xs">{row.e}</td>
-                          <td className="py-1.5 pr-3 font-mono text-slate-300 text-xs">{row.onePlusE}</td>
-                          <td className="py-1.5">
-                            <span
-                              className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                                row.gt1
-                                  ? "bg-green-400/10 text-green-400"
-                                  : "bg-red-400/10 text-red-400"
-                              }`}
-                            >
-                              {row.gt1 ? "Yes" : "No"}
-                            </span>
-                          </td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <button
-                onClick={() => setShowAllSteps(!showAllSteps)}
-                className="text-xs text-amber-400 hover:text-amber-300 transition-colors"
-              >
-                {showAllSteps ? "간략히 보기" : "전체 과정 보기"}
-              </button>
-              <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-3 text-sm text-amber-200">
-                Step 54에서 <span className="font-mono">1 + e == 1</span>이 되어 루프 종료.
-                결과: <span className="font-mono text-amber-400">e = 2^(-52)</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── 4. Roundoff Error ── */}
-        <motion.div {...fade} className="space-y-6">
-          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">≈</span>
-            반올림 오차 (Roundoff Error)
-          </h3>
-
-          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
-            {/* Definitions */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-3">
-                <h4 className="text-orange-400 font-semibold text-sm">Absolute Error (절대 오차)</h4>
-                <div className="text-center py-2">
-                  <MBlock>{"E_{\\text{abs}} = |x - \\text{fl}(x)|"}</MBlock>
-                </div>
-                <p className="text-slate-400 text-sm">
-                  실제 값 <span className="font-mono text-slate-300">x</span>와
-                  부동소수점 표현 <span className="font-mono text-slate-300">fl(x)</span> 사이의 절대적 차이
-                </p>
-              </div>
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-3">
-                <h4 className="text-orange-400 font-semibold text-sm">Relative Error (상대 오차)</h4>
-                <div className="text-center py-2">
-                  <MBlock>{"E_{\\text{rel}} = \\frac{|x - \\text{fl}(x)|}{|x|}"}</MBlock>
-                </div>
-                <p className="text-slate-400 text-sm">
-                  절대 오차를 실제 값의 크기로 나눈 것. 스케일에 무관한 오차 측정법
-                </p>
-              </div>
-            </div>
-
-            {/* Bound */}
-            <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-5 text-center space-y-2">
-              <p className="text-sm text-amber-200 font-semibold">핵심 부등식 (Fundamental Bound)</p>
-              <div className="text-center">
-                <MBlock>{"E_{\\text{rel}} \\leq \\frac{\\varepsilon_{\\text{mach}}}{2}"}</MBlock>
-              </div>
-              <p className="text-slate-400 text-sm">
-                모든 부동소수점 변환의 상대 오차는 <M>{"\\varepsilon_{\\text{mach}}/2"}</M> 이하로 보장됩니다.
-              </p>
-            </div>
-
-            {/* Example */}
-            <div className="space-y-2">
-              <p className="text-sm text-slate-400 font-semibold">예제 — MATLAB 계산:</p>
-              <CodeBlock
-                code={`x_true = 1/3;\nfprintf('fl(1/3) = %.20f\\n', x_true);\nfprintf('실제값   = 0.33333333333333333333...\\n');\n\n% 절대 오차\nabs_err = abs(1/3 - x_true);\nfprintf('절대 오차 = %e\\n', abs_err);\n\n% 상대 오차\nrel_err = abs_err / abs(1/3);\nfprintf('상대 오차 = %e\\n', rel_err);\nfprintf('eps/2    = %e\\n', eps/2);`}
-                output={`fl(1/3) = 0.33333333333333331483\n실제값   = 0.33333333333333333333...\n절대 오차 = 0.000000e+00  (같은 변수이므로)\n상대 오차 = 0.000000e+00\neps/2    = 1.110223e-16`}
-              />
-              <p className="text-xs text-slate-500">
-                * 같은 변수를 비교하면 오차가 0입니다.
-                실제로는 수학적 값 1/3과 fl(1/3) 사이에 약 <M>{"1.85 \\times 10^{-17}"}</M>의 상대 오차가 존재합니다.
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── 5. Cancellation Error ── */}
-        <motion.div {...fade} className="space-y-6">
-          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">⚠</span>
-            상쇄 오차 (Cancellation Error)
-          </h3>
-
-          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
-            {/* Explanation */}
-            <div className="space-y-3">
-              <p className="text-slate-300 leading-relaxed">
-                <span className="text-amber-400 font-semibold">현상:</span>{" "}
-                거의 같은 크기의 두 수를 빼면 유효 자릿수가 급격히 줄어듭니다.
-                이를 <span className="text-orange-400 font-semibold">catastrophic cancellation</span>이라 합니다.
-              </p>
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 font-mono text-sm space-y-1">
-                <p className="text-slate-400">예: 유효숫자 5자리 산술</p>
-                <p className="text-white">  <M>{"1.23456 \\times 10^{5}"}</M></p>
-                <p className="text-white"><M>{"-\\, 1.23447 \\times 10^{5}"}</M></p>
-                <p className="text-slate-600">─────────────────</p>
-                <p className="text-amber-300"><M>{"= 0.00009 \\times 10^{5} = 9.0000 \\times 10^{0}"}</M></p>
-                <p className="text-red-400 text-xs mt-2">→ 유효숫자 5자리 → 1자리로 감소!</p>
-              </div>
-            </div>
-
-            {/* Quadratic formula */}
-            <div className="space-y-4">
-              <p className="text-sm text-slate-400 font-semibold">
-                대표적 사례: Quadratic Formula (이차방정식의 근의 공식)
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-red-950/30 rounded-xl border border-red-800/40 p-5 space-y-3">
-                  <h4 className="text-red-400 font-semibold text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded bg-red-400/10 flex items-center justify-center text-xs">✗</span>
-                    표준 공식 (문제 발생)
-                  </h4>
-                  <div className="bg-slate-950 rounded-lg p-3 text-center">
-                    <MBlock>{"x = \\frac{-b + \\sqrt{b^{2} - 4ac}}{2a}"}</MBlock>
-                  </div>
-                  <p className="text-slate-400 text-xs">
-                    <M>{"b^{2} \\gg 4ac"}</M> 일 때, <M>{"\\sqrt{b^{2}-4ac} \\approx |b|"}</M> 이므로
-                    <span className="text-red-300"> <M>{"-b + |b| \\approx 0"}</M></span> → 상쇄 오차 발생!
-                  </p>
-                </div>
-
-                <div className="bg-green-950/30 rounded-xl border border-green-800/40 p-5 space-y-3">
-                  <h4 className="text-green-400 font-semibold text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded bg-green-400/10 flex items-center justify-center text-xs">✓</span>
-                    대안 공식 (안정적)
-                  </h4>
-                  <div className="bg-slate-950 rounded-lg p-3 text-center">
-                    <MBlock>{"x = \\frac{-2c}{b + \\sqrt{b^{2} - 4ac}}"}</MBlock>
-                  </div>
-                  <p className="text-slate-400 text-xs">
-                    분모가 <span className="text-green-300">b + |b|</span>로 커지므로
-                    상쇄가 일어나지 않습니다. 유도: 분자분모에 conjugate 곱하기.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* MATLAB comparison */}
-            <div className="space-y-2">
-              <p className="text-sm text-slate-400 font-semibold">
-                MATLAB 비교: <M>{"a=1,\\, b=-10^{8},\\, c=1"}</M>
-              </p>
-              <CodeBlock
-                code={`a = 1; b = -1e8; c = 1;\n\n% 표준 공식 (상쇄 오차 발생)\ndisc = sqrt(b^2 - 4*a*c);\nx_standard = (-b - disc) / (2*a);\nfprintf('표준 공식: x = %.15e\\n', x_standard);\n\n% 대안 공식 (안정적)\nx_stable = (-2*c) / (b - disc);\n% (b<0이므로 b - disc = b - |b| 대신 부호 고려)\n% 더 큰 근: (-b + disc)/(2a)\nx1 = (-b + disc) / (2*a);\n% 작은 근 via: x2 = c / (a * x1)\nx2 = c / (a * x1);\n\nfprintf('안정 공식: x = %.15e\\n', x2);\n\n% 참값 (Symbolic)\nfprintf('참값:      x = 1.00000000000000e-08\\n');`}
-                output={`표준 공식: x = 1.110223024625157e-08\n안정 공식: x = 1.000000000000000e-08\n참값:      x = 1.00000000000000e-08`}
-              />
-              <div className="bg-red-950/20 border border-red-800/30 rounded-xl p-4 text-sm space-y-1">
-                <p className="text-red-300 font-semibold">분석:</p>
-                <p className="text-slate-400">
-                  표준 공식: 상대 오차 ≈ <span className="font-mono text-red-400">11%</span> — 완전히 잘못된 결과!
-                </p>
-                <p className="text-slate-400">
-                  안정 공식: 상대 오차 ≈ <span className="font-mono text-green-400">0%</span> — 정확한 결과
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── 6. Special Values & Hole at Zero ── */}
-        <motion.div {...fade} className="space-y-6">
-          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">∞</span>
-            특수값과 Hole at Zero
-          </h3>
-
-          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
-            {/* +0 / -0 */}
-            <div className="space-y-3">
-              <h4 className="text-orange-400 font-semibold">+0 과 −0 (Signed Zero)</h4>
-              <p className="text-slate-300 text-sm leading-relaxed">
-                IEEE 754에서는 <span className="font-mono text-amber-300">+0</span>과{" "}
-                <span className="font-mono text-amber-300">−0</span>이 별도로 존재합니다.
-                비교 시 <span className="font-mono text-slate-200">+0 == −0</span>은{" "}
-                <span className="text-green-400">true</span>이지만, 부호는 다릅니다.
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 font-mono text-sm space-y-1">
-                  <p className="text-slate-500">% MATLAB</p>
-                  <p className="text-amber-300">{`>> 1/Inf`}</p>
-                  <p className="text-orange-300">ans = 0      <span className="text-slate-500">% +0</span></p>
-                  <p className="text-amber-300">{`>> -1/Inf`}</p>
-                  <p className="text-orange-300">ans = 0      <span className="text-slate-500">% −0</span></p>
-                  <p className="text-amber-300">{`>> 1/0`}</p>
-                  <p className="text-orange-300">ans = Inf    <span className="text-slate-500">% +0 → +Inf</span></p>
-                  <p className="text-amber-300">{`>> -1/0`}</p>
-                  <p className="text-orange-300">ans = -Inf   <span className="text-slate-500">% +0 → −Inf</span></p>
-                </div>
-                <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 font-mono text-sm space-y-1">
-                  <p className="text-slate-500">% 부호 구분</p>
-                  <p className="text-amber-300">{`>> 1/(-0)`}</p>
-                  <p className="text-orange-300">ans = -Inf   <span className="text-slate-500">% −0 → −Inf!</span></p>
-                  <p className="text-amber-300">{`>> sign = @(x) 1/x > 0;`}</p>
-                  <p className="text-amber-300">{`>> isequal(0, -0)`}</p>
-                  <p className="text-orange-300">ans = 1      <span className="text-slate-500">% 값은 같음</span></p>
-                  <p className="text-amber-300">{`>> sprintf('%+.1f', [0, -0])`}</p>
-                  <p className="text-orange-300">ans = &apos;+0.0-0.0&apos;</p>
-                </div>
-              </div>
-              <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-3 text-sm text-amber-200">
-                <span className="font-semibold">왜 −0이 필요한가?</span>{" "}
-                음의 방향에서 0으로 수렴하는 극한을 올바르게 표현하고,{" "}
-                <span className="font-mono">1/(-0) = −Inf</span>가 수학적으로 자연스럽기 위함입니다.
-              </div>
-            </div>
-
-            {/* +Inf / -Inf / NaN */}
-            <div className="space-y-3">
-              <h4 className="text-orange-400 font-semibold">±Infinity 와 NaN</h4>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-700">
-                      <th className="text-left text-slate-500 pb-2 pr-4">연산</th>
-                      <th className="text-left text-slate-500 pb-2 pr-4">결과</th>
-                      <th className="text-left text-slate-500 pb-2">설명</th>
-                    </tr>
-                  </thead>
-                  <tbody className="font-mono text-slate-300">
-                    {[
-                      ["1/0", "+Inf", "양수를 0으로 나눔"],
-                      ["-1/0", "-Inf", "음수를 0으로 나눔"],
-                      ["Inf + Inf", "Inf", "양의 무한대 + 양의 무한대"],
-                      ["Inf - Inf", "NaN", "무한대끼리 빼면 정의 불가"],
-                      ["0/0", "NaN", "0을 0으로 나눔"],
-                      ["Inf * 0", "NaN", "무한대 × 0"],
-                      ["sqrt(-1)", "0 + 1i", "MATLAB은 복소수 반환"],
-                      ["NaN == NaN", "false", "NaN은 자기 자신과도 같지 않음!"],
-                    ].map(([op, result, desc], i) => (
-                      <tr key={i} className="border-b border-slate-800/50">
-                        <td className="py-2 pr-4 text-amber-300">{op}</td>
-                        <td className={`py-2 pr-4 font-semibold ${result === "NaN" ? "text-red-400" : result?.includes("Inf") ? "text-orange-400" : "text-slate-300"}`}>{result}</td>
-                        <td className="py-2 text-slate-400 font-sans text-xs">{desc}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="bg-red-950/20 border border-red-800/30 rounded-xl p-3 text-sm text-red-200">
-                <span className="font-semibold">NaN 주의:</span>{" "}
-                <span className="font-mono">NaN == NaN</span>은 <span className="text-red-400">false</span>입니다.
-                NaN 검사는 반드시 <span className="font-mono text-amber-300">isnan(x)</span>를 사용하세요.
-              </div>
-            </div>
-
-            {/* Hole at Zero */}
-            <div className="space-y-3">
-              <h4 className="text-orange-400 font-semibold">Hole at Zero (0 근처의 간격)</h4>
-              <p className="text-slate-300 text-sm leading-relaxed">
-                정규화된 수의 최솟값은 <M>{"\\text{realmin} \\approx 2.2 \\times 10^{-308}"}</M>입니다.
-                만약 비정규화 수(denormalized/subnormal)가 없다면, 0과 realmin 사이에{" "}
-                <span className="text-orange-400 font-semibold">거대한 빈 공간(hole)</span>이 생깁니다.
-              </p>
-
-              {/* Number line visualization */}
-              <div className="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                <p className="text-xs text-slate-500 font-semibold text-center">Number Line (로그 스케일, 양수 영역)</p>
-
-                {/* Without denormals */}
-                <div className="space-y-1">
-                  <p className="text-xs text-red-400 font-semibold">비정규화 수 없이 (Hole at Zero):</p>
-                  <div className="relative h-10 bg-slate-900 rounded-lg overflow-hidden">
-                    <div className="absolute top-4 left-4 right-4 h-0.5 bg-slate-700" />
-                    {/* Zero */}
-                    <div className="absolute top-1 left-4 flex flex-col items-center">
-                      <span className="font-mono text-[10px] text-white">0</span>
-                      <div className="w-0.5 h-2 bg-white mt-0.5" />
-                    </div>
-                    {/* Hole */}
-                    <div className="absolute top-0 left-[8%] right-[60%] h-full flex items-center justify-center">
-                      <span className="text-[10px] text-red-400 bg-red-400/10 px-2 py-0.5 rounded border border-red-400/20">
-                        HOLE — 표현 불가!
-                      </span>
-                    </div>
-                    {/* realmin */}
-                    <div className="absolute top-1 left-[40%] flex flex-col items-center">
-                      <span className="font-mono text-[10px] text-amber-400">realmin</span>
-                      <div className="w-0.5 h-2 bg-amber-400 mt-0.5" />
-                    </div>
-                    {/* Normalized numbers */}
-                    <div className="absolute top-3 left-[42%] right-4 flex items-center gap-[2px]">
-                      {Array.from({ length: 20 }).map((_, i) => (
-                        <div key={i} className="w-0.5 h-3 bg-green-400/60 rounded-full" />
-                      ))}
-                    </div>
-                    <div className="absolute top-1 right-4 flex flex-col items-center">
-                      <span className="font-mono text-[10px] text-slate-400">realmax</span>
-                      <div className="w-0.5 h-2 bg-slate-400 mt-0.5" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* With denormals */}
-                <div className="space-y-1">
-                  <p className="text-xs text-green-400 font-semibold">비정규화 수 포함 (Gradual Underflow):</p>
-                  <div className="relative h-10 bg-slate-900 rounded-lg overflow-hidden">
-                    <div className="absolute top-4 left-4 right-4 h-0.5 bg-slate-700" />
-                    {/* Zero */}
-                    <div className="absolute top-1 left-4 flex flex-col items-center">
-                      <span className="font-mono text-[10px] text-white">0</span>
-                      <div className="w-0.5 h-2 bg-white mt-0.5" />
-                    </div>
-                    {/* Denormalized numbers */}
-                    <div className="absolute top-3 left-[5%] left-[6%] flex items-center gap-[3px]">
-                      {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="w-0.5 h-3 bg-cyan-400/60 rounded-full" />
-                      ))}
-                    </div>
-                    <div className="absolute top-7 left-[5%]">
-                      <span className="text-[9px] text-cyan-400">denormalized</span>
-                    </div>
-                    {/* realmin */}
-                    <div className="absolute top-1 left-[40%] flex flex-col items-center">
-                      <span className="font-mono text-[10px] text-amber-400">realmin</span>
-                      <div className="w-0.5 h-2 bg-amber-400 mt-0.5" />
-                    </div>
-                    {/* Normalized numbers */}
-                    <div className="absolute top-3 left-[42%] right-4 flex items-center gap-[2px]">
-                      {Array.from({ length: 20 }).map((_, i) => (
-                        <div key={i} className="w-0.5 h-3 bg-green-400/60 rounded-full" />
-                      ))}
-                    </div>
-                    <div className="absolute top-1 right-4 flex flex-col items-center">
-                      <span className="font-mono text-[10px] text-slate-400">realmax</span>
-                      <div className="w-0.5 h-2 bg-slate-400 mt-0.5" />
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-400 text-center">
-                  비정규화 수 덕분에 0과 realmin 사이의 &quot;hole&quot;이 채워져,{" "}
-                  <span className="text-cyan-400">0으로의 점진적 언더플로(gradual underflow)</span>가 가능합니다.
-                </p>
-              </div>
-
-              {/* MATLAB demo */}
-              <CodeBlock
-                code={`% Hole at Zero 실험\nformat long e\nrealmin          % 정규화 최솟값\nrealmin / 2      % 비정규화 수 (denormalized)\nrealmin / 2^52   % 가장 작은 양수 (약 5e-324)\nrealmin / 2^53   % underflow → 0\n\n% eps at different scales\neps(1)           % 2.22e-16\neps(1e-300)      % 1.99e-316 (realmin 근처에서 eps도 작아짐)\neps(0)           % 4.94e-324 (가장 작은 양수 = denorm min)`}
-                output={`realmin = 2.225073858507201e-308\nrealmin/2 = 1.112536929253601e-308  (denormalized!)\nrealmin/2^52 = 4.940656458412465e-324  (smallest positive)\nrealmin/2^53 = 0  (underflow!)\n\neps(1) = 2.220446049250313e-16\neps(1e-300) = 1.988462483865892e-316\neps(0) = 4.940656458412465e-324`}
-              />
-
-              <div className="bg-cyan-950/20 border border-cyan-800/30 rounded-xl p-4 text-sm space-y-2">
-                <p className="text-cyan-300 font-semibold">Gradual Underflow의 의미</p>
-                <p className="text-slate-400">
-                  비정규화 수가 없다면 <span className="font-mono text-slate-300">x - y</span>에서
-                  두 수가 매우 가까울 때 갑자기 0이 되는 문제가 발생합니다.
-                  비정규화 수 덕분에 <span className="font-mono text-cyan-300">x ≠ y</span>이면
-                  항상 <span className="font-mono text-cyan-300">x - y ≠ 0</span>이 보장됩니다.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── 7. Accuracy vs Precision ── */}
+        {/* ── 2. Accuracy vs Precision ── */}
         <motion.div {...fade} className="space-y-6">
           <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">◎</span>
-            Accuracy vs Precision
+            Accuracy vs Precision — 왜 구분해야 하는가
           </h3>
+
+          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-5 text-sm text-slate-400 leading-relaxed space-y-3">
+            <p>
+              수치해석에서는 두 종류의 오차가 동시에 발생합니다:
+            </p>
+            <div className="grid md:grid-cols-2 gap-3">
+              <div className="bg-rose-500/5 border border-rose-500/20 rounded-xl p-4 space-y-1">
+                <p className="text-rose-400 font-bold">Truncation Error (절단 오차)</p>
+                <p className="text-slate-400 text-xs">무한 급수를 유한 항에서 자를 때 생기는 오차</p>
+                <p className="text-slate-400 text-xs">→ <span className="text-white font-semibold">알고리즘의 한계</span> = Accuracy 문제</p>
+                <p className="text-slate-400 text-xs">→ 해결: 더 많은 항, 더 나은 알고리즘</p>
+              </div>
+              <div className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 space-y-1">
+                <p className="text-blue-400 font-bold">Roundoff Error (반올림 오차)</p>
+                <p className="text-slate-400 text-xs">유한 비트로 실수를 저장할 때 생기는 오차</p>
+                <p className="text-slate-400 text-xs">→ <span className="text-white font-semibold">컴퓨터의 한계</span> = Precision 문제</p>
+                <p className="text-slate-400 text-xs">→ 해결: 더 높은 비트 수 (double → quad)</p>
+              </div>
+            </div>
+            <p>
+              이 둘은 <span className="text-amber-300 font-bold">원인도 다르고, 해결법도 다릅니다</span>.
+              정밀도를 높이면(double → quad) roundoff error는 줄지만 truncation error는 그대로입니다.
+              반대로, 알고리즘을 개선하면 truncation error는 줄지만 roundoff error는 그대로입니다.
+              따라서 두 개념을 구분하지 못하면 <span className="text-rose-400">엉뚱한 방향으로 노력을 낭비</span>하게 됩니다.
+            </p>
+          </div>
+
+          <div className="bg-slate-900/60 rounded-xl border border-slate-800 p-4 text-sm space-y-2">
+            <p className="text-slate-500">
+              <span className="text-slate-400 font-semibold">교과서 참고:</span>{" "}
+              Chapra &amp; Canale, <span className="italic">Numerical Methods for Engineers</span> Ch.3 (§3.2 Accuracy and Precision)에서는
+              오차를 다루기 <span className="text-white">전에</span> 이 두 개념을 먼저 정의합니다.
+            </p>
+            <div className="bg-slate-950 rounded-lg border border-slate-800 p-3 text-xs text-slate-400 italic">
+              &quot;The concept of significant figures has direct relevance to the notion of accuracy and precision.
+              Accuracy refers to how closely a computed or measured value agrees with the true value.
+              Precision refers to how closely individual computed or measured values agree with each other.&quot;
+              <span className="not-italic text-slate-600"> — Chapra &amp; Canale, §3.2</span>
+            </div>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Accuracy card */}
@@ -717,6 +283,408 @@ export default function MachineEpsilon() {
                 </p>
               </div>
             ))}
+          </div>
+        </motion.div>
+
+
+        {/* ── 3. Machine Epsilon Definition ── */}
+        <motion.div {...fade} className="space-y-6">
+          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base"><M>{"\\varepsilon"}</M></span>
+            Machine Epsilon (<M>{"\\varepsilon_{\\text{mach}}"}</M>)
+          </h3>
+
+          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
+            {/* Definition */}
+            <div className="space-y-3">
+              <p className="text-slate-300 leading-relaxed">
+                <span className="text-amber-400 font-semibold">정의:</span>{" "}
+                <M>{"\\text{fl}(1 + \\varepsilon) \\neq 1"}</M>을 만족하는{" "}
+                <span className="text-white font-semibold">가장 작은 양수 <M>{"\\varepsilon"}</M></span>.
+                즉, 1에 더했을 때 부동소수점 연산에서 구별 가능한 최소값입니다.
+              </p>
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 text-center">
+                <div className="text-center">
+                  <MBlock>{"\\varepsilon_{\\text{mach}} = 2^{-52} \\approx 2.2204 \\times 10^{-16}"}</MBlock>
+                </div>
+                <p className="text-slate-500 text-sm mt-2">IEEE 754 double precision (64-bit)</p>
+              </div>
+            </div>
+
+            {/* Number line visualization */}
+            <div className="space-y-2">
+              <p className="text-sm text-slate-400 font-semibold">Number Line Visualization:</p>
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 overflow-x-auto">
+                <svg viewBox="0 0 700 140" className="w-full min-w-[500px]" xmlns="http://www.w3.org/2000/svg">
+                  {/* Main axis */}
+                  <line x1="60" y1="70" x2="640" y2="70" stroke="#475569" strokeWidth="2" />
+
+                  {/* 1.0 tick */}
+                  <line x1="100" y1="50" x2="100" y2="90" stroke="#ffffff" strokeWidth="2" />
+                  <text x="100" y="38" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="bold" fontFamily="monospace">1.0</text>
+
+                  {/* Gap region */}
+                  <rect x="110" y="55" width="420" height="30" rx="4" fill="rgba(244,63,94,0.08)" stroke="rgba(244,63,94,0.25)" strokeWidth="1" strokeDasharray="4,4" />
+                  <text x="320" y="74" textAnchor="middle" fill="#f87171" fontSize="11" fontFamily="monospace">이 구간의 수들은 1.0으로 반올림됨 (표현 불가)</text>
+
+                  {/* 1 + eps tick */}
+                  <line x1="540" y1="50" x2="540" y2="90" stroke="#f59e0b" strokeWidth="2" />
+                  <text x="540" y="30" textAnchor="middle" fill="#f59e0b" fontSize="13" fontWeight="bold" fontFamily="monospace">1 + ε_mach</text>
+                  <text x="540" y="110" textAnchor="middle" fill="#94a3b8" fontSize="10" fontFamily="monospace">= 1 + 2⁻⁵²</text>
+                  <text x="540" y="125" textAnchor="middle" fill="#94a3b8" fontSize="10" fontFamily="monospace">≈ 1.00000000000000022</text>
+
+                  {/* Epsilon bracket */}
+                  <line x1="100" y1="95" x2="100" y2="105" stroke="#f59e0b" strokeWidth="1" />
+                  <line x1="100" y1="105" x2="540" y2="105" stroke="#f59e0b" strokeWidth="1" strokeDasharray="3,3" />
+                  <line x1="540" y1="95" x2="540" y2="105" stroke="#f59e0b" strokeWidth="1" />
+                  <text x="320" y="120" textAnchor="middle" fill="#fbbf24" fontSize="12" fontWeight="bold" fontFamily="monospace">ε_mach = 2⁻⁵² ≈ 2.22 × 10⁻¹⁶</text>
+
+                  {/* Next representable number */}
+                  <line x1="600" y1="60" x2="600" y2="80" stroke="#475569" strokeWidth="1" />
+                  <text x="600" y="52" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="monospace">1 + 2ε</text>
+                  <text x="640" y="52" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="monospace">…</text>
+
+                  {/* Dots representing representable numbers */}
+                  <circle cx="100" cy="70" r="4" fill="#ffffff" />
+                  <circle cx="540" cy="70" r="4" fill="#f59e0b" />
+                  <circle cx="600" cy="70" r="3" fill="#64748b" />
+                </svg>
+                <p className="text-xs text-slate-500 text-center mt-2">
+                  1과 그 다음 표현 가능한 수 사이의 간격이 바로 ε_mach 입니다. 이 간격보다 작은 차이는 부동소수점에서 구별할 수 없습니다.
+                </p>
+              </div>
+            </div>
+
+            {/* MATLAB command */}
+            <div className="space-y-2">
+              <p className="text-sm text-slate-400 font-semibold">MATLAB에서 확인:</p>
+              <CodeBlock
+                code={`>> eps\n\nans =\n   2.2204e-16\n\n>> 2^(-52)\n\nans =\n   2.2204e-16`}
+                output="eps와 2^(-52)는 동일한 값입니다."
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── 4. Algorithm to find eps ── */}
+        <motion.div {...fade} className="space-y-6">
+          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">⚙</span>
+            <M>{"\\varepsilon_{\\text{mach}}"}</M> 계산 알고리즘
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Code */}
+            <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-4">
+              <p className="text-sm text-slate-400 font-semibold">MATLAB Code — Iterative Halving:</p>
+              <CodeBlock
+                code={`e = 1;\nwhile (1 + e) > 1\n    e = e / 2;\nend\ne = e * 2;  % 마지막으로 구별된 값\nfprintf('eps = %.16e\\n', e);`}
+                output="eps = 2.2204460492503131e-16"
+              />
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 text-sm text-slate-400 space-y-1">
+                <p><span className="text-amber-400">원리:</span> e를 절반씩 줄이면서</p>
+                <p className="font-mono text-xs text-slate-300 ml-4">1 + e == 1</p>
+                <p>이 되는 순간을 찾습니다. 루프가 끝나면 e는 너무 작아진 상태이므로,</p>
+                <p>마지막에 <span className="font-mono text-orange-300">e * 2</span>로 복원합니다.</p>
+              </div>
+            </div>
+
+            {/* Iteration table */}
+            <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-4">
+              <p className="text-sm text-slate-400 font-semibold">반복 과정 (Step-by-step):</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="text-left text-slate-500 pb-2 pr-3">Step</th>
+                      <th className="text-left text-slate-500 pb-2 pr-3">e</th>
+                      <th className="text-left text-slate-500 pb-2 pr-3">1+e</th>
+                      <th className="text-left text-slate-500 pb-2">{">"}1?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(showAllSteps ? epsIterations : epsIterations.slice(0, 5).concat(epsIterations.slice(-2))).map(
+                      (row, i) => (
+                        <tr key={i} className="border-b border-slate-800/50">
+                          <td className="py-1.5 pr-3 font-mono text-slate-400">{row.step}</td>
+                          <td className="py-1.5 pr-3 font-mono text-amber-300 text-xs">{row.e}</td>
+                          <td className="py-1.5 pr-3 font-mono text-slate-300 text-xs">{row.onePlusE}</td>
+                          <td className="py-1.5">
+                            <span
+                              className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                                row.gt1
+                                  ? "bg-green-400/10 text-green-400"
+                                  : "bg-red-400/10 text-red-400"
+                              }`}
+                            >
+                              {row.gt1 ? "Yes" : "No"}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <button
+                onClick={() => setShowAllSteps(!showAllSteps)}
+                className="text-xs text-amber-400 hover:text-amber-300 transition-colors"
+              >
+                {showAllSteps ? "간략히 보기" : "전체 과정 보기"}
+              </button>
+              <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-3 text-sm text-amber-200">
+                Step 54에서 <span className="font-mono">1 + e == 1</span>이 되어 루프 종료.
+                결과: <span className="font-mono text-amber-400">e = 2^(-52)</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── 5. Roundoff Error ── */}
+        <motion.div {...fade} className="space-y-6">
+          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">≈</span>
+            반올림 오차 (Roundoff Error)
+          </h3>
+
+          <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-4 text-sm text-slate-400 leading-relaxed">
+            앞에서 <M>{"\\varepsilon_{\\text{mach}}"}</M>이 1과 다음 표현 가능한 수의 간격이라고 배웠습니다.
+            이 간격 때문에 <span className="text-white font-semibold">모든 실수를 정확하게 저장할 수 없고</span>,
+            저장할 때마다 가장 가까운 표현 가능한 수로 반올림됩니다.
+            이때 발생하는 오차가 바로 <span className="text-amber-300 font-bold">반올림 오차(Roundoff Error)</span>이며,
+            그 크기는 <M>{"\\varepsilon_{\\text{mach}}"}</M>에 의해 결정됩니다.
+          </div>
+
+          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
+            {/* Definitions */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-3">
+                <h4 className="text-orange-400 font-semibold text-sm">Absolute Error (절대 오차)</h4>
+                <div className="text-center py-2">
+                  <MBlock>{"E_{\\text{abs}} = |x - \\text{fl}(x)|"}</MBlock>
+                </div>
+                <p className="text-slate-400 text-sm">
+                  실제 값 <span className="font-mono text-slate-300">x</span>와
+                  부동소수점 표현 <span className="font-mono text-slate-300">fl(x)</span> 사이의 절대적 차이
+                </p>
+              </div>
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-5 space-y-3">
+                <h4 className="text-orange-400 font-semibold text-sm">Relative Error (상대 오차)</h4>
+                <div className="text-center py-2">
+                  <MBlock>{"E_{\\text{rel}} = \\frac{|x - \\text{fl}(x)|}{|x|}"}</MBlock>
+                </div>
+                <p className="text-slate-400 text-sm">
+                  절대 오차를 실제 값의 크기로 나눈 것. 스케일에 무관한 오차 측정법
+                </p>
+              </div>
+            </div>
+
+            {/* Bound */}
+            <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-5 text-center space-y-2">
+              <p className="text-sm text-amber-200 font-semibold">핵심 부등식 (Fundamental Bound)</p>
+              <div className="text-center">
+                <MBlock>{"E_{\\text{rel}} \\leq \\frac{\\varepsilon_{\\text{mach}}}{2}"}</MBlock>
+              </div>
+              <p className="text-slate-400 text-sm">
+                모든 부동소수점 변환의 상대 오차는 <M>{"\\varepsilon_{\\text{mach}}/2"}</M> 이하로 보장됩니다.
+              </p>
+            </div>
+
+            {/* Example */}
+            <div className="space-y-2">
+              <p className="text-sm text-slate-400 font-semibold">예제 — MATLAB 계산:</p>
+              <CodeBlock
+                code={`x_true = 1/3;\nfprintf('fl(1/3) = %.20f\\n', x_true);\nfprintf('실제값   = 0.33333333333333333333...\\n');\n\n% 절대 오차\nabs_err = abs(1/3 - x_true);\nfprintf('절대 오차 = %e\\n', abs_err);\n\n% 상대 오차\nrel_err = abs_err / abs(1/3);\nfprintf('상대 오차 = %e\\n', rel_err);\nfprintf('eps/2    = %e\\n', eps/2);`}
+                output={`fl(1/3) = 0.33333333333333331483\n실제값   = 0.33333333333333333333...\n절대 오차 = 0.000000e+00  (같은 변수이므로)\n상대 오차 = 0.000000e+00\neps/2    = 1.110223e-16`}
+              />
+              <p className="text-xs text-slate-500">
+                * 같은 변수를 비교하면 오차가 0입니다.
+                실제로는 수학적 값 1/3과 fl(1/3) 사이에 약 <M>{"1.85 \\times 10^{-17}"}</M>의 상대 오차가 존재합니다.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── 6. Cancellation Error ── */}
+        <motion.div {...fade} className="space-y-6">
+          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">⚠</span>
+            상쇄 오차 (Cancellation Error)
+          </h3>
+
+          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
+            {/* Explanation */}
+            <div className="space-y-3">
+              <p className="text-slate-300 leading-relaxed">
+                <span className="text-amber-400 font-semibold">현상:</span>{" "}
+                거의 같은 크기의 두 수를 빼면 유효 자릿수가 급격히 줄어듭니다.
+                이를 <span className="text-orange-400 font-semibold">catastrophic cancellation</span>이라 합니다.
+              </p>
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 font-mono text-sm space-y-1">
+                <p className="text-slate-400">예: 유효숫자 5자리 산술</p>
+                <p className="text-white">  <M>{"1.23456 \\times 10^{5}"}</M></p>
+                <p className="text-white"><M>{"-\\, 1.23447 \\times 10^{5}"}</M></p>
+                <p className="text-slate-600">─────────────────</p>
+                <p className="text-amber-300"><M>{"= 0.00009 \\times 10^{5} = 9.0000 \\times 10^{0}"}</M></p>
+                <p className="text-red-400 text-xs mt-2">→ 유효숫자 5자리 → 1자리로 감소!</p>
+              </div>
+            </div>
+
+            {/* Quadratic formula */}
+            <div className="space-y-4">
+              <p className="text-sm text-slate-400 font-semibold">
+                대표적 사례: Quadratic Formula (이차방정식의 근의 공식)
+              </p>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-red-950/30 rounded-xl border border-red-800/40 p-5 space-y-3">
+                  <h4 className="text-red-400 font-semibold text-sm flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-red-400/10 flex items-center justify-center text-xs">✗</span>
+                    표준 공식 (문제 발생)
+                  </h4>
+                  <div className="bg-slate-950 rounded-lg p-3 text-center">
+                    <MBlock>{"x = \\frac{-b + \\sqrt{b^{2} - 4ac}}{2a}"}</MBlock>
+                  </div>
+                  <p className="text-slate-400 text-xs">
+                    <M>{"b^{2} \\gg 4ac"}</M> 일 때, <M>{"\\sqrt{b^{2}-4ac} \\approx |b|"}</M> 이므로
+                    <span className="text-red-300"> <M>{"-b + |b| \\approx 0"}</M></span> → 상쇄 오차 발생!
+                  </p>
+                </div>
+
+                <div className="bg-green-950/30 rounded-xl border border-green-800/40 p-5 space-y-3">
+                  <h4 className="text-green-400 font-semibold text-sm flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-green-400/10 flex items-center justify-center text-xs">✓</span>
+                    대안 공식 (안정적)
+                  </h4>
+                  <div className="bg-slate-950 rounded-lg p-3 text-center">
+                    <MBlock>{"x = \\frac{-2c}{b + \\sqrt{b^{2} - 4ac}}"}</MBlock>
+                  </div>
+                  <p className="text-slate-400 text-xs">
+                    분모가 <span className="text-green-300">b + |b|</span>로 커지므로
+                    상쇄가 일어나지 않습니다. 유도: 분자분모에 conjugate 곱하기.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* MATLAB comparison */}
+            <div className="space-y-2">
+              <p className="text-sm text-slate-400 font-semibold">
+                MATLAB 비교: <M>{"a=1,\\, b=-10^{8},\\, c=1"}</M>
+              </p>
+              <CodeBlock
+                code={`a = 1; b = -1e8; c = 1;\n\n% 표준 공식 (상쇄 오차 발생)\ndisc = sqrt(b^2 - 4*a*c);\nx_standard = (-b - disc) / (2*a);\nfprintf('표준 공식: x = %.15e\\n', x_standard);\n\n% 대안 공식 (안정적)\nx_stable = (-2*c) / (b - disc);\n% (b<0이므로 b - disc = b - |b| 대신 부호 고려)\n% 더 큰 근: (-b + disc)/(2a)\nx1 = (-b + disc) / (2*a);\n% 작은 근 via: x2 = c / (a * x1)\nx2 = c / (a * x1);\n\nfprintf('안정 공식: x = %.15e\\n', x2);\n\n% 참값 (Symbolic)\nfprintf('참값:      x = 1.00000000000000e-08\\n');`}
+                output={`표준 공식: x = 1.110223024625157e-08\n안정 공식: x = 1.000000000000000e-08\n참값:      x = 1.00000000000000e-08`}
+              />
+              <div className="bg-red-950/20 border border-red-800/30 rounded-xl p-4 text-sm space-y-1">
+                <p className="text-red-300 font-semibold">분석:</p>
+                <p className="text-slate-400">
+                  표준 공식: 상대 오차 ≈ <span className="font-mono text-red-400">11%</span> — 완전히 잘못된 결과!
+                </p>
+                <p className="text-slate-400">
+                  안정 공식: 상대 오차 ≈ <span className="font-mono text-green-400">0%</span> — 정확한 결과
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── 7. Hole at Zero & Hole at Zero ── */}
+        <motion.div {...fade} className="space-y-6">
+          <h3 className="text-2xl font-bold text-amber-400 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center text-base">∞</span>
+            Hole at Zero — 0 근처의 간격
+          </h3>
+
+          <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 space-y-6">
+            <div className="space-y-3">
+              <h4 className="text-orange-400 font-semibold">비정규화 수가 없다면?</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                정규화된 수의 최솟값은 <M>{"\\text{realmin} \\approx 2.2 \\times 10^{-308}"}</M>입니다.
+                만약 비정규화 수(denormalized/subnormal)가 없다면, 0과 realmin 사이에{" "}
+                <span className="text-orange-400 font-semibold">거대한 빈 공간(hole)</span>이 생깁니다.
+              </p>
+
+              {/* Number line visualization */}
+              <div className="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-5">
+                <p className="text-xs text-slate-500 font-semibold text-center">Number Line (로그 스케일, 양수 영역)</p>
+
+                {/* Without denormals */}
+                <div className="space-y-2">
+                  <p className="text-xs text-red-400 font-semibold">비정규화 수 없이 (Hole at Zero):</p>
+                  <svg viewBox="0 0 600 60" className="w-full" xmlns="http://www.w3.org/2000/svg">
+                    {/* Axis */}
+                    <line x1="30" y1="30" x2="570" y2="30" stroke="#475569" strokeWidth="1.5" />
+                    {/* 0 tick */}
+                    <line x1="50" y1="18" x2="50" y2="42" stroke="#ffffff" strokeWidth="1.5" />
+                    <text x="50" y="14" textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="monospace">0</text>
+                    {/* HOLE region */}
+                    <rect x="60" y="20" width="180" height="20" rx="3" fill="rgba(244,63,94,0.1)" stroke="rgba(244,63,94,0.3)" strokeWidth="1" strokeDasharray="4,3" />
+                    <text x="150" y="34" textAnchor="middle" fill="#f87171" fontSize="9" fontWeight="bold">HOLE — 표현 불가!</text>
+                    {/* realmin tick */}
+                    <line x1="250" y1="18" x2="250" y2="42" stroke="#f59e0b" strokeWidth="1.5" />
+                    <text x="250" y="55" textAnchor="middle" fill="#f59e0b" fontSize="9" fontFamily="monospace">realmin</text>
+                    {/* Normalized dots */}
+                    {Array.from({ length: 16 }).map((_, i) => (
+                      <circle key={i} cx={270 + i * 18} cy={30} r={2} fill="rgba(74,222,128,0.7)" />
+                    ))}
+                    {/* realmax tick */}
+                    <line x1="550" y1="18" x2="550" y2="42" stroke="#94a3b8" strokeWidth="1.5" />
+                    <text x="550" y="55" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="monospace">realmax</text>
+                  </svg>
+                </div>
+
+                {/* With denormals */}
+                <div className="space-y-2">
+                  <p className="text-xs text-green-400 font-semibold">비정규화 수 포함 (Gradual Underflow):</p>
+                  <svg viewBox="0 0 600 60" className="w-full" xmlns="http://www.w3.org/2000/svg">
+                    {/* Axis */}
+                    <line x1="30" y1="30" x2="570" y2="30" stroke="#475569" strokeWidth="1.5" />
+                    {/* 0 tick */}
+                    <line x1="50" y1="18" x2="50" y2="42" stroke="#ffffff" strokeWidth="1.5" />
+                    <text x="50" y="14" textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="monospace">0</text>
+                    {/* Denormalized region */}
+                    <rect x="60" y="20" width="180" height="20" rx="3" fill="rgba(34,211,238,0.08)" stroke="rgba(34,211,238,0.3)" strokeWidth="1" />
+                    {/* Denormalized dots */}
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <circle key={i} cx={70 + i * 17} cy={30} r={2} fill="rgba(34,211,238,0.8)" />
+                    ))}
+                    <text x="150" y="55" textAnchor="middle" fill="#22d3ee" fontSize="8">denormalized</text>
+                    {/* realmin tick */}
+                    <line x1="250" y1="18" x2="250" y2="42" stroke="#f59e0b" strokeWidth="1.5" />
+                    <text x="250" y="55" textAnchor="middle" fill="#f59e0b" fontSize="9" fontFamily="monospace">realmin</text>
+                    {/* Normalized dots */}
+                    {Array.from({ length: 16 }).map((_, i) => (
+                      <circle key={i} cx={270 + i * 18} cy={30} r={2} fill="rgba(74,222,128,0.7)" />
+                    ))}
+                    {/* realmax tick */}
+                    <line x1="550" y1="18" x2="550" y2="42" stroke="#94a3b8" strokeWidth="1.5" />
+                    <text x="550" y="55" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="monospace">realmax</text>
+                  </svg>
+                </div>
+
+                <p className="text-xs text-slate-400 text-center">
+                  비정규화 수 덕분에 0과 realmin 사이의 &quot;hole&quot;이 채워져,{" "}
+                  <span className="text-cyan-400">0으로의 점진적 언더플로(gradual underflow)</span>가 가능합니다.
+                </p>
+              </div>
+
+              {/* MATLAB demo */}
+              <CodeBlock
+                code={`% Hole at Zero 실험\nformat long e\nrealmin          % 정규화 최솟값\nrealmin / 2      % 비정규화 수 (denormalized)\nrealmin / 2^52   % 가장 작은 양수 (약 5e-324)\nrealmin / 2^53   % underflow → 0\n\n% eps at different scales\neps(1)           % 2.22e-16\neps(1e-300)      % 1.99e-316 (realmin 근처에서 eps도 작아짐)\neps(0)           % 4.94e-324 (가장 작은 양수 = denorm min)`}
+                output={`realmin = 2.225073858507201e-308\nrealmin/2 = 1.112536929253601e-308  (denormalized!)\nrealmin/2^52 = 4.940656458412465e-324  (smallest positive)\nrealmin/2^53 = 0  (underflow!)\n\neps(1) = 2.220446049250313e-16\neps(1e-300) = 1.988462483865892e-316\neps(0) = 4.940656458412465e-324`}
+              />
+
+              <div className="bg-cyan-950/20 border border-cyan-800/30 rounded-xl p-4 text-sm space-y-2">
+                <p className="text-cyan-300 font-semibold">Gradual Underflow의 의미</p>
+                <p className="text-slate-400">
+                  비정규화 수가 없다면 <span className="font-mono text-slate-300">x - y</span>에서
+                  두 수가 매우 가까울 때 갑자기 0이 되는 문제가 발생합니다.
+                  비정규화 수 덕분에 <span className="font-mono text-cyan-300">x ≠ y</span>이면
+                  항상 <span className="font-mono text-cyan-300">x - y ≠ 0</span>이 보장됩니다.
+                </p>
+              </div>
+            </div>
           </div>
         </motion.div>
 
