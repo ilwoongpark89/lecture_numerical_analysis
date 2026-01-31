@@ -48,12 +48,12 @@ const weeks = [
     details: ["Secant Method", "다중근과 수렴 실패 사례", "비선형 연립방정식 개요", "MATLAB 구현 실습"],
   },
   {
-    week: 6, topic: "Gauss Elimination", color: "from-indigo-500 to-violet-500", ready: false,
+    week: 6, topic: "Gauss Elimination", color: "from-indigo-500 to-violet-500", ready: true,
     desc: "가우스 소거법과 LU 분해",
     details: ["가우스 소거법", "부분 피벗팅", "LU 분해", "행렬 조건수와 ill-conditioning"],
   },
   {
-    week: 7, topic: "Iterative Methods", color: "from-sky-500 to-blue-500", ready: false,
+    week: 7, topic: "Iterative Methods", color: "from-sky-500 to-blue-500", ready: true,
     desc: "연립방정식의 반복법",
     details: ["Jacobi 반복법", "Gauss-Seidel 반복법", "수렴 조건 (대각 우세)", "대규모 희소행렬 응용"],
   },
