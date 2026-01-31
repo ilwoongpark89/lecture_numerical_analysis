@@ -63,12 +63,12 @@ const weeks = [
     details: [],
   },
   {
-    week: 9, topic: "Curve Fitting", color: "from-emerald-500 to-teal-500", ready: false,
+    week: 9, topic: "Curve Fitting", color: "from-emerald-500 to-teal-500", ready: true,
     desc: "최소자승법과 회귀 분석",
     details: ["최소자승법 원리", "선형 회귀 (직선, 다항식)", "비선형 회귀의 선형화", "결정계수 R² 평가"],
   },
   {
-    week: 10, topic: "Interpolation", color: "from-violet-500 to-purple-500", ready: false,
+    week: 10, topic: "Interpolation", color: "from-violet-500 to-purple-500", ready: true,
     desc: "보간법",
     details: ["Lagrange 보간 다항식", "Newton 차분 보간", "Runge 현상", "Cubic Spline 보간"],
   },
