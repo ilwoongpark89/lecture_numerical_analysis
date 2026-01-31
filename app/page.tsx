@@ -73,7 +73,7 @@ const weeks = [
     details: ["Lagrange 보간 다항식", "Newton 차분 보간", "Runge 현상", "Cubic Spline 보간"],
   },
   {
-    week: 11, topic: "Numerical Integration", color: "from-fuchsia-500 to-pink-500", ready: false,
+    week: 11, topic: "Numerical Integration", color: "from-fuchsia-500 to-pink-500", ready: true,
     desc: "수치적분",
     details: ["사다리꼴 공식과 오차", "Simpson 1/3, 3/8 공식", "복합 공식", "Gauss Quadrature"],
   },
