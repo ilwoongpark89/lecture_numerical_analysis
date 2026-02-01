@@ -8,9 +8,11 @@ import TaylorSeries from "@/components/sections/week3/TaylorSeries";
 import ErrorPropagation from "@/components/sections/week3/ErrorPropagation";
 import ErrorPractice from "@/components/sections/week3/ErrorPractice";
 import ErrorPythonComparison from "@/components/sections/week3/ErrorPythonComparison";
+import LectureGuard from "@/components/LectureGuard";
 
 export default function Lecture3() {
   return (
+    <LectureGuard>
     <main className="min-h-screen bg-slate-950">
       {/* Top Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
@@ -119,5 +121,6 @@ export default function Lecture3() {
         </div>
       </footer>
     </main>
+    </LectureGuard>
   );
 }

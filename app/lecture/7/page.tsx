@@ -8,9 +8,11 @@ import ConvergenceConditions from "@/components/sections/week7/ConvergenceCondit
 import SORMethod from "@/components/sections/week7/SORMethod";
 import Week7Practice from "@/components/sections/week7/Week7Practice";
 import Week7Python from "@/components/sections/week7/Week7Python";
+import LectureGuard from "@/components/LectureGuard";
 
 export default function Lecture7() {
   return (
+    <LectureGuard>
     <main className="min-h-screen bg-slate-950">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
@@ -89,5 +91,6 @@ export default function Lecture7() {
         </div>
       </footer>
     </main>
+    </LectureGuard>
   );
 }

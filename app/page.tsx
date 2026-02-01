@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -100,6 +101,27 @@ const weeks = [
 ];
 
 export default function Home() {
+  const [password, setPassword] = useState("");
+  const [unlocked, setUnlocked] = useState(false);
+  const [shake, setShake] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("mftel-unlocked") === "true") {
+      setUnlocked(true);
+    }
+  }, []);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password.toUpperCase() === "MFTEL") {
+      setUnlocked(true);
+      sessionStorage.setItem("mftel-unlocked", "true");
+    } else {
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-950">
       {/* Hero */}
@@ -318,6 +340,32 @@ export default function Home() {
             </p>
           </motion.div>
 
+          {/* Password Gate */}
+          {!unlocked && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-md mx-auto mb-10"
+            >
+              <form onSubmit={handlePasswordSubmit} className="flex gap-2">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="수강생 인증 코드 입력"
+                  className={`flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors ${shake ? "animate-shake" : ""}`}
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold hover:from-blue-500 hover:to-cyan-500 transition-all"
+                >
+                  확인
+                </button>
+              </form>
+              <p className="text-xs text-gray-500 mt-2 text-center">2주차부터 인증 코드가 필요합니다</p>
+            </motion.div>
+          )}
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {weeks.map((w, i) => (
               <motion.div
@@ -327,10 +375,19 @@ export default function Home() {
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.4, delay: i * 0.03 }}
               >
-                {w.ready ? (
+                {w.ready && (w.week === 1 || unlocked) ? (
                   <Link href={`/lecture/${w.week}`} className="block group">
                     <WeekCard w={w} />
                   </Link>
+                ) : w.ready && !unlocked ? (
+                  <div className="opacity-60 cursor-not-allowed relative">
+                    <WeekCard w={w} />
+                    <div className="absolute top-3 right-3">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                  </div>
                 ) : (
                   <div className="opacity-60">
                     <WeekCard w={w} />

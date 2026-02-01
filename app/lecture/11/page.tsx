@@ -8,9 +8,11 @@ import CompositeFormulas from "@/components/sections/week11/CompositeFormulas";
 import GaussQuadrature from "@/components/sections/week11/GaussQuadrature";
 import Week11Practice from "@/components/sections/week11/Week11Practice";
 import Week11Python from "@/components/sections/week11/Week11Python";
+import LectureGuard from "@/components/LectureGuard";
 
 export default function Lecture11() {
   return (
+    <LectureGuard>
     <main className="min-h-screen bg-slate-950">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
@@ -89,5 +91,6 @@ export default function Lecture11() {
         </div>
       </footer>
     </main>
+    </LectureGuard>
   );
 }

@@ -8,9 +8,11 @@ import RungePhenomenon from "@/components/sections/week10/RungePhenomenon";
 import CubicSpline from "@/components/sections/week10/CubicSpline";
 import Week10Practice from "@/components/sections/week10/Week10Practice";
 import Week10Python from "@/components/sections/week10/Week10Python";
+import LectureGuard from "@/components/LectureGuard";
 
 export default function Lecture10() {
   return (
+    <LectureGuard>
     <main className="min-h-screen bg-slate-950">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
@@ -89,5 +91,6 @@ export default function Lecture10() {
         </div>
       </footer>
     </main>
+    </LectureGuard>
   );
 }
