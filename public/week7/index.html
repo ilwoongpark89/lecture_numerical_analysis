@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 7 · Iterative Methods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 7</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 7 · Iterative Methods</div>
+    <h1 class="intro-h">$A\mathbf{x}=\mathbf{b}$ 를 <span class="hl">1,000,000 × 1,000,000</span> 규모로 풀 수 있는가?</h1>
+    <p class="intro-sub">Gauss 소거법은 $n$개의 미지수에 대해 약 $\tfrac13 n^3$ 번의 연산이 든다. $n=10^6$ 이면 약 $3\times10^{17}$ 연산 — 게다가 성긴(sparse) 행렬의 <strong>0 자리까지 채워(fill-in)</strong> 메모리가 폭발한다. 유한요소·유한차분에서 나오는 거대·성긴 시스템에 직접법은 통하지 않는다.</p>
+    <div class="intro-teaser">답 — <em>반복(iteration).</em> 정확한 해를 한 번에 구하는 대신, <em>해에 점점 가까워지는 벡터 수열</em> $\mathbf{x}^{(0)}\!\to\!\mathbf{x}^{(1)}\!\to\!\cdots$ 을 만든다. 각 스텝은 <strong>행렬-벡터 곱 한 번</strong>뿐이라 성긴 구조를 그대로 살린다. 이번 주는 그 대표 세 방법을 <strong>직접 반복시켜 본다.</strong></div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 7 · 이번 주 여정</div>
+    <h1 class="intro-h">추측을 <span class="hl">다듬고 · 즉시 반영하고 · 가속한다</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">7-1</span><span><span class="rt">Jacobi 반복법</span> <span class="rd">— 가장 단순: 이전 반복의 모든 값으로 동시에 갱신</span></span></div>
+      <div class="rm-item"><span class="rn">7-2</span><span><span class="rt">Gauss-Seidel</span> <span class="rd">— 방금 구한 새 값을 즉시 재사용 → 보통 2배 빠름</span></span></div>
+      <div class="rm-item"><span class="rn">7-3</span><span><span class="rt">수렴 조건</span> <span class="rd">— 대각 우세 · 스펙트럴 반경 $\rho(T)<1$</span></span></div>
+      <div class="rm-item"><span class="rn">7-4</span><span><span class="rt">SOR 와 완화</span> <span class="rd">— 완화 계수 $\omega$ 로 수렴을 가속(또는 안정화)</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 시스템 하나로 세 방법을 <em>같은 화면에서 반복</em>시켜 본다 — 정확한 해 $\mathbf{x}=(2,\,4,\,3)$.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 학습법 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 7 · 반복법은 "돌려봐야" 안다</div>
+    <h1 class="intro-h">각 방법을 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">직접 돌린다</div><ul><li><strong>시연</strong>: "다음 반복" 을 눌러 벡터 $\mathbf{x}^{(k)}$ 가 정확한 해로 조여드는 걸 표에서 본다.</li><li><strong>직접계산</strong>: 한 반복을 손으로 계산해 넣고 채점받는다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: 대각 우세가 아니거나 $\omega\ge2$ 이면 <strong>발산</strong>하는 걸 확인한다.</li><li>"빠른 방법이 항상 좋지 않은지" 를 완화 계수로 몸소 안다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 7-1 Jacobi 반복법 ════════════════════ -->
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="문제">
+  <div class="eyebrow">7-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">가장 단순한 반복 <span class="en">· Jacobi: solve each row for its own unknown</span></h1>
+  <div class="analogy"><span class="ic">🧩</span><div class="tx"><b>직관</b> — 세 사람이 각자 방정식 한 줄씩 맡는다. 나는 "내 미지수"를 나머지가 <b>지난 라운드에 외친 값</b>으로 추정해 갱신하고, 셋이 <b>동시에</b> 결과를 교환한다. 이 라운드를 반복할수록 서로의 추정이 참값으로 수렴한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede"><strong>핵심 아이디어</strong>: 방정식 $i$ 를 오직 대각 미지수 $x_i$ 에 대해 푼다. 우변에 남은 다른 미지수들은 <strong>모두 이전 반복값 $x_j^{(k)}$</strong> 을 대입한다. 그러면 각 $x_i$ 를 독립적으로(따라서 <strong>병렬로</strong>) 갱신할 수 있다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">분해</span><span class="keqline">$ A = D + L + U $</span></div>
+        <div class="keqrow"><span class="keqcap">행렬형</span><span class="keqline">$ \mathbf{x}^{(k+1)} = D^{-1}\!\big(\mathbf{b}-(L+U)\mathbf{x}^{(k)}\big) $</span></div>
+        <div class="keqrow"><span class="keqcap">성분형</span><span class="keqline">$ x_i^{(k+1)} = \dfrac{1}{a_{ii}}\Big(b_i-\!\!\displaystyle\sum_{j\ne i} a_{ij}\,x_j^{(k)}\Big) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>$D$</b> 대각 행렬 (diagonal)</div>
+        <div class="term"><b>$L,\,U$</b> 엄격한 하·상삼각 (strict lower/upper)</div>
+        <div class="term"><b>이전 반복값</b> 우변은 전부 $x_j^{(k)}$</div>
+        <div class="term"><b>동시 갱신</b> 세 성분 계산이 서로 독립 → 병렬</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>가장 구현하기 쉽고 <strong>병렬화가 자명</strong>하다. 대신 최신 정보를 안 쓰므로 <strong>수렴이 느리다</strong> — 다음 절 Gauss-Seidel 과 짝을 이룬다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="원리">
+  <div class="eyebrow">7-1 · 원리 · Derivation</div>
+  <h1 class="stage-h">$A=D+L+U$ 에서 반복식 유도</h1>
+  <p class="assume"><b>아이디어:</b> $A\mathbf{x}=\mathbf{b}$ 에서 대각 부분 $D$ 만 좌변에 남기고, 나머지 $(L+U)$ 를 우변으로 넘겨 반복식을 만든다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 분해</h4><div class="sub">$A=D+(L+U)$ 대입</div><div class="eq">$ (D+L+U)\mathbf{x}=\mathbf{b} $</div><p>대각 $D$ · 하삼각 $L$ · 상삼각 $U$ 로 쪼갠다.</p></div>
+    <div class="dcard"><h4>② $D$ 만 좌변</h4><div class="sub">나머지를 우변으로</div><div class="eq">$ D\mathbf{x}=\mathbf{b}-(L+U)\mathbf{x} $</div><p>우변의 $\mathbf{x}$ 에 이전 반복값을 넣을 자리.</p></div>
+    <div class="dcard"><h4>③ 반복식</h4><div class="sub">우변에 $\mathbf{x}^{(k)}$</div><div class="eq">$ \mathbf{x}^{(k+1)}=D^{-1}\!\big(\mathbf{b}-(L+U)\mathbf{x}^{(k)}\big) $</div><p>$D^{-1}$ 은 대각 원소의 역수 — 계산이 값싸다.</p></div>
+  </div>
+  <div class="two" style="margin-top:6px">
+    <div class="col2">
+      <div class="keq-label">예제 시스템</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqline">$ 4x_1-x_2+x_3=7 $</span></div>
+        <div class="keqrow"><span class="keqline">$ 4x_1-8x_2+x_3=-21 $</span></div>
+        <div class="keqrow"><span class="keqline">$ -2x_1+x_2+5x_3=15 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">각 행을 대각 미지수로 정리</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">$x_1$</span><span class="keqline">$ x_1^{(k+1)}=\dfrac{7+x_2^{(k)}-x_3^{(k)}}{4} $</span></div>
+        <div class="keqrow"><span class="keqcap">$x_2$</span><span class="keqline">$ x_2^{(k+1)}=\dfrac{21+4x_1^{(k)}+x_3^{(k)}}{8} $</span></div>
+        <div class="keqrow"><span class="keqcap">$x_3$</span><span class="keqline">$ x_3^{(k+1)}=\dfrac{15+2x_1^{(k)}-x_2^{(k)}}{5} $</span></div>
+      </div>
+      <div class="callout warn"><div class="ct">주의</div>세 우변 모두 <strong>이전 값 $x^{(k)}$</strong> — 이번 라운드에 $x_1$ 을 새로 구했어도 $x_2$ 계산엔 <strong>옛 $x_1$</strong> 을 쓴다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="시연">
+  <div class="eyebrow">7-1 · 시연 · Step-through</div>
+  <h1 class="stage-h">직접 반복시켜 보기 — 해로 조여든다</h1>
+  <p class="lede">"다음 반복" 을 누르면 세 성분이 <strong>동시에</strong> 갱신되고, 오른쪽 <strong>max err</strong> 열(정확한 해 $(2,4,3)$ 과의 최대 오차)이 줄어드는 것을 확인하라. 초기값 $\mathbf{x}^{(0)}=(0,0,0)$. 1회 반복이면 이미 $(1.75,\,2.625,\,3.0)$.</p>
+  <div class="stepper"
+    data-kind="matrix-iter"
+    data-a="[[4,-1,1],[4,-8,1],[-2,1,5]]"
+    data-b="[7,-21,15]"
+    data-x0="[0,0,0]"
+    data-mode="jacobi"
+    data-sol="[2,4,3]"
+    data-steps="12"
+    data-title="Jacobi — 예제 시스템,  x⁽⁰⁾=(0,0,0),  해=(2,4,3)"
+    data-note="세 성분이 동시에 갱신된다(모두 이전 값 사용). max err 열이 매 반복 감소하며 (2,4,3)에 접근한다."></div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Jacobi 2회 반복의 $x_1$</div>
+    <p class="prob-statement">1회 반복 결과가 $\mathbf{x}^{(1)}=(1.75,\ 2.625,\ 3.0)$ 이다. Jacobi 공식으로 <strong>2회 반복의 $x_1^{(2)}$</strong> 을 구하시오. (우변엔 $\mathbf{x}^{(1)}$ 의 값을 그대로 대입)</p>
+    <div class="given"><span class="chip">$x_1^{(k+1)}=\dfrac{7+x_2^{(k)}-x_3^{(k)}}{4}$</span><span class="chip">$x_2^{(1)}=2.625$</span><span class="chip">$x_3^{(1)}=3.0$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.65625" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 대입</div>$$ x_1^{(2)}=\frac{7+x_2^{(1)}-x_3^{(1)}}{4}=\frac{7+2.625-3.0}{4} $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 계산</div>$$ =\frac{6.625}{4}=1.65625 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_1^{(2)}=1.65625 $$</div><b>정답:</b> Jacobi 는 우변에 <strong>같은 라운드의 새 값을 절대 쓰지 않는다</strong> — $x_2,x_3$ 모두 $\mathbf{x}^{(1)}$ 의 값이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="수렴">
+  <div class="eyebrow">7-1 · 수렴 · Convergence</div>
+  <h1 class="stage-h">반복 행렬과 수렴 속도</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">오차의 전파</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">반복 행렬</span><span class="keqline">$ T_J=-D^{-1}(L+U) $</span></div>
+        <div class="keqrow"><span class="keqcap">오차 재귀</span><span class="keqline">$ \mathbf{e}^{(k+1)}=T_J\,\mathbf{e}^{(k)} $</span></div>
+        <div class="keqrow"><span class="keqcap">수렴 조건</span><span class="keqline">$ \rho(T_J)<1 $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">선형 수렴</div>오차가 매 반복 대략 상수비 $\rho(T_J)$ 로 줄어든다 — 유효 자릿수가 <strong>일정 개수씩</strong> 늘어난다. $\rho$ 가 1에 가까울수록 느리다.</div>
+    </div>
+    <div>
+      <div class="vcap">예제 시스템 — 정확한 해까지의 max error</div>
+      <table class="ktab"><thead><tr><th>$k$</th><th>$\mathbf{x}^{(k)}$</th><th>max err</th></tr></thead><tbody>
+        <tr><td>0</td><td>$(0,\,0,\,0)$</td><td>$4.0$</td></tr>
+        <tr><td>1</td><td>$(1.75,\,2.625,\,3.0)$</td><td>$1.38$</td></tr>
+        <tr><td>2</td><td>$(1.656,\,3.875,\,3.175)$</td><td>$0.34$</td></tr>
+        <tr><td>3</td><td>$(1.925,\,3.850,\,2.888)$</td><td>$0.15$</td></tr>
+        <tr><td>$\vdots$</td><td>$\vdots$</td><td>$\vdots$</td></tr>
+        <tr><td>19</td><td>$\approx(2,\,4,\,3)$</td><td>$<10^{-8}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">이 대각 우세 시스템에서 Jacobi 는 <b>약 19회</b>에 $10^{-8}$ 정밀도에 도달한다. 다음 절 Gauss-Seidel 은 <b>10회</b>면 끝난다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="함정">
+  <div class="eyebrow">7-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">Jacobi 가 막히는 경우</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 대각 우세 아님 → 발산</h4><p>$\rho(T_J)\ge1$ 이면 오차가 <b>커진다</b>. 대각 원소가 작으면(또는 0) 나눗셈 자체가 불안정.</p></div>
+    <div class="pitfall"><h4>⚠ $a_{ii}=0$</h4><p>대각 원소가 0이면 $x_i=(\cdots)/a_{ii}$ 가 정의 불가. <b>행·열 교환(pivoting)</b>으로 대각을 키워야 한다.</p></div>
+    <div class="pitfall"><h4>⚠ 느린 수렴</h4><p>최신 값을 안 쓰므로 Gauss-Seidel 대비 <b>약 2배</b> 반복이 필요하다.</p></div>
+    <div class="pitfall"><h4>⚠ 메모리 2배</h4><p>동시 갱신이라 $\mathbf{x}^{(k)}$ 와 $\mathbf{x}^{(k+1)}$ 을 <b>둘 다 보관</b>해야 한다($2n$).</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="코드">
+  <div class="eyebrow">7-1 · 코드 · MATLAB / Python</div>
+  <h1 class="stage-h">구현 — 그대로 돌려보기</h1>
+  <div class="codeblock"><div class="code-cap">jacobi.m</div><pre><code>function [x, iter] = jacobi(A, b, x0, tol, maxiter)
+  <span class="cm">% JACOBI  Ax = b 를 Jacobi 반복법으로 푼다</span>
+  if nargin &lt; 4, tol = 1e-8; end
+  if nargin &lt; 5, maxiter = 1000; end
+  n = length(b);
+  x = x0(:);
+  D = diag(diag(A));
+  R = A - D;                          <span class="cm">% R = L + U</span>
+  for iter = 1:maxiter
+      x_new = D \ (b(:) - R * x);      <span class="cm">% 핵심: 모든 x 에 이전 값 사용</span>
+      if norm(x_new - x, inf) &lt; tol
+          x = x_new; return;
+      end
+      x = x_new;
+  end
+  warning('Maximum iterations reached.');
+end
+
+<span class="cm">% 사용</span>
+A = [4 -1 1; 4 -8 1; -2 1 5];  b = [7; -21; 15];
+[x, it] = jacobi(A, b, [0;0;0], 1e-8);
+<span class="out">% x = (2, 4, 3),  it = 19</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">jacobi.py &nbsp;·&nbsp; NumPy</div><pre><code>import numpy as np
+
+def jacobi(A, b, x0=None, tol=1e-8, maxiter=1000):
+    n = len(b)
+    x = np.zeros(n) if x0 is None else x0.copy()
+    D = np.diag(np.diag(A))
+    R = A - D                          <span class="cm"># L + U</span>
+    for k in range(maxiter):
+        x_new = np.linalg.solve(D, b - R @ x)
+        if np.max(np.abs(x_new - x)) &lt; tol:
+            return x_new
+        x = x_new
+    return x
+
+A = np.array([[4,-1,1],[4,-8,1],[-2,1,5]], float)
+b = np.array([7,-21,15], float)
+<span class="out"># jacobi(A, b) -> [2. 4. 3.]</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 2×2 시스템 1회 반복</div>
+    <p class="prob-statement">시스템 $\;3x_1-x_2=5,\ -x_1+4x_2=7\;$ 을 초기값 $(0,0)$ 에서 Jacobi 1회 반복하면 $x_2^{(1)}$ 은? ($x_2^{(k+1)}=(7+x_1^{(k)})/4$)</p>
+    <div class="given"><span class="chip">$x_1^{(0)}=0$</span><span class="chip">$x_2^{(1)}=(7+x_1^{(0)})/4$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.75" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_2^{(1)}=\frac{7+0}{4}=1.75 $$</div>
+      <div class="ans-final"><b>정답:</b> 동시에 $x_1^{(1)}=(5+0)/3=1.667$. 정확한 해 $(27/11,\,26/11)\approx(2.455,\,2.364)$ 로 수렴한다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 연산량 감각</div>
+    <p class="prob-statement">Jacobi 반복 1회의 주 연산은 성긴 행렬-벡터 곱이다. 각 행에 0이 아닌 원소가 평균 $5$ 개이고 $n=10^{6}$ 이면, 1회 반복의 곱셈 횟수는 대략 몇 회인가? (답: $5\times10^6$, 지수형 <code>5e6</code> 로 입력)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="예: 5e6" data-answer="5e6" data-tol="0.1"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 5 \times n = 5\times10^{6} $$</div>
+      <div class="ans-final"><b>정답:</b> 직접법 $\tfrac13n^3\approx3\times10^{17}$ 과 비교하면 <strong>반복 1회는 압도적으로 싸다</strong> — 성긴 구조가 유지되기 때문.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="정리">
+  <div class="eyebrow">7-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$A=D+L+U$ → $\mathbf{x}^{(k+1)}=D^{-1}(\mathbf{b}-(L+U)\mathbf{x}^{(k)})$.</li>
+      <li>우변은 <strong>전부 이전 값</strong> → 성분 계산이 독립(병렬).</li>
+      <li>$\rho(T_J)<1$ 이면 수렴, <strong>선형·느림</strong>, 메모리 $2n$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>같은 라운드의 새 $x_1$ 을 $x_2$ 계산에 써버림(그건 Gauss-Seidel).</li>
+      <li>대각 원소 부호·나눗셈 실수.</li>
+      <li>$a_{ii}=0$ 인데 pivoting 안 함.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 초기값에서 <strong>1~2회 손 반복</strong>($\mathbf{x}^{(1)},\mathbf{x}^{(2)}$).</li>
+      <li>$T_J=-D^{-1}(L+U)$ 유도.</li>
+      <li>Jacobi vs Gauss-Seidel 갱신 시점 차이 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 7-2 Gauss-Seidel ════════════════════ -->
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="문제">
+  <div class="eyebrow">7-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">방금 구한 값을 왜 안 쓰나 <span class="en">· Gauss-Seidel: use it now</span></h1>
+  <div class="analogy"><span class="ic">🔁</span><div class="tx"><b>직관</b> — Jacobi 는 라운드가 <b>끝나야</b> 결과를 교환한다. Gauss-Seidel 은 $x_1$ 을 새로 구하는 <b>즉시</b> 그 값을 $x_2$ 계산에 넣는다. 최신 정보를 미루지 않고 바로 반영하니, 같은 라운드 안에서 이미 더 좋은 추정을 쓴다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede"><strong>단 한 가지</strong>만 바꾼다: 성분을 위에서 아래로 순서대로 갱신하되, 이미 계산이 끝난 $x_j\ (j \lt i)$ 는 <strong>새 값 $x_j^{(k+1)}$</strong> 을 쓴다. 아직 안 건드린 $x_j\ (j \gt i)$ 만 이전 값.</p>
+      <div class="keqbox">
+        <div class="keq-label">성분형 (핵심 차이)</div>
+        <div class="keqrow"><span class="keqcap">GS</span><span class="keqline">$ x_i^{(k+1)}=\dfrac{1}{a_{ii}}\Big(b_i-\!\!\displaystyle\sum_{j \lt i} a_{ij}x_j^{(k+1)}-\!\!\sum_{j \gt i} a_{ij}x_j^{(k)}\Big) $</span></div>
+        <div class="keqrow"><span class="keqcap">행렬형</span><span class="keqline">$ \mathbf{x}^{(k+1)}=(D+L)^{-1}\!\big(\mathbf{b}-U\mathbf{x}^{(k)}\big) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>즉시 재사용</b> $j \lt i$ 는 이번 라운드 새 값</div>
+        <div class="term"><b>순차 의존</b> $x_1\!\to\!x_2\!\to\!x_3$ 순서 필수</div>
+        <div class="term"><b>in-place</b> 한 벡터만 → 메모리 $n$</div>
+        <div class="term"><b>보통 2배 빠름</b> 최신 정보 활용</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>공식은 거의 같지만 <strong>갱신 시점</strong>이 다르다. 대가로 병렬화가 어렵고(순차 의존) 갱신 순서에 결과가 의존한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="원리">
+  <div class="eyebrow">7-2 · 원리 · Substitution order</div>
+  <h1 class="stage-h">대입 순서 — 새 값이 즉시 흘러든다</h1>
+  <p class="assume"><b>같은 예제 시스템</b>. 위에서 아래로 갱신하며, 이미 구한 성분은 새 값으로 바꿔 넣는다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① $x_1$ 먼저</h4><div class="sub">$x_2,x_3$ 는 아직 옛 값</div><div class="eq">$ x_1^{(k+1)}=\dfrac{7+x_2^{(k)}-x_3^{(k)}}{4} $</div><p>이 라운드의 첫 성분이라 이전 값 사용.</p></div>
+    <div class="dcard"><h4>② $x_2$ (새 $x_1$!)</h4><div class="sub">$x_1$ 은 방금 구함</div><div class="eq">$ x_2^{(k+1)}=\dfrac{21+4x_1^{(k+1)}+x_3^{(k)}}{8} $</div><p>$x_1$ 새 값, $x_3$ 는 아직 옛 값.</p></div>
+    <div class="dcard"><h4>③ $x_3$ (새 $x_1,x_2$)</h4><div class="sub">둘 다 갱신됨</div><div class="eq">$ x_3^{(k+1)}=\dfrac{15+2x_1^{(k+1)}-x_2^{(k+1)}}{5} $</div><p>이번 라운드에서 구한 최신 값들을 사용.</p></div>
+  </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">왜 더 빠른가</div>매 성분이 <strong>이번 라운드의 개선분</strong>을 즉시 받으므로, 보통 정보가 한 스텝 앞서 전파되어 Jacobi 대비 <strong>약 절반</strong>의 반복으로 수렴한다.</div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="시연">
+  <div class="eyebrow">7-2 · 시연 · Step-through</div>
+  <h1 class="stage-h">직접 반복 — Jacobi 보다 빠르게 조여든다</h1>
+  <p class="lede">동일 시스템·동일 초기값 $(0,0,0)$ 이지만 <strong>즉시 재사용</strong> 때문에 훨씬 빨리 수렴한다. 1회 반복이 벌써 $(1.75,\,3.5,\,3.0)$ — Jacobi 의 $x_2=2.625$ 보다 참값 $4$ 에 가깝다. max err 열을 앞 절 Jacobi 와 비교해 보라.</p>
+  <div class="stepper"
+    data-kind="matrix-iter"
+    data-a="[[4,-1,1],[4,-8,1],[-2,1,5]]"
+    data-b="[7,-21,15]"
+    data-x0="[0,0,0]"
+    data-mode="gs"
+    data-sol="[2,4,3]"
+    data-steps="10"
+    data-title="Gauss-Seidel — 예제 시스템,  x⁽⁰⁾=(0,0,0),  해=(2,4,3)"
+    data-note="위→아래로 갱신하며 새 x₁이 즉시 x₂ 계산에 반영된다. 같은 정밀도를 Jacobi 절반의 반복으로 도달."></div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Gauss-Seidel 1회 반복의 $x_2$</div>
+    <p class="prob-statement">초기값 $(0,0,0)$ 에서 Gauss-Seidel 1회 반복 중이다. 먼저 $x_1^{(1)}=\dfrac{7+0-0}{4}=1.75$ 를 구했다. 이제 <strong>$x_2^{(1)}$</strong> 을 구하시오 — 단, $x_1$ 은 <strong>방금 구한 새 값 1.75</strong> 를, $x_3$ 는 이전 값 $0$ 을 쓴다.</p>
+    <div class="given"><span class="chip">$x_2^{(1)}=\dfrac{21+4x_1^{(1)}+x_3^{(0)}}{8}$</span><span class="chip">$x_1^{(1)}=1.75$</span><span class="chip">$x_3^{(0)}=0$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="3.5" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 대입 (새 $x_1$ 사용)</div>$$ x_2^{(1)}=\frac{21+4(1.75)+0}{8}=\frac{21+7}{8} $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 계산</div>$$ =\frac{28}{8}=3.5 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_2^{(1)}=3.5 $$</div><b>정답:</b> Jacobi 라면 옛 $x_1=0$ 을 써서 $x_2=2.625$ 였다. 새 값을 즉시 쓴 덕에 이미 참값 $4$ 에 더 가깝다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="함정">
+  <div class="eyebrow">7-2 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">Gauss-Seidel 이 조심할 점</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 병렬화 어려움</h4><p>$x_i$ 가 $x_1..x_{i-1}$ 새 값에 <b>순차 의존</b> → GPU/멀티코어에 그대로 못 올린다(적-흑 순서화 등 별도 기법 필요).</p></div>
+    <div class="pitfall"><h4>⚠ 갱신 순서에 의존</h4><p>성분을 <b>어떤 순서</b>로 훑느냐에 따라 수렴 속도·경로가 달라진다. Jacobi 엔 없는 문제.</p></div>
+    <div class="pitfall"><h4>⚠ 여전히 발산 가능</h4><p>대각 우세가 깨지면 GS 도 <b>발산</b>한다. "더 빠름"이 "항상 수렴"을 뜻하지 않는다.</p></div>
+    <div class="pitfall"><h4>⚠ 항상 2배는 아니다</h4><p>"보통 2배"는 경험칙. 실제 배율은 $\rho(T_{GS})/\rho(T_J)$ 로 시스템마다 다르다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="코드">
+  <div class="eyebrow">7-2 · 코드 · MATLAB / Python</div>
+  <h1 class="stage-h">구현 — in-place 갱신</h1>
+  <div class="codeblock"><div class="code-cap">gauss_seidel.m</div><pre><code>function [x, iter] = gauss_seidel(A, b, x0, tol, maxiter)
+  <span class="cm">% 핵심: x(i)를 갱신하면 즉시 다음 계산에 반영 (in-place)</span>
+  if nargin &lt; 4, tol = 1e-8; end
+  if nargin &lt; 5, maxiter = 1000; end
+  n = length(b);
+  x = x0(:);
+  for iter = 1:maxiter
+      x_old = x;
+      for i = 1:n
+          <span class="cm">% j &lt; i: 이미 갱신된 새 값 / j &gt; i: 아직 이전 값</span>
+          sigma = A(i, [1:i-1, i+1:n]) * x([1:i-1, i+1:n]);
+          x(i) = (b(i) - sigma) / A(i, i);
+      end
+      if norm(x - x_old, inf) &lt; tol
+          return;
+      end
+  end
+  warning('Maximum iterations reached.');
+end
+<span class="out">% 예제: 10회 반복에 수렴 (Jacobi 19회의 절반 수준)</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">gauss_seidel.py &nbsp;·&nbsp; NumPy</div><pre><code>def gauss_seidel(A, b, x0=None, tol=1e-8, maxiter=1000):
+    n = len(b)
+    x = np.zeros(n) if x0 is None else x0.copy()
+    for k in range(maxiter):
+        x_old = x.copy()
+        for i in range(n):
+            sigma = A[i, :i] @ x[:i] + A[i, i+1:] @ x[i+1:]
+            x[i] = (b[i] - sigma) / A[i, i]   <span class="cm"># in-place</span>
+        if np.max(np.abs(x - x_old)) &lt; tol:
+            return x
+    return x
+<span class="out"># gauss_seidel(A, b) -> [2. 4. 3.]  (약 10회)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · GS 로 $x_1$ 즉시 반영</div>
+    <p class="prob-statement">시스템 $\;3x_1-x_2=5,\ -x_1+4x_2=7\;$ 을 초기값 $(0,0)$ 에서 Gauss-Seidel 1회 반복한다. $x_1^{(1)}=(5+0)/3=1.667$ 을 먼저 구했을 때, <strong>$x_2^{(1)}$</strong> 은? ($x_2^{(1)}=(7+x_1^{(1)})/4$, 새 $x_1$ 사용)</p>
+    <div class="given"><span class="chip">$x_1^{(1)}=1.6667$</span><span class="chip">$x_2^{(1)}=(7+x_1^{(1)})/4$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.1667" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_2^{(1)}=\frac{7+1.6667}{4}=\frac{8.6667}{4}=2.1667 $$</div>
+      <div class="ans-final"><b>정답:</b> Jacobi 는 옛 $x_1=0$ 으로 $x_2=1.75$ 였다. 새 값 반영으로 정확한 해 $(2.455,\,2.364)$ 에 더 빨리 접근.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 메모리 비교</div>
+    <p class="prob-statement">$n=10^{6}$ 미지수를 double(8 byte)로 저장할 때, Jacobi 는 $\mathbf{x}^{(k)},\mathbf{x}^{(k+1)}$ 두 벡터가 필요하다. Gauss-Seidel(in-place) 대비 <strong>절약되는 메모리(MB)</strong>는? ($1$ vector $=8\times10^6$ byte $=8$ MB)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답 (MB)" data-answer="8" data-tol="0.1"/><span class="ans-unit">MB</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ (2-1)\times 8\times10^{6}\ \text{byte}=8\ \text{MB} $$</div>
+      <div class="ans-final"><b>정답:</b> GS 는 벡터 하나(in-place)만 유지 → 벡터 1개분(8 MB) 절약. 대규모에서 무시 못 할 차이.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="정리">
+  <div class="eyebrow">7-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$x_i^{(k+1)}$ 계산에 <strong>이미 구한 새 값 $x_{j \lt i}^{(k+1)}$</strong> 을 즉시 사용.</li>
+      <li>행렬형 $\mathbf{x}^{(k+1)}=(D+L)^{-1}(\mathbf{b}-U\mathbf{x}^{(k)})$.</li>
+      <li>보통 <strong>Jacobi 절반</strong> 반복 · 메모리 $n$(in-place).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$x_2$ 에 옛 $x_1$ 을 씀(그건 Jacobi).</li>
+      <li>"항상 2배·항상 수렴"으로 오해.</li>
+      <li>병렬화 시 순차 의존 무시.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>같은 시스템 <strong>Jacobi vs GS 1~2회</strong> 손 반복 후 비교.</li>
+      <li>$T_{GS}=-(D+L)^{-1}U$ 유도.</li>
+      <li>메모리·병렬성 장단점 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 7-3 수렴 조건 ════════════════════ -->
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="문제">
+  <div class="eyebrow">7-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">언제 수렴하는가 <span class="en">· When do these converge?</span></h1>
+  <div class="analogy"><span class="ic">🧭</span><div class="tx"><b>직관</b> — 반복은 매 스텝 오차를 반복 행렬 $T$ 로 곱해 전파한다: $\mathbf{e}^{(k+1)}=T\mathbf{e}^{(k)}$. $T$ 가 "벡터를 항상 줄이는" 성질($\rho(T)<1$)이면 오차는 0으로 사라지고, 아니면 커진다. 손으로 확인하기 쉬운 <b>충분 조건</b>이 대각 우세다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">Jacobi·GS 둘 다 오차가 $\mathbf{e}^{(k)}=T^{k}\mathbf{e}^{(0)}$ 로 전파된다. $k\to\infty$ 에서 $T^k\to0$ 이 되어야 수렴 — 이는 <strong>스펙트럴 반경 $\rho(T)<1$</strong> 과 정확히 동치다.</p>
+      <div class="keqbox">
+        <div class="keq-label">두 판정 기준</div>
+        <div class="keqrow"><span class="keqcap">필요·충분</span><span class="keqline">$ \rho(T)=\max_i|\lambda_i(T)|<1 $</span></div>
+        <div class="keqrow"><span class="keqcap">충분(손 계산)</span><span class="keqline">$ |a_{ii}|>\!\!\displaystyle\sum_{j\ne i}|a_{ij}|\quad\forall i $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>반복 행렬 $T$</b> 오차를 곱하는 행렬</div>
+        <div class="term"><b>$\rho(T)$</b> 최대 고유값의 절댓값</div>
+        <div class="term"><b>대각 우세</b> 대각 &gt; 나머지 절댓값 합</div>
+        <div class="term"><b>충분 조건</b> 만족하면 수렴 보장(역은 아님)</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>$\rho(T)<1$ 은 <strong>정확한</strong> 판정이지만 고유값을 알아야 한다. 대각 우세는 <strong>행만 보면</strong> 확인되는 실용적 충분 조건.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="원리">
+  <div class="eyebrow">7-3 · 원리 · Diagonal dominance &amp; spectral radius</div>
+  <h1 class="stage-h">대각 우세와 반복 행렬</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">대각 우세 — 예제 행렬은 만족</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">Row 1</span><span class="keqline">$ |4|=4>|-1|+|1|=2\ \checkmark $</span></div>
+        <div class="keqrow"><span class="keqcap">Row 2</span><span class="keqline">$ |-8|=8>|4|+|1|=5\ \checkmark $</span></div>
+        <div class="keqrow"><span class="keqcap">Row 3</span><span class="keqline">$ |5|=5>|-2|+|1|=3\ \checkmark $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">그래서 수렴 보장</div>세 행 모두 엄격 대각 우세 → Jacobi·Gauss-Seidel <strong>둘 다 수렴</strong>이 이론적으로 보장된다(7-1·7-2 에서 실제로 확인).</div>
+    </div>
+    <div>
+      <div class="vcap">반복 행렬 정의</div>
+      <table class="ktab"><thead><tr><th>방법</th><th>반복 행렬 $T$</th></tr></thead><tbody>
+        <tr><td>Jacobi</td><td>$T_J=-D^{-1}(L+U)$</td></tr>
+        <tr><td>Gauss-Seidel</td><td>$T_{GS}=-(D+L)^{-1}U$</td></tr>
+      </tbody></table>
+      <div class="keqnote">일반적으로 대각 우세 시스템에서 $\rho(T_{GS})\approx\rho(T_J)^2$ — 그래서 GS 반복 수가 대략 <strong>절반</strong>이 된다.</div>
+      <div class="callout warn"><div class="ct">충분 ≠ 필요</div>대각 우세가 아니어도 $\rho(T)<1$ 이면 수렴한다. 대각 우세는 <strong>안전한 판정</strong>일 뿐, 유일한 조건이 아니다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">대각 우세 여유 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 대각 우세 여유</div>
+    <p class="prob-statement">행렬 $A=\begin{bmatrix}5&-2&1\\1&6&-2\\3&-1&7\end{bmatrix}$ 의 <strong>3번째 행</strong>에서 대각 우세 여유 $|a_{33}|-(|a_{31}|+|a_{32}|)$ 을 구하시오. (양수면 그 행은 대각 우세)</p>
+    <div class="given"><span class="chip">$a_{33}=7$</span><span class="chip">$a_{31}=3$</span><span class="chip">$a_{32}=-1$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="3" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ |7|-\big(|3|+|-1|\big)=7-4=3\ >0 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \text{여유}=3 $$</div><b>정답:</b> 세 행 모두(Row1: $5-3=2$, Row2: $6-3=3$, Row3: $7-4=3$) 양수 → 엄격 대각 우세, 두 방법 모두 수렴 보장.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="함정">
+  <div class="eyebrow">7-3 · 함정 · Break it</div>
+  <h1 class="stage-h">대각 우세가 깨지면 — 발산</h1>
+  <p class="lede">아래 행렬은 첫 행부터 대각 우세가 아니다. 이런 시스템에 Jacobi 를 그대로 돌리면 오차가 <strong>커지며 발산</strong>할 수 있다. 반복법을 쓰기 전 반드시 대각을 키우는 <strong>재배열(pivoting)</strong> 을 시도해야 한다.</p>
+  <div class="two">
+    <div class="col2">
+      <div class="keqbox">
+        <div class="keq-label">대각 우세 아님</div>
+        <div class="keqrow"><span class="keqline">$ A=\begin{bmatrix}1&2&3\\4&5&6\\7&8&9\end{bmatrix} $</span></div>
+        <div class="keqrow"><span class="keqcap">Row 1</span><span class="keqline">$ |1|=1<|2|+|3|=5\ \times $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="pitfalls">
+        <div class="pitfall"><h4>⚠ $\rho(T)\ge1$ → 발산</h4><p>오차가 매 반복 <b>확대</b>. 손으로 몇 스텝만 돌려도 값이 튄다.</p></div>
+        <div class="pitfall"><h4>⚠ 순서로 살릴 수 있다</h4><p>행·열을 재배열해 <b>대각을 크게</b> 만들면 대각 우세가 회복되기도 한다.</p></div>
+        <div class="pitfall"><h4>⚠ $\rho$ 만이 진짜 기준</h4><p>대각 우세가 아니어도 $\rho(T)<1$ 이면 수렴 — 최종 판정은 <b>고유값</b>.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">수렴 판정 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · Row 2 여유</div>
+    <p class="prob-statement">$A=\begin{bmatrix}5&-2&1\\1&6&-2\\3&-1&7\end{bmatrix}$ 의 <strong>2번째 행</strong> 대각 우세 여유 $|a_{22}|-(|a_{21}|+|a_{23}|)$ 는?</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="3" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ |6|-\big(|1|+|-2|\big)=6-3=3 $$</div>
+      <div class="ans-final"><b>정답:</b> 양수 → 이 행도 대각 우세.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · GS 반복 수 감각</div>
+    <p class="prob-statement">어떤 대각 우세 시스템에서 Jacobi 의 $\rho(T_J)=0.5$ 이다. 근사식 $\rho(T_{GS})\approx\rho(T_J)^2$ 을 쓰면 $\rho(T_{GS})$ 는?</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.25" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \rho(T_{GS})\approx(0.5)^2=0.25 $$</div>
+      <div class="ans-final"><b>정답:</b> $\rho$ 가 더 작을수록 빠르다. $0.25<0.5$ 라 GS 가 약 절반 반복으로 수렴.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="정리">
+  <div class="eyebrow">7-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>수렴 $\Leftrightarrow$ <strong>$\rho(T)<1$</strong> (필요·충분).</li>
+      <li><strong>엄격 대각 우세</strong> → Jacobi·GS 둘 다 수렴(충분 조건).</li>
+      <li>$T_J=-D^{-1}(L+U)$, $T_{GS}=-(D+L)^{-1}U$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>대각 우세를 <strong>필요 조건</strong>으로 오해(충분일 뿐).</li>
+      <li>절댓값 안 씌우고 부호로 비교.</li>
+      <li>대각 원소가 작은데 반복법 강행 → 발산.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 $A$ 의 <strong>대각 우세 판별</strong>(행별 검사).</li>
+      <li>반복 행렬 $T_J,T_{GS}$ 유도.</li>
+      <li>"충분 vs 필요·충분" 조건 구분 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 7-4 SOR 와 완화 ════════════════════ -->
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="문제">
+  <div class="eyebrow">7-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">한 걸음 더 크게 <span class="en">· SOR: over-relax the step</span></h1>
+  <div class="analogy"><span class="ic">🚀</span><div class="tx"><b>직관</b> — Gauss-Seidel 이 매 스텝 "옳은 방향"으로 조금씩 움직인다면, 그 방향이 일관될 때는 <b>일부러 더 멀리</b> 밀어붙이면 빨리 도착한다. SOR 은 GS 갱신량에 <b>완화 계수 $\omega$</b> 를 곱해 걸음 크기를 조절한다. 너무 크면($\omega\ge2$) 넘어져 발산한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede"><strong>SOR</strong>(Successive Over-Relaxation)은 GS 갱신값과 이전 값을 $\omega:(1-\omega)$ 로 <strong>가중 평균</strong>한다. $\omega=1$ 이면 정확히 Gauss-Seidel. $1<\omega<2$ 는 걸음을 키워(over-relax) 가속을 노린다.</p>
+      <div class="keqbox">
+        <div class="keq-label">SOR 공식</div>
+        <div class="keqrow"><span class="keqcap">GS 갱신</span><span class="keqline">$ x_i^{GS}=\dfrac{1}{a_{ii}}\Big(b_i-\!\!\displaystyle\sum_{j\ne i} a_{ij}x_j^{*}\Big) $</span></div>
+        <div class="keqrow"><span class="keqcap">완화</span><span class="keqline">$ x_i^{(k+1)}=(1-\omega)\,x_i^{(k)}+\omega\,x_i^{GS} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">완화 계수 $\omega$ 의 구간</div>
+      <div class="terms">
+        <div class="term"><b>$0<\omega<1$</b> under-relax — 불안정할 때 안정화</div>
+        <div class="term"><b>$\omega=1$</b> 정확히 Gauss-Seidel</div>
+        <div class="term"><b>$1<\omega<2$</b> over-relax — 가속(주 목적)</div>
+        <div class="term"><b>$\omega\le0$ 또는 $\omega\ge2$</b> 발산</div>
+      </div>
+      <div class="callout warn"><div class="ct">발산 경계</div>대칭 양정치 행렬에서 SOR 수렴은 정확히 <strong>$0<\omega<2$</strong> 에서만 성립(Kahan 정리). 경계를 넘기면 무조건 발산.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="원리">
+  <div class="eyebrow">7-4 · 원리 · Weighted average</div>
+  <h1 class="stage-h">완화 = GS 걸음과 제자리의 가중 평균</h1>
+  <p class="assume"><b>아이디어:</b> GS 가 제안한 새 위치 $x_i^{GS}$ 와 현재 위치 $x_i^{(k)}$ 사이를 $\omega$ 로 보간한다. $\omega>1$ 이면 GS 걸음을 <b>지나쳐</b> 더 나아간다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① GS 걸음</h4><div class="sub">방향 제안</div><div class="eq">$ \Delta_i=x_i^{GS}-x_i^{(k)} $</div><p>GS 가 이번에 움직이려는 양.</p></div>
+    <div class="dcard"><h4>② 확대</h4><div class="sub">$\omega$ 배</div><div class="eq">$ x_i^{(k+1)}=x_i^{(k)}+\omega\,\Delta_i $</div><p>$\omega=1$: GS. $\omega=1.5$: 1.5배 멀리.</p></div>
+    <div class="dcard"><h4>③ 전개</h4><div class="sub">완화형</div><div class="eq">$ =(1-\omega)x_i^{(k)}+\omega\,x_i^{GS} $</div><p>가중 평균 형태로 정리.</p></div>
+  </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">최적 $\omega$</div>이론적 최적 완화 계수 $\omega_{opt}=\dfrac{2}{1+\sqrt{1-\rho(T_J)^2}}$ (모델 문제). 잘 맞추면 반복 수가 극적으로 줄지만, <strong>시스템마다 다르고</strong> 잘못 고르면 오히려 느려진다 — 다음 시연에서 직접 확인.</div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="시연">
+  <div class="eyebrow">7-4 · 시연 · Interactive</div>
+  <h1 class="stage-h">$\omega$ 를 움직여 보기 — 걸음 크기 실험</h1>
+  <p class="lede">아래 슬라이더는 SOR 한 성분의 갱신값 $x^{(k+1)}=(1-\omega)x^{(k)}+\omega\,x^{GS}$ 을 계산한다. 현재 값 $x^{(k)}=2.0$, GS 가 제안한 값 $x^{GS}=4.0$ 이라 하자. $\omega=1$ 이면 GS 결과(4.0), $\omega>1$ 이면 4.0 을 <strong>지나쳐</strong> 더 크게, $\omega<1$ 이면 덜 움직인다.</p>
+  <div class="calc"
+    data-title="SOR 한 스텝 — 완화 계수 실험"
+    data-desc="x_new = (1−ω)·x_old + ω·x_GS   (여기선 x_old = 2.0,  x_GS = 4.0 고정)"
+    data-vars='[{"sym":"w","label":"완화 계수 ω","min":0.2,"max":1.9,"step":0.1,"val":1.0}]'
+    data-expr="(1 - w) * 2.0 + w * 4.0"
+    data-out="x_new" data-out-unit=""
+    data-note="ω=1 → 4.0 (Gauss-Seidel). ω=1.5 → 5.0 (초과 이동, over-relax). ω=0.5 → 3.0 (under-relax). ω 가 2 이상이면 실제 반복에선 발산한다."></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">주의 — 이 예제 시스템에선 GS 가 이미 최적</div>7-1·7-2 의 대각 우세 시스템은 조건이 아주 좋아 $\omega=1$(GS, 10회)이 이미 거의 최적이다. 아래 수렴 단계 표에서 보듯 <strong>over-relaxation 이 오히려 반복을 늘린다.</strong> SOR 의 이득은 $\rho(T_J)$ 가 1에 가까운 <strong>큰 성긴 시스템</strong>에서 나타난다.</div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · SOR 1회 반복의 $x_1$ ($\omega=1.2$)</div>
+    <p class="prob-statement">예제 시스템, 초기값 $(0,0,0)$, $\omega=1.2$. 먼저 GS 갱신값 $x_1^{GS}=\dfrac{7+0-0}{4}=1.75$ 를 구했다. SOR 완화식으로 <strong>$x_1^{(1)}$</strong> 을 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$x_1^{(1)}=(1-\omega)x_1^{(0)}+\omega\,x_1^{GS}$</span><span class="chip">$x_1^{(0)}=0$</span><span class="chip">$x_1^{GS}=1.75$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.1" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 대입</div>$$ x_1^{(1)}=(1-1.2)(0)+1.2(1.75) $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 계산</div>$$ =0+2.1=2.1 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_1^{(1)}=2.1 $$</div><b>정답:</b> GS 제안값 1.75 를 <strong>지나쳐</strong> 2.1 로 갔다(over-relax). 방향이 맞으면 가속되지만, 이 잘 조건화된 시스템에선 과하게 튀어 오히려 반복이 늘어난다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="수렴">
+  <div class="eyebrow">7-4 · 수렴 · Convergence vs ω</div>
+  <h1 class="stage-h">완화 계수와 반복 횟수 — 실측</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">예제 시스템 — $\omega$ 별 수렴 반복 수 (max err &lt; $10^{-8}$)</div>
+      <table class="ktab"><thead><tr><th>$\omega$</th><th>구분</th><th>반복 수</th></tr></thead><tbody>
+        <tr><td>0.8</td><td>under-relax</td><td>20</td></tr>
+        <tr><td>1.0</td><td>Gauss-Seidel</td><td><strong>10</strong></td></tr>
+        <tr><td>1.1</td><td>over-relax</td><td>13</td></tr>
+        <tr><td>1.2</td><td>over-relax</td><td>18</td></tr>
+        <tr><td>1.5</td><td>over-relax</td><td>28</td></tr>
+        <tr><td>1.7</td><td>over-relax</td><td>81</td></tr>
+        <tr><td>1.9</td><td>거의 발산</td><td>&gt;200</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">해석 — 최적 $\omega$ 는 시스템에 달렸다</div>
+      <div class="callout key"><div class="ct">이 시스템에선 $\omega=1$ 이 최적</div>대각 우세가 강해 $\rho(T_J)$ 가 작다 → GS 가 이미 빠르다. over-relaxation 은 걸음을 <strong>과하게</strong> 키워 진동·둔화만 유발한다.</div>
+      <div class="keqnote" style="margin-top:10px">SOR 의 진짜 이득은 $\rho(T_J)\to1$ 인 <strong>대규모 격자 문제</strong>(열전달·CFD·FEM)에서 나온다. 거기선 잘 고른 $\omega_{opt}$ 가 GS 대비 반복 수를 $O(N)\to O(\sqrt{N})$ 규모로 줄인다.</div>
+      <div class="callout warn" style="margin-top:10px"><div class="ct">$\omega\ge2$</div>표에서 $\omega=1.9$ 조차 200회 넘게 걸린다. $\omega=2$ 를 넘기면 이론상 <strong>발산</strong>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="함정">
+  <div class="eyebrow">7-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">완화가 역효과를 내는 순간</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ $\omega\ge2$ 또는 $\omega\le0$</h4><p>완화가 이동을 <b>과증폭·역전</b> → 발산. 안전 구간은 $0<\omega<2$.</p></div>
+    <div class="pitfall"><h4>⚠ 최적 $\omega$ 는 미지</h4><p>$\omega_{opt}$ 는 $\rho(T_J)$ 를 알아야 계산 가능. 실무에선 <b>여러 값을 시험</b>하거나 적응적으로 조정.</p></div>
+    <div class="pitfall"><h4>⚠ over-relax 가 항상 빠르진 않다</h4><p>이 예제처럼 <b>잘 조건화된</b> 시스템에선 $\omega>1$ 이 오히려 느리다(표 참고).</p></div>
+    <div class="pitfall"><h4>⚠ GS 의 순차 의존 상속</h4><p>SOR 도 성분 순차 갱신 → <b>병렬화 난이도</b>는 GS 와 동일.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="코드">
+  <div class="eyebrow">7-4 · 코드 · MATLAB / Python</div>
+  <h1 class="stage-h">구현 — GS 에 $\omega$ 한 줄 추가</h1>
+  <div class="codeblock"><div class="code-cap">sor.m</div><pre><code>function [x, iter] = sor(A, b, x0, omega, tol, maxiter)
+  <span class="cm">% SOR  = Gauss-Seidel 갱신에 완화 계수 ω 적용</span>
+  if nargin &lt; 5, tol = 1e-8; end
+  if nargin &lt; 6, maxiter = 1000; end
+  n = length(b);
+  x = x0(:);
+  for iter = 1:maxiter
+      x_old = x;
+      for i = 1:n
+          sigma  = A(i, [1:i-1, i+1:n]) * x([1:i-1, i+1:n]);
+          gs     = (b(i) - sigma) / A(i, i);       <span class="cm">% GS 갱신값</span>
+          x(i)   = (1 - omega) * x_old(i) + omega * gs;
+      end
+      if norm(x - x_old, inf) &lt; tol, return; end
+  end
+  warning('Maximum iterations reached.');
+end
+
+<span class="cm">% 여러 ω 비교 (예제 시스템)</span>
+for w = [0.8 1.0 1.2 1.5]
+    [x, it] = sor(A, b, [0;0;0], w, 1e-8);
+    fprintf('omega=%.1f -> %d iters\n', w, it);
+end
+<span class="out">% 0.8->20,  1.0->10,  1.2->18,  1.5->28  (이 시스템은 ω=1 이 최적)</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">sor.py &nbsp;·&nbsp; NumPy</div><pre><code>def sor(A, b, omega=1.2, x0=None, tol=1e-8, maxiter=1000):
+    n = len(b)
+    x = np.zeros(n) if x0 is None else x0.copy()
+    for k in range(maxiter):
+        x_old = x.copy()
+        for i in range(n):
+            sigma = A[i, :i] @ x[:i] + A[i, i+1:] @ x[i+1:]
+            gs = (b[i] - sigma) / A[i, i]
+            x[i] = (1 - omega) * x_old[i] + omega * gs
+        if np.max(np.abs(x - x_old)) &lt; tol:
+            return x
+    return x
+
+for w in [0.8, 1.0, 1.2, 1.5]:
+    sor(A, b, omega=w)   <span class="cm"># ω 별 수렴 비교</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">완화 계수 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · under-relaxation 값</div>
+    <p class="prob-statement">$x^{(k)}=3$, GS 제안값 $x^{GS}=5$, $\omega=0.5$ 일 때 SOR 갱신값 $x^{(k+1)}=(1-\omega)x^{(k)}+\omega\,x^{GS}$ 는?</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="4" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ (1-0.5)(3)+0.5(5)=1.5+2.5=4 $$</div>
+      <div class="ans-final"><b>정답:</b> $\omega<1$ 이라 GS 제안값(5)에 <strong>덜</strong> 다가간 4. 진동을 눌러 안정화할 때 쓴다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 최적 완화 계수</div>
+    <p class="prob-statement">모델 문제에서 $\rho(T_J)=0.8$ 이다. $\omega_{opt}=\dfrac{2}{1+\sqrt{1-\rho(T_J)^2}}$ 로 최적 완화 계수를 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$\rho(T_J)=0.8$</span><span class="chip">$\sqrt{1-0.64}=0.6$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.25" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \omega_{opt}=\frac{2}{1+\sqrt{1-0.8^2}}=\frac{2}{1+0.6}=\frac{2}{1.6}=1.25 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \omega_{opt}=1.25 $$</div><b>정답:</b> $\rho(T_J)$ 가 1에 가까울수록 $\omega_{opt}$ 가 2에 근접 — over-relaxation 이 크게 이득.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="정리">
+  <div class="eyebrow">7-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$x_i^{(k+1)}=(1-\omega)x_i^{(k)}+\omega\,x_i^{GS}$ — GS 걸음의 $\omega$ 배.</li>
+      <li>$\omega=1$: GS · $1<\omega<2$: over-relax(가속) · $0<\omega<1$: under-relax.</li>
+      <li>수렴 안전 구간 <strong>$0<\omega<2$</strong>, 최적 $\omega_{opt}=\tfrac{2}{1+\sqrt{1-\rho(T_J)^2}}$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$\omega\ge2$ 로 발산.</li>
+      <li>over-relax 가 <strong>항상</strong> 빠르다고 가정(잘 조건화된 계엔 역효과).</li>
+      <li>$(1-\omega)$ 항 누락.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>완화식으로 <strong>SOR 1회 손 계산</strong>.</li>
+      <li>$\omega_{opt}$ 공식 대입 계산.</li>
+      <li>Jacobi→GS→SOR <strong>가속 계보</strong> 서술 + 응용(FEM·CFD·열전달).</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=7;</script>
+<script src="/na-track.js" defer></script>
+</body></html>
