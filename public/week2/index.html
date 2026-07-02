@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 2 · MATLAB Fundamentals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 2</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 2 · MATLAB Fundamentals</div>
+    <h1 class="intro-h">$x^3-x-2=0$ 를 컴퓨터에 시키려면 — <span class="hl">먼저 도구를 손에 익힌다</span></h1>
+    <p class="intro-sub">수치해석은 손으로 못 푸는 계산을 <strong>반복·행렬·수렴</strong> 으로 컴퓨터에 맡긴다. 그 계산을 실제로 <strong>돌리는 도구</strong>가 이번 주의 주제 MATLAB — 이름 그대로 <strong>MAT</strong>rix <strong>LAB</strong>oratory 다.</p>
+    <div class="intro-teaser">이번 주는 알고리즘이 아니라 <em>연장 다루는 법</em> — 변수·행렬·반복문·함수·그래프를 <strong>직접 예측하고 확인</strong>하며 몸에 익힌다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 2 · 이번 주 여정</div>
+    <h1 class="intro-h">MATLAB을 <span class="hl">읽고 · 예측하고 · 돌린다</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">2-1</span><span><span class="rt">환경과 문법</span> <span class="rd">— IDE, 변수, 연산자, 출력 제어</span></span></div>
+      <div class="rm-item"><span class="rn">2-2</span><span><span class="rt">벡터·행렬 연산</span> <span class="rd">— 생성·인덱싱·행렬곱 vs 원소별곱·$A\backslash b$</span></span></div>
+      <div class="rm-item"><span class="rn">2-3</span><span><span class="rt">제어 흐름과 함수</span> <span class="rd">— if / for / while(수렴) · 사용자·익명 함수</span></span></div>
+      <div class="rm-item"><span class="rn">2-4</span><span><span class="rt">그래프 시각화</span> <span class="rd">— plot·hold·subplot·로그스케일(수렴 차수)</span></span></div>
+    </div>
+    <div class="intro-teaser">기호 하나가 결과를 바꾼다 — <em>$*$ 와 $.\!*$</em>, <em>$=$ 와 $==$</em>, <em>세미콜론 유무</em>. 이 차이를 <strong>손으로 예측</strong>해 채점받는다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 정리 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 2 · 도구는 "돌려봐야" 는다</div>
+    <h1 class="intro-h">각 문법을 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep on">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">예측한다</div><ul><li><strong>직접계산</strong>: 코드의 출력값을 손으로 먼저 적고 채점받는다.</li><li>기호의 의미($*$ vs $.\!*$)를 결과로 구분한다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">돌려본다</div><ul><li><strong>코드</strong>: 실제 MATLAB 스크립트를 그대로 실행한다.</li><li><strong>함정</strong>: 자주 틀리는 문법을 미리 깨뜨려 본다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 2-1 환경과 문법 ════════════════════ -->
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="문제">
+  <div class="eyebrow">2-1 · 문제 · Why MATLAB</div>
+  <h1 class="stage-h">왜 하필 MATLAB인가 <span class="en">· MATrix LABoratory</span></h1>
+  <div class="analogy"><span class="ic">🧮</span><div class="tx"><b>직관</b> — 수치해석은 행렬과 반복이 전부다. C++로 짜면 라이브러리부터 붙여야 하지만, MATLAB은 <b>행렬이 언어의 기본 단위</b>라 $A\backslash b$ 한 줄로 연립방정식을 푼다. 알고리즘 구현이 아니라 <b>문제 자체</b>에 집중하게 해 주는 실험대다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">MathWorks의 통합 계산 환경. 별도 라이브러리 없이 행렬 연산·시각화·프로그래밍을 한 곳에서 한다. 항공·자동차·반도체 등 공학 현장의 사실상 표준이며, 본 수업의 기준 도구다(학교 라이선스 제공).</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">변수·특수값</span><span class="keqline">$\texttt{pi},\ \texttt{eps},\ \texttt{Inf},\ \texttt{NaN}$</span></div>
+        <div class="keqrow"><span class="keqcap">연산 우선순위</span><span class="keqline">$\wedge \;\gt\; *\,/ \;\gt\; +\,-$</span></div>
+        <div class="keqrow"><span class="keqcap">출력 제어</span><span class="keqline">세미콜론 $\texttt{;}$ = 출력 억제</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">수치해석 관점 언어 비교</div>
+      <table class="ktab"><thead><tr><th>항목</th><th>MATLAB</th><th>Python</th><th>C++</th></tr></thead><tbody>
+        <tr><td>행렬 연산</td><td>내장(핵심)</td><td>NumPy</td><td>Eigen</td></tr>
+        <tr><td>시각화</td><td>내장 <code>plot</code></td><td>Matplotlib</td><td>외부</td></tr>
+        <tr><td>실행 속도</td><td>보통</td><td>느림</td><td>매우 빠름</td></tr>
+        <tr><td>라이선스</td><td>유료(학교)</td><td>무료</td><td>무료</td></tr>
+      </tbody></table>
+      <div class="callout key"><div class="ct">핵심</div>MATLAB의 기본 자료형은 스칼라가 아니라 <strong>행렬</strong>. 그래서 벡터·행렬을 반복문 없이 한 번에 다룬다(벡터화).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="원리">
+  <div class="eyebrow">2-1 · 원리 · Environment &amp; variables</div>
+  <h1 class="stage-h">작업 환경과 변수 · 특수값</h1>
+  <div class="two">
+    <div class="col2">
+      <div class="algo">
+        <div class="algo-h">MATLAB IDE 4 구획</div>
+        <ol>
+          <li><b>Editor</b> — 스크립트(<code>.m</code>)를 작성·저장한다.</li>
+          <li><b>Command Window</b> — 명령을 직접 입력하고 결과를 본다.</li>
+          <li><b>Workspace</b> — 현재 메모리의 변수(이름·크기·타입)를 본다.</li>
+          <li><b>Current Folder</b> — <code>.m</code> 파일을 관리하는 탐색기.</li>
+        </ol>
+      </div>
+      <div class="callout warn" style="margin-top:14px"><div class="ct">변수 규칙</div>영문자로 시작 · 영문/숫자/밑줄만 · <strong>대소문자 구분</strong>($\texttt{myVar}\neq\texttt{myvar}$) · 예약어($\texttt{if,for,end}$) 금지.</div>
+    </div>
+    <div class="col2">
+      <div class="vcap">내장 특수 변수</div>
+      <table class="ktab"><thead><tr><th>이름</th><th>의미</th><th>예 → 결과</th></tr></thead><tbody>
+        <tr><td><code>pi</code></td><td>원주율 $\pi$</td><td><code>pi</code> → 3.1416</td></tr>
+        <tr><td><code>Inf</code></td><td>무한대</td><td><code>1/0</code> → Inf</td></tr>
+        <tr><td><code>NaN</code></td><td>정의 불가</td><td><code>0/0</code> → NaN</td></tr>
+        <tr><td><code>eps</code></td><td>머신 엡실론</td><td><code>eps</code> → 2.2e-16</td></tr>
+        <tr><td><code>i, j</code></td><td>허수 단위</td><td><code>1+2i</code></td></tr>
+        <tr><td><code>ans</code></td><td>직전 결과</td><td><code>3+4</code> → 7</td></tr>
+      </tbody></table>
+      <div class="keqnote"><code>eps</code> $\approx 2.2\times10^{-16}$ 는 부동소수점 오차의 척도 — 수치해석 내내 "이보다 작은 차이는 0으로 본다"는 기준이 된다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="시연">
+  <div class="eyebrow">2-1 · 시연 · Operators</div>
+  <h1 class="stage-h">연산자와 우선순위 — 한눈에</h1>
+  <p class="lede">MATLAB은 산술 → 관계 → 논리 순으로 우선순위가 낮아진다. 특히 산술 안에서 <strong>거듭제곱 $\wedge$ 이 곱셈·나눗셈보다, 곱셈이 덧셈보다 먼저</strong> 계산된다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">산술 연산자</div>
+      <table class="ktab"><thead><tr><th>기호</th><th>뜻</th><th>예 → 결과</th></tr></thead><tbody>
+        <tr><td><code>+  -</code></td><td>덧셈·뺄셈</td><td><code>10-6</code> → 4</td></tr>
+        <tr><td><code>*  /</code></td><td>곱·나눗셈</td><td><code>10/3</code> → 3.3333</td></tr>
+        <tr><td><code>^</code></td><td>거듭제곱</td><td><code>2^10</code> → 1024</td></tr>
+        <tr><td><code>mod</code></td><td>나머지(양수)</td><td><code>mod(7,3)</code> → 1</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">관계 · 논리 연산자</div>
+      <table class="ktab"><thead><tr><th>기호</th><th>뜻</th><th>예 → 결과</th></tr></thead><tbody>
+        <tr><td><code>==</code></td><td>같다</td><td><code>5==5</code> → 1</td></tr>
+        <tr><td><code>~=</code></td><td>같지 않다</td><td><code>5~=3</code> → 1</td></tr>
+        <tr><td><code>&amp;  |</code></td><td>AND · OR</td><td><code>1&amp;0</code> → 0</td></tr>
+        <tr><td><code>&amp;&amp; ||</code></td><td>단락 평가</td><td>스칼라 전용</td></tr>
+      </tbody></table>
+      <div class="callout warn"><div class="ct">우선순위 한 줄</div>$\wedge \;\to\; *,/ \;\to\; +,- \;\to\; \lt,\gt,== \;\to\; \&\&,||$. 헷갈리면 <strong>괄호</strong>로 명시한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">연산 우선순위 예측 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 우선순위</div>
+    <p class="prob-statement">MATLAB에서 <code>2 + 3 * 4^2</code> 를 실행하면 어떤 값이 나오는가? 우선순위는 <strong>거듭제곱 → 곱셈 → 덧셈</strong> 순이다.</p>
+    <div class="given"><span class="chip">$4^2=16$</span><span class="chip">$3\times16=48$</span><span class="chip">$2+48$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="50" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 거듭제곱</div>$$ 4\wedge 2 = 16 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 곱셈 → 덧셈</div>$$ 3\times16 = 48,\qquad 2+48 = 50 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \texttt{2 + 3 * 4\^2} = 50 $$</div><b>정답:</b> 왼쪽부터 순서대로($2+3=5$, $5\times16=80$)로 읽으면 틀린다 — 우선순위가 지배한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="함정">
+  <div class="eyebrow">2-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">초보가 자주 틀리는 문법</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ = 와 == 혼동</h4><p><code>=</code> 는 <b>대입</b>, <code>==</code> 는 <b>비교</b>. <code>if x = 5</code> 는 문법 오류.</p></div>
+    <div class="pitfall"><h4>⚠ 삼각함수는 라디안</h4><p><code>sin(90)</code> 은 90° 가 아니다. 각도는 <code>sin(90*pi/180)</code> 또는 <code>sind(90)</code>.</p></div>
+    <div class="pitfall"><h4>⚠ 세미콜론 누락</h4><p>큰 배열을 <code>;</code> 없이 실행하면 수천 줄이 쏟아진다 — 출력 억제 습관.</p></div>
+    <div class="pitfall"><h4>⚠ i·j 덮어쓰기</h4><p><code>i=3</code> 으로 쓰면 허수 단위가 사라진다. 반복 인덱스는 다른 이름 권장.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="코드">
+  <div class="eyebrow">2-1 · 코드 · MATLAB</div>
+  <h1 class="stage-h">첫 스크립트와 출력 함수</h1>
+  <div class="codeblock"><div class="code-cap">circle_area.m</div><pre><code><span class="cm">% 원의 넓이 계산 — 세미콜론으로 중간 출력 억제</span>
+r = 5;                 <span class="cm">% 반지름</span>
+area = pi * r^2;       <span class="cm">% 넓이 = πr²</span>
+disp(area);            <span class="cm">% 간단 출력</span>
+fprintf('반지름 %d → 넓이 %.2f\n', r, area);  <span class="cm">% 서식 출력</span>
+<span class="out">% 78.5398</span>
+<span class="out">% 반지름 5 → 넓이 78.54</span></code></pre></div>
+  <div class="calc"
+    data-title="실험 — 반지름을 바꿔 넓이 확인"
+    data-desc="슬라이더로 r 을 움직이면 area = π·r² 이 즉시 갱신된다."
+    data-vars='[{"sym":"r","label":"반지름 r","min":1,"max":20,"step":0.5,"val":5,"unit":"cm"}]'
+    data-expr="3.141592653589793*r*r"
+    data-out="\\text{area}" data-out-unit="cm²" data-barmax="1256"
+    data-note="disp 는 값만, fprintf 는 %d(정수)·%.2f(소수 2자리)·%s(문자열) 서식으로 출력한다."></div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">문법 예측 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 나머지 연산</div>
+    <p class="prob-statement"><code>mod(17, 5)</code> 의 결과는? (17 을 5 로 나눈 <strong>나머지</strong>)</p>
+    <div class="given"><span class="chip">$17 = 3\times5 + 2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="2" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ \texttt{mod(17,5)} = 2 $$</div><b>정답:</b> 몫 3, 나머지 2. <code>rem</code> 은 부호 보존, <code>mod</code> 는 제수 부호를 따른다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 거듭제곱 우선순위</div>
+    <p class="prob-statement"><code>(2 + 3)^2</code> 의 결과는? 괄호가 우선순위를 바꾼다.</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="25" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ (2+3)^2 = 5^2 = 25 $$</div><b>정답:</b> 괄호가 없으면 <code>2 + 3^2 = 11</code> — 괄호 하나로 결과가 바뀐다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="정리">
+  <div class="eyebrow">2-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>MATLAB = 행렬 기본 자료형 · IDE 4구획(Editor/Command/Workspace/Folder).</li>
+      <li>특수값 <code>pi·eps·Inf·NaN</code>, 우선순위 $\wedge\gt*/\gt+-$.</li>
+      <li>세미콜론 = 출력 억제, <code>fprintf</code> = 서식 출력.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li><code>=</code>(대입) 과 <code>==</code>(비교) 혼동.</li>
+      <li>삼각함수에 각도(°) 입력 — 라디안이 기본.</li>
+      <li>우선순위를 왼→오 순으로 착각.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 식의 <strong>우선순위·괄호</strong>로 최종 출력값 계산.</li>
+      <li><code>mod/rem</code>·특수값의 결과 예측.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 2-2 벡터·행렬 연산 ════════════════════ -->
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="문제">
+  <div class="eyebrow">2-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">MATLAB의 심장 <span class="en">· everything is a matrix</span></h1>
+  <div class="analogy"><span class="ic">➡️</span><div class="tx"><b>직관</b> — 100개의 데이터에 같은 연산을 하려면 보통 반복문을 돈다. MATLAB은 벡터·행렬을 <b>통째로</b> 한 번에 계산한다(벡터화). 연립방정식 $Ax=b$ 도 $x = A\backslash b$ 한 줄 — 이것이 수치해석에서 MATLAB을 쓰는 진짜 이유다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">벡터는 1차원 배열, 행렬은 2차원 배열. 생성·인덱싱·연산 세 가지만 손에 익히면 대부분의 수치 알고리즘을 코드로 옮길 수 있다. 특히 <strong>행렬곱 $*$ 과 원소별곱 $.\!*$ 의 구분</strong>이 핵심이다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">콜론</span><span class="keqline">$\texttt{start:step:end}$ 등간격 벡터</span></div>
+        <div class="keqrow"><span class="keqcap">인덱스</span><span class="keqline">$A(i,j)$ — <strong>1부터</strong> 시작</span></div>
+        <div class="keqrow"><span class="keqcap">연립방정식</span><span class="keqline">$x = A\backslash b$</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">네 가지 핵심 기호</div>
+      <div class="terms">
+        <div class="term"><b>$\texttt{:}$ 콜론</b> 범위·전체 지정</div>
+        <div class="term"><b>$\texttt{.}$ 점</b> 원소별 연산</div>
+        <div class="term"><b>$\texttt{'}$ 전치</b> 행↔열 교환</div>
+        <div class="term"><b>$\backslash$ 백슬래시</b> $Ax=b$ 풀이</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>인덱스가 <strong>1-based</strong> 라는 점에서 C/Python(0-based)과 다르다 — off-by-one 실수의 단골 원인.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="원리">
+  <div class="eyebrow">2-2 · 원리 · Creating arrays</div>
+  <h1 class="stage-h">벡터와 행렬 만들기</h1>
+  <div class="codeblock"><div class="code-cap">create.m</div><pre><code><span class="cm">% 벡터</span>
+v = [1 2 3 4 5];        <span class="cm">% 행 벡터</span>
+u = [1; 2; 3];          <span class="cm">% 열 벡터 (세미콜론=행 구분)</span>
+t = 0:0.5:2;            <span class="cm">% 콜론 → [0 0.5 1 1.5 2]</span>
+s = linspace(0, 1, 5);  <span class="cm">% 0~1 을 5등분 → [0 .25 .5 .75 1]</span>
+
+<span class="cm">% 행렬</span>
+A = [1 2 3; 4 5 6; 7 8 9];  <span class="cm">% 3×3</span>
+I = eye(3);            <span class="cm">% 단위행렬</span>
+Z = zeros(2,3);        <span class="cm">% 0 행렬</span>
+D = diag([2 5 8]);     <span class="cm">% 대각행렬</span></code></pre></div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">콜론 vs linspace</div><code>a:step:b</code> 는 <strong>간격</strong>을 지정(끝점이 안 맞을 수 있음), <code>linspace(a,b,n)</code> 는 <strong>개수</strong>를 지정(끝점 포함 보장). 그래프의 $x$ 축은 보통 <code>linspace</code>.</div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="시연">
+  <div class="eyebrow">2-2 · 시연 · Indexing</div>
+  <h1 class="stage-h">인덱싱 — 원하는 원소만 꺼내기</h1>
+  <p class="lede">$A(\text{행},\text{열})$ 로 접근한다. 콜론 $:$ 은 "그 차원 전체", <code>end</code> 는 "마지막"을 뜻한다. 아래는 $4\times4$ 행렬 $A$ 에서 각 인덱스식이 고르는 원소다(모두 <strong>1부터</strong> 셈).</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">예제 행렬 $A$</div>
+      <table class="ktab"><tbody>
+        <tr><td>10</td><td>20</td><td><b style="color:var(--accent)">30</b></td><td>40</td></tr>
+        <tr><td>50</td><td>60</td><td><b style="color:var(--accent)">70</b></td><td>80</td></tr>
+        <tr><td>90</td><td>100</td><td>110</td><td>120</td></tr>
+        <tr><td>130</td><td>140</td><td>150</td><td>160</td></tr>
+      </tbody></table>
+      <div class="keqnote">파란 열 = <code>A(:,3)</code> (3열 전체). <code>A(2,3)=70</code> 은 그중 2행.</div>
+    </div>
+    <div>
+      <div class="vcap">인덱스식 → 결과</div>
+      <table class="ktab"><thead><tr><th>코드</th><th>의미</th><th>결과</th></tr></thead><tbody>
+        <tr><td><code>A(2,3)</code></td><td>2행 3열</td><td>70</td></tr>
+        <tr><td><code>A(1,:)</code></td><td>1행 전체</td><td>[10 20 30 40]</td></tr>
+        <tr><td><code>A(:,2)</code></td><td>2열 전체</td><td>[20;60;100;140]</td></tr>
+        <tr><td><code>A(1:2,2:3)</code></td><td>부분 행렬</td><td>[20 30;60 70]</td></tr>
+        <tr><td><code>A(end,end)</code></td><td>마지막 원소</td><td>160</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">행렬곱 한 원소 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 행렬곱 $A*B$</div>
+    <p class="prob-statement">$A=\begin{bmatrix}1&amp;2\\3&amp;4\end{bmatrix}$, $B=\begin{bmatrix}5&amp;6\\7&amp;8\end{bmatrix}$ 일 때 <code>C = A * B</code>(행렬곱)의 <strong>$C(2,1)$</strong> 성분을 구하시오. (2행 $\times$ 1열의 내적)</p>
+    <div class="given"><span class="chip">$C(2,1)=\text{(2행)}\cdot\text{(1열)}$</span><span class="chip">$=3\times5 + 4\times7$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="43" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">행렬곱 정의</div>$$ C(2,1) = \sum_k A(2,k)B(k,1) = 3\cdot5 + 4\cdot7 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ C(2,1) = 15 + 28 = 43 $$</div><b>정답:</b> 참고로 원소별곱 <code>A.*B</code> 였다면 $C(2,1)=3\times7=21$ 로 완전히 다르다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="함정">
+  <div class="eyebrow">2-2 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">배열 연산에서 미끄러지는 곳</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ * 와 .* 혼동</h4><p><code>*</code> 는 <b>행렬곱</b>(차원 규칙), <code>.*</code> 는 <b>원소별곱</b>(같은 크기). 결과가 완전히 다르다.</p></div>
+    <div class="pitfall"><h4>⚠ 1-based 인덱스</h4><p>첫 원소는 <code>A(1)</code>. <code>A(0)</code> 은 오류 — C/Python 습관 주의.</p></div>
+    <div class="pitfall"><h4>⚠ inv(A)*b 남용</h4><p>연립방정식은 <code>A\b</code> 가 더 빠르고 <b>수치적으로 안정</b>. 역행렬을 굳이 만들지 말 것.</p></div>
+    <div class="pitfall"><h4>⚠ reshape 열 우선</h4><p><code>reshape(1:6,2,3)</code> 은 <b>열 방향</b>으로 채운다 → <code>[1 3 5;2 4 6]</code>.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="코드">
+  <div class="eyebrow">2-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">연립방정식을 한 줄로 — $A\backslash b$</h1>
+  <div class="codeblock"><div class="code-cap">solve_system.m</div><pre><code><span class="cm">% 2x + 3y = 8</span>
+<span class="cm">% 4x +  y = 6</span>
+A = [2 3; 4 1];
+b = [8; 6];
+x = A \ b;             <span class="cm">% 백슬래시 = LU 분해로 Ax=b 풀이</span>
+fprintf('x = %.2f, y = %.2f\n', x(1), x(2));
+<span class="out">% x = 1.00, y = 2.00</span>
+
+<span class="cm">% 크기·집계 함수</span>
+size(A)                <span class="cm">% [2 2]  (행, 열)</span>
+sum([1 2 3])           <span class="cm">% 6</span>
+det(A)                 <span class="cm">% 2*1 - 3*4 = -10</span></code></pre></div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">Python 대비</div>같은 풀이가 NumPy에선 <code>x = np.linalg.solve(A, b)</code>. MATLAB의 <code>A\b</code> 가 더 짧다 — 두 도구 모두 내부적으로 LU 분해를 쓴다.</div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">벡터·행렬 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 내적</div>
+    <p class="prob-statement">$v=[1\ 2\ 3\ 4\ 5]$, $u=[10\ 20\ 30\ 40\ 50]$ 일 때 <code>dot(v, u)</code> 의 값은? ($\sum v_i u_i$)</p>
+    <div class="given"><span class="chip">$=\texttt{sum(v .* u)}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="550" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 1\cdot10+2\cdot20+3\cdot30+4\cdot40+5\cdot50 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ 10+40+90+160+250 = 550 $$</div><b>정답:</b> 내적 = 원소별곱의 합.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 행렬식</div>
+    <p class="prob-statement">$A=\begin{bmatrix}1&amp;2\\3&amp;4\end{bmatrix}$ 의 <code>det(A)</code> 는? ($ad-bc$)</p>
+    <div class="given"><span class="chip">$1\times4 - 2\times3$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="-2" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ \det A = 1\cdot4 - 2\cdot3 = -2 $$</div><b>정답:</b> $\det\neq0$ 이므로 역행렬이 존재 → $A\backslash b$ 로 유일해.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="정리">
+  <div class="eyebrow">2-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>생성 <code>: linspace zeros eye diag</code>, 인덱싱 <strong>1-based</strong> + <code>: end</code>.</li>
+      <li>행렬곱 <code>*</code> vs 원소별곱 <code>.*</code> — 결과가 다르다.</li>
+      <li>연립방정식 <code>A\b</code> (LU 분해, <code>inv</code> 보다 안정).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li><code>*</code> 와 <code>.*</code> 혼동 → 차원 오류/오답.</li>
+      <li>0-based 로 착각한 인덱싱.</li>
+      <li><code>reshape</code> 의 열 우선 채움 간과.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>행렬곱/원소별곱의 <strong>특정 성분</strong> 손 계산.</li>
+      <li>인덱스식 <code>A(i,:)·A(:,j)·A(end,:)</code> 이 고르는 부분 행렬.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 2-3 제어 흐름과 함수 ════════════════════ -->
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="문제">
+  <div class="eyebrow">2-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">알고리즘 = 분기 + 반복 <span class="en">· until it converges</span></h1>
+  <div class="analogy"><span class="ic">🔁</span><div class="tx"><b>직관</b> — 수치해석의 거의 모든 방법은 "충분히 가까워질 때까지 반복"이다. 몇 번 반복할지 <b>미리 모르므로</b> <code>for</code>(횟수 고정)가 아니라 <code>while</code>(조건 만족까지)가 심장이다. 이 구조가 이분법·Newton·Euler를 관통한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede"><code>if</code> 로 갈래를 나누고, <code>for</code>/<code>while</code> 로 반복한다. 반복을 재사용 가능한 <strong>함수</strong>로 묶으면 <code>fzero</code>, <code>ode45</code> 같은 내장 함수처럼 호출할 수 있다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">분기</span><span class="keqline">$\texttt{if / elseif / else / end}$</span></div>
+        <div class="keqrow"><span class="keqcap">고정 반복</span><span class="keqline">$\texttt{for i = 1:n}$</span></div>
+        <div class="keqrow"><span class="keqcap">수렴 반복</span><span class="keqline">$\texttt{while error > tol}$</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">for vs while</div>
+      <div class="terms">
+        <div class="term"><b>for</b> 횟수를 <b>아는</b> 경우 · 배열 순회</div>
+        <div class="term"><b>while</b> 횟수를 <b>모르는</b> 경우 · 수렴 판정</div>
+        <div class="term"><b>break</b> 반복 즉시 탈출</div>
+        <div class="term"><b>continue</b> 이번 회차만 건너뜀</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>수치 반복은 항상 <strong>종료 조건 두 개</strong> — 오차 <code>tol</code> 도달 <b>또는</b> 최대 횟수 <code>max_iter</code> 초과(무한루프 방지).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="원리">
+  <div class="eyebrow">2-3 · 원리 · Loops</div>
+  <h1 class="stage-h">반복문의 문법과 누적 패턴</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="algo">
+        <div class="algo-h">for 반복 — 누적합</div>
+        <ol>
+          <li>누적 변수 초기화 <code>s = 0</code>.</li>
+          <li><code>for i = 1:n</code> 로 <b>정해진 횟수</b> 반복.</li>
+          <li>매 회차 <code>s = s + i</code> 로 갱신.</li>
+          <li>반복 종료 후 <code>s</code> 사용.</li>
+        </ol>
+      </div>
+      <div class="callout warn"><div class="ct">사전 할당</div>결과를 배열에 모을 땐 <code>y = zeros(1,n)</code> 로 <strong>미리 크기 확보</strong> — 반복 중 배열을 키우면 매번 재할당되어 느리다.</div>
+    </div>
+    <div>
+      <div class="vcap">$s=\sum_{i=1}^{5} i$ 반복 과정</div>
+      <table class="ktab"><thead><tr><th>반복</th><th>$i$</th><th>$s$ (누적)</th></tr></thead><tbody>
+        <tr><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>2</td><td>2</td><td>3</td></tr>
+        <tr><td>3</td><td>3</td><td>6</td></tr>
+        <tr><td>4</td><td>4</td><td>10</td></tr>
+        <tr><td>5</td><td>5</td><td>15</td></tr>
+      </tbody></table>
+      <div class="keqnote"><code>for i=1:100</code> 이면 같은 방식으로 $s=5050$. <code>i=1:2:9</code> 처럼 증분도 지정 가능.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="시연">
+  <div class="eyebrow">2-3 · 시연 · while 수렴</div>
+  <h1 class="stage-h">수렴할 때까지 반복 — 직접 돌려보기</h1>
+  <p class="lede"><code>while</code> 의 진짜 쓸모는 <strong>수렴 반복</strong>이다. 아래는 $x_{n+1}=\cos(x_n)$ 을 계속 대입하는 고정점 반복($x=\cos x$). "다음 반복" 을 누르면 값이 한 점(<strong>$\approx 0.7391$</strong>, 초록 점선)으로 빨려 든다 — 이것이 <code>while error &gt; tol</code> 의 그림이다.</p>
+  <div class="stepper"
+    data-kind="fixed-point"
+    data-gfn="cos(x)"
+    data-x0="0"
+    data-xmin="-0.4" data-xmax="1.4"
+    data-root="0.7390851332"
+    data-steps="12"
+    data-title="고정점 반복 — x = cos(x),  x₀ = 0"
+    data-note="파랑=g(x)=cos(x), 검정 대각선=y=x, 초록 점선=수렴값(Dottie 수). 표의 |xₙ₊₁ − xₙ| 가 tol 아래로 내려가면 while 종료."></div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">while 종료 시점 예측 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · while 조건</div>
+    <p class="prob-statement">다음 반복이 끝났을 때 <code>n</code> 은 얼마인가? $2^n$ 이 <strong>1000 을 처음 넘기는</strong> 최소 $n$ 을 구하는 코드다.</p>
+    <div class="codeblock" style="margin-top:10px"><div class="code-cap">loop.m</div><pre><code>n = 0;
+while 2^n &lt;= 1000
+    n = n + 1;
+end</code></pre></div>
+    <div class="given"><span class="chip">$2^9=512$</span><span class="chip">$2^{10}=1024$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="10" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">추적</div>$$ 2^9 = 512 \le 1000\ (\text{계속}),\qquad 2^{10} = 1024 \gt 1000\ (\text{종료}) $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ n = 10 $$</div><b>정답:</b> 조건 <code>2^n &lt;= 1000</code> 이 거짓이 되는 순간 <code>n=10</code> 에서 반복이 멈춘다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="함정">
+  <div class="eyebrow">2-3 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">반복과 함수에서 막히는 곳</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 무한 루프</h4><p>수렴 조건이 안 맞으면 <code>while</code> 이 안 끝난다. 반드시 <code>iter &lt; max_iter</code> 안전장치를.</p></div>
+    <div class="pitfall"><h4>⚠ 함수명 ≠ 파일명</h4><p><code>function c = fahr2cel(f)</code> 는 <b>fahr2cel.m</b> 으로 저장해야 호출된다.</p></div>
+    <div class="pitfall"><h4>⚠ 사전 할당 누락</h4><p>반복 중 <code>y(i)=...</code> 로 배열을 키우면 느려진다 → <code>zeros</code> 로 미리 확보.</p></div>
+    <div class="pitfall"><h4>⚠ break vs continue</h4><p><code>break</code> 는 <b>완전 탈출</b>, <code>continue</code> 는 <b>이번 회차만</b> 건너뜀 — 헷갈리면 논리 붕괴.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="코드">
+  <div class="eyebrow">2-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">사용자 함수와 익명 함수</h1>
+  <div class="codeblock"><div class="code-cap">my_stats.m &amp; anonymous</div><pre><code><span class="cm">% 다중 출력 함수 — 파일명 = my_stats.m</span>
+function [m, s] = my_stats(data)
+    m = mean(data);        <span class="cm">% 평균</span>
+    s = std(data);         <span class="cm">% 표준편차</span>
+end
+
+<span class="cm">% 호출</span>
+[m, s] = my_stats([10 20 30 40 50]);
+<span class="out">% m = 30,  s = 15.8114</span>
+
+<span class="cm">% 익명 함수 — 파일 없이 한 줄</span>
+f = @(x) x.^2 + 2*x + 1;   <span class="cm">% .^ = 원소별 제곱</span>
+f(3)                        <span class="out">% 16</span>
+f([0 1 2 3])                <span class="out">% [1 4 9 16]</span>
+root = fzero(f, -2);        <span class="cm">% 익명 함수를 fzero 에 전달</span></code></pre></div>
+  <div class="calc"
+    data-title="실험 — 익명 함수 fahr2cel(f) = (f−32)·5/9"
+    data-desc="화씨를 섭씨로 바꾸는 익명 함수. 슬라이더로 입력 f 를 바꿔 결과를 확인한다."
+    data-vars='[{"sym":"f","label":"화씨 f","min":-40,"max":212,"step":1,"val":98.6,"unit":"°F"}]'
+    data-expr="(f-32)*5/9"
+    data-out="c" data-out-unit="°C"
+    data-note="212°F → 100°C(끓는점), 98.6°F → 37°C(체온), 32°F → 0°C(어는점)."></div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">함수 출력 예측 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 익명 함수</div>
+    <p class="prob-statement"><code>f = @(x) x.^2 + 2*x + 1;</code> 일 때 <code>f(3)</code> 의 값은?</p>
+    <div class="given"><span class="chip">$3^2 + 2\cdot3 + 1$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="16" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ f(3) = 9 + 6 + 1 = 16 $$</div><b>정답:</b> $(x+1)^2$ 이므로 $f(3)=4^2=16$.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 노름 함수</div>
+    <p class="prob-statement"><code>function n = my_norm(v); n = sqrt(sum(v.^2)); end</code> 를 <code>my_norm([3 4])</code> 로 호출하면?</p>
+    <div class="given"><span class="chip">$\sqrt{3^2+4^2}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="5" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ \sqrt{9+16} = \sqrt{25} = 5 $$</div><b>정답:</b> 유클리드 노름(벡터 크기).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="정리">
+  <div class="eyebrow">2-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li><code>for</code> = 횟수 고정, <code>while</code> = 수렴까지(수치해석의 심장).</li>
+      <li>종료 조건 2개: <code>error &lt; tol</code> <strong>또는</strong> <code>iter &lt; max_iter</code>.</li>
+      <li>함수 = 재사용 모듈(파일명 일치), 익명 함수 <code>@(x)</code> = 한 줄 정의.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>안전장치 없는 <code>while</code> → 무한 루프.</li>
+      <li>함수명과 파일명 불일치.</li>
+      <li>익명 함수에 <code>.^ .*</code> 안 써서 벡터 입력 실패.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 <code>for/while</code> 반복 후 <strong>변수 최종값</strong> 추적.</li>
+      <li>익명·사용자 함수의 <strong>출력 예측</strong>(벡터 입력 포함).</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 2-4 그래프 시각화 ════════════════════ -->
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="문제">
+  <div class="eyebrow">2-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">숫자를 눈으로 <span class="en">· see the convergence</span></h1>
+  <div class="analogy"><span class="ic">📈</span><div class="tx"><b>직관</b> — 오차가 반복마다 얼마나 주는지, 수치해가 해석해에 얼마나 붙는지는 <b>표보다 그래프</b>가 한눈에 말한다. 특히 로그 스케일 그래프의 <b>기울기</b>는 곧 <b>수렴 차수</b> — 다음 주부터 계속 쓸 무기다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede"><code>plot(x,y)</code> 한 줄로 2D 그래프가 뜬다. 선 스타일·색·마커를 조합하고, <code>hold on</code> 으로 여러 곡선을 겹치며, <code>xlabel/legend/grid</code> 로 보고서용으로 다듬는다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">기본</span><span class="keqline">$\texttt{plot(x, y, 'r--')}$</span></div>
+        <div class="keqrow"><span class="keqcap">겹치기</span><span class="keqline">$\texttt{hold on ... hold off}$</span></div>
+        <div class="keqrow"><span class="keqcap">수렴 분석</span><span class="keqline">$\texttt{loglog}$ 기울기 = 차수 $p$</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">스타일 3요소</div>
+      <div class="terms">
+        <div class="term"><b>색</b> <code>r g b k c m y</code></div>
+        <div class="term"><b>선</b> <code>- -- : -.</code></div>
+        <div class="term"><b>마커</b> <code>o s d ^ *</code></div>
+        <div class="term"><b>조합</b> <code>'ro--'</code> = 빨강·원·파선</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>세 요소를 하나의 문자열로 조합한다 — <code>plot(x,y,'g^:')</code> = 초록 삼각마커 점선.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="원리">
+  <div class="eyebrow">2-4 · 원리 · plot basics</div>
+  <h1 class="stage-h">기본 plot 과 꾸미기</h1>
+  <div class="codeblock"><div class="code-cap">formatted_plot.m</div><pre><code>x = linspace(0, 2*pi, 100);   <span class="cm">% 촘촘한 x 축</span>
+plot(x, sin(x), 'b-', 'LineWidth', 2);   <span class="cm">% 파란 실선</span>
+hold on;                                   <span class="cm">% 겹치기 시작</span>
+plot(x, cos(x), 'r--', 'LineWidth', 2);  <span class="cm">% 빨간 파선</span>
+hold off;                                  <span class="cm">% 겹치기 종료</span>
+
+xlabel('x (rad)');   ylabel('f(x)');       <span class="cm">% 축 이름</span>
+title('Sine &amp; Cosine');                    <span class="cm">% 제목</span>
+legend('sin(x)', 'cos(x)');                <span class="cm">% 범례</span>
+grid on;   axis([0 2*pi -1.2 1.2]);       <span class="cm">% 격자 · 축 범위</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">subplot</div><code>subplot(m,n,p)</code> 로 한 창을 $m\times n$ 격자로 나눠 $p$ 번째 칸에 그린다 — 여러 결과를 나란히 비교할 때.</div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="시연">
+  <div class="eyebrow">2-4 · 시연 · Log scale</div>
+  <h1 class="stage-h">로그 스케일 — 수렴 차수가 기울기로 보인다</h1>
+  <p class="lede">스텝 $h$ 를 줄이며 오차를 재고 <code>loglog(h, err)</code> 로 그리면 <strong>직선</strong>이 나온다. 그 <strong>기울기가 곧 수렴 차수 $p$</strong>($\text{err}\sim h^p$). 아래 표는 $h$ 를 절반씩 줄일 때 오차가 어떻게 주는지다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="algo">
+        <div class="algo-h">수렴 차수 읽기</div>
+        <ol>
+          <li>여러 $h$ 에서 오차 $\text{err}$ 를 측정한다.</li>
+          <li><code>loglog(h, err)</code> 로 그린다(양축 로그).</li>
+          <li>직선의 <b>기울기</b> = 수렴 차수 $p$.</li>
+          <li>$h$ 절반 → 오차 $1/2^p$ 로 감소.</li>
+        </ol>
+      </div>
+      <div class="callout key"><div class="ct">해석</div>기울기 $p=2$ 면 2차 수렴 $O(h^2)$ — $h$ 를 절반으로 줄이면 오차가 <strong>1/4</strong>. Newton·Simpson이 여기 해당.</div>
+    </div>
+    <div>
+      <div class="vcap">$h$ 절반 → 오차(기울기 $p=2$)</div>
+      <table class="ktab"><thead><tr><th>스텝 $h$</th><th>오차 err</th><th>비율</th></tr></thead><tbody>
+        <tr><td>0.1</td><td>0.0320</td><td>—</td></tr>
+        <tr><td>0.05</td><td>0.0080</td><td>1/4</td></tr>
+        <tr><td>0.025</td><td>0.0020</td><td>1/4</td></tr>
+        <tr><td>0.0125</td><td>0.0005</td><td>1/4</td></tr>
+      </tbody></table>
+      <div class="keqnote">$h$ 를 반으로 줄일 때마다 오차가 $1/4$ → $\log$-$\log$ 기울기 2 → $O(h^2)$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">수렴 차수 예측 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 로그 기울기</div>
+    <p class="prob-statement">스텝 $h$ 를 <strong>절반</strong>으로 줄였더니 오차가 <strong>$1/4$</strong> 로 줄었다. <code>loglog</code> 그래프의 기울기, 즉 수렴 차수 $p$ 는? ($\text{err}\sim h^p$)</p>
+    <div class="given"><span class="chip">$\tfrac14 = \left(\tfrac12\right)^p$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="2" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">방정식</div>$$ \frac{1}{4} = \left(\frac{1}{2}\right)^{p} \;\Rightarrow\; 2^{-2} = 2^{-p} $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ p = 2 $$</div><b>정답:</b> 2차 수렴 $O(h^2)$. 오차가 $1/2$ 로 줄면 $p=1$(1차), $1/8$ 로 줄면 $p=3$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="함정">
+  <div class="eyebrow">2-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">그래프에서 자주 놓치는 것</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ hold on 누락</h4><p><code>hold on</code> 없이 다시 <code>plot</code> 하면 이전 곡선이 <b>덮어써진다</b>.</p></div>
+    <div class="pitfall"><h4>⚠ 성긴 x 축</h4><p><code>x=0:1:10</code> 처럼 성기면 곡선이 각져 보인다 → <code>linspace(0,10,200)</code>.</p></div>
+    <div class="pitfall"><h4>⚠ 잘못된 스케일</h4><p>지수적으로 주는 오차는 일반 <code>plot</code> 에선 안 보인다 → <code>semilogy</code>.</p></div>
+    <div class="pitfall"><h4>⚠ legend 순서</h4><p><code>legend</code> 이름은 <b>plot 호출 순서</b>와 같아야 한다 — 어긋나면 오해.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="코드">
+  <div class="eyebrow">2-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">수치해 vs 해석해 겹쳐 그리기</h1>
+  <div class="codeblock"><div class="code-cap">euler_plot.m</div><pre><code><span class="cm">% dy/dx = -y,  y(0)=1  →  해석해 y = e^(-x)</span>
+h = 0.5;   x_end = 4;   N = x_end / h;
+x = zeros(1, N+1);   y = zeros(1, N+1);   y(1) = 1;
+
+for i = 1:N                       <span class="cm">% Euler 반복</span>
+    x(i+1) = x(i) + h;
+    y(i+1) = y(i) + h*(-y(i));    <span class="cm">% 다음 값 예측</span>
+end
+
+xe = linspace(0, x_end, 200);
+plot(xe, exp(-xe), 'c-', 'LineWidth', 2);  <span class="cm">% 해석해(실선)</span>
+hold on;
+plot(x, y, 'o--', 'Color', [1 .5 0]);       <span class="cm">% 수치해(주황 점)</span>
+hold off;
+xlabel('x');   ylabel('y(x)');
+legend('Exact: e^{-x}', 'Euler (h=0.5)');
+grid on;</code></pre></div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">이어지는 주</div>이 그림에서 <strong>주황 점(수치해)이 청록 곡선(해석해)에서 벗어나는 폭</strong>이 곧 오차다. $h$ 를 줄이면 붙는다 — 이것을 정량화하는 것이 다음 주제(미분방정식·오차 해석)다.</div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">그래프·벡터 예측 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 1차 수렴 판정</div>
+    <p class="prob-statement">$h$ 를 절반으로 줄였더니 오차도 <strong>절반</strong>($1/2$)으로 줄었다. 수렴 차수 $p$ 는?</p>
+    <div class="given"><span class="chip">$\tfrac12 = \left(\tfrac12\right)^p$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="1" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ p = 1 $$</div><b>정답:</b> 1차 수렴 $O(h)$ — Euler 방법이 여기 해당(느림).</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · linspace</div>
+    <p class="prob-statement"><code>s = linspace(0, 1, 5)</code> 의 <strong>4번째 원소 $s(4)$</strong> 는? (0~1 을 5개로 등분)</p>
+    <div class="given"><span class="chip">$[0,\ 0.25,\ 0.5,\ 0.75,\ 1]$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.75" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ s(4) = 0.75 $$</div><b>정답:</b> 간격 $1/4=0.25$, 1-based 이므로 4번째 = $0.75$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="정리">
+  <div class="eyebrow">2-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li><code>plot(x,y,'스타일')</code> + <code>hold on</code> + <code>xlabel/legend/grid</code>.</li>
+      <li>스타일 = 색·선·마커 조합 문자열(<code>'ro--'</code>).</li>
+      <li><code>loglog</code> 기울기 = 수렴 차수 $p$, <code>semilogy</code> = 지수 수렴.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li><code>hold on</code> 없이 곡선 덮어쓰기.</li>
+      <li>성긴 $x$ 축으로 각진 곡선.</li>
+      <li><code>legend</code> 순서와 plot 순서 불일치.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>오차-스텝 표에서 <strong>수렴 차수 $p$ 판정</strong>($h$ 절반 → 오차 비율).</li>
+      <li>수치해 vs 해석해 그래프에서 <strong>오차의 의미</strong> 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=2;</script>
+<script src="/na-track.js" defer></script>
+</body></html>

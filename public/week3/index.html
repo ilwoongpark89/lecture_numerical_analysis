@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 3 · Errors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 3</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 3 · Errors</div>
+    <h1 class="intro-h">$0.1 + 0.2 = 0.3$ — <span class="hl">컴퓨터는 왜 이걸 틀리는가?</span></h1>
+    <p class="intro-sub">MATLAB 에 $0.1+0.2==0.3$ 을 물어보면 <strong>거짓(0)</strong> 이 나온다. 버그가 아니다. 컴퓨터는 실수를 <strong>유한한 비트</strong>로만 저장하기 때문에, 대부분의 실수를 <strong>정확히 담을 수 없다.</strong> 그 미세한 어긋남이 계산을 거치며 자라난다.</p>
+    <div class="intro-teaser">답 — <em>모든 수치 계산에는 오차가 있다.</em> 이번 주는 오차가 <em>어디서 생기고</em>, <em>얼마나 커지며</em>, <em>어떻게 통제하는지</em> 를 직접 계산하고 슬라이더로 돌려본다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 3 · 이번 주 여정</div>
+    <h1 class="intro-h">수를 <span class="hl">저장하고 · 자르고 · 전파시킨다</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">3-1</span><span><span class="rt">부동소수점 표현</span> <span class="rd">— IEEE 754, 유한 비트로 실수를 담는 방식과 그 한계</span></span></div>
+      <div class="rm-item"><span class="rn">3-2</span><span><span class="rt">머신 엡실론과 반올림</span> <span class="rd">— $\varepsilon_{\text{mach}}=2^{-52}$, 저장할 때마다 생기는 오차</span></span></div>
+      <div class="rm-item"><span class="rn">3-3</span><span><span class="rt">Taylor 급수와 절단오차</span> <span class="rd">— 무한 급수를 유한 항에서 자를 때의 오차</span></span></div>
+      <div class="rm-item"><span class="rn">3-4</span><span><span class="rt">오차 전파와 수렴차수</span> <span class="rd">— 입력 오차가 출력으로 번지는 법, 방법의 속도 측정</span></span></div>
+    </div>
+    <div class="intro-teaser">두 개의 오차 — <em>반올림(컴퓨터의 한계)</em> 과 <em>절단(알고리즘의 한계)</em> — 이 어떻게 다르고, 언제 어느 쪽이 지배하는지 를 관통 주제로 삼는다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 학습법 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 3 · 개념은 "직접 재봐야" 안다</div>
+    <h1 class="intro-h">각 주제를 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">직접 잰다</div><ul><li><strong>시연</strong>: 슬라이더로 비트 수·항 수·스텝 $h$ 를 바꿔 오차가 어떻게 변하는지 눈으로 본다.</li><li><strong>직접계산</strong>: 비트열↔십진, 상대오차를 손으로 계산해 넣고 채점받는다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: 비슷한 두 수를 빼서 유효숫자가 <em>날아가는</em> 상쇄 오차를 확인한다.</li><li>왜 "$h$ 를 무작정 줄이면 오히려 오차가 커지는지" 를 몸으로 안다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 3-1 부동소수점 표현 ════════════════════ -->
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="문제">
+  <div class="eyebrow">3-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">무한한 실수를 유한한 상자에 <span class="en">· Finite bits, infinite reals</span></h1>
+  <div class="analogy"><span class="ic">📦</span><div class="tx"><b>직관</b> — 실수는 수직선 위에 <b>빈틈없이</b> 놓여 있지만, 컴퓨터의 상자(64비트)는 칸이 <b>유한개</b>뿐이다. 담고 싶은 수가 칸 사이에 떨어지면, <b>가장 가까운 칸</b>으로 밀어 넣는다 — 그 밀어낸 거리가 오차다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">십진수 $0.1$ 조차 이진수로는 <strong>무한 반복소수</strong>($0.0\overline{0011}_2$)라 정확히 저장할 수 없다. IEEE 754 는 실수를 <strong>부호·지수·가수</strong> 세 조각으로 나눠 담는데, 이것이 모든 <strong>반올림 오차</strong>의 근원이다.</p>
+      <div class="keqbox">
+        <div class="keq-label">Double precision (64-bit)</div>
+        <div class="keqrow"><span class="keqcap">표현식</span><span class="keqline">$ (-1)^{s}\times 1.f \times 2^{(e-1023)} $</span></div>
+        <div class="keqrow"><span class="keqcap">비트 배분</span><span class="keqline">부호 $1$ · 지수 $11$ · 가수 $52$</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>부호 $s$</b> 양수(0)/음수(1), 1비트</div>
+        <div class="term"><b>지수 $e$</b> $2$ 의 거듭제곱, bias $1023$</div>
+        <div class="term"><b>가수 $f$</b> 유효숫자, hidden bit 포함 53비트</div>
+        <div class="term"><b>정규화</b> $1.xxx \times 2^k$ 형태로 통일</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>과학적 표기법 $\pm M\times\beta^{E}$ 과 같은 원리다. 밑을 $\beta=2$ 로 쓰고, 세 조각을 각각 비트로 저장한다 — 유효숫자가 유한하므로 <strong>정확한 저장은 예외</strong>다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="원리">
+  <div class="eyebrow">3-1 · 원리 · Encoding</div>
+  <h1 class="stage-h">8비트 미니플롯으로 원리를 — 인코딩 절차</h1>
+  <p class="assume"><b>아이디어:</b> 64비트는 감이 안 잡히니 <b>8비트 미니 부동소수점</b>(부호 1 · 지수 4 · 가수 3, bias 7)으로 축소해 인코딩 규칙을 본다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 이진 변환</h4><div class="sub">정수부·소수부 분리</div><div class="eq">$ 5.5 = 101.1_2 $</div><p>정수 $5=101_2$, 소수 $0.5=0.1_2$ 를 합친다.</p></div>
+    <div class="dcard"><h4>② 정규화</h4><div class="sub">$1.xxx\times 2^k$ 로</div><div class="eq">$ 101.1_2 = 1.011_2\times 2^{2} $</div><p>맨 앞 $1$ 은 항상 있으므로 저장 안 함(hidden bit).</p></div>
+    <div class="dcard"><h4>③ 필드 채우기</h4><div class="sub">$S,E,M$ 결정</div><div class="eq">$ S{=}0,\; E{=}2{+}7{=}9,\; M{=}011 $</div><p>지수는 bias $7$ 을 더해 저장.</p></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">검산</div>$ (-1)^0\times 1.011_2\times 2^{9-7} = 1.375\times 4 = 5.5 $ ✓ — 세 필드를 다시 조립하면 원래 값이 복원된다. 이 규칙은 32비트·64비트에서 비트 수만 늘 뿐 동일하다.</div>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="시연">
+  <div class="eyebrow">3-1 · 시연 · Try it</div>
+  <h1 class="stage-h">수가 커지면 간격이 벌어진다 — 직접 재보기</h1>
+  <p class="lede">부동소수점은 <strong>고정 간격 격자가 아니다.</strong> 가수 비트가 정해져 있어 각 $2$ 배 구간마다 <strong>같은 개수</strong>($2^3=8$개)의 수만 담긴다 → 값이 커질수록 이웃한 두 수 사이 간격(ULP)이 벌어진다. 슬라이더로 값 $v$ 를 키워 간격이 어떻게 커지는지 확인하라.</p>
+  <div class="calc"
+    data-title="8비트 미니플롯 — 값의 크기에 따른 표현 간격(ULP)"
+    data-desc="가수 3비트 시스템에서 값 v 근처의 간격 = 2^(⌊log₂ v⌋ − 3). v 를 키우면 간격이 넓어진다."
+    data-vars='[{"sym":"v","label":"값 v","min":0.5,"max":240,"step":0.5,"val":1}]'
+    data-expr="Math.pow(2, Math.floor(Math.log2(v)) - 3)"
+    data-out="간격 (ULP)"
+    data-note="v=1~2: 간격 0.125 · v=64~128: 간격 8 · v=128~240: 간격 16. 절대 간격은 커지지만 상대 간격(간격/값)은 대략 일정(2⁻³) — 이것이 부동소수점의 핵심 성질이다.">
+  </div>
+  <div class="vcap" style="margin-top:16px">각 구간의 표현 밀도 (미니플롯)</div>
+  <table class="ktab"><thead><tr><th>구간</th><th>표현 가능한 수</th><th>수 사이 간격</th><th>예시</th></tr></thead><tbody>
+    <tr><td>$1 \sim 2$</td><td>8개</td><td>$0.125$</td><td>1.0, 1.125, 1.25, …, 1.875</td></tr>
+    <tr><td>$4 \sim 8$</td><td>8개</td><td>$0.5$</td><td>4.0, 4.5, 5.0, …, 7.5</td></tr>
+    <tr><td>$64 \sim 128$</td><td>8개</td><td>$8$</td><td>64, 72, 80, …, 120</td></tr>
+    <tr><td>$128 \sim 240$</td><td>8개</td><td>$16$</td><td>128, 144, …, 240 (130·135 표현 불가!)</td></tr>
+  </tbody></table>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">비트열 ↔ 십진 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 지수 필드 구하기</div>
+    <p class="prob-statement">8비트 미니플롯(bias $7$)으로 $5.5$ 를 표현한다. $5.5 = 1.011_2\times 2^{2}$ 로 정규화했을 때, 저장되는 <strong>지수 필드 $E$ 의 십진값</strong>을 구하시오. (실제 지수에 bias 를 더한다)</p>
+    <div class="given"><span class="chip">실제 지수 $=2$</span><span class="chip">$E = \text{지수} + \text{bias}$</span><span class="chip">bias $=7$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="9" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 정규화 지수</div>$$ 5.5 = 101.1_2 = 1.011_2\times 2^{2}\;\Rightarrow\;\text{지수}=2 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · bias 더하기</div>$$ E = 2 + 7 = 9 = 1001_2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ E = 9 $$</div><b>정답:</b> 전체 비트열은 $\;0\;1001\;011\;$ ($S{=}0$, $E{=}1001$, $M{=}011$). bias 를 쓰는 이유는 음의 지수도 부호 없는 정수 하나로 저장하기 위해서다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="함정">
+  <div class="eyebrow">3-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">부동소수점이 배신하는 순간</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 유한 십진수도 무한 이진수</h4><p>$0.1_{10}=0.0\overline{0011}_2$ 로 <b>무한 반복</b>. 잘려 저장되어 $0.1+0.2\neq0.3$ 이 된다. $==$ 비교 금물.</p></div>
+    <div class="pitfall"><h4>⚠ 큰 수는 정수도 못 담는다</h4><p>간격이 값에 비례해 커진다. $10^{16}$ 근처에선 간격이 $\gt 1$ 이라 이웃 정수조차 표현 불가.</p></div>
+    <div class="pitfall"><h4>⚠ Overflow / Underflow</h4><p>$\text{realmax}$ 초과 → $\infty$, $\text{realmin}$ 미만 → 비정규화수 거쳐 $0$ 으로 소멸.</p></div>
+    <div class="pitfall"><h4>⚠ NaN 은 수직선에 없다</h4><p>$0/0$, $\infty-\infty$ 는 $\texttt{NaN}$. $\texttt{NaN}\neq\texttt{NaN}$ 이라 비교로도 못 걸러낸다($\texttt{isnan}$ 사용).</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="코드">
+  <div class="eyebrow">3-1 · 코드 · MATLAB</div>
+  <h1 class="stage-h">직접 확인 — 저장된 진짜 값 들여다보기</h1>
+  <div class="codeblock"><div class="code-cap">floating_point.m</div><pre><code><span class="cm">% 0.1 + 0.2 는 정말 0.3 인가?</span>
+format long
+a = 0.1 + 0.2;
+disp(a)                <span class="out">% 0.300000000000000</span>
+disp(a == 0.3)         <span class="out">% 0   (false!)</span>
+fprintf('차이 = %.2e\n', a - 0.3)   <span class="out">% 5.55e-17</span>
+
+<span class="cm">% 표현 한계 상수</span>
+disp(eps)              <span class="out">% 2.2204e-16   (= 2^-52)</span>
+disp(realmin)          <span class="out">% 2.2251e-308  가장 작은 정규화 양수</span>
+disp(realmax)          <span class="out">% 1.7977e+308  가장 큰 유한수</span>
+
+<span class="cm">% 32비트 single 로 담으면 정밀도가 줄어든다</span>
+x = single(3.14);
+class(x)               <span class="out">% 'single'</span>
+disp(0/0)              <span class="out">% NaN</span>
+disp(1/0)              <span class="out">% Inf</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">실무 규칙</div>부동소수점은 <strong>$==$ 로 비교하지 않는다.</strong> 대신 $ \texttt{abs(a-b)} \lt \texttt{tol} $ 로 허용오차 안인지 확인한다.</div>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">비트열 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 최대 유한수</div>
+    <p class="prob-statement">8비트 미니플롯의 최대 유한수는 $1.111_2\times 2^{7}$ 이다. 이 값을 <strong>십진수</strong>로 구하시오. ($1.111_2=1.875$)</p>
+    <div class="given"><span class="chip">$1.111_2 = 1.875$</span><span class="chip">$2^{7}=128$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="240" data-tol="0.5"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 1.875\times 128 = 240 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ = 240 $$</div><b>정답:</b> $240$ 초과는 $\infty$ (overflow). 64비트에선 이 한계가 $\approx1.8\times10^{308}$ 로 커질 뿐 구조는 같다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 저장된 근사값</div>
+    <p class="prob-statement">$0.1$ 을 8비트(가수 3비트)로 저장하면 $1.100_2\times 2^{-4}$ 로 잘린다. 실제 <strong>저장된 십진값</strong>을 구하시오. ($1.100_2=1.5$)</p>
+    <div class="given"><span class="chip">$1.100_2=1.5$</span><span class="chip">$2^{-4}=0.0625$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.09375" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 1.5\times 0.0625 = 0.09375 $$</div>
+      <div class="ans-final"><b>정답:</b> $0.09375$ — 원래 $0.1$ 과 $0.00625$ 차이(6.25% 오차!). 64비트에선 오차가 $\sim10^{-17}$ 로 작지만 <strong>0 은 아니다.</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="정리">
+  <div class="eyebrow">3-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>IEEE 754: $(-1)^s\times 1.f\times 2^{e-\text{bias}}$ — 부호·지수·가수 세 조각.</li>
+      <li>정규화의 hidden bit($1.$) 는 저장 안 함 → 가수 유효 비트 $+1$.</li>
+      <li>값이 커질수록 표현 <strong>간격(ULP)</strong> 이 벌어진다(상대 간격은 일정).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$0.1$ 같은 유한 십진수가 이진수로도 유한하다고 착각.</li>
+      <li>부동소수점을 $==$ 로 직접 비교.</li>
+      <li>bias 를 빼먹거나 반대로 더함.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 십진수를 <strong>비트열로 인코딩</strong>(정규화 → $S,E,M$).</li>
+      <li>비트열을 <strong>십진수로 디코딩</strong>·검산.</li>
+      <li>overflow / underflow / NaN 발생 조건 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 3-2 머신 엡실론과 반올림 ════════════════════ -->
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="문제">
+  <div class="eyebrow">3-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">1 옆의 가장 가까운 수는? <span class="en">· Machine epsilon</span></h1>
+  <div class="analogy"><span class="ic">📏</span><div class="tx"><b>직관</b> — 자의 눈금이 $1\text{mm}$ 면 그보다 작은 길이 차이는 못 읽는다. 컴퓨터의 "눈금 간격" 이 <b>머신 엡실론</b>이다. $1.0$ 에 이보다 작은 수를 더하면 <b>흔적도 없이 사라진다.</b></div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">머신 엡실론 $\varepsilon_{\text{mach}}$ 은 $\text{fl}(1+\varepsilon)\neq 1$ 을 만족하는 <strong>가장 작은 양수</strong> — 즉 $1$ 과 그 다음 표현 가능한 수 사이의 <strong>간격</strong>이다. 모든 반올림 오차의 크기를 정하는 상수다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">정의</span><span class="keqline">$ \varepsilon_{\text{mach}} = 2^{-t}\;(t=\text{가수 비트}) $</span></div>
+        <div class="keqrow"><span class="keqcap">64비트</span><span class="keqline">$ 2^{-52}\approx 2.22\times10^{-16} $</span></div>
+        <div class="keqrow"><span class="keqcap">반올림 상한</span><span class="keqline">$ E_{\text{rel}} \le \dfrac{\varepsilon_{\text{mach}}}{2} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">두 오차 · 두 개념</div>
+      <div class="terms">
+        <div class="term"><b>절단 오차</b> 알고리즘의 한계 = Accuracy</div>
+        <div class="term"><b>반올림 오차</b> 컴퓨터의 한계 = Precision</div>
+        <div class="term"><b>절대 오차</b> $|x-\text{fl}(x)|$</div>
+        <div class="term"><b>상대 오차</b> $|x-\text{fl}(x)|/|x|$</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>정밀도를 높이면(double→quad) <strong>반올림</strong> 오차는 줄지만 <strong>절단</strong> 오차는 그대로다. 둘을 혼동하면 엉뚱한 방향으로 노력을 낭비한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="원리">
+  <div class="eyebrow">3-2 · 원리 · Half-ULP</div>
+  <h1 class="stage-h">반올림 경계는 간격의 절반 — 알고리즘</h1>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$1.0$ 과 다음 수 $1+\varepsilon_{\text{mach}}$ 사이의 <strong>중간점</strong>이 반올림 경계다. 더하는 값이 $\varepsilon_{\text{mach}}/2$ 보다 작으면 $1.0$ 에 더 가까워 <strong>흡수</strong>되고, 크면 위 칸으로 올림된다. 그래서 상대 오차 상한이 $\varepsilon_{\text{mach}}/2$ 다.</p>
+      <div class="algo">
+        <div class="algo-h">$\varepsilon_{\text{mach}}$ 를 직접 구하는 halving 알고리즘</div>
+        <ol>
+          <li>$e \leftarrow 1$ 로 시작한다.</li>
+          <li>$(1+e)\gt 1$ 인 동안 <b>$e \leftarrow e/2$</b> 로 절반씩 줄인다.</li>
+          <li>루프가 멈추면 $e$ 는 너무 작아진 상태 → <b>$e\leftarrow e\times2$</b> 로 마지막 구별값 복원.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">halving 반복 (8비트 아님, double 기준)</div>
+      <table class="ktab"><thead><tr><th>Step</th><th>$e$</th><th>$1+e$</th><th>$\gt 1$?</th></tr></thead><tbody>
+        <tr><td>1</td><td>$1$</td><td>$2$</td><td>Yes</td></tr>
+        <tr><td>2</td><td>$0.5$</td><td>$1.5$</td><td>Yes</td></tr>
+        <tr><td>$\cdots$</td><td>$\cdots$</td><td>$\cdots$</td><td>Yes</td></tr>
+        <tr><td>53</td><td>$2^{-52}$</td><td>$1{+}2^{-52}$</td><td>Yes</td></tr>
+        <tr><td>54</td><td>$2^{-53}$</td><td>$1.0$</td><td>No ✗</td></tr>
+      </tbody></table>
+      <div class="keqnote">Step 54 에서 $1+e$ 가 $1$ 로 반올림되어 종료. 복원하면 $e=2^{-52}=\varepsilon_{\text{mach}}$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="시연">
+  <div class="eyebrow">3-2 · 시연 · Try it</div>
+  <h1 class="stage-h">가수 비트를 바꿔 $\varepsilon_{\text{mach}}$ 재보기</h1>
+  <p class="lede">머신 엡실론은 오직 <strong>가수 비트 수 $t$</strong> 로만 결정된다 — $\varepsilon_{\text{mach}}=2^{-t}$. 슬라이더로 $t$ 를 바꿔, 비트가 늘수록 간격이 반씩 줄어드는 것을 확인하라. $t=3$(8비트) → $0.125$, $t=52$(64비트) → $\approx2.22\times10^{-16}$.</p>
+  <div class="calc"
+    data-title="머신 엡실론 — 가수 비트 t 에 따른 2⁻ᵗ"
+    data-desc="가수(mantissa)가 t 비트면 1 다음 표현 가능한 수와의 간격 = 2⁻ᵗ 이 곧 머신 엡실론이다."
+    data-vars='[{"sym":"t","label":"가수 비트 수 t","min":1,"max":52,"step":1,"val":52}]'
+    data-expr="Math.pow(2, -t)"
+    data-out="ε_mach = 2⁻ᵗ"
+    data-note="t=3 (8비트 미니): 0.125 · t=23 (32비트 single): ≈1.19e-7 · t=52 (64비트 double): ≈2.22e-16. 비트가 1 늘면 엡실론은 정확히 절반이 된다.">
+  </div>
+  <div class="callout key" style="margin-top:8px"><div class="ct">읽는 법</div>$\varepsilon_{\text{mach}}$ 은 "$1.0$ 에 더해서 구별되는 최소값" 이다. $t=52$ 에서 $1+2^{-53}$ 은 다시 $1$ 로 반올림되어 사라진다 — 이 흡수가 반올림 오차의 실체다.</div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">상대 오차 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 8비트 시스템의 엡실론</div>
+    <p class="prob-statement">가수 $3$ 비트인 8비트 미니 시스템의 머신 엡실론 $\varepsilon_{\text{mach}}=2^{-3}$ 을 <strong>십진수</strong>로 구하시오.</p>
+    <div class="given"><span class="chip">$\varepsilon_{\text{mach}}=2^{-t}$</span><span class="chip">$t=3$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.125" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 2^{-3} = \frac{1}{8} = 0.125 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \varepsilon_{\text{mach}} = 0.125 $$</div><b>정답:</b> $1\sim2$ 구간 간격($0.125$)과 정확히 같다. 상대 오차 상한은 그 절반 $0.0625$ 이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="함정">
+  <div class="eyebrow">3-2 · 함정 · Break it</div>
+  <h1 class="stage-h">상쇄 오차 — 비슷한 두 수를 빼면 무너진다</h1>
+  <p class="lede">거의 같은 크기의 두 수를 빼면 유효 자릿수가 <strong>급격히 사라진다</strong>(catastrophic cancellation). 반올림 오차 자체는 작아도, 뺄셈이 그 오차를 <strong>상대적으로 거대하게</strong> 키운다.</p>
+  <div class="two">
+    <div class="col2">
+      <div class="keqbox">
+        <div class="keq-label">유효숫자 5자리 산술</div>
+        <div class="keqrow"><span class="keqcap"></span><span class="keqline">$ 1.23456\times10^{5} $</span></div>
+        <div class="keqrow"><span class="keqcap">$-$</span><span class="keqline">$ 1.23447\times10^{5} $</span></div>
+        <div class="keqrow"><span class="keqcap">$=$</span><span class="keqline">$ 9.0000\times10^{0} $</span></div>
+      </div>
+      <div class="callout warn"><div class="ct">유효숫자 붕괴</div>입력은 $5$ 자리였는데 결과는 <strong>$1$ 자리</strong>만 믿을 수 있다. 나머지 자리는 <strong>무의미한 잡음</strong>이다.</div>
+    </div>
+    <div class="col2">
+      <div class="pitfalls" style="grid-template-columns:1fr;">
+        <div class="pitfall"><h4>⚠ 근의 공식</h4><p>$b^2\gg4ac$ 이면 $-b+\sqrt{b^2-4ac}\approx0$ 에서 상쇄. $\to$ 대안 $\dfrac{-2c}{b+\sqrt{b^2-4ac}}$ 로 회피.</p></div>
+        <div class="pitfall"><h4>⚠ 미분의 차분</h4><p>$f(x+h)-f(x)$ 도 $h$ 가 작으면 상쇄 → 다음 절 "최적 $h$" 로 이어진다.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="코드">
+  <div class="eyebrow">3-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 엡실론 계산과 상쇄 회피</h1>
+  <div class="codeblock"><div class="code-cap">machine_eps.m</div><pre><code><span class="cm">% halving 으로 머신 엡실론 직접 구하기</span>
+e = 1;
+while (1 + e) &gt; 1
+    e = e / 2;
+end
+e = e * 2;                    <span class="cm">% 마지막 구별값 복원</span>
+fprintf('eps = %.4e\n', e);   <span class="out">% 2.2204e-16</span>
+disp(e == eps)                <span class="out">% 1  (내장 eps 와 일치)</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">cancellation.m — 상쇄 오차 회피</div><pre><code>a = 1; b = -1e8; c = 1;
+disc = sqrt(b^2 - 4*a*c);
+x_big  = (-b + disc) / (2*a);      <span class="cm">% 큰 근 (안정)</span>
+x_bad  = (-b - disc) / (2*a);      <span class="cm">% 작은 근 — 상쇄!</span>
+x_good = c / (a * x_big);          <span class="cm">% Vieta: x1*x2 = c/a</span>
+fprintf('나쁜 방법: %.3e\n', x_bad);   <span class="out">% 1.11e-08  (오차 ~11%)</span>
+fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">오차 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 상쇄 뺄셈</div>
+    <p class="prob-statement">유효숫자 5자리 산술에서 $1.23456\times10^{5} - 1.23447\times10^{5}$ 를 계산하시오. 결과를 <strong>보통 십진수</strong>로 쓰라.</p>
+    <div class="given"><span class="chip">$0.00009\times10^{5}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="9" data-tol="0.1"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ (1.23456-1.23447)\times10^{5} = 0.00009\times10^{5} = 9 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ = 9 $$</div><b>정답:</b> $9$. 입력 $5$ 자리 → 결과는 유효숫자 $1$ 자리로 붕괴(상쇄 오차).</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 남은 유효숫자</div>
+    <p class="prob-statement">위 뺄셈의 결과가 신뢰할 수 있는 <strong>유효숫자는 몇 자리</strong>인가?</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="1" data-tol="0.0"/><span class="ans-unit">자리</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ 1\;\text{자리} $$</div><b>정답:</b> 앞 4자리가 상쇄되어 $9$ 한 자리만 남는다. 이래서 "비슷한 수의 뺄셈" 을 피하도록 식을 재구성한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="정리">
+  <div class="eyebrow">3-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$\varepsilon_{\text{mach}}=2^{-t}$ — double 은 $2^{-52}\approx2.2\times10^{-16}$.</li>
+      <li>모든 부동소수점 변환의 상대 오차 $\le \varepsilon_{\text{mach}}/2$.</li>
+      <li>Accuracy(절단) ≠ Precision(반올림) — 원인·해결법이 다르다.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>halving 후 $\times2$ 복원 단계 누락.</li>
+      <li>비슷한 두 수를 빼는 식을 그대로 사용(상쇄).</li>
+      <li>절대 오차와 상대 오차 혼동.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$t$ 비트 시스템의 $\varepsilon_{\text{mach}}=2^{-t}$ 계산.</li>
+      <li>상대 오차 상한 $\varepsilon_{\text{mach}}/2$ 유도·적용.</li>
+      <li>근의 공식에서 <strong>상쇄 회피 식</strong> 유도.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 3-3 Taylor 급수와 절단오차 ════════════════════ -->
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="문제">
+  <div class="eyebrow">3-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">무한 급수를 유한 항에서 자른다 <span class="en">· Truncation error</span></h1>
+  <div class="analogy"><span class="ic">✂️</span><div class="tx"><b>직관</b> — $e^x=1+x+\tfrac{x^2}{2!}+\cdots$ 는 <b>무한히</b> 더해야 정확하다. 컴퓨터는 유한 항에서 <b>싹둑 자른다</b>. 잘라낸 나머지가 곧 <b>절단 오차</b> — 반올림과 달리 <b>비트 수와 무관</b>하고 알고리즘이 정한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">함수를 $x_i$ 근방에서 다항식으로 근사하는 것이 Taylor 급수다. $n$ 차까지만 쓰고 나머지($R_n$)를 버리면 정확도가 떨어지는데, 그 버린 양을 <strong>정량적으로 추정</strong>할 수 있다.</p>
+      <div class="keqbox">
+        <div class="keq-label">Taylor 전개 (스텝 $h$)</div>
+        <div class="keqrow"><span class="keqcap">전개식</span><span class="keqline">$ f(x_i{+}h)=f(x_i)+f'(x_i)h+\dfrac{f''(x_i)}{2!}h^2+\cdots $</span></div>
+        <div class="keqrow"><span class="keqcap">나머지 항</span><span class="keqline">$ R_n=\dfrac{f^{(n+1)}(\xi)}{(n+1)!}\,h^{n+1} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>스텝 $h$</b> $x_{i+1}-x_i$, 전개 거리</div>
+        <div class="term"><b>$R_n$</b> $n$ 차 이후 버린 나머지</div>
+        <div class="term"><b>$\xi$</b> 구간 내 어떤 값(존재만 보장)</div>
+        <div class="term"><b>차수 $O(h^{n+1})$</b> 오차가 $h$ 에 따르는 규모</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>$\xi$ 의 정확한 값은 몰라도, $f^{(n+1)}$ 의 최댓값으로 <strong>오차의 상한</strong>을 잡는다. 그리고 오차 규모는 항상 $h^{n+1}$ 에 비례한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="원리">
+  <div class="eyebrow">3-3 · 원리 · Remainder</div>
+  <h1 class="stage-h">평균값 정리에서 나머지 항까지 — 유도</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① 평균값 정리</h4><div class="sub">$n=0$ 특수형</div><div class="eq">$ f(b)-f(a)=f'(\xi)(b-a) $</div><p>할선 기울기와 같은 접선 기울기의 점 $\xi$ 가 반드시 존재.</p></div>
+    <div class="dcard"><h4>② 고차 일반화</h4><div class="sub">Taylor 나머지 정리</div><div class="eq">$ R_n=\dfrac{f^{(n+1)}(\xi)}{(n+1)!}h^{n+1} $</div><p>MVT 를 고차 도함수로 확장한 형태.</p></div>
+    <div class="dcard"><h4>③ 상한 잡기</h4><div class="sub">$\xi$ 는 몰라도 됨</div><div class="eq">$ |R_n|\le \dfrac{\max|f^{(n+1)}|}{(n+1)!}h^{n+1} $</div><p>도함수 최댓값으로 오차 상한.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">왜 첫 버린 항이 지배하나</div>$h\lt1$ 이면 $h^2\gg h^3\gg h^4$ 이고 분모 $n!$ 이 커져, 버린 나머지 중 <strong>첫 항</strong>($h^{n+1}$ 포함)이 전체의 대부분을 차지한다. 그래서 $n$ 차 근사의 절단 오차를 $O(h^{n+1})$ 로 표기한다.</div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="시연">
+  <div class="eyebrow">3-3 · 시연 · Try it</div>
+  <h1 class="stage-h">항을 더할수록 오차가 준다 — 직접 재보기</h1>
+  <p class="lede">$e^{0.5}$ 을 Maclaurin 급수 $1+x+\tfrac{x^2}{2!}+\cdots$ 로 근사한다. 슬라이더로 항 수를 늘리며 근사값이 참값 $e^{0.5}=1.6487213$ 에 <strong>기하급수적으로</strong> 다가가는 것을 보라. 아래 표는 항수별 절단 오차다.</p>
+  <div class="calc"
+    data-title="e^0.5 근사 — 사용 항 수에 따른 근사값"
+    data-desc="k 항까지 더한 부분합의 오차 규모를 본다. 참값 e^0.5 ≈ 1.6487213."
+    data-vars='[{"sym":"k","label":"사용 항 수 k","min":1,"max":7,"step":1,"val":3}]'
+    data-expr="1.6487212707 - [1,1.5,1.625,1.6458333,1.6484375,1.6486979,1.6487196][k-1]"
+    data-out="절단 오차 |e^0.5 − 근사|"
+    data-note="k=1(상수만): 오차 0.649 · k=3: 0.024 · k=5: 2.8e-4 · k=7: 1.7e-6. 항 하나가 늘 때마다 오차가 한 자리 이상 급감한다.">
+  </div>
+  <div class="vcap" style="margin-top:16px">항수별 절단 오차 표 ($x=0.5$)</div>
+  <table class="ktab"><thead><tr><th>항 수</th><th>근사값</th><th>절단 오차</th></tr></thead><tbody>
+    <tr><td>1 (상수)</td><td>$1.0000000$</td><td>$6.49\times10^{-1}$</td></tr>
+    <tr><td>2 ($1{+}x$)</td><td>$1.5000000$</td><td>$1.49\times10^{-1}$</td></tr>
+    <tr><td>3</td><td>$1.6250000$</td><td>$2.37\times10^{-2}$</td></tr>
+    <tr><td>4</td><td>$1.6458333$</td><td>$2.89\times10^{-3}$</td></tr>
+    <tr><td>7</td><td>$1.6487196$</td><td>$1.65\times10^{-6}$</td></tr>
+  </tbody></table>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">Taylor 부분합 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 3항 근사</div>
+    <p class="prob-statement">$e^{x}\approx 1 + x + \dfrac{x^2}{2}$ ($3$ 항). $x=0.5$ 에서 <strong>근사값</strong>을 구하시오. (소수 3자리)</p>
+    <div class="given"><span class="chip">$x=0.5$</span><span class="chip">$\tfrac{x^2}{2}=\tfrac{0.25}{2}=0.125$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.625" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 1 + 0.5 + \frac{0.5^2}{2} = 1 + 0.5 + 0.125 = 1.625 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ = 1.625 $$</div><b>정답:</b> 참값 $1.64872$ 대비 절단 오차 $\approx0.0237$. 다음 항($\tfrac{x^3}{6}\approx0.0208$)을 더하면 오차가 다시 급감한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="수렴">
+  <div class="eyebrow">3-3 · 수렴 · Order</div>
+  <h1 class="stage-h">$O(h)$ vs $O(h^2)$ — 수치미분으로 확인</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">전진 차분 vs 중심 차분</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">전진 $O(h)$</span><span class="keqline">$ f'\approx\dfrac{f(x{+}h)-f(x)}{h} $</span></div>
+        <div class="keqrow"><span class="keqcap">중심 $O(h^2)$</span><span class="keqline">$ f'\approx\dfrac{f(x{+}h)-f(x{-}h)}{2h} $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">차수의 의미</div>중심 차분은 두 전개를 빼서 $f''$ 항이 <strong>상쇄</strong>되어 오차가 $h^2$ 에 비례. $h$ 를 $\tfrac1{10}$ 로 줄이면 전진은 $\tfrac1{10}$, 중심은 $\tfrac1{100}$ 로 준다.</div>
+    </div>
+    <div>
+      <div class="vcap">$f(x)=\sin x,\; x_0=\pi/4$ 오차</div>
+      <table class="ktab"><thead><tr><th>$h$</th><th>전진 $O(h)$</th><th>중심 $O(h^2)$</th></tr></thead><tbody>
+        <tr><td>$0.1$</td><td>$3.5\times10^{-2}$</td><td>$1.2\times10^{-3}$</td></tr>
+        <tr><td>$0.05$</td><td>$1.8\times10^{-2}$</td><td>$2.9\times10^{-4}$</td></tr>
+        <tr><td>$0.01$</td><td>$3.5\times10^{-3}$</td><td>$1.2\times10^{-5}$</td></tr>
+        <tr><td>$0.001$</td><td>$3.5\times10^{-4}$</td><td>$1.2\times10^{-7}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">$h$ 가 $10$ 배 줄 때: 전진은 오차 $\tfrac1{10}$(직선 기울기 1), 중심은 $\tfrac1{100}$(기울기 2).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="함정">
+  <div class="eyebrow">3-3 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">Taylor 급수를 과신하면</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 수렴 반경</h4><p>모든 함수가 어디서나 수렴하진 않는다. $x$ 가 전개 중심에서 <b>멀면</b> 항을 더해도 발산할 수 있다.</p></div>
+    <div class="pitfall"><h4>⚠ $h$ 가 크면 큰 오차</h4><p>절단 오차 $\propto h^{n+1}$. $h$ 가 크면 고차항이 커져 $1{-}2$ 항 근사가 크게 빗나간다.</p></div>
+    <div class="pitfall"><h4>⚠ $\xi$ 를 안다고 착각</h4><p>나머지 정리는 $\xi$ 의 <b>존재</b>만 보장. 값은 모르며, 최댓값으로 <b>상한</b>만 잡는다.</p></div>
+    <div class="pitfall"><h4>⚠ 중근·비매끄러움</h4><p>고차 도함수가 폭발하거나 불연속이면 나머지 항 추정이 무의미해진다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="코드">
+  <div class="eyebrow">3-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 항 추가와 차분법 비교</h1>
+  <div class="codeblock"><div class="code-cap">taylor_exp.m</div><pre><code><span class="cm">% e^0.5 를 항을 더하며 근사</span>
+x = 0.5;  true_val = exp(x);  approx = 0;
+for n = 0:6
+    approx = approx + x^n / factorial(n);
+    fprintf('n=%d: %.8f (오차 %.2e)\n', n, approx, abs(true_val-approx));
+end
+<span class="out">% n=0: 1.0000  (오차 6.49e-01)</span>
+<span class="out">% n=6: 1.6487  (오차 1.65e-06)</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">diff_order.m — 전진 vs 중심 차분</div><pre><code>x0 = pi/4;  true_d = cos(x0);
+for h = [0.1 0.01 0.001]
+    fwd = (sin(x0+h) - sin(x0)) / h;          <span class="cm">% O(h)</span>
+    ctr = (sin(x0+h) - sin(x0-h)) / (2*h);     <span class="cm">% O(h^2)</span>
+    fprintf('h=%.3f | 전진 %.2e | 중심 %.2e\n', ...
+            h, abs(fwd-true_d), abs(ctr-true_d));
+end
+<span class="out">% h 10배 감소 → 전진 오차 1/10, 중심 오차 1/100</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">절단 오차 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 2항 근사 오차</div>
+    <p class="prob-statement">$e^{x}\approx 1+x$ ($2$ 항)로 $x=0.5$ 를 근사하면 $1.5$ 다. 참값 $e^{0.5}=1.64872$ 대비 <strong>절대 오차</strong>를 구하시오. (소수 3자리)</p>
+    <div class="given"><span class="chip">근사 $=1.5$</span><span class="chip">참값 $=1.64872$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.149" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ |1.64872 - 1.5| = 0.14872 \approx 0.149 $$</div>
+      <div class="ans-final"><b>정답:</b> 약 $0.149$. 나머지 항 상한 $|R_1|\le e^{0.5}\cdot\tfrac{0.5^2}{2}\approx0.206$ 이내에 든다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 중심 차분 차수</div>
+    <p class="prob-statement">중심 차분은 $O(h^2)$ 이다. $h$ 를 $\tfrac12$ 로 줄이면 오차는 <strong>몇 배</strong>가 되는가? (소수)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.25" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \left(\tfrac12\right)^2 = \tfrac14 = 0.25 $$</div>
+      <div class="ans-final"><b>정답:</b> $0.25$ — 오차가 $\tfrac14$ 로 준다. 전진 차분($O(h)$)이면 $\tfrac12$ 이었을 것.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="정리">
+  <div class="eyebrow">3-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$n$ 차 근사의 절단 오차 $R_n=\dfrac{f^{(n+1)}(\xi)}{(n+1)!}h^{n+1}=O(h^{n+1})$.</li>
+      <li>버린 나머지의 <strong>첫 항</strong>이 오차 규모를 지배.</li>
+      <li>전진 차분 $O(h)$, 중심 차분 $O(h^2)$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$\xi$ 의 값을 구하려 시도(존재만 보장).</li>
+      <li>절단 오차를 비트 수로 줄이려 함(무관).</li>
+      <li>수렴 반경 밖에서 급수 사용.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>Taylor 부분합 <strong>손 계산</strong> + 절단 오차.</li>
+      <li>나머지 항으로 <strong>오차 상한</strong> 유도.</li>
+      <li>차분식의 <strong>수렴 차수</strong> 판정($O(h)$/$O(h^2)$).</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 3-4 오차 전파와 수렴차수 ════════════════════ -->
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="문제">
+  <div class="eyebrow">3-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">입력의 오차가 출력으로 번진다 <span class="en">· Error propagation</span></h1>
+  <div class="analogy"><span class="ic">🌊</span><div class="tx"><b>직관</b> — 측정한 입력 $x$ 에 작은 오차 $\Delta x$ 가 있으면, 함수 $f$ 를 거친 출력에도 오차 $\Delta f$ 가 생긴다. 어떤 함수는 이 오차를 <b>얌전히</b> 통과시키고(well-conditioned), 어떤 함수는 <b>폭증</b>시킨다(ill-conditioned).</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">1차 Taylor 근사로 출력 오차를 예측한다: $\Delta f\approx f'(x)\,\Delta x$. 문제가 오차를 얼마나 증폭하는지는 <strong>조건수</strong>가 말해준다. 또, 알고리즘이 <strong>얼마나 빨리</strong> 정답에 다가가는지는 <strong>수렴 차수</strong>로 잰다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">단변수 전파</span><span class="keqline">$ \Delta f \approx f'(x)\,\Delta x $</span></div>
+        <div class="keqrow"><span class="keqcap">조건수</span><span class="keqline">$ \text{cond}=\left|\dfrac{x\,f'(x)}{f(x)}\right| $</span></div>
+        <div class="keqrow"><span class="keqcap">수렴 차수</span><span class="keqline">$ \text{error}\propto h^{n} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>well-conditioned</b> $\text{cond}\approx1$, 안전</div>
+        <div class="term"><b>ill-conditioned</b> $\text{cond}\gg1$, 위험</div>
+        <div class="term"><b>수렴 차수 $n$</b> log-log 기울기</div>
+        <div class="term"><b>유효 숫자</b> $n$ 자리 $\Leftrightarrow$ 상대오차 상한</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>뺄셈의 오차 전파 $\Delta(a-b)=\Delta a+\Delta b$ 는 $a\approx b$ 일 때 <strong>상대 오차가 폭발</strong>한다(상쇄). 조건수가 큰 문제(예: Hilbert 행렬)는 아무리 좋은 알고리즘도 구하기 어렵다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="원리">
+  <div class="eyebrow">3-4 · 원리 · Two errors combine</div>
+  <h1 class="stage-h">전체 오차 = 반올림 + 절단 — 최적 $h$</h1>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">수치미분에서 스텝 $h$ 를 줄이면 <strong>절단 오차</strong>($\propto h$)는 줄지만, 분모의 $h$ 가 작아져 <strong>반올림 오차</strong>($\propto \varepsilon/h$)는 커진다. 둘의 합은 <strong>U자</strong> 모양이라 어딘가에서 최소가 된다.</p>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">반올림</span><span class="keqline">$ E_{\text{round}}\propto \varepsilon_{\text{mach}}/h $</span></div>
+        <div class="keqrow"><span class="keqcap">절단</span><span class="keqline">$ E_{\text{trunc}}\propto h $</span></div>
+        <div class="keqrow"><span class="keqcap">최적</span><span class="keqline">$ h_{\text{opt}}\approx\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">전체 오차 U자 곡선 (log-log 개념도)</div>
+      <svg viewBox="0 0 460 260" width="100%" style="max-width:520px;display:block;margin:0 auto">
+        <line x1="46" y1="210" x2="430" y2="210" stroke="#94a3b8" stroke-width="1.2"/>
+        <line x1="46" y1="210" x2="46" y2="20" stroke="#94a3b8" stroke-width="1.2"/>
+        <text x="238" y="238" text-anchor="middle" fill="#71717a" font-size="11">log(h) →  (오른쪽일수록 h 큼)</text>
+        <text x="20" y="115" text-anchor="middle" fill="#71717a" font-size="11" transform="rotate(-90,20,115)">log(error)</text>
+        <!-- roundoff ∝ ε/h : decreases as h grows -->
+        <path d="M70,40 L160,90 L250,130 L340,170 L410,198" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-dasharray="6 3"/>
+        <text x="80" y="36" fill="#dc2626" font-size="10">반올림 ∝ ε/h</text>
+        <!-- truncation ∝ h : increases as h grows -->
+        <path d="M70,198 L160,170 L250,130 L340,90 L410,40" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="6 3"/>
+        <text x="352" y="36" fill="#2563eb" font-size="10">절단 ∝ h</text>
+        <!-- total U-shape -->
+        <path d="M70,44 Q150,90 240,122 Q250,126 260,122 Q350,90 410,44" fill="none" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="250" cy="126" r="5.5" fill="#f59e0b"/>
+        <line x1="250" y1="126" x2="250" y2="210" stroke="#f59e0b" stroke-width="1.3" stroke-dasharray="4 3"/>
+        <text x="250" y="112" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="bold">전체 오차</text>
+        <text x="250" y="205" text-anchor="middle" fill="#b45309" font-size="10" font-weight="bold">★ h ≈ √ε ≈ 10⁻⁸</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="시연">
+  <div class="eyebrow">3-4 · 시연 · Try it</div>
+  <h1 class="stage-h">$h$ 를 줄여보면 오차가 U자를 그린다 — 직접 재보기</h1>
+  <p class="lede">전진 차분의 전체 오차를 $\dfrac{\varepsilon_{\text{mach}}}{h}+\dfrac{h}{2}$ 로 모형화한다. $h=10^{-k}$ 에서 $k$ 를 키우면($h$ 를 줄이면) 오차가 줄다가 <strong>다시 커진다.</strong> 최소가 되는 $k$ 를 슬라이더로 찾아보라.</p>
+  <div class="calc"
+    data-title="전체 오차 = 반올림 + 절단 — 최적 h 찾기"
+    data-desc="전진차분 오차 ≈ ε/h + h/2 (ε=2.22e-16, M≈1). h = 10^(−k) 에서 k 를 키우면 h 가 작아진다."
+    data-vars='[{"sym":"k","label":"스텝 지수 k  (h = 10⁻ᵏ)","min":1,"max":16,"step":1,"val":8}]'
+    data-expr="2.220446e-16/Math.pow(10,-k) + 0.5*Math.pow(10,-k)"
+    data-out="전체 오차"
+    data-note="k=8 (h≈10⁻⁸) 부근에서 최소. k 가 더 크면(h 더 작으면) 반올림 항 ε/h 가 폭발한다. 최적 h ≈ √ε ≈ 10⁻⁸ — 무작정 h 를 줄이면 안 되는 이유.">
+  </div>
+  <div class="callout warn" style="margin-top:8px"><div class="ct">교훈</div>"$h$ 를 작게 할수록 정확하다" 는 <strong>절반만 참</strong>이다. $h_{\text{opt}}$ 아래에선 반올림 오차가 지배해 오히려 나빠진다.</div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">조건수 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 조건수</div>
+    <p class="prob-statement">$f(x)=x^{3}$ 의 조건수 $\text{cond}=\left|\dfrac{x\,f'(x)}{f(x)}\right|$ 를 구하시오. (임의의 $x\neq0$ 에서 상수)</p>
+    <div class="given"><span class="chip">$f'(x)=3x^2$</span><span class="chip">$\dfrac{x\cdot3x^2}{x^3}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="3" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \text{cond}=\left|\frac{x\cdot 3x^2}{x^3}\right|=\left|\frac{3x^3}{x^3}\right|=3 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \text{cond}=3 $$</div><b>정답:</b> $3$. 입력 상대오차가 출력에서 $3$ 배로 증폭. 일반적으로 $f=x^n$ 의 조건수는 $n$ 이다(잘 정의된 문제).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="수렴">
+  <div class="eyebrow">3-4 · 수렴 · Order</div>
+  <h1 class="stage-h">수렴 차수 — log-log 기울기로 잰다</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">차수 정의와 판정법</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">$n$ 차 방법</span><span class="keqline">$ \text{error}\approx C\,h^{n} $</span></div>
+        <div class="keqrow"><span class="keqcap">로그 취하면</span><span class="keqline">$ \log(\text{error})=n\log h+\log C $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">기울기 = 차수</div>log-log 그래프에서 <strong>직선의 기울기</strong>가 곧 수렴 차수 $n$ 이다. $O(h)$ 는 기울기 $1$, $O(h^2)$ 는 기울기 $2$.</div>
+    </div>
+    <div>
+      <div class="vcap">$h$ 를 반으로 줄일 때 오차 감소</div>
+      <table class="ktab"><thead><tr><th>$h$</th><th>$O(h)$ 오차</th><th>$O(h^2)$ 오차</th></tr></thead><tbody>
+        <tr><td>$0.1$</td><td>$0.1$</td><td>$0.01$</td></tr>
+        <tr><td>$0.05$</td><td>$0.05$</td><td>$0.0025$</td></tr>
+        <tr><td>$0.025$</td><td>$0.025$</td><td>$6.25\times10^{-4}$</td></tr>
+        <tr><td>$0.0125$</td><td>$0.0125$</td><td>$1.56\times10^{-4}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">$h\to h/2$: $O(h)$ 는 오차 $\tfrac12$, $O(h^2)$ 는 $\tfrac14$. 유효 숫자 $n$ 자리 $\Leftrightarrow$ 상대오차 $\lt 0.5\times10^{2-n}$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="함정">
+  <div class="eyebrow">3-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">오차가 통제를 벗어나는 방식</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ $h$ 를 무작정 줄임</h4><p>$h\lt h_{\text{opt}}$ 이면 반올림 오차 $\varepsilon/h$ 가 지배 → 오차가 <b>다시 증가</b>한다.</p></div>
+    <div class="pitfall"><h4>⚠ 뺄셈의 상쇄</h4><p>$\Delta(a-b)=\Delta a+\Delta b$ 인데 $a\approx b$ 면 상대 오차가 폭발. 식 재구성 필요.</p></div>
+    <div class="pitfall"><h4>⚠ ill-conditioned 문제</h4><p>$\text{cond}\gg1$(예: Hilbert 행렬)은 <b>알고리즘 탓이 아니다</b> — 문제 자체가 오차를 증폭.</p></div>
+    <div class="pitfall"><h4>⚠ 차수 ≠ 반복 수</h4><p>수렴 차수 $n$ 이 크다고 항상 빠른 건 아니다. 상수 $C$ 와 시작 오차에 따라 달라진다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="코드">
+  <div class="eyebrow">3-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 최적 $h$ 와 조건수</h1>
+  <div class="codeblock"><div class="code-cap">optimal_h.m</div><pre><code><span class="cm">% 전진차분 오차의 U자 곡선</span>
+x = pi/4;  exact = cos(x);
+h = logspace(-1, -16, 16);
+err = abs((sin(x+h) - sin(x)) ./ h - exact);
+loglog(h, err, 'o-', 'LineWidth', 1.5);   <span class="cm">% U자 확인</span>
+<span class="out">% h≈1e-8 에서 최소, 더 작으면 반올림 오차가 지배</span>
+fprintf('최적 h(이론) = %.2e\n', sqrt(eps));  <span class="out">% 1.49e-08</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">condition.m — 조건수와 ill-conditioning</div><pre><code>disp(cond(hilb(5)))    <span class="out">% 4.77e+05</span>
+disp(cond(hilb(10)))   <span class="out">% 1.60e+13  (ill-conditioned!)</span>
+
+<span class="cm">% 수렴 차수 = log-log 기울기</span>
+slope = diff(log(err)) ./ diff(log(h));
+fprintf('기울기 ≈ %.2f\n', slope(1));   <span class="out">% ≈ 1  (전진차분 = 1차)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">전파·차수 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 오차 감소 배수</div>
+    <p class="prob-statement">전진 차분($O(h)$)에서 $h$ 를 $\tfrac{1}{10}$ 로 줄이면 오차는 약 <strong>몇 분의 1</strong> 로 주는가? (분모 $N$ 만 입력)</p>
+    <div class="given"><span class="chip">$\text{error}\propto h$</span><span class="chip">$h\to h/10$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="10" data-tol="0.5"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \text{error}\propto h \;\Rightarrow\; \frac{h/10}{h}=\frac{1}{10} $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ N=10 $$</div><b>정답:</b> $\tfrac{1}{10}$ 로 감소. 중심 차분($O(h^2)$)이면 $\tfrac{1}{100}$ 이었을 것.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 기울기로 차수 판정</div>
+    <p class="prob-statement">log-log 그래프에서 오차 곡선의 <strong>기울기가 $2$</strong> 로 측정되었다. 이 방법의 수렴 차수 $n$ 은?</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="2" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \log(\text{error})=n\log h+C \;\Rightarrow\; n=\text{기울기}=2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ n=2 $$</div><b>정답:</b> $2$차 방법(예: 중심 차분). 기울기가 곧 차수다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="정리">
+  <div class="eyebrow">3-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>오차 전파 $\Delta f\approx f'(x)\Delta x$ · 조건수 $\left|\dfrac{xf'}{f}\right|$.</li>
+      <li>전체 오차 = 반올림($\varepsilon/h$) + 절단($h$) → 최적 $h\approx\sqrt{\varepsilon}$.</li>
+      <li>수렴 차수 $n$ = log-log 기울기 · 유효숫자 $n$ ↔ 상대오차 상한.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$h$ 를 무작정 줄이면 더 정확하다고 믿음.</li>
+      <li>ill-conditioning 을 알고리즘 버그로 오해.</li>
+      <li>수렴 차수와 실제 반복 수를 혼동.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>조건수 계산 + well/ill-conditioned 판정.</li>
+      <li>반올림·절단 균형에서 <strong>최적 $h$</strong> 유도.</li>
+      <li>log-log 기울기로 <strong>수렴 차수</strong> 판정.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=3;</script>
+<script src="/na-track.js" defer></script>
+</body></html>

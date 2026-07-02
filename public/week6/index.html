@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 6 · Gauss Elimination</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 6</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 6 · Gauss Elimination</div>
+    <h1 class="intro-h">$A\mathbf{x}=\mathbf{b}$ — <span class="hl">미지수 100개짜리 방정식을 어떻게 푸는가?</span></h1>
+    <p class="intro-sub">2·3개짜리 연립방정식은 대입·소거로 손쉽게 푼다. 그러나 공학의 실제 문제 — 구조 해석(FEM), 회로(Kirchhoff), 유체(CFD), 열전달 — 는 미지수가 수백·수천 개다. Cramer 공식은 $n!$ 개의 항을 요구해 $n=20$ 만 되어도 우주 나이보다 오래 걸린다.</p>
+    <div class="intro-teaser">답 — <em>체계적인 소거(elimination).</em> 방정식을 <em>사다리꼴</em>로 바꾼 뒤 아래에서 위로 대입해 푼다. 이번 주는 이 <strong>직접법(direct method)</strong> 을 손으로 따라가고, 언제 무너지는지까지 직접 확인한다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 6 · 이번 주 여정</div>
+    <h1 class="intro-h">소거로 <span class="hl">사다리꼴을 만들고 · 위로 대입한다</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">6-1</span><span><span class="rt">가우스 소거법</span> <span class="rd">— 전진 소거로 상삼각 만들고 후진 대입 (핵심 알고리즘)</span></span></div>
+      <div class="rm-item"><span class="rn">6-2</span><span><span class="rt">부분 피벗팅</span> <span class="rd">— 0·작은 피벗의 재앙을 행 교환으로 막는다</span></span></div>
+      <div class="rm-item"><span class="rn">6-3</span><span><span class="rt">LU 분해</span> <span class="rd">— 한 번 분해 = 여러 우변을 값싸게 재사용</span></span></div>
+      <div class="rm-item"><span class="rn">6-4</span><span><span class="rt">조건수 · ill-conditioning</span> <span class="rd">— 왜 어떤 시스템은 애초에 못 믿는가</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 하나로 전 과정을 관통한다 — $A=\begin{bmatrix}2&1&-1\\-3&-1&2\\-2&1&2\end{bmatrix}$, $\mathbf{b}=(8,-11,-3)^T$, 해 $\mathbf{x}=(2,3,-1)^T$.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 정리 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 6 · 직접법은 "따라가 봐야" 안다</div>
+    <h1 class="intro-h">각 방법을 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">정리</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">한 스텝씩 소거한다</div><ul><li><strong>시연</strong>: 증대 행렬이 상삼각으로 변해 가는 <em>행 연산 단계표</em>를 눈으로 따라간다.</li><li><strong>직접계산</strong>: 한 소거 단계를 손으로 계산해 넣고 채점받는다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: 피벗이 $0$·아주 작을 때 답이 <em>무너지는</em> 걸 직접 본다.</li><li>왜 "잘 정의된 문제도 못 믿을 수" 있는지(조건수)를 이해한다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 6-1 가우스 소거법 ════════════════════ -->
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="문제">
+  <div class="eyebrow">6-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">사다리꼴로 만들면 쉽다 <span class="en">· Reduce to triangular</span></h1>
+  <div class="analogy"><span class="ic">🪜</span><div class="tx"><b>직관</b> — 마지막 방정식이 <b>미지수 하나</b>만 담고 있다면 바로 풀린다. 그 값을 위 방정식에 넣으면 또 하나가 풀리고… 계단을 <b>아래에서 위로</b> 올라가듯 전부 풀린다. 가우스 소거법은 먼저 방정식을 이 <b>계단(상삼각) 모양</b>으로 정리한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">연립방정식 $A\mathbf{x}=\mathbf{b}$ 를 <strong>증대 행렬</strong> $[A\,|\,\mathbf{b}]$ 로 적고, <strong>행 연산</strong>(한 행에 다른 행의 배수를 더하기)만으로 아래 삼각 부분을 모두 $0$ 으로 만든다. 행 연산은 해를 바꾸지 않으므로 안전하다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">증대 행렬</span><span class="keqline">$ [A\,|\,\mathbf{b}] $</span></div>
+        <div class="keqrow"><span class="keqcap">전진 소거</span><span class="keqline">$ [A\,|\,\mathbf{b}] \;\to\; [U\,|\,\mathbf{c}] \ (\text{상삼각}) $</span></div>
+        <div class="keqrow"><span class="keqcap">후진 대입</span><span class="keqline">$ x_n \to x_{n-1} \to \cdots \to x_1 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>피벗 $a_{kk}$</b> 소거의 기준이 되는 대각 원소</div>
+        <div class="term"><b>배수 factor</b> $a_{ik}/a_{kk}$, 피벗 행에 곱해 뺄 양</div>
+        <div class="term"><b>상삼각 $U$</b> 아래가 모두 $0$ 인 사다리꼴</div>
+        <div class="term"><b>직접법</b> 유한 번 연산으로 <b>정확해</b>(반올림 제외)</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>반복법(Week 7)과 달리 <strong>정해진 횟수</strong>만에 끝난다. 대신 계산량은 $O(n^3/3)$ 으로 크기가 커지면 급증한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="원리">
+  <div class="eyebrow">6-1 · 원리 · Algorithm</div>
+  <h1 class="stage-h">두 단계 — 전진 소거 + 후진 대입</h1>
+  <div class="two">
+    <div class="col2">
+      <div class="algo">
+        <div class="algo-h">① 전진 소거 (Forward Elimination)</div>
+        <ol>
+          <li>피벗 열 $k=1,\dots,n-1$ 을 왼쪽부터 차례로 처리한다.</li>
+          <li>그 아래 각 행 $i \gt k$ 에 대해 배수 <b>$\text{factor}=a_{ik}/a_{kk}$</b> 를 구한다.</li>
+          <li><b>$R_i \leftarrow R_i - \text{factor}\times R_k$</b> 로 $a_{ik}$ 를 $0$ 으로 만든다.</li>
+          <li>모든 열을 끝내면 행렬이 <b>상삼각 $U$</b> 가 된다.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="algo">
+        <div class="algo-h">② 후진 대입 (Back Substitution)</div>
+        <ol>
+          <li>맨 아래 행은 미지수 하나 → <b>$x_n = c_n / u_{nn}$</b>.</li>
+          <li>위로 올라가며 이미 구한 값을 대입한다.</li>
+          <li>일반식: $ x_i = \dfrac{c_i - \sum_{j=i+1}^{n} u_{ij}\,x_j}{u_{ii}} $</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">계산량</div>전진 소거 $\approx n^3/3$, 후진 대입 $\approx n^2/2$ 회 연산. 큰 시스템 비용은 사실상 <strong>소거 단계가 지배</strong>한다 — $n$ 이 2배면 시간은 약 8배.</div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="시연">
+  <div class="eyebrow">6-1 · 시연 · Walk-through</div>
+  <h1 class="stage-h">증대 행렬이 사다리꼴로 — 단계표로 따라가기</h1>
+  <p class="lede">직접법은 반복이 아니라 <strong>정해진 순서의 행 연산</strong>이다. 아래 세 상태를 차례로 보라 — 1열을 비우고, 2열을 비우면 상삼각 $U$ 가 완성된다. 각 카드의 배수 factor 가 어떻게 나왔는지 확인하라.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 원본 $[A\,|\,\mathbf{b}]$</h4><div class="sub">피벗 $a_{11}=2$</div><div class="eq">$\left[\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ -3 & -1 & 2 & -11 \\ -2 & 1 & 2 & -3 \end{array}\right]$</div><p>목표: 1열의 $-3,\,-2$ 를 $0$ 으로.</p></div>
+    <div class="dcard"><h4>② 1열 소거</h4><div class="sub">$f_{21}=\tfrac{-3}{2}=-1.5,\ f_{31}=\tfrac{-2}{2}=-1$</div><div class="eq">$\left[\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ 0 & 0.5 & 0.5 & 1 \\ 0 & 2 & 1 & 5 \end{array}\right]$</div><p>$R_2\!\leftarrow\!R_2+1.5R_1$, $R_3\!\leftarrow\!R_3+R_1$.</p></div>
+    <div class="dcard"><h4>③ 2열 소거 = $U$</h4><div class="sub">$f_{32}=\tfrac{2}{0.5}=4$</div><div class="eq">$\left[\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ 0 & 0.5 & 0.5 & 1 \\ 0 & 0 & -1 & 1 \end{array}\right]$</div><p>$R_3\!\leftarrow\!R_3-4R_2$ → 상삼각 완성.</p></div>
+  </div>
+  <div class="vcap" style="margin-top:18px">후진 대입 — 아래에서 위로</div>
+  <table class="ktab"><thead><tr><th>행</th><th>방정식</th><th>대입 계산</th><th>결과</th></tr></thead><tbody>
+    <tr><td>3행</td><td>$-x_3 = 1$</td><td>$x_3 = 1/(-1)$</td><td>$x_3 = -1$</td></tr>
+    <tr><td>2행</td><td>$0.5x_2 + 0.5x_3 = 1$</td><td>$x_2 = (1 - 0.5(-1))/0.5$</td><td>$x_2 = 3$</td></tr>
+    <tr><td>1행</td><td>$2x_1 + x_2 - x_3 = 8$</td><td>$x_1 = (8 - 3 - 1)/2$</td><td>$x_1 = 2$</td></tr>
+  </tbody></table>
+  <div class="keqnote">해 $\mathbf{x}=(2,\,3,\,-1)^T$. 소거는 순서가 정해진 <b>유한 절차</b> — "몇 번 반복하면 수렴하나?"라는 물음 자체가 없다.</div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 소거 단계를 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 1열 소거 후의 $a_{22}$</div>
+    <p class="prob-statement">$[A\,|\,\mathbf{b}]$ 의 $R_1=[\,2,\,1,\,-1,\,8\,]$, $R_2=[\,-3,\,-1,\,2,\,-11\,]$. 배수 $f_{21}=a_{21}/a_{11}=-3/2=-1.5$ 로 $R_2 \leftarrow R_2 - f_{21}R_1$ 을 수행할 때, 소거 후 <strong>새 $a_{22}$</strong> 값을 구하시오.</p>
+    <div class="given"><span class="chip">$f_{21}=-1.5$</span><span class="chip">$a_{22}^{\text{new}} = a_{22} - f_{21}\,a_{12}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.5" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 대입</div>$$ a_{22}^{\text{new}} = -1 - (-1.5)(1) = -1 + 1.5 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a_{22}^{\text{new}} = 0.5 $$</div><b>정답:</b> 같은 행의 $a_{21}$ 은 $-3-(-1.5)(2)=0$ 으로 소거된다 — 이렇게 한 행씩 아래를 비운다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="함정">
+  <div class="eyebrow">6-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">순수(naive) 소거가 무너지는 곳</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 피벗이 $0$</h4><p>$a_{kk}=0$ 이면 배수 $a_{ik}/a_{kk}$ 가 <b>0으로 나눔</b> → 계산 불가. 해가 있어도 순서만 나빠서 막힌다.</p></div>
+    <div class="pitfall"><h4>⚠ 아주 작은 피벗</h4><p>$a_{kk}\approx 0$ 이면 배수가 거대해져 <b>반올림 오차가 증폭</b> → 답이 크게 틀어진다(다음 절 예제).</p></div>
+    <div class="pitfall"><h4>⚠ 특이 행렬</h4><p>$\det A = 0$ 이면 소거 도중 <b>0행</b>이 나타난다 — 유일해 없음(해 없음/무한).</p></div>
+    <div class="pitfall"><h4>⚠ 후진 대입 순서 오류</h4><p>반드시 <b>맨 아래 행부터</b>. 위 행을 먼저 풀려 하면 아직 모르는 미지수가 남는다.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">해결 예고</div>앞 두 함정(0·작은 피벗)은 <strong>행을 바꿔치기</strong>하는 것만으로 대부분 해결된다 — 6-2 <strong>부분 피벗팅</strong>.</div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="코드">
+  <div class="eyebrow">6-1 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 그대로 돌려보기</h1>
+  <div class="codeblock"><div class="code-cap">naive_gauss.m</div><pre><code>function x = naive_gauss(A, b)
+  <span class="cm">% 피벗팅 없는 순수 가우스 소거법</span>
+  n   = length(b);
+  Aug = [A, b(:)];              <span class="cm">% 증대 행렬 [A|b]</span>
+
+  <span class="cm">% ── ① 전진 소거 ──</span>
+  for k = 1:n-1                 <span class="cm">% 피벗 열</span>
+      for i = k+1:n             <span class="cm">% 피벗 아래 행</span>
+          factor = Aug(i,k) / Aug(k,k);
+          Aug(i, k:n+1) = Aug(i, k:n+1) - factor * Aug(k, k:n+1);
+      end
+  end
+
+  <span class="cm">% ── ② 후진 대입 ──</span>
+  x = zeros(n, 1);
+  x(n) = Aug(n, n+1) / Aug(n, n);
+  for i = n-1:-1:1
+      x(i) = (Aug(i, n+1) - Aug(i, i+1:n) * x(i+1:n)) / Aug(i, i);
+  end
+end
+
+<span class="cm">% 사용</span>
+A = [2 1 -1; -3 -1 2; -2 1 2];
+b = [8; -11; -3];
+x = naive_gauss(A, b);
+<span class="out">% x = [2; 3; -1]      (또는 내장:  x = A \ b)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 2×2 소거</div>
+    <p class="prob-statement">$\begin{cases} 2x + y = 5 \\ x - y = 1 \end{cases}$ 를 가우스 소거법으로 풀 때, 배수 $f=1/2$ 로 $R_2\leftarrow R_2 - f R_1$ 을 한 뒤 후진 대입하면 얻는 <strong>$x$</strong> 값은?</p>
+    <div class="given"><span class="chip">$f=0.5$</span><span class="chip">소거 후 $-1.5\,y=-1.5$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="2" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ R_2: [\,0,\,-1.5\,|\,-1.5\,] \Rightarrow y=1,\quad x=\frac{5-1}{2}=2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x = 2,\ y = 1 $$</div><b>정답:</b> 두 직선의 교점 $(2,1)$ 과 일치.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 3×3 마지막 미지수</div>
+    <p class="prob-statement">$\begin{cases} x+y+z=6 \\ 2x+3y+z=14 \\ x+y+3z=12 \end{cases}$. $R_2\leftarrow R_2-2R_1$, $R_3\leftarrow R_3-R_1$ 후 상삼각의 3행이 $2z=6$ 이 된다. <strong>$z$</strong> 는?</p>
+    <div class="given"><span class="chip">3행: $2z=6$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="3" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">후진 대입</div>$$ z=3,\quad y-z=2\Rightarrow y=5,\quad x=6-y-z=-2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \mathbf{x}=(-2,\,5,\,3)^T $$</div><b>정답:</b> 검산 $2(-2)+3(5)+3=14$ ✓.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="정리">
+  <div class="eyebrow">6-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$[A|\mathbf{b}]$ 에 행 연산 → <strong>상삼각 $U$</strong>(전진 소거) → <strong>후진 대입</strong>.</li>
+      <li>배수 $\text{factor}=a_{ik}/a_{kk}$, $R_i\leftarrow R_i-\text{factor}\,R_k$.</li>
+      <li>직접법: <strong>유한 연산 정확해</strong> · 비용 $O(n^3/3)$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>배수 부호 실수 → $R_i - \text{factor}\,R_k$ 의 부호 주의.</li>
+      <li>후진 대입을 위 행부터 시작.</li>
+      <li>피벗 $0$ 을 무시하고 그대로 나눔.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 $3\times3$ 를 <strong>손으로 소거 + 후진 대입</strong>.</li>
+      <li>특정 단계의 <strong>배수·소거 후 원소</strong> 계산.</li>
+      <li>전진 소거 $n^3/3$ 로 <strong>계산량 비교</strong>.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 6-2 부분 피벗팅 ════════════════════ -->
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="문제">
+  <div class="eyebrow">6-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">피벗 하나가 답을 망친다 <span class="en">· Pivoting saves you</span></h1>
+  <div class="analogy"><span class="ic">⚖️</span><div class="tx"><b>직관</b> — 아주 작은 수로 나누면 결과가 <b>미친 듯이 커진다.</b> 컴퓨터는 자릿수가 유한하므로 그 큰 수가 반올림되면서 원래 정보가 <b>파묻혀</b> 사라진다. 해법은 단순하다 — 나눌 때 항상 <b>가장 큰 값</b>을 골라 쓰도록 행을 바꿔치기한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">순수 소거의 두 약점 — <strong>0 피벗</strong>(나눗셈 불가)과 <strong>작은 피벗</strong>(오차 증폭) — 은 모두 "나쁜 피벗"이 원인이다. 각 단계에서 피벗을 <strong>더 큰 원소로 교체</strong>하면 둘 다 막힌다.</p>
+      <div class="keqbox">
+        <div class="keq-label">위험한 예제</div>
+        <div class="keqrow"><span class="keqcap">시스템</span><span class="keqline">$ \begin{bmatrix} 0.0001 & 1 \\ 1 & 1 \end{bmatrix}\!\begin{bmatrix} x_1 \\ x_2 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix} $</span></div>
+        <div class="keqrow"><span class="keqcap">피벗 없이(3자리)</span><span class="keqline">$ x_1 \approx 0,\ x_2 \approx 1 $ (부정확)</span></div>
+        <div class="keqrow"><span class="keqcap">행 교환 후</span><span class="keqline">$ x_1 \approx 1.0001,\ x_2 \approx 0.9999 $ (정확)</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>피벗팅</b> 피벗을 더 나은 원소로 교체</div>
+        <div class="term"><b>부분(partial)</b> 같은 <b>열</b> 안에서만 행 교환</div>
+        <div class="term"><b>완전(full)</b> 행·열 모두 교환 (비쌈, 드묾)</div>
+        <div class="term"><b>스케일드</b> 행 크기를 고려한 피벗 선택</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>행 교환은 방정식의 <strong>순서만 바꿀 뿐</strong> 해를 바꾸지 않는다 — 공짜로 안정성을 얻는다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="원리">
+  <div class="eyebrow">6-2 · 원리 · Algorithm</div>
+  <h1 class="stage-h">열에서 가장 큰 원소를 피벗으로</h1>
+  <div class="algo">
+    <div class="algo-h">Partial Pivoting Strategy</div>
+    <ol>
+      <li>소거 단계 $k$ 에서 $k$ 열의 <b>피벗 후보</b>($i \ge k$)를 본다.</li>
+      <li><b>절댓값이 최대</b>인 행을 찾는다: $ p = \arg\max_{i \ge k} |a_{ik}| $.</li>
+      <li>행 $k$ 와 행 $p$ 를 <b>통째로 교환</b>한다(우변 $\mathbf{b}$ 포함).</li>
+      <li>교체된 피벗으로 <b>기존 소거</b>를 그대로 진행한다.</li>
+    </ol>
+  </div>
+  <div class="two" style="margin-top:14px">
+    <div class="col2"><div class="callout key"><div class="ct">왜 되는가</div>가장 큰 값으로 나누면 배수 $|\text{factor}|\le 1$ 이 되어 <strong>오차가 커지지 않는다.</strong> $0$ 피벗도 (유일해가 있는 한) 다른 큰 행이 반드시 존재.</div></div>
+    <div class="col2">
+      <div class="vcap">전략 비교</div>
+      <table class="ktab"><thead><tr><th>전략</th><th>교환 범위</th><th>오차 위험</th></tr></thead><tbody>
+        <tr><td>없음(naive)</td><td>—</td><td>높음</td></tr>
+        <tr><td>부분(partial)</td><td>열 내 행</td><td>매우 낮음</td></tr>
+        <tr><td>스케일드 부분</td><td>행 크기 보정</td><td>최소</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="시연">
+  <div class="eyebrow">6-2 · 시연 · Walk-through</div>
+  <h1 class="stage-h">0 피벗을 행 교환으로 살리기 — 단계표</h1>
+  <p class="lede">$a_{11}=0$ 이라 순수 소거는 첫 나눗셈에서 즉시 실패한다. 1열에서 절댓값 최대 원소를 찾아 그 행을 맨 위로 올린 뒤 소거하면 문제없이 진행된다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 원본 — 막힘</h4><div class="sub">$a_{11}=0$ → 나눗셈 불가</div><div class="eq">$\begin{bmatrix} 0 & 2 & 1 \\ 3 & 1 & 1 \\ 1 & 1 & 3 \end{bmatrix}$</div><p>1열: $|0|,\,|3|,\,|1|$.</p></div>
+    <div class="dcard"><h4>② 피벗 선택</h4><div class="sub">최대 $|a_{i1}|=3$ → 행 2</div><div class="eq">$p=\arg\max_i|a_{i1}|=2$</div><p>행 1 ↔ 행 2 교환.</p></div>
+    <div class="dcard"><h4>③ 교환 후</h4><div class="sub">피벗 $=3$ 으로 안전</div><div class="eq">$\begin{bmatrix} 3 & 1 & 1 \\ 0 & 2 & 1 \\ 1 & 1 & 3 \end{bmatrix}$</div><p>이제 정상 소거 진행.</p></div>
+  </div>
+  <div class="keqnote">각 단계에서 <b>가장 큰 피벗</b>을 쓰므로 배수는 항상 $|\text{factor}|\le 1$ — 반올림 오차가 눌린다. MATLAB의 <b>백슬래시 연산자</b>($A\backslash b$)도 내부에서 부분 피벗팅을 쓴다.</div>
+</section>
+
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">피벗 행을 골라라 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 피벗값 선택</div>
+    <p class="prob-statement">행렬 $A=\begin{bmatrix} 0 & 2 & 1 \\ 3 & 1 & 1 \\ 1 & 1 & 3 \end{bmatrix}$ 에서 1열 부분 피벗팅을 적용할 때, 교환 후 (1,1) 자리에 올라오는 <strong>피벗값</strong>을 구하시오.</p>
+    <div class="given"><span class="chip">1열 후보 $|0|,\,|3|,\,|1|$</span><span class="chip">$p=\arg\max_i|a_{i1}|$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="3" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">최대 절댓값</div>$$ \max(|0|,\,|3|,\,|1|) = 3 \ \Rightarrow\ p=2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \text{피벗} = 3 $$</div><b>정답:</b> 행 1 ↔ 행 2 를 교환해 피벗 $3$ 을 확보. 이후 $f_{31}=1/3$ 등으로 안전하게 소거.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="함정">
+  <div class="eyebrow">6-2 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">피벗팅해도 조심할 것</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 우변을 안 바꿈</h4><p>행을 교환할 땐 <b>증대 행렬 전체</b>(우변 $\mathbf{b}$ 포함)를 함께 바꿔야 한다.</p></div>
+    <div class="pitfall"><h4>⚠ 스케일 착시</h4><p>어떤 행에 큰 계수만 잔뜩이면 <b>절댓값만</b> 보고 고른 피벗이 실제론 나쁠 수 있다 → 스케일드 피벗팅.</p></div>
+    <div class="pitfall"><h4>⚠ 그래도 특이면 무력</h4><p>$\det A=0$ 은 피벗팅으로 못 고친다 — 애초에 유일해가 없다.</p></div>
+    <div class="pitfall"><h4>⚠ 큰 조건수는 별개</h4><p>피벗팅은 <b>알고리즘 안정성</b>을 준다. 문제 자체가 나쁜(큰 조건수) 경우는 6-4 참조.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="코드">
+  <div class="eyebrow">6-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 행 교환 한 줄 추가</h1>
+  <div class="codeblock"><div class="code-cap">gauss_pivot.m</div><pre><code>function x = gauss_pivot(A, b)
+  <span class="cm">% 부분 피벗팅이 있는 가우스 소거법</span>
+  n   = length(b);
+  Aug = [A, b(:)];
+
+  for k = 1:n-1
+      <span class="cm">% ── 부분 피벗팅: k열에서 최대 절댓값 행 찾기 ──</span>
+      [~, p] = max(abs(Aug(k:n, k)));
+      p = p + k - 1;
+      if p ~= k
+          Aug([k p], :) = Aug([p k], :);   <span class="cm">% 행 통째 교환</span>
+      end
+
+      <span class="cm">% ── 소거 ──</span>
+      for i = k+1:n
+          factor = Aug(i,k) / Aug(k,k);     <span class="cm">% |factor| &lt;= 1 보장</span>
+          Aug(i, k:n+1) = Aug(i, k:n+1) - factor * Aug(k, k:n+1);
+      end
+  end
+
+  <span class="cm">% ── 후진 대입 ──</span>
+  x = zeros(n, 1);
+  x(n) = Aug(n, n+1) / Aug(n, n);
+  for i = n-1:-1:1
+      x(i) = (Aug(i, n+1) - Aug(i, i+1:n) * x(i+1:n)) / Aug(i, i);
+  end
+end
+<span class="out">% naive_gauss 대비 max/swap 두 줄만 추가되었다</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="정리">
+  <div class="eyebrow">6-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>각 단계에서 $p=\arg\max_{i\ge k}|a_{ik}|$ 행을 <strong>피벗으로 교환</strong>.</li>
+      <li>큰 피벗 → $|\text{factor}|\le1$ → <strong>반올림 오차 억제</strong>.</li>
+      <li>$0$·작은 피벗 문제를 <strong>거의 비용 없이</strong> 해결.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>행 교환 시 우변 $\mathbf{b}$ 누락.</li>
+      <li>피벗팅 = 조건수 개선으로 오해(별개 개념).</li>
+      <li>인덱스 오프셋($p=p+k-1$) 실수.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 단계에서 <strong>교환할 행 찾기</strong>.</li>
+      <li>피벗팅 <strong>필요성 서술</strong>(0·작은 피벗).</li>
+      <li>naive vs partial <strong>결과 차이</strong> 비교.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 6-3 LU 분해 ════════════════════ -->
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="문제">
+  <div class="eyebrow">6-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">같은 $A$, 우변만 여러 개라면? <span class="en">· Factor once, reuse</span></h1>
+  <div class="analogy"><span class="ic">🔑</span><div class="tx"><b>직관</b> — 매번 자물쇠를 통째로 분해하는 대신, <b>열쇠를 한 번 깎아</b> 두면 이후엔 문을 그냥 연다. LU 분해는 $A$ 를 한 번 "깎아"($A=LU$) 두고, 우변 $\mathbf{b}$ 가 아무리 많아도 값싼 대입 두 번으로 푼다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">가우스 소거는 우변 $\mathbf{b}$ 가 바뀔 때마다 $O(n^3)$ 소거를 <strong>처음부터 다시</strong> 한다. 하지만 소거 과정은 사실 $A$ 만으로 결정된다 — 그 정보를 $L,U$ 로 <strong>저장</strong>해 재사용한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">분해</span><span class="keqline">$ A = LU \quad(\text{한 번},\ O(n^3/3)) $</span></div>
+        <div class="keqrow"><span class="keqcap">전진 대입</span><span class="keqline">$ L\mathbf{y}=\mathbf{b}\quad(O(n^2/2)) $</span></div>
+        <div class="keqrow"><span class="keqcap">후진 대입</span><span class="keqline">$ U\mathbf{x}=\mathbf{y}\quad(O(n^2/2)) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">$L$·$U$ 구조</div>
+      <div class="two" style="gap:10px">
+        <div class="col2"><div class="keqbox"><div class="keq-label">$L$ (하삼각)</div><div class="keqrow"><span class="keqline">$\begin{bmatrix} 1 & 0 & 0 \\ l_{21} & 1 & 0 \\ l_{31} & l_{32} & 1 \end{bmatrix}$</span></div></div></div>
+        <div class="col2"><div class="keqbox"><div class="keq-label">$U$ (상삼각)</div><div class="keqrow"><span class="keqline">$\begin{bmatrix} u_{11} & u_{12} & u_{13} \\ 0 & u_{22} & u_{23} \\ 0 & 0 & u_{33} \end{bmatrix}$</span></div></div></div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>$L$ 의 대각은 $1$, 아래 원소는 <strong>소거 배수 $l_{ik}=\text{factor}_{ik}$</strong>. $U$ 는 <strong>소거가 끝난 상삼각</strong> — 이미 6-1에서 다 계산했다!</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="원리">
+  <div class="eyebrow">6-3 · 원리 · How it works</div>
+  <h1 class="stage-h">소거 배수를 버리지 말고 $L$ 에 담는다</h1>
+  <div class="algo">
+    <div class="algo-h">LU 분해 = 가우스 소거의 재활용</div>
+    <ol>
+      <li>가우스 <b>전진 소거</b>를 수행하면 상삼각 $U$ 가 나온다.</li>
+      <li>이때 쓴 배수 $\text{factor}_{ik}=a_{ik}/a_{kk}$ 를 <b>$L$ 의 $(i,k)$ 자리</b>에 저장한다.</li>
+      <li>그러면 $A=LU$ 가 성립한다(소거를 행렬곱으로 되돌린 것).</li>
+      <li>풀이: $A\mathbf{x}=LU\mathbf{x}=\mathbf{b}$ → $\mathbf{y}=U\mathbf{x}$ 로 두고 <b>$L\mathbf{y}=\mathbf{b}$</b> 먼저(전진), 그 다음 <b>$U\mathbf{x}=\mathbf{y}$</b>(후진).</li>
+    </ol>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">왜 이득인가</div>우변이 $m$ 개면 소거법은 $\approx m\cdot n^3/3$, LU는 $\approx n^3/3 + m\cdot n^2$. $n$ 이 크고 우변이 많을수록 격차가 폭발한다.</div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">피벗팅이 필요하면</div>행 교환을 기록한 <strong>치환 행렬 $P$</strong> 를 두어 $PA=LU$ 로 확장한다. MATLAB <code>[L,U,P]=lu(A)</code>.</div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="시연">
+  <div class="eyebrow">6-3 · 시연 · Walk-through</div>
+  <h1 class="stage-h">6-1의 소거를 그대로 $L,U$ 로 — 단계표</h1>
+  <p class="lede">6-1에서 이미 배수 $f_{21}=-1.5,\ f_{31}=-1,\ f_{32}=4$ 를 구했다. 이 값들을 $L$ 에 담고, 소거 결과를 $U$ 로 쓰면 분해가 끝난다. 새로 계산할 것이 없다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 소거 배수 수집</h4><div class="sub">6-1에서 사용한 factor</div><div class="eq">$f_{21}\!=\!-1.5,\ f_{31}\!=\!-1,\ f_{32}\!=\!4$</div><p>버리지 않고 그대로 $L$ 로.</p></div>
+    <div class="dcard"><h4>② $L$ 조립</h4><div class="sub">대각 $1$ + 배수</div><div class="eq">$L=\begin{bmatrix} 1 & 0 & 0 \\ -1.5 & 1 & 0 \\ -1 & 4 & 1 \end{bmatrix}$</div><p>$l_{ik}=f_{ik}$.</p></div>
+    <div class="dcard"><h4>③ $U$ = 소거 결과</h4><div class="sub">6-1의 상삼각</div><div class="eq">$U=\begin{bmatrix} 2 & 1 & -1 \\ 0 & 0.5 & 0.5 \\ 0 & 0 & -1 \end{bmatrix}$</div><p>검산: $LU=A$ ✓.</p></div>
+  </div>
+  <div class="vcap" style="margin-top:18px">풀이 — 전진 대입 $L\mathbf{y}=\mathbf{b}$ 후 후진 대입 $U\mathbf{x}=\mathbf{y}$</div>
+  <table class="ktab"><thead><tr><th>단계</th><th>식</th><th>결과</th></tr></thead><tbody>
+    <tr><td>$L\mathbf{y}=\mathbf{b}$ (전진)</td><td>$y_1=8;\ y_2=-11+1.5(8);\ y_3=-3+1(8)-4(1)$</td><td>$\mathbf{y}=(8,\,1,\,1)^T$</td></tr>
+    <tr><td>$U\mathbf{x}=\mathbf{y}$ (후진)</td><td>$x_3=1/(-1);\ x_2=(1-0.5x_3)/0.5;\ x_1=(8-x_2+x_3)/2$</td><td>$\mathbf{x}=(2,\,3,\,-1)^T$</td></tr>
+  </tbody></table>
+  <div class="keqnote">우변이 $\mathbf{b}_2=(1,0,0)^T$ 로 바뀌어도 <b>같은 $L,U$</b> 로 대입 두 번이면 끝 — 분해를 다시 하지 않는다.</div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">전진 대입 한 스텝 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · $L\mathbf{y}=\mathbf{b}$ 의 $y_2$</div>
+    <p class="prob-statement">$L=\begin{bmatrix} 1&0&0 \\ -1.5&1&0 \\ -1&4&1 \end{bmatrix}$, $\mathbf{b}=(8,-11,-3)^T$. 전진 대입으로 $y_1=8$ 을 구했다. <strong>$y_2$</strong> 를 구하시오.</p>
+    <div class="given"><span class="chip">$y_1=8$</span><span class="chip">$-1.5\,y_1 + y_2 = -11$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">2행 방정식</div>$$ -1.5(8) + y_2 = -11 \ \Rightarrow\ y_2 = -11 + 12 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ y_2 = 1 $$</div><b>정답:</b> 이어서 $y_3=-3+8-4=1$ → $\mathbf{y}=(8,1,1)^T$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="코드">
+  <div class="eyebrow">6-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 한 번 분해, 여러 번 풀기</h1>
+  <div class="codeblock"><div class="code-cap">lu_solve.m</div><pre><code>A = [2 1 -1; -3 -1 2; -2 1 2];
+b = [8; -11; -3];
+
+<span class="cm">% 부분 피벗팅이 포함된 내장 LU 분해:  P*A = L*U</span>
+[L, U, P] = lu(A);
+
+<span class="cm">% 풀이:  A x = b  →  L(Ux) = P b</span>
+y = L \ (P * b);      <span class="cm">% 전진 대입</span>
+x = U \ y;            <span class="cm">% 후진 대입</span>
+<span class="out">% x = [2; 3; -1]</span>
+
+<span class="cm">% ── 우변이 여러 개면 분해를 재사용 ──</span>
+b2 = [1; 0; 0];
+y2 = L \ (P * b2);
+x2 = U \ y2;          <span class="cm">% 재분해 없음! (n^2 비용만)</span>
+
+fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 2×2 배수 $l_{21}$</div>
+    <p class="prob-statement">$A=\begin{bmatrix} 4 & 3 \\ 6 & 3 \end{bmatrix}$ 를 LU 분해할 때, $R_2\leftarrow R_2 - l_{21}R_1$ 로 소거한다. $L$ 의 원소 <strong>$l_{21}$</strong> 은?</p>
+    <div class="given"><span class="chip">$l_{21}=a_{21}/a_{11}=6/4$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.5" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ l_{21}=\frac{6}{4}=1.5,\quad U=\begin{bmatrix} 4 & 3 \\ 0 & -1.5 \end{bmatrix} $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ L=\begin{bmatrix} 1 & 0 \\ 1.5 & 1 \end{bmatrix} $$</div><b>정답:</b> 검산 $LU=A$ ✓.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 분해 횟수</div>
+    <p class="prob-statement">같은 $A$($n\times n$)에 대해 우변 $\mathbf{b}$ 가 $5$ 개일 때, LU 방식에서 $A=LU$ <strong>분해는 몇 번</strong> 수행하는가?</p>
+    <div class="given"><span class="chip">분해 $O(n^3/3)$ · 대입 $O(n^2)$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="1" data-tol="0.0"/><span class="ans-unit">번</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ \text{분해 } 1\text{번} + \text{대입 } 5\text{쌍} $$</div><b>정답:</b> 분해는 $A$ 에만 의존 → 딱 한 번. 우변마다 값싼 대입 두 번($L\mathbf{y},\,U\mathbf{x}$)만 반복.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="정리">
+  <div class="eyebrow">6-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$A=LU$: $L$=소거 배수(대각 $1$), $U$=소거 결과 상삼각.</li>
+      <li>풀이 = $L\mathbf{y}=\mathbf{b}$(전진) → $U\mathbf{x}=\mathbf{y}$(후진).</li>
+      <li>우변 여럿이면 <strong>분해 1회 + 값싼 대입 반복</strong>.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$L$ 대각을 배수로 채움(대각은 항상 $1$).</li>
+      <li>$L\mathbf{y}=\mathbf{b}$ 를 후진으로 풂(하삼각은 전진).</li>
+      <li>피벗팅 시 $P$ 를 우변에 안 곱함.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$A$ 를 손으로 <strong>$L,U$ 로 분해 + 검산</strong>.</li>
+      <li>$L\mathbf{y}=\mathbf{b}$, $U\mathbf{x}=\mathbf{y}$ <strong>두 대입 수행</strong>.</li>
+      <li>소거법 대비 <strong>다중 우변 계산량</strong> 비교.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 6-4 조건수와 ill-conditioning ════════════════════ -->
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="문제">
+  <div class="eyebrow">6-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">알고리즘이 완벽해도 답이 틀린다면? <span class="en">· Conditioning</span></h1>
+  <div class="analogy"><span class="ic">🎚️</span><div class="tx"><b>직관</b> — 아주 민감한 저울은 손을 살짝만 대도 눈금이 크게 튄다. 어떤 연립방정식은 우변 $\mathbf{b}$ 를 아주 조금만 바꿔도 해 $\mathbf{x}$ 가 <b>확 달라진다.</b> 이건 알고리즘 탓이 아니라 <b>문제 자체가 민감</b>한 것 — 그 민감도의 척도가 조건수다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">피벗팅은 <strong>알고리즘의 안정성</strong>을 지킨다. 하지만 두 직선이 <strong>거의 평행</strong>하면 교점(해)의 위치가 입력 오차에 극도로 민감하다 — 어떤 방법을 써도 답을 못 믿는다. 이런 시스템을 <strong>ill-conditioned</strong> 라 한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">조건수 정의</div>
+        <div class="keqrow"><span class="keqcap">정의</span><span class="keqline">$ \kappa(A) = \|A\|\,\|A^{-1}\| \ \ (\ge 1) $</span></div>
+        <div class="keqrow"><span class="keqcap">오차 전파</span><span class="keqline">$ \dfrac{\|\delta\mathbf{x}\|}{\|\mathbf{x}\|} \lesssim \kappa(A)\,\dfrac{\|\delta\mathbf{b}\|}{\|\mathbf{b}\|} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">해석</div>
+      <div class="terms">
+        <div class="term"><b>$\kappa\approx1$</b> well-conditioned (안정)</div>
+        <div class="term"><b>$\kappa$ 큼</b> 입력 오차가 $\kappa$ 배로 증폭</div>
+        <div class="term"><b>자릿수 손실</b> 약 $\log_{10}\kappa$ 자리</div>
+        <div class="term"><b>$\det\approx0$</b> 거의 특이 → $\kappa$ 폭증</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>조건수는 <strong>문제의 성질</strong>이다 — 좋은 알고리즘으로도 못 고친다. 클수록 신뢰 자릿수가 줄어든다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="원리">
+  <div class="eyebrow">6-4 · 원리 · Rule of thumb</div>
+  <h1 class="stage-h">조건수 → 잃는 자릿수</h1>
+  <div class="two">
+    <div class="col2">
+      <div class="algo">
+        <div class="algo-h">자릿수 손실 어림법</div>
+        <ol>
+          <li>double 정밀도 상대오차 $\approx 10^{-16}$ (약 16자리).</li>
+          <li>해의 상대오차 $\lesssim \kappa(A)\times 10^{-16}$.</li>
+          <li>즉 <b>신뢰 자릿수 $\approx 16 - \log_{10}\kappa$</b>.</li>
+          <li>$\kappa=10^{k}$ 면 약 <b>$k$ 자리</b>를 잃는다.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">조건수 구간별 진단</div>
+      <table class="ktab"><thead><tr><th>$\kappa(A)$</th><th>상태</th><th>잃는 자릿수</th></tr></thead><tbody>
+        <tr><td>$\approx 1$</td><td>Well-conditioned</td><td>$\approx 0$</td></tr>
+        <tr><td>$10^2\!\sim\!10^4$</td><td>Moderate</td><td>$2\!\sim\!4$</td></tr>
+        <tr><td>$\gt 10^6$</td><td>Ill-conditioned</td><td>$\ge 6$</td></tr>
+        <tr><td>$\gt 10^{16}$</td><td>수치적 특이</td><td>전부</td></tr>
+      </tbody></table>
+      <div class="keqnote">MATLAB <code>cond(A)</code> / NumPy <code>np.linalg.cond(A)</code> 로 즉시 확인.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="시연">
+  <div class="eyebrow">6-4 · 시연 · Try it</div>
+  <h1 class="stage-h">조건수가 오차를 증폭하는 걸 직접 재보기</h1>
+  <p class="lede">해의 상대오차는 대략 <strong>조건수 × 입력 상대오차</strong> 다. 아래 슬라이더로 조건수 지수 $p$(즉 $\kappa=10^{p}$)와 입력 상대오차($10^{-e}$)를 바꾸면, 해의 상대오차가 어떻게 커지는지 확인하라.</p>
+  <div class="calc"
+    data-title="조건수 오차 증폭 — 해의 상대오차 ≈ κ · (입력 상대오차)"
+    data-desc="κ=10^p 인 시스템에 상대오차 10^(−e) 의 입력을 넣으면, 해의 상대오차는 대략 10^(p−e) 로 커진다."
+    data-vars='[{"sym":"p","label":"조건수 지수 (κ = 10^p)","min":0,"max":12,"step":1,"val":2},{"sym":"e","label":"입력 상대오차 (10^−e)","min":2,"max":16,"step":1,"val":10}]'
+    data-expr="Math.pow(10, p - e)"
+    data-out="해의 상대오차 (≈ κ·δ)"
+    data-note="p=2, e=10 → 10^−8 (해 약 8자리 신뢰). p=10, e=10 → 10^0=1 (해 100% 오차 — 전혀 못 믿음). 같은 입력 정밀도라도 조건수가 크면 답이 무의미해진다.">
+  </div>
+  <div class="keqnote" style="margin-top:16px">이것이 <b>ill-conditioning</b> 의 본질이다 — 알고리즘(가우스·피벗팅·LU)은 잘못이 없다. 문제 자체가 $\kappa$ 배만큼 오차를 키운다.</div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">신뢰 자릿수 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 남는 유효 자릿수</div>
+    <p class="prob-statement">double 정밀도(상대오차 $\approx10^{-16}$)로 $\kappa(A)=10^{8}$ 인 시스템을 풀었다. 해에서 신뢰할 수 있는 <strong>유효 자릿수</strong>는 약 몇 자리인가? (어림법 $16-\log_{10}\kappa$)</p>
+    <div class="given"><span class="chip">$\log_{10}\kappa = 8$</span><span class="chip">$16-8$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="8" data-tol="0.0"/><span class="ans-unit">자리</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">자릿수 손실</div>$$ \text{잃는 자리} \approx \log_{10}(10^8)=8 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ 16 - 8 = 8\ \text{자리} $$</div><b>정답:</b> $\kappa$ 가 $10^{16}$ 에 이르면 신뢰 자릿수가 $0$ — 수치적으로 특이해진다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="함정">
+  <div class="eyebrow">6-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">조건수를 오해하는 지점</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 작은 잔차 = 정확?</h4><p>ill-conditioned 에선 $A\mathbf{x}-\mathbf{b}$ 가 작아도 해 자체는 <b>크게 틀릴</b> 수 있다. 잔차만 믿지 말 것.</p></div>
+    <div class="pitfall"><h4>⚠ 피벗팅으로 해결?</h4><p>피벗팅은 <b>알고리즘 안정성</b>만 준다. 큰 조건수(문제 민감도)는 <b>못 고친다.</b></p></div>
+    <div class="pitfall"><h4>⚠ $\det$ 크기로 판단</h4><p>행렬을 스케일하면 $\det$ 는 변해도 $\kappa$ 는 그대로 — <b>특이 여부는 $\kappa$ 로</b> 본다.</p></div>
+    <div class="pitfall"><h4>⚠ 거의 평행한 방정식</h4><p>두 직선이 거의 겹치면 교점이 요동친다 → $\kappa$ 폭증. 모델링 단계에서 피해야 한다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="정리">
+  <div class="eyebrow">6-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$\kappa(A)=\|A\|\|A^{-1}\|\ge1$ — <strong>문제의 민감도</strong>.</li>
+      <li>해 상대오차 $\lesssim \kappa\times$ 입력 상대오차.</li>
+      <li>신뢰 자릿수 $\approx 16-\log_{10}\kappa$ (double).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>조건수를 <strong>알고리즘 오류</strong>로 오해.</li>
+      <li>작은 잔차를 정확한 해로 단정.</li>
+      <li>피벗팅이 조건수를 고친다고 착각.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$\kappa$ 로 <strong>자릿수 손실 계산</strong>.</li>
+      <li>well vs ill-conditioned <strong>판별·서술</strong>.</li>
+      <li>조건수 ⊥ 알고리즘 안정성 <strong>구분</strong>.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=6;</script>
+<script src="/na-track.js" defer></script>
+</body></html>

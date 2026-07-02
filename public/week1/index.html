@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 1 · Introduction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 1</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 1 · Introduction</div>
+    <h1 class="intro-h">$\dfrac{dv}{dt} = 9.81 - 0.00367\,v^2$ — <span class="hl">이 속도를 손으로 풀 수 있는가?</span></h1>
+    <p class="intro-sub">번지점퍼의 속도, 엔진 블록의 온도, 날개 위 공기 흐름 — 실제 공학 문제의 <strong>대부분은 연필과 종이로 풀리지 않는다.</strong> 지배방정식은 세울 수 있지만, 닫힌 형태의 <em>해석해</em>가 존재하지 않기 때문이다. 그럼 기계공학자는 어떻게 답을 구할까?</p>
+    <div class="intro-teaser">답 — <em>근사(approximation).</em> 정확한 공식을 포기하는 대신, <em>컴퓨터가 반복할 수 있는 유한한 계산</em>으로 충분히 정확한 답을 만든다. 이번 주는 "수치해석이 무엇이고 왜 필요한가"를 <strong>직접 계산하며</strong> 익힌다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 1 · 이번 주 여정</div>
+    <h1 class="intro-h">해석해의 한계에서 <span class="hl">수치해의 세계로</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">1-1</span><span><span class="rt">수치해석이란</span> <span class="rd">— 근사 알고리즘으로 "풀 수 없는 문제"를 푸는 기술</span></span></div>
+      <div class="rm-item"><span class="rn">1-2</span><span><span class="rt">해석해 vs 수치해</span> <span class="rd">— 같은 문제, 두 가지 답 — 정확 vs 실용</span></span></div>
+      <div class="rm-item"><span class="rn">1-3</span><span><span class="rt">오차와 근사</span> <span class="rd">— 근사에는 항상 오차 — 그것을 어떻게 다루나</span></span></div>
+      <div class="rm-item"><span class="rn">1-4</span><span><span class="rt">수치해석 절차</span> <span class="rd">— 문제 → 모델 → 근사 → 계산 → 검증 5단계</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 하나를 끝까지 따라간다 — 번지점퍼의 자유낙하 $\dfrac{dv}{dt}=g-\dfrac{c_d}{m}v^2$, 종단속도 $\approx 51.7\ \text{m/s}$.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 정리 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 1 · 수치해석은 "돌려봐야" 안다</div>
+    <h1 class="intro-h">각 주제를 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep on">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep on">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">직접 계산한다</div><ul><li><strong>직접계산</strong>: 유한차분 한 스텝을 손으로 넣고 채점받는다.</li><li><strong>시연</strong>: 반복이 정답에 <em>수렴</em>하는 과정을 눈으로 본다 — 적분·연립방정식.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">한계를 안다</div><ul><li><strong>함정</strong>: 근사는 공짜가 아니다 — 오차·계산량·불안정.</li><li>왜 "정확한 답 대신 충분히 정확한 답"을 택하는지 몸으로 안다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 1-1 수치해석이란 ════════════════════ -->
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="문제">
+  <div class="eyebrow">1-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">왜 수치해석인가 <span class="en">· When pen-and-paper fails</span></h1>
+  <div class="analogy"><span class="ic">🧮</span><div class="tx"><b>직관</b> — 계산기로 $\sqrt{2}$ 를 누르면 $1.41421\ldots$ 가 나온다. 하지만 계산기는 "정확한 $\sqrt2$"를 아는 게 아니다. $x^2=2$ 를 만족하는 값을 <b>반복해서 좁혀</b> 충분히 가까운 근사를 준다. 공학의 거의 모든 답이 이렇게 만들어진다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">실제 공학 문제 — 레이스카 주변 공기 흐름, 프로세서의 열 분포, 다리의 진동 — 는 <strong>연필과 종이로 풀기엔 너무 복잡</strong>하다. 정확한 방정식(해석해)을 찾는 것이 아예 불가능한 경우가 대부분이다.</p>
+      <div class="keqbox">
+        <div class="keq-label">The Problem &amp; The Solution</div>
+        <div class="keqrow"><span class="keqcap">문제</span><span class="keqline">해석해 $\Rightarrow$ 단순한 문제에서만 존재</span></div>
+        <div class="keqrow"><span class="keqcap">해법</span><span class="keqline">수치해석 $\Rightarrow$ 컴퓨터로 <em>근사</em>를 계산</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">수치해석이 쓰이는 공학 분야</div>
+      <div class="terms">
+        <div class="term"><b>🔥 열전달</b> 복잡한 형상의 온도 분포 (FDM·FEM)</div>
+        <div class="term"><b>🌊 유체역학</b> 날개 양력·항력, 난류 (CFD)</div>
+        <div class="term"><b>🏗️ 구조역학</b> 응력·변형, 대규모 연립방정식 (FEM)</div>
+        <div class="term"><b>📳 동역학</b> 다자유도 진동의 시간 응답 (Runge–Kutta)</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>해석해가 있으면 정확하지만 <strong>거의 없다</strong>. 수치해는 근사이지만 <strong>거의 모든 문제</strong>에 적용된다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="원리">
+  <div class="eyebrow">1-1 · 원리 · Definition</div>
+  <h1 class="stage-h">수치해석의 정의 — 근사와 반복</h1>
+  <p class="assume"><b>정의:</b> 수치해석은 <b>연속적인 수학(미분·적분·방정식)</b>을 컴퓨터가 다룰 수 있는 <b>유한한 산술 연산</b>으로 바꿔 근사해를 구하는 방법이다.</p>
+  <div class="two">
+    <div class="col2">
+      <div class="keqbox">
+        <div class="keq-label">연속 → 이산으로 바꾸는 두 축</div>
+        <div class="keqrow"><span class="keqcap">미분</span><span class="keqline">$ \dfrac{dv}{dt} \;\approx\; \dfrac{\Delta v}{\Delta t} $ (유한차분)</span></div>
+        <div class="keqrow"><span class="keqcap">적분</span><span class="keqline">$ \displaystyle\int_a^b f\,dx \;\approx\; \sum_i f(x_i)\,\Delta x $ (유한 합)</span></div>
+        <div class="keqrow"><span class="keqcap">반복</span><span class="keqline">$ \text{New} = \text{Old} + (\text{기울기})\times(\text{Step}) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">이 과정이 키우는 사고력</div>
+      <div class="terms">
+        <div class="term"><b>Decompose</b> 복잡한 문제를 단순 단계로 분해</div>
+        <div class="term"><b>Develop</b> 알고리즘을 만들고 오류를 디버깅</div>
+        <div class="term"><b>Convert</b> 수학 개념을 코드로 변환</div>
+        <div class="term"><b>Explore</b> 여러 방법을 탐색해 최적해를 찾기</div>
+      </div>
+      <div class="callout warn"><div class="ct">직관</div>무한(극한)을 컴퓨터는 다룰 수 없다. 그래서 <strong>유한한 $\Delta t$, 유한한 조각</strong>으로 바꾸는 것이 모든 수치해석의 출발점이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="시연">
+  <div class="eyebrow">1-1 · 시연 · Step-through</div>
+  <h1 class="stage-h">수치해석의 원형 — 면적을 잘게 나눠 더한다</h1>
+  <p class="lede">가장 단순한 수치해석을 직접 돌려 보자. $\int_0^\pi \sin x\,dx$ 의 <strong>참값은 정확히 $2$</strong> 이다. 곡선 아래 면적을 <strong>사다리꼴</strong>로 근사하고, "다음 반복"으로 조각 수 $n$ 을 늘려 보라 — 근사값이 $2$ 로 <strong>수렴</strong>한다. 이것이 "정확한 공식 없이 답을 만든다"의 본질이다.</p>
+  <div class="stepper"
+    data-kind="integration"
+    data-fn="sin(x)"
+    data-a="0" data-b="3.14159265"
+    data-rule="trap"
+    data-n0="1" data-true="2"
+    data-steps="6"
+    data-title="사다리꼴 적분 — ∫₀^π sin x dx  (참값 = 2)"
+    data-note="구간을 잘게 나눌수록 사다리꼴 합이 참값 2에 수렴한다 — 조각을 늘릴수록 오차가 준다."></div>
+</section>
+
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">유한차분으로 기울기 근사 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 할선 기울기</div>
+    <p class="prob-statement">번지점퍼의 속도가 $v(0)=0$, $v(2)=18.73\ \text{m/s}$ (해석해) 라 하자. 미분 $\dfrac{dv}{dt}$ 를 구간 $[0,2]$ 의 <strong>할선 기울기</strong> $\dfrac{\Delta v}{\Delta t}$ 로 근사하면 얼마인가? (소수 2자리)</p>
+    <div class="given"><span class="chip">$\Delta v = 18.73-0$</span><span class="chip">$\Delta t = 2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="9.365" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \frac{\Delta v}{\Delta t} = \frac{18.73 - 0}{2 - 0} = 9.365 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \frac{dv}{dt}\Big|_{0} \approx 9.365 $$</div><b>정답:</b> 참 기울기(접선)는 $g=9.81$. 할선은 그 근사값 — $\Delta t$ 를 줄이면 $9.81$ 에 가까워진다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="함정">
+  <div class="eyebrow">1-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">근사는 공짜가 아니다</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 오차가 남는다</h4><p>유한한 $\Delta t$·조각을 쓰는 순간 <b>절단오차</b>가 생긴다. "정확한 답"이 아니라 "충분히 정확한 답"이다.</p></div>
+    <div class="pitfall"><h4>⚠ 계산량이 는다</h4><p>정밀도를 높이려 $\Delta t$ 를 줄이면 반복 횟수·계산량이 급증한다 — 정밀도와 비용의 <b>트레이드오프</b>.</p></div>
+    <div class="pitfall"><h4>⚠ 반올림이 쌓인다</h4><p>컴퓨터의 유한 자릿수 때문에 <b>반올림오차</b>가 누적된다. 너무 잘게 나눠도 오히려 나빠질 수 있다.</p></div>
+    <div class="pitfall"><h4>⚠ 불안정할 수 있다</h4><p>방법·스텝 크기를 잘못 고르면 답이 <b>발산</b>한다 — 뒤 주차에서 다룰 안정성 문제.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 종단속도</div>
+    <p class="prob-statement">번지점퍼가 충분히 오래 낙하하면 가속이 멈추고 <strong>종단속도</strong>에 도달한다. $\frac{dv}{dt}=0$ 에서 $v_{\text{term}}=\sqrt{gm/c_d}$. $m=68.1\,\text{kg}$, $c_d=0.25\,\text{kg/m}$, $g=9.81$ 일 때 종단속도(m/s)는? (소수 1자리)</p>
+    <div class="given"><span class="chip">$g=9.81$</span><span class="chip">$m=68.1$</span><span class="chip">$c_d=0.25$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="51.69" data-tol="0.2"/><span class="ans-unit">m/s</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ v_{\text{term}} = \sqrt{\frac{gm}{c_d}} = \sqrt{\frac{9.81 \times 68.1}{0.25}} = \sqrt{2672.6} $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ v_{\text{term}} \approx 51.69\ \text{m/s} \;(\approx 186\ \text{km/h}) $$</div><b>정답:</b> 이 값은 해석해 $\tanh(\infty)=1$ 로도 확인된다 — 중력과 공기저항이 평형인 순간.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="정리">
+  <div class="eyebrow">1-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>수치해석 = 연속 수학을 <strong>유한 산술</strong>로 바꿔 근사해를 구한다.</li>
+      <li>두 축: 미분→<strong>유한차분</strong>, 적분→<strong>유한 합</strong>, 그리고 <strong>반복</strong>.</li>
+      <li>해석해는 드물고 정확 · 수치해는 근사이나 <strong>거의 모든 문제</strong>에 적용.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>근사값을 "정확한 값"으로 착각.</li>
+      <li>$\Delta t$ 를 줄이면 항상 좋아진다고 단정(반올림 누적 무시).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>해석적 vs 수치적 방법의 <strong>정의·장단점</strong> 서술.</li>
+      <li>미분·적분을 유한 근사로 바꾸는 <strong>기본 아이디어</strong> 설명.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 1-2 해석해 vs 수치해 ════════════════════ -->
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="문제">
+  <div class="eyebrow">1-2 · 문제 · Two approaches</div>
+  <h1 class="stage-h">같은 문제, 두 가지 답 <span class="en">· exact ⟷ approximate</span></h1>
+  <div class="analogy"><span class="ic">🪂</span><div class="tx"><b>직관</b> — 번지점퍼의 속도는 <b>운 좋게도</b> 해석해 $v(t)=\sqrt{gm/c_d}\,\tanh(\cdot)$ 가 존재한다. 하지만 이는 방정식이 <b>특별히 단순</b>하기 때문. 로프의 탄성·바람·3D 형상이 끼면 해석해는 사라지고 — 수치해만 남는다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">뉴턴 제2법칙 $F=ma$ 로 번지점퍼의 운동방정식을 세우면 <strong>1차 상미분방정식(ODE)</strong> 이 된다. 해석적 방법은 미적분으로 정확히 풀고, 수치적 방법은 컴퓨터로 근사한다 — 같은 방정식, 다른 길.</p>
+      <div class="keqbox">
+        <div class="keq-label">지배방정식 (ODE)</div>
+        <div class="keqrow"><span class="keqcap">모델</span><span class="keqline">$ m\dfrac{dv}{dt} = mg - c_d v^2 $</span></div>
+        <div class="keqrow"><span class="keqcap">정리</span><span class="keqline">$ \dfrac{dv}{dt} = g - \dfrac{c_d}{m}v^2,\quad v(0)=0 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">두 접근의 대비</div>
+      <div class="terms">
+        <div class="term"><b>해석해</b> 변수분리 → $\tanh$, <b>정확</b>하지만 드묾</div>
+        <div class="term"><b>수치해</b> Euler 반복, <b>근사</b>이나 거의 항상 가능</div>
+        <div class="term"><b>검증</b> 해석해가 있으면 수치해의 정확도 확인용</div>
+        <div class="term"><b>확장</b> $c_d$ 가 복잡해지면 해석해 불가 → 수치해만</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>이 수업의 전략 — <strong>해석해로 검증</strong>하며 수치해를 배운다. 검증이 끝나면 해석해 없는 문제로 나아간다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="원리">
+  <div class="eyebrow">1-2 · 원리 · Euler idea</div>
+  <h1 class="stage-h">미분을 차분으로 — Euler Method</h1>
+  <p class="assume"><b>아이디어:</b> 미분의 정의에서 극한을 <b>취하지 않고</b>, 유한한 $\Delta t$ 를 그대로 쓴다. 그러면 다음 값을 예측하는 공식이 나온다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 미분의 정의</h4><div class="sub">극한</div><div class="eq">$ \dfrac{dv}{dt} = \lim_{\Delta t\to 0}\dfrac{\Delta v}{\Delta t} $</div><p>컴퓨터는 무한히 작은 값을 못 다룬다.</p></div>
+    <div class="dcard"><h4>② 유한차분</h4><div class="sub">극한을 버림</div><div class="eq">$ \dfrac{dv}{dt} \approx \dfrac{v_{i+1}-v_i}{\Delta t} $</div><p>유한한 $\Delta t$ 로 근사 — Finite Difference.</p></div>
+    <div class="dcard"><h4>③ 뒤집기</h4><div class="sub">$v_{i+1}$ 로</div><div class="eq">$ v_{i+1} = v_i + \dfrac{dv_i}{dt}\,\Delta t $</div><p>New = Old + Slope × Step. Euler Method.</p></div>
+  </div>
+  <div class="callout warn"><div class="ct">주의</div>이 공식은 현재 <strong>한 점의 기울기</strong>만 쓴다. 그래서 $\Delta t$ 가 크면 곡선을 직선으로 오해해 오차가 커진다 — 수렴 단계에서 확인한다.</div>
+</section>
+
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="시연">
+  <div class="eyebrow">1-2 · 시연 · Step-through</div>
+  <h1 class="stage-h">반복이 해석해로 수렴한다 — 1D 열전도</h1>
+  <p class="lede">또 다른 예 — 벽 양쪽 온도가 $100^\circ$, $25^\circ$ 로 고정된 1D 정상상태 열전도. 해석해는 <strong>직선 온도분포</strong>($81.25,\,62.5,\,43.75$). 내부 3절점을 <strong>Gauss–Seidel 반복</strong>으로 풀어 보자 — "다음 반복"마다 값이 정확한 직선 해로 <strong>수렴</strong>한다. 이것이 "수치해 → 해석해 검증"의 실제 모습이다.</p>
+  <div class="stepper"
+    data-kind="matrix-iter"
+    data-a="[[2,-1,0],[-1,2,-1],[0,-1,2]]"
+    data-b="[100,0,25]"
+    data-x0="[62.5,62.5,62.5]"
+    data-mode="gs"
+    data-sol="[81.25,62.5,43.75]"
+    data-steps="10"
+    data-title="Gauss–Seidel — 1D 열전도 내부 3절점 (T₁,T₂,T₃)"
+    data-note="각 절점 T_i=(T_{i-1}+T_{i+1})/2. 반복이 직선 해 (81.25, 62.5, 43.75) 로 수렴 — 해석해와 일치."></div>
+</section>
+
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">Euler 한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Euler 첫 스텝</div>
+    <p class="prob-statement">번지점퍼 $\dfrac{dv}{dt}=g-\dfrac{c_d}{m}v^2$, $g=9.81$, $\Delta t=2$, $v_0=0$. Euler 공식으로 <strong>$v_1$</strong> 을 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$\left.\frac{dv}{dt}\right|_0 = 9.81-0 = 9.81$</span><span class="chip">$v_1=v_0+\frac{dv_0}{dt}\Delta t$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="19.62" data-tol="0.05"/><span class="ans-unit">m/s</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 초기 기울기</div>$$ \frac{dv}{dt}\Big|_0 = 9.81 - \frac{0.25}{68.1}(0)^2 = 9.81 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 대입</div>$$ v_1 = 0 + 9.81 \times 2 = 19.62 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ v_1 = 19.62\ \text{m/s} $$</div><b>정답:</b> 해석해는 $v(2)=18.73$. 큰 $\Delta t=2$ 라 약 $0.89$ 만큼 과대추정 — 오차의 시작.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="수렴">
+  <div class="eyebrow">1-2 · 수렴 · Step size</div>
+  <h1 class="stage-h">$\Delta t$ 를 줄이면 수치해가 해석해로</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">스텝 크기와 오차의 관계</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">Euler 오차</span><span class="keqline">$ E \;\propto\; \Delta t $ (1차 정확도)</span></div>
+        <div class="keqrow"><span class="keqcap">의미</span><span class="keqline">$\Delta t$ 를 절반 $\Rightarrow$ 오차도 대략 절반</span></div>
+      </div>
+      <div class="callout key"><div class="ct">해석</div>수치해는 $\Delta t\to 0$ 에서 해석해로 <strong>수렴</strong>한다. 단, 스텝이 작을수록 계산 횟수는 늘어난다 — 정밀도의 대가.</div>
+    </div>
+    <div>
+      <div class="vcap">$t=12\text{s}$ 에서 Euler 상대오차 (해석해 $=50.62$)</div>
+      <table class="ktab"><thead><tr><th>$\Delta t$</th><th>수치해 $v(12)$</th><th>상대오차</th></tr></thead><tbody>
+        <tr><td>$2$ s</td><td>$51.60$</td><td>$1.94\%$</td></tr>
+        <tr><td>$1$ s</td><td>$51.19$</td><td>$1.12\%$</td></tr>
+        <tr><td>$0.5$ s</td><td>$50.94$</td><td>$0.63\%$</td></tr>
+        <tr><td>$0.1$ s</td><td>$50.69$</td><td>$0.14\%$</td></tr>
+      </tbody></table>
+      <div class="keqnote">$\Delta t$ 를 $1/2$ 로 줄일 때마다 상대오차도 대략 절반 — Euler가 <b style="color:var(--ink)">1차 정확도</b>임을 보여준다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="코드">
+  <div class="eyebrow">1-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">Euler Method — 그대로 돌려보기</h1>
+  <div class="codeblock"><div class="code-cap">bungee_euler.m</div><pre><code><span class="cm">% Bungee Jumper — Euler Method</span>
+g  = 9.81;    <span class="cm">% 중력가속도 (m/s^2)</span>
+m  = 68.1;    <span class="cm">% 질량 (kg)</span>
+cd = 0.25;    <span class="cm">% 항력계수 (kg/m)</span>
+dt = 2;       <span class="cm">% 스텝 크기 Δt (s) — 바꿔가며 정확도 비교</span>
+tf = 12;      <span class="cm">% 최종 시간 (s)</span>
+
+t = 0;  v = 0;                 <span class="cm">% 초기 조건</span>
+fprintf(' t(s)   v_num    v_exact\n')
+
+while t &lt;= tf
+    vExact = sqrt(g*m/cd)*tanh(sqrt(g*cd/m)*t);
+    fprintf('%5.1f  %8.4f  %8.4f\n', t, v, vExact)
+    dvdt = g - (cd/m)*v^2;     <span class="cm">% 현재 기울기</span>
+    v = v + dvdt*dt;           <span class="cm">% New = Old + Slope × Step</span>
+    t = t + dt;
+end
+<span class="out">% t=12s: v_num = 51.60,  v_exact = 50.62  (dt=2)</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">직접 해보기</div><code>dt</code> 를 $2\to1\to0.5\to0.1$ 로 바꿔 실행하면, 수치해 열이 해석해 열에 점점 가까워지는 것을 눈으로 확인할 수 있다.</div>
+</section>
+
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="정리">
+  <div class="eyebrow">1-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>해석해 = 미적분으로 <strong>정확</strong>, 수치해 = 반복으로 <strong>근사</strong>.</li>
+      <li>Euler: $v_{i+1}=v_i+\frac{dv_i}{dt}\Delta t$ — New = Old + Slope × Step.</li>
+      <li>$\Delta t\to 0$ 이면 수치해 → 해석해로 <strong>수렴</strong>(1차 정확도).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>기울기를 <strong>다음 점</strong>에서 계산(Euler는 <strong>현재 점</strong>).</li>
+      <li>$\Delta t$ 단위·초기조건 $v(0)$ 누락.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>ODE에서 Euler로 <strong>1~2 스텝 손 계산</strong>($v_1,v_2$).</li>
+      <li>$\Delta t$ 변화에 따른 <strong>오차·수렴</strong> 경향 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 1-3 오차와 근사 ════════════════════ -->
+<section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="문제">
+  <div class="eyebrow">1-3 · 문제 · Why error matters</div>
+  <h1 class="stage-h">근사에는 항상 오차가 있다 <span class="en">· know your error</span></h1>
+  <div class="analogy"><span class="ic">📏</span><div class="tx"><b>직관</b> — 자로 길이를 재면 "$12.3\,\text{cm}$"라 답하지만 실제로는 "$12.3\pm0.05\,\text{cm}$"다. 오차를 모르면 그 답을 <b>믿어도 되는지</b> 알 수 없다. 수치해도 똑같다 — 답과 함께 <b>오차의 크기</b>를 알아야 공학적으로 쓸 수 있다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">수치해는 근사이므로 참값과 차이가 난다. 이 차이를 정량화하는 것이 <strong>오차 분석</strong>이다. 오차를 알아야 "이 답이 설계에 충분히 정확한가"를 판단할 수 있다.</p>
+      <div class="keqbox">
+        <div class="keq-label">오차의 정의</div>
+        <div class="keqrow"><span class="keqcap">참오차</span><span class="keqline">$ E_t = (\text{참값}) - (\text{근사값}) $</span></div>
+        <div class="keqrow"><span class="keqcap">상대오차</span><span class="keqline">$ \varepsilon_t = \left|\dfrac{E_t}{\text{참값}}\right| \times 100\% $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">오차의 두 원천</div>
+      <div class="terms">
+        <div class="term"><b>절단오차</b> 무한 과정을 유한하게 자를 때 (유한차분·유한 합)</div>
+        <div class="term"><b>반올림오차</b> 컴퓨터의 유한 자릿수 때문에</div>
+        <div class="term"><b>총오차</b> 둘의 합 — 한쪽만 줄여선 최소가 안 됨</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>$\Delta t$ 를 줄이면 <strong>절단오차</strong>는 줄지만 반복이 늘어 <strong>반올림오차</strong>가 쌓인다. 최적의 $\Delta t$ 가 존재.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="원리">
+  <div class="eyebrow">1-3 · 원리 · Error measures</div>
+  <h1 class="stage-h">참오차 vs 근사오차 — 무엇을 재나</h1>
+  <div class="algo">
+    <div class="algo-h">오차를 측정하는 두 상황</div>
+    <ol>
+      <li><b>참값을 아는 경우</b>(해석해 존재): 참오차 $E_t=\text{참값}-\text{근사값}$, 상대오차 $\varepsilon_t=|E_t/\text{참값}|\times100\%$.</li>
+      <li><b>참값을 모르는 경우</b>(실전): 이전 근사와 현재 근사의 차이로 <b>근사오차</b> $\varepsilon_a=\left|\dfrac{\text{현재}-\text{이전}}{\text{현재}}\right|\times100\%$ 를 쓴다.</li>
+      <li>반복을 $\varepsilon_a$ 가 목표 허용오차 $\varepsilon_s$ 보다 작아질 때까지 계속한다 — <b>정지 기준</b>.</li>
+    </ol>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">주의</div>실전에서는 참값이 없다. 그래서 <strong>근사오차 $\varepsilon_a$</strong> 로 "언제 멈출지"를 판단한다. 참오차는 검증(해석해 있을 때)에만 쓴다.</div>
+</section>
+
+<section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">상대오차 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 상대오차</div>
+    <p class="prob-statement">번지점퍼 $t=2\text{s}$ 에서 Euler($\Delta t=2$) 수치해는 $v_{\text{num}}=19.62$, 해석해는 $v_{\text{true}}=18.73\ \text{m/s}$. <strong>상대오차 $\varepsilon_t$ (%)</strong> 를 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$E_t=18.73-19.62$</span><span class="chip">$\varepsilon_t=|E_t/18.73|\times100$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="4.76" data-tol="0.3"/><span class="ans-unit">%</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 참오차</div>$$ E_t = 18.73 - 19.62 = -0.89 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 상대오차</div>$$ \varepsilon_t = \left|\frac{-0.89}{18.73}\right|\times100\% \approx 4.76\% $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \varepsilon_t \approx 4.76\% $$</div><b>정답:</b> $\Delta t$ 를 $0.1$ 로 줄이면 이 오차는 $0.1\%$ 대로 떨어진다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="함정">
+  <div class="eyebrow">1-3 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">오차를 다룰 때 놓치는 것</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 절대오차만 본다</h4><p>$E_t=1$ 이 큰지 작은지는 <b>참값의 크기</b>에 달렸다. 항상 <b>상대오차</b>로 비교하라.</p></div>
+    <div class="pitfall"><h4>⚠ 더 잘게 = 항상 좋다</h4><p>$\Delta t$ 를 지나치게 줄이면 <b>반올림오차</b>가 절단오차 감소를 잡아먹는다 — 총오차 최소점이 있다.</p></div>
+    <div class="pitfall"><h4>⚠ 참값을 안다고 가정</h4><p>실전엔 참값이 없다. 정지 기준은 <b>근사오차 $\varepsilon_a$</b> 로 세워야 한다.</p></div>
+    <div class="pitfall"><h4>⚠ 부호 소거</h4><p>서로 가까운 두 큰 수를 빼면 유효숫자가 <b>급격히 손실</b>(catastrophic cancellation)된다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · $t=12$s 상대오차</div>
+    <p class="prob-statement">$t=12\text{s}$ 에서 Euler($\Delta t=2$) 수치해 $v_{\text{num}}=51.60$, 해석해 $v_{\text{true}}=50.62\ \text{m/s}$. <strong>상대오차(%)</strong> 는? (소수 2자리)</p>
+    <div class="given"><span class="chip">$|51.60-50.62|$</span><span class="chip">$\div\,50.62\times100$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.94" data-tol="0.2"/><span class="ans-unit">%</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \varepsilon_t = \left|\frac{51.60-50.62}{50.62}\right|\times100\% = \frac{0.98}{50.62}\times100\% $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \varepsilon_t \approx 1.94\% $$</div><b>정답:</b> $t=2$ 의 $4.76\%$ 보다 작다 — 후반에는 속도가 종단속도에 가까워 곡률이 작아 Euler가 잘 맞는다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="정리">
+  <div class="eyebrow">1-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>참오차 $E_t=$참값$-$근사값, 상대오차 $\varepsilon_t=|E_t/\text{참값}|\times100\%$.</li>
+      <li>오차 두 원천: <strong>절단오차</strong>(유한 근사) + <strong>반올림오차</strong>(유한 자릿수).</li>
+      <li>실전 정지 기준 = <strong>근사오차 $\varepsilon_a &lt; \varepsilon_s$</strong>.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>절대오차만 보고 크기 판단.</li>
+      <li>$\Delta t\to 0$ 이 항상 최선이라 가정(총오차 최소점 무시).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 근사값·참값으로 <strong>참오차·상대오차 계산</strong>.</li>
+      <li>절단오차 vs 반올림오차의 <strong>원천·경향</strong> 비교.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 1-4 수치해석 절차 ════════════════════ -->
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="문제">
+  <div class="eyebrow">1-4 · 문제 · The process</div>
+  <h1 class="stage-h">모든 수치해석은 5단계를 따른다 <span class="en">· one recipe</span></h1>
+  <div class="analogy"><span class="ic">⚙️</span><div class="tx"><b>직관</b> — 요리 레시피처럼, 어떤 수치해석 문제든 같은 절차를 거친다: 문제를 정의하고 → 수식으로 모델링하고 → 근사식으로 바꾸고 → 컴퓨터로 계산하고 → 결과를 검증한다. 번지점퍼든 CFD든 <b>뼈대는 동일</b>하다.</div></div>
+  <p class="lede">이 5단계를 한 번 익히면 앞으로 배울 모든 방법(방정식 풀이·연립방정식·적분·ODE)에 그대로 적용된다. 번지점퍼 예제로 각 단계를 짚어 본다.</p>
+  <div class="keqbox">
+    <div class="keq-label">수치해석 5단계</div>
+    <div class="keqrow"><span class="keqcap">1 · Problem</span><span class="keqline">물리 문제 정의 — "$v(t)=?$"</span></div>
+    <div class="keqrow"><span class="keqcap">2 · Model</span><span class="keqline">$F=ma \Rightarrow \frac{dv}{dt}=g-\frac{c_d}{m}v^2$</span></div>
+    <div class="keqrow"><span class="keqcap">3 · Approximate</span><span class="keqline">$\frac{dv}{dt}\approx\frac{\Delta v}{\Delta t}$ (유한차분)</span></div>
+    <div class="keqrow"><span class="keqcap">4 · Compute</span><span class="keqline">$v_{i+1}=v_i+\frac{dv_i}{dt}\Delta t$ 반복</span></div>
+    <div class="keqrow"><span class="keqcap">5 · Verify</span><span class="keqline">해석해·물리적 타당성으로 검증</span></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="원리">
+  <div class="eyebrow">1-4 · 원리 · Five steps</div>
+  <h1 class="stage-h">문제 → 모델 → 근사 → 계산 → 검증</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① Problem</h4><div class="sub">물리 정의</div><div class="eq">$ v(t)=\, ? $</div><p>$m=68.1$, $c_d=0.25$, $v(0)=0$. 시간에 따른 속도.</p></div>
+    <div class="dcard"><h4>② Model</h4><div class="sub">뉴턴 제2법칙</div><div class="eq">$ \dfrac{dv}{dt}=g-\dfrac{c_d}{m}v^2 $</div><p>힘의 균형을 ODE로 — 변화율 = 중력 − 항력.</p></div>
+    <div class="dcard"><h4>③ Approximate</h4><div class="sub">유한차분</div><div class="eq">$ \dfrac{dv}{dt}\approx\dfrac{\Delta v}{\Delta t} $</div><p>미분을 컴퓨터가 다룰 차분으로.</p></div>
+  </div>
+  <div class="two" style="margin-top:14px">
+    <div class="col2"><div class="callout key"><div class="ct">④ Compute</div>$v_{i+1}=v_i+\frac{dv_i}{dt}\Delta t$ 를 $t=0\to2\to\cdots\to12$ 로 <strong>반복</strong>. MATLAB이 자동화한다.</div></div>
+    <div class="col2"><div class="callout warn"><div class="ct">⑤ Verify</div>해석해와 오차 비교 · $\Delta t$ 줄여 수렴 확인 · 종단속도 $\approx51.7$ 이 <strong>물리적으로 타당</strong>한지 점검.</div></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">Compute 단계 · 두 번째 스텝 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Euler 둘째 스텝</div>
+    <p class="prob-statement">$t=2\text{s}$ 에서 $v_1=19.62$. $\dfrac{dv}{dt}=9.81-\dfrac{0.25}{68.1}v^2$, $\Delta t=2$. Compute 단계로 <strong>$v_2$</strong> ($t=4$s)를 구하시오. (소수 1자리)</p>
+    <div class="given"><span class="chip">$\frac{0.25}{68.1}=0.003670$</span><span class="chip">$v_2=v_1+\frac{dv_1}{dt}\Delta t$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="36.41" data-tol="0.15"/><span class="ans-unit">m/s</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 기울기</div>$$ \frac{dv_1}{dt}=9.81-0.003670\,(19.62)^2 = 9.81-1.413 = 8.397 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 대입</div>$$ v_2 = 19.62 + 8.397\times2 = 36.41 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ v_2 \approx 36.41\ \text{m/s} $$</div><b>정답:</b> 속도가 커질수록 항력 $\frac{c_d}{m}v^2$ 이 커져 기울기(가속)가 줄어든다 — 종단속도로 향하는 과정.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="코드">
+  <div class="eyebrow">1-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">Verify 단계 — 오차 표로 검증</h1>
+  <div class="codeblock"><div class="code-cap">bungee_table.m</div><pre><code><span class="cm">% 수치해 vs 해석해 오차 표 — Verify 단계</span>
+g = 9.81;  m = 68.1;  cd = 0.25;
+dt = 2;  t = 0;  v_num = 0;
+
+fprintf('%-6s %-12s %-12s %-10s\n', ...
+        't(s)','Numerical','Analytical','Error(%)')
+fprintf('%s\n', repmat('-',1,44))
+
+for i = 0:dt:12
+    v_ana = sqrt(g*m/cd)*tanh(sqrt(g*cd/m)*i);
+    if i &gt; 0
+        dvdt  = g - (cd/m)*v_num^2;   <span class="cm">% Compute: 기울기</span>
+        v_num = v_num + dvdt*dt;       <span class="cm">% New = Old + Slope × Step</span>
+    end
+    err = abs(v_ana - v_num)/max(v_ana,eps)*100;
+    fprintf('%-6.1f %-12.4f %-12.4f %-10.2f\n', ...
+            i, v_num, v_ana, err)
+end
+<span class="out">%  4.0   36.4137   33.1118   9.97
+%  8.0   50.1802   46.9575   6.86
+% 12.0   51.6008   50.6175   1.94</span></code></pre></div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">Verify의 핵심</div>해석해가 있으면 오차로 검증하고, <strong>해석해가 없으면</strong> $\Delta t$ 를 줄여 수렴을 보거나 물리적 타당성(종단속도·에너지)으로 판단한다.</div>
+</section>
+
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="정리">
+  <div class="eyebrow">1-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 이번 학기 지도</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>모든 수치해석 = <strong>Problem → Model → Approximate → Compute → Verify</strong>.</li>
+      <li>Approximate가 심장 — 미분·적분을 유한 근사로 바꾼다.</li>
+      <li>Verify 없이는 수치해를 신뢰할 수 없다 — 오차·수렴·물리 타당성.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>Verify 단계 생략 — 검증 없는 숫자는 위험.</li>
+      <li>모델(2단계)의 가정을 잊고 결과를 과신.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>다음 여정 · 이 5단계를 어디에 쓰나</h4><ul>
+      <li><strong>Week 4–5</strong> 비선형 방정식 — Bisection·Newton·Secant (근을 반복으로 좁힘).</li>
+      <li><strong>Week 6–7</strong> 연립방정식 — Gauss 소거·Jacobi·Gauss–Seidel (오늘 시연한 반복).</li>
+      <li><strong>Week 11–13</strong> 적분·미분·ODE — 오늘의 사다리꼴·Euler를 정밀화.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=1;</script>
+<script src="/na-track.js" defer></script>
+</body></html>

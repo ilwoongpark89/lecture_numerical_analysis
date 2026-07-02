@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 9 · Curve Fitting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 9</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 9 · Curve Fitting</div>
+    <h1 class="intro-h">실험 데이터 다섯 점 — <span class="hl">이걸 지나는 함수는 무엇인가?</span></h1>
+    <p class="intro-sub">측정값 $(x_i,y_i)$ 에는 항상 잡음이 섞인다. 모든 점을 <strong>정확히 통과</strong>시키려 하면(보간) 잡음까지 흉내 내 곡선이 요동친다. 그럼 우리가 원하는 것은? — 점들을 <strong>지나지 않아도 되니, 전체 경향을 가장 잘 대표</strong>하는 매끄러운 함수다.</p>
+    <div class="intro-teaser">답 — <em>최소자승(least squares).</em> "가장 잘" 을 <em>잔차 제곱합의 최소</em>로 정의하면, 최적 곡선이 <strong>연립방정식 한 번</strong>으로 딱 떨어진다 — 반복도 초기값도 필요 없다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 9 · 이번 주 여정</div>
+    <h1 class="intro-h">잔차를 <span class="hl">제곱해 더하고 · 미분해 0으로</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">9-1</span><span><span class="rt">최소자승 원리</span> <span class="rd">— 잔차 제곱합 $S$ 를 최소화한다는 것의 의미</span></span></div>
+      <div class="rm-item"><span class="rn">9-2</span><span><span class="rt">선형·다항 회귀</span> <span class="rd">— 정규방정식 $(X^TX)a=X^Ty$ 로 한 번에 풀기</span></span></div>
+      <div class="rm-item"><span class="rn">9-3</span><span><span class="rt">비선형 선형화</span> <span class="rd">— 지수·거듭제곱·포화 모델을 변환해 직선으로</span></span></div>
+      <div class="rm-item"><span class="rn">9-4</span><span><span class="rt">결정계수 R²</span> <span class="rd">— 적합이 "얼마나 좋은가" 를 숫자로 판정</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 데이터 하나로 관통한다 — $(1,2.1),(2,3.9),(3,6.2),(4,7.8),(5,10.1)$, 최적 직선 $y=0.29+1.91x$.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 정리 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 9 · 반복이 아니라 "한 번에 푼다"</div>
+    <h1 class="intro-h">이 방법은 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">정리</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">반복이 없다</div><ul><li>이번 주는 <strong>직접법(direct)</strong> — 이분법·Newton 처럼 "다음 반복" 을 누르지 않는다.</li><li><strong>시연</strong> 은 스테퍼 대신 <strong>단계표·그래프</strong> 로 정규방정식을 조립해 본다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">손으로 조립한다</div><ul><li><strong>직접계산</strong>: 합 → 2×2 시스템 → 계수를 손으로 풀고 채점받는다.</li><li><strong>함정</strong>: 과적합·외삽·변환 왜곡을 직접 확인한다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 9-1 최소자승 원리 ════════════════════ -->
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="문제">
+  <div class="eyebrow">9-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">"가장 잘 맞는" 을 정의하라 <span class="en">· What does best fit mean?</span></h1>
+  <div class="analogy"><span class="ic">🎯</span><div class="tx"><b>직관</b> — 흩어진 못 자국들 사이로 실 한 가닥을 팽팽히 당긴다. 어떤 못에도 딱 닿지 않지만, 모든 못에서 <b>세로로 벗어난 거리</b>의 합이 가장 작도록 놓는다. 그 실이 곧 최소자승 직선이다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">데이터 점 $(x_i,y_i)$ 가 $n$ 개일 때, 근사 함수 $f(x)$ 와의 세로 차이를 <strong>잔차(residual)</strong> $e_i=y_i-f(x_i)$ 라 한다. "가장 잘" 을 <strong>잔차 제곱합 $S$ 의 최소</strong> 로 정의한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">최소자승 기준</div>
+        <div class="keqrow"><span class="keqcap">잔차</span><span class="keqline">$ e_i = y_i - f(x_i) $</span></div>
+        <div class="keqrow"><span class="keqcap">목적함수</span><span class="keqline">$ S = \sum_{i=1}^{n} \big[\,y_i - f(x_i)\,\big]^2 \ \rightarrow\ \min $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">왜 절대값이 아니라 제곱?</div>제곱은 <strong>미분 가능</strong>해 최적화를 해석적으로 풀 수 있고(꺾인 절대값은 미분 불가), <strong>큰 오차에 더 큰 벌점</strong>을 준다. 그래서 표준은 $\sum e_i^2$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="원리">
+  <div class="eyebrow">9-1 · 원리 · Minimization</div>
+  <h1 class="stage-h">최소는 어디서? — 편미분이 0</h1>
+  <p class="assume"><b>아이디어:</b> $S$ 는 매개변수 $a_k$ 들의 아래로 볼록한 함수다. 최솟값에서는 모든 <b>편미분이 동시에 0</b> 이다. 직선 $f(x)=a_0+a_1x$ 로 시작한다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 목적함수</h4><div class="sub">직선 대입</div><div class="eq">$ S(a_0,a_1)=\sum (y_i-a_0-a_1x_i)^2 $</div><p>매개변수 두 개짜리 볼록 함수.</p></div>
+    <div class="dcard"><h4>② $\partial S/\partial a_0=0$</h4><div class="sub">절편 방향</div><div class="eq">$ -2\sum (y_i-a_0-a_1x_i)=0 $</div><p>$\Rightarrow\ n\,a_0+\big(\textstyle\sum x_i\big)a_1=\sum y_i$</p></div>
+    <div class="dcard"><h4>③ $\partial S/\partial a_1=0$</h4><div class="sub">기울기 방향</div><div class="eq">$ -2\sum x_i(y_i-a_0-a_1x_i)=0 $</div><p>$\Rightarrow\ \big(\textstyle\sum x_i\big)a_0+\big(\textstyle\sum x_i^2\big)a_1=\sum x_iy_i$</p></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">정규방정식</div>두 조건을 행렬로 묶으면 $2\times2$ 선형 시스템 — <strong>정규방정식(Normal Equations)</strong>: $$\begin{bmatrix} n & \sum x_i \\ \sum x_i & \sum x_i^2 \end{bmatrix}\!\begin{bmatrix} a_0\\ a_1\end{bmatrix}=\begin{bmatrix}\sum y_i\\ \sum x_iy_i\end{bmatrix}$$</div>
+</section>
+
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="시연">
+  <div class="eyebrow">9-1 · 시연 · See the residuals</div>
+  <h1 class="stage-h">잔차를 눈으로 — 세로 거리의 제곱합</h1>
+  <p class="lede">파란 직선이 최적 적합 $y=0.29+1.91x$. 빨간 점선이 각 데이터에서 직선까지의 <strong>세로 잔차</strong> $e_i$ 다. 최소자승은 이 빨간 선분들의 <strong>길이 제곱을 모두 더한 값</strong>을 가장 작게 만든 상태 — 어느 쪽으로 조금만 기울여도 합이 커진다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">데이터와 최적 직선 · 잔차(빨강)</div>
+      <svg viewBox="0 0 460 300" width="100%" style="max-width:520px;display:block;margin:0 auto">
+        <line x1="50" y1="250" x2="430" y2="250" stroke="#94a3b8" stroke-width="1.2"/>
+        <line x1="50" y1="250" x2="50" y2="26" stroke="#94a3b8" stroke-width="1.2"/>
+        <text x="240" y="278" text-anchor="middle" fill="#71717a" font-size="11">x →</text>
+        <text x="22" y="140" text-anchor="middle" fill="#71717a" font-size="11" transform="rotate(-90,22,140)">y</text>
+        <!-- fitted line y = 0.29 + 1.91 x  (x:0.5→5.5) -->
+        <line x1="81.7" y1="225.1" x2="398.3" y2="34.1" stroke="#2563eb" stroke-width="2.4"/>
+        <text x="330" y="60" fill="#2563eb" font-size="10.5" font-weight="bold">y = 0.29 + 1.91x</text>
+        <!-- residual segments (point → line) -->
+        <line x1="113.3" y1="208" x2="113.3" y2="206" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
+        <line x1="176.7" y1="172" x2="176.7" y2="167.8" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
+        <line x1="240" y1="126" x2="240" y2="129.6" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
+        <line x1="303.3" y1="94" x2="303.3" y2="91.4" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
+        <line x1="366.7" y1="48" x2="366.7" y2="53.2" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
+        <!-- data points -->
+        <circle cx="113.3" cy="208" r="4.5" fill="#0f172a"/>
+        <circle cx="176.7" cy="172" r="4.5" fill="#0f172a"/>
+        <circle cx="240" cy="126" r="4.5" fill="#0f172a"/>
+        <circle cx="303.3" cy="94" r="4.5" fill="#0f172a"/>
+        <circle cx="366.7" cy="48" r="4.5" fill="#0f172a"/>
+      </svg>
+    </div>
+    <div>
+      <div class="vcap">잔차 표 — $e_i=y_i-f(x_i)$</div>
+      <table class="ktab"><thead><tr><th>$x_i$</th><th>$y_i$</th><th>$f(x_i)$</th><th>$e_i$</th></tr></thead><tbody>
+        <tr><td>1</td><td>2.1</td><td>2.20</td><td>$-0.10$</td></tr>
+        <tr><td>2</td><td>3.9</td><td>4.11</td><td>$-0.21$</td></tr>
+        <tr><td>3</td><td>6.2</td><td>6.02</td><td>$+0.18$</td></tr>
+        <tr><td>4</td><td>7.8</td><td>7.93</td><td>$-0.13$</td></tr>
+        <tr><td>5</td><td>10.1</td><td>9.84</td><td>$+0.26$</td></tr>
+      </tbody></table>
+      <div class="keqnote">잔차의 부호는 섞여 있고(위·아래로 흩어짐) 합 $\sum e_i\approx0$. 최소화되는 것은 <b>제곱</b>합 $\sum e_i^2\approx0.171$ 이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">잔차 한 개를 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 잔차 값</div>
+    <p class="prob-statement">최적 직선 $f(x)=0.29+1.91x$ 에 대해, $x=3$ 데이터 $(3,\,6.2)$ 의 <strong>잔차 $e=y-f(x)$</strong> 를 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$f(3)=0.29+1.91\times3$</span><span class="chip">$e=y-f$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.18" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 예측값</div>$$ f(3)=0.29+1.91\times3=0.29+5.73=6.02 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 잔차</div>$$ e = y - f(3) = 6.2 - 6.02 = 0.18 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ e = +0.18 $$</div><b>정답:</b> 데이터가 직선보다 $0.18$ 위에 있다. 이 값을 제곱($0.0324$)해 다른 점들과 합치면 $S=\sum e_i^2$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="함정">
+  <div class="eyebrow">9-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">최소자승이 흔들리는 곳</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 이상치에 민감</h4><p>제곱은 <b>큰 오차를 더 크게</b> 벌준다 — 단 하나의 튄 점(outlier)이 직선을 통째로 끌어당긴다.</p></div>
+    <div class="pitfall"><h4>⚠ 세로 거리만 잰다</h4><p>잔차는 $y$ 방향 차이일 뿐. $x$ 에도 오차가 있으면 이 기준은 편향된다(→ 총최소자승).</p></div>
+    <div class="pitfall"><h4>⚠ 모델 선택이 먼저</h4><p>최소자승은 <b>주어진 형태</b> 안에서 최적일 뿐. 직선 모델이 틀렸으면 아무리 최적화해도 잔차가 크게 남는다.</p></div>
+    <div class="pitfall"><h4>⚠ $\sum e_i=0$ 을 적합도로 오해</h4><p>부호가 상쇄돼 잔차 합은 늘 $\approx0$. 판단은 <b>제곱합</b> $\sum e_i^2$ 로 해야 한다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="정리">
+  <div class="eyebrow">9-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>"가장 잘" $=$ 잔차 제곱합 $S=\sum(y_i-f(x_i))^2$ 최소.</li>
+      <li>최소 조건 $\partial S/\partial a_k=0$ → <strong>정규방정식</strong>(선형 시스템).</li>
+      <li>반복 없이 <strong>한 번에</strong> 계수를 얻는 직접법.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>잔차 합 $\sum e_i$ 로 적합도 판정(항상 $\approx0$).</li>
+      <li>절대값 합을 최소화한다고 서술(표준은 제곱).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>정규방정식 <strong>유도</strong>($\partial S/\partial a_0,\ \partial S/\partial a_1$).</li>
+      <li>주어진 직선의 <strong>잔차·제곱합</strong> 계산.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 9-2 선형·다항 회귀 ════════════════════ -->
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="문제">
+  <div class="eyebrow">9-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">직선에서 다항식으로 <span class="en">· one framework fits all</span></h1>
+  <div class="analogy"><span class="ic">🧱</span><div class="tx"><b>직관</b> — 기저(basis) 벽돌을 고르는 문제다. 직선은 벽돌이 $\{1,x\}$ 두 장, 2차 다항식은 $\{1,x,x^2\}$ 세 장. 벽돌만 바뀔 뿐 <b>쌓는 규칙(정규방정식)은 똑같다.</b></div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">직선 $y=a_0+a_1x$ 든 $m$ 차 다항식 $y=a_0+a_1x+\cdots+a_mx^m$ 이든, 모델이 <strong>계수에 대해 선형</strong> 이면 같은 틀로 푼다. 데이터를 <strong>Vandermonde 행렬</strong> $X$ 로 쌓는다.</p>
+      <div class="keqbox">
+        <div class="keq-label">행렬 형태</div>
+        <div class="keqrow"><span class="keqcap">설계행렬</span><span class="keqline">$ X=\begin{bmatrix}1&x_1&\cdots&x_1^m\\ \vdots&\vdots&&\vdots\\ 1&x_n&\cdots&x_n^m\end{bmatrix} $</span></div>
+        <div class="keqrow"><span class="keqcap">정규방정식</span><span class="keqline">$ (X^TX)\,a = X^Ty $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>설계행렬 $X$</b> 각 행 = 한 데이터의 기저값</div>
+        <div class="term"><b>$X^TX$</b> $(m{+}1)\times(m{+}1)$ 정규행렬(대칭)</div>
+        <div class="term"><b>$X^Ty$</b> 우변 벡터</div>
+        <div class="term"><b>정칙</b> $X^TX$ 가역 → 유일해 $a=(X^TX)^{-1}X^Ty$</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>직선은 이 틀의 $m=1$ 특수한 경우. <strong>차수만 올리면</strong> 곡률을 담을 수 있지만, 함정 단계처럼 대가가 따른다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="원리">
+  <div class="eyebrow">9-2 · 원리 · Normal equation</div>
+  <h1 class="stage-h">$(X^TX)a=X^Ty$ — 어디서 나오나</h1>
+  <div class="algo">
+    <div class="algo-h">Normal Equation 조립 절차</div>
+    <ol>
+      <li>모델 차수 $m$ 을 고르고, 각 데이터로 <b>설계행렬 $X$</b>($n\times(m{+}1)$)와 관측벡터 $y$ 를 만든다.</li>
+      <li>잔차 벡터 $e=y-Xa$ 의 제곱합 $S=e^Te=\|y-Xa\|^2$ 를 세운다.</li>
+      <li>$\partial S/\partial a=0$ → $-2X^T(y-Xa)=0$ → <b>$X^TXa=X^Ty$</b>.</li>
+      <li>대칭·양의정부호 $X^TX$ 를 가우스 소거/Cholesky 로 풀어 $a$ 를 얻는다.</li>
+    </ol>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">직선의 경우 확인</div>$m=1$ 이면 $X^TX=\begin{bmatrix}n&\sum x_i\\ \sum x_i&\sum x_i^2\end{bmatrix}$, $X^Ty=\begin{bmatrix}\sum y_i\\ \sum x_iy_i\end{bmatrix}$ — 9-1 의 정규방정식과 <strong>정확히 일치</strong>한다.</div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="시연">
+  <div class="eyebrow">9-2 · 시연 · Build it step by step</div>
+  <h1 class="stage-h">단계표로 조립 — 합에서 계수까지</h1>
+  <p class="lede">공통 데이터 $(1,2.1),(2,3.9),(3,6.2),(4,7.8),(5,10.1)$ 에 직선을 적합한다. 반복 스테퍼 대신 <strong>표를 왼쪽부터 채워</strong> 정규방정식을 완성하고 풀어 본다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">Step 1~2 · 필요한 합</div>
+      <table class="ktab"><thead><tr><th>$i$</th><th>$x_i$</th><th>$y_i$</th><th>$x_i^2$</th><th>$x_iy_i$</th></tr></thead><tbody>
+        <tr><td>1</td><td>1</td><td>2.1</td><td>1</td><td>2.1</td></tr>
+        <tr><td>2</td><td>2</td><td>3.9</td><td>4</td><td>7.8</td></tr>
+        <tr><td>3</td><td>3</td><td>6.2</td><td>9</td><td>18.6</td></tr>
+        <tr><td>4</td><td>4</td><td>7.8</td><td>16</td><td>31.2</td></tr>
+        <tr><td>5</td><td>5</td><td>10.1</td><td>25</td><td>50.5</td></tr>
+        <tr><td>$\sum$</td><td>15</td><td>30.1</td><td>55</td><td>109.4</td></tr>
+      </tbody></table>
+      <div class="keqnote">$n=5,\ \sum x_i=15,\ \sum x_i^2=55,\ \sum y_i=30.1,\ \sum x_iy_i=109.4$.</div>
+    </div>
+    <div>
+      <div class="vcap">Step 3~4 · 정규방정식 → 풀이</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">시스템</span><span class="keqline">$ \begin{bmatrix}5&15\\15&55\end{bmatrix}\!\begin{bmatrix}a_0\\a_1\end{bmatrix}=\begin{bmatrix}30.1\\109.4\end{bmatrix} $</span></div>
+        <div class="keqrow"><span class="keqcap">$a_1$</span><span class="keqline">$ \dfrac{5(109.4)-15(30.1)}{5(55)-15^2}=\dfrac{95.5}{50}=1.91 $</span></div>
+        <div class="keqrow"><span class="keqcap">$a_0$</span><span class="keqline">$ \dfrac{30.1-1.91(15)}{5}=\dfrac{1.45}{5}=0.29 $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">결과</div>$$ y = 0.29 + 1.91\,x $$ 단계표의 합만 정확하면 계수는 나눗셈 두 번으로 끝난다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">정규방정식 풀기 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 절편 $a_0$</div>
+    <p class="prob-statement">위 시스템에서 기울기 $a_1=1.91$ 을 이미 구했다. 첫 정규방정식 $5a_0+15a_1=30.1$ 을 이용해 <strong>절편 $a_0$</strong> 를 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$5a_0+15(1.91)=30.1$</span><span class="chip">$a_0=(30.1-1.91\cdot15)/5$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.29" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ a_0=\frac{30.1-1.91\times15}{5}=\frac{30.1-28.65}{5}=\frac{1.45}{5}=0.29 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a_0 = 0.29 $$</div><b>정답:</b> 최적 직선 $y=0.29+1.91x$ 완성.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="함정">
+  <div class="eyebrow">9-2 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">차수를 올릴 때의 대가</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 과적합(Overfitting)</h4><p>$n$ 개 점에 $m=n-1$ 차를 쓰면 모든 점을 통과하지만 <b>사이가 요동</b>친다 — 잡음까지 학습.</p></div>
+    <div class="pitfall"><h4>⚠ Vandermonde 악조건</h4><p>차수가 높아지면 $X^TX$ 의 <b>조건수가 폭발</b>해 계수가 수치적으로 불안정. 직교다항식으로 완화.</p></div>
+    <div class="pitfall"><h4>⚠ 외삽(Extrapolation)</h4><p>적합 구간 <b>밖</b>은 보장이 없다. 고차 다항식은 구간 밖에서 급격히 발산.</p></div>
+    <div class="pitfall"><h4>⚠ "R² 최대 = 최선" 오해</h4><p>차수를 올리면 $R^2$ 는 무조건 증가 → 겉보기 개선. 수정 $R^2$·검증셋으로 판단해야.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="코드">
+  <div class="eyebrow">9-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 정규방정식과 내장 함수</h1>
+  <div class="codeblock"><div class="code-cap">polyfit_ls.m</div><pre><code>function a = polyfit_ls(x, y, m)
+  <span class="cm">% m차 다항식 최소자승 적합 — 정규방정식 직접 조립</span>
+  x = x(:);  y = y(:);  n = length(x);
+  X = zeros(n, m+1);
+  for j = 0:m
+      X(:, j+1) = x.^j;          <span class="cm">% Vandermonde 열 (1, x, x^2, ...)</span>
+  end
+  a = (X' * X) \ (X' * y);       <span class="cm">% (X^T X) a = X^T y</span>
+end
+
+<span class="cm">% 사용</span>
+x = [1 2 3 4 5];  y = [2.1 3.9 6.2 7.8 10.1];
+a = polyfit_ls(x, y, 1);
+<span class="out">% a = [0.29; 1.91]  →  y = 0.29 + 1.91 x</span>
+
+<span class="cm">% 내장 함수 (계수는 높은 차수부터 반환)</span>
+p = polyfit(x, y, 1);
+<span class="out">% p = [1.9100  0.2900]</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">실무 팁</div>$X^TX$ 를 직접 만들지 않고 <strong>QR 분해</strong>($X=QR$)로 풀면 조건수 제곱을 피해 수치적으로 안정하다 — MATLAB 의 <code>\</code>(백슬래시)가 내부적으로 이를 사용.</div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">회귀 계수 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 기울기 $a_1$</div>
+    <p class="prob-statement">데이터 $(0,2.5),(1,3.5),(2,4.8),(3,5.9),(4,7.2),(5,8.3)$ 에 직선을 적합한다. 합은 $n=6,\ \sum x_i=15,\ \sum x_i^2=55,\ \sum y_i=32.2,\ \sum x_iy_i=101.1$. <strong>기울기 $a_1$</strong> 을 구하시오. (소수 3자리)</p>
+    <div class="given"><span class="chip">$a_1=\dfrac{n\sum x_iy_i-\sum x_i\sum y_i}{n\sum x_i^2-(\sum x_i)^2}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.177" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ a_1=\frac{6(101.1)-15(32.2)}{6(55)-15^2}=\frac{606.6-483}{330-225}=\frac{123.6}{105}=1.177 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a_1 \approx 1.177 $$</div><b>정답:</b> 이어서 $a_0=(32.2-1.177\cdot15)/6=2.424$ → $y=2.424+1.177x$.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 정규행렬 원소</div>
+    <p class="prob-statement">2차 다항 회귀에서 데이터가 $x=0,1,2,3,4,5$ 일 때, $X^TX$ 의 $(3,3)$ 원소 $\sum x_i^4$ 를 구하시오.</p>
+    <div class="given"><span class="chip">$\sum x_i^4=0+1+16+81+256+625$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="979" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \sum x_i^4 = 0+1+16+81+256+625 = 979 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \sum x_i^4 = 979 $$</div><b>정답:</b> $X^TX$ 의 마지막 대각 원소. 2차 다항식 정규행렬 $\begin{bmatrix}6&15&55\\15&55&225\\55&225&979\end{bmatrix}$ 의 우하단.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="정리">
+  <div class="eyebrow">9-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>직선·다항 모두 <strong>$(X^TX)a=X^Ty$</strong> 한 틀로 해결.</li>
+      <li>$X$ = Vandermonde 설계행렬, 차수 $m$ 만 바꾸면 확장.</li>
+      <li>$X^TX$ 대칭·양정부호 → 가우스/Cholesky/QR 풀이.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$\sum x_i^2$ 와 $(\sum x_i)^2$ 혼동(정규행렬 vs 분모).</li>
+      <li>차수를 무작정 올려 과적합·악조건 초래.</li>
+      <li>polyfit 계수 순서(높은 차수부터) 착오.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>단계표로 <strong>합 → 2×2/3×3 정규방정식</strong> 조립·풀이.</li>
+      <li>직선이 다항 회귀의 <strong>$m=1$ 특수 경우</strong> 임을 설명.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 9-3 비선형 선형화 ════════════════════ -->
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="문제">
+  <div class="eyebrow">9-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">지수·거듭제곱은 직접 못 푼다 <span class="en">· make it linear first</span></h1>
+  <div class="analogy"><span class="ic">🔁</span><div class="tx"><b>직관</b> — 굽은 자를 억지로 대지 말고, <b>종이(축)를 접어</b> 곡선을 직선으로 펴라. 로그 눈금 종이 위에서 지수함수는 직선이 된다. 그 종이 위에서 회귀한 뒤, 다시 펴서 원래 계수를 복원한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$y=ae^{bx}$, $y=ax^b$, $y=\dfrac{ax}{b+x}$ 는 계수에 대해 비선형이라 정규방정식을 바로 못 쓴다. 하지만 <strong>변수 변환</strong> 으로 $Y=A_0+A_1X$ 형태로 바꾸면, 9-2 의 선형 회귀를 그대로 적용할 수 있다.</p>
+      <div class="keqbox">
+        <div class="keq-label">전략</div>
+        <div class="keqrow"><span class="keqcap">변환</span><span class="keqline">비선형 $\ \rightarrow\ Y=A_0+A_1X$</span></div>
+        <div class="keqrow"><span class="keqcap">회귀</span><span class="keqline">$(X^TX)A=X^TY$ 로 $A_0,A_1$</span></div>
+        <div class="keqrow"><span class="keqcap">복원</span><span class="keqline">$A_0,A_1\ \rightarrow\ a,b$</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>새 방법이 아니다 — <strong>좌표를 갈아끼우는</strong> 요령이다. 변환·회귀·복원 3단계가 전부.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="원리">
+  <div class="eyebrow">9-3 · 원리 · Three transforms</div>
+  <h1 class="stage-h">세 가지 모델의 변환 공식</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">지수 · 거듭제곱 · 포화</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">지수 $ae^{bx}$</span><span class="keqline">$ \ln y=\ln a+b\,x $</span></div>
+        <div class="keqrow"><span class="keqcap">거듭제곱 $ax^b$</span><span class="keqline">$ \ln y=\ln a+b\,\ln x $</span></div>
+        <div class="keqrow"><span class="keqcap">포화 $\frac{ax}{b+x}$</span><span class="keqline">$ \dfrac1y=\dfrac1a+\dfrac{b}{a}\cdot\dfrac1x $</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="vcap">변환·복원 요약표</div>
+      <table class="ktab"><thead><tr><th>모델</th><th>$Y$</th><th>$X$</th><th>복원</th></tr></thead><tbody>
+        <tr><td>지수</td><td>$\ln y$</td><td>$x$</td><td>$a=e^{A_0},\ b=A_1$</td></tr>
+        <tr><td>거듭제곱</td><td>$\ln y$</td><td>$\ln x$</td><td>$a=e^{A_0},\ b=A_1$</td></tr>
+        <tr><td>포화</td><td>$1/y$</td><td>$1/x$</td><td>$a=1/A_0,\ b=A_1a$</td></tr>
+      </tbody></table>
+      <div class="keqnote">모두 $Y=A_0+A_1X$ 로 통일. 변환 후에는 오직 <b>직선 회귀 한 번</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="시연">
+  <div class="eyebrow">9-3 · 시연 · Exponential worked example</div>
+  <h1 class="stage-h">단계표로 지수 적합 — 변환→회귀→복원</h1>
+  <p class="lede">데이터 $(1,4.0),(2,6.5),(3,10.0),(4,16.1),(5,25.0)$ 에 $y=ae^{bx}$ 를 적합한다. $Y=\ln y$ 로 변환한 뒤 직선 회귀한다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">Step 1 · 변환 $Y=\ln y$</div>
+      <table class="ktab"><thead><tr><th>$x$</th><th>$y$</th><th>$Y=\ln y$</th></tr></thead><tbody>
+        <tr><td>1</td><td>4.0</td><td>1.386</td></tr>
+        <tr><td>2</td><td>6.5</td><td>1.872</td></tr>
+        <tr><td>3</td><td>10.0</td><td>2.303</td></tr>
+        <tr><td>4</td><td>16.1</td><td>2.779</td></tr>
+        <tr><td>5</td><td>25.0</td><td>3.219</td></tr>
+      </tbody></table>
+      <div class="keqnote">$\sum Y_i=11.559,\ \sum x_iY_i=38.326$. 변환된 점들은 거의 <b>일직선</b>.</div>
+    </div>
+    <div>
+      <div class="vcap">Step 2~3 · 회귀 → 복원</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">$A_1$</span><span class="keqline">$ \dfrac{5(38.326)-15(11.559)}{5(55)-15^2}=0.4649 $</span></div>
+        <div class="keqrow"><span class="keqcap">$A_0$</span><span class="keqline">$ \dfrac{11.559-0.4649(15)}{5}=0.9168 $</span></div>
+        <div class="keqrow"><span class="keqcap">복원</span><span class="keqline">$ a=e^{0.9168}=2.502,\ \ b=0.4649 $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">결과</div>$$ y = 2.502\,e^{0.465\,x} $$</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">매개변수 복원 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · $a=e^{A_0}$</div>
+    <p class="prob-statement">지수 모델 선형화에서 절편 $A_0=0.9168$ 을 얻었다. 원래 계수 <strong>$a=e^{A_0}$</strong> 를 구하시오. (소수 2자리, $e\approx2.71828$)</p>
+    <div class="given"><span class="chip">$a=e^{0.9168}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.50" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ a=e^{0.9168}\approx 2.502 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a \approx 2.50,\qquad b=A_1=0.465 $$</div><b>정답:</b> 지수는 절편을 $\ln$ 에서 되돌리므로 $e$ 지수, 기울기 $b$ 는 그대로 $A_1$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="함정">
+  <div class="eyebrow">9-3 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">변환이 숨기는 것</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 최소화 대상이 바뀐다</h4><p>$\ln$ 공간에서 잔차를 최소화 $\ne$ 원공간 $y$ 의 잔차 최소화. 변환은 큰 $y$ 의 오차를 <b>상대적으로 축소</b>한다.</p></div>
+    <div class="pitfall"><h4>⚠ 로그의 정의역</h4><p>$\ln y$ 는 $y\le0$ 에서 불가. 음수·0 데이터가 있으면 지수·거듭제곱 선형화 자체가 무효.</p></div>
+    <div class="pitfall"><h4>⚠ 오차 가중이 왜곡</h4><p>변환은 오차의 분산 구조를 바꾼다 — 등분산 가정이 깨져 최적성이 보장되지 않는다.</p></div>
+    <div class="pitfall"><h4>⚠ 정밀 값은 비선형 최적화로</h4><p>선형화 결과는 <b>좋은 초기값</b>일 뿐. 정확한 적합은 원공간에서 Gauss–Newton/Levenberg–Marquardt.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="코드">
+  <div class="eyebrow">9-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 로그 변환 후 polyfit</h1>
+  <div class="codeblock"><div class="code-cap">fit_exp.m</div><pre><code>x = [1 2 3 4 5];
+y = [4.0 6.5 10.0 16.1 25.0];
+
+<span class="cm">% 지수 모델 y = a*exp(b*x)  →  선형화 Y = ln y = ln a + b x</span>
+Y = log(y);                 <span class="cm">% MATLAB의 log = 자연로그(ln)</span>
+p = polyfit(x, Y, 1);       <span class="cm">% p = [A1  A0] = [b  ln a]</span>
+b = p(1);
+a = exp(p(2));              <span class="cm">% 복원: a = e^{A0}</span>
+fprintf('y = %.3f * exp(%.3f x)\n', a, b);
+<span class="out">% y = 2.502 * exp(0.465 x)</span>
+
+<span class="cm">% 거듭제곱 y = a*x^b 는 X도 로그: polyfit(log(x), log(y), 1)</span>
+<span class="cm">% 포화 y = a*x/(b+x) 는 역수: polyfit(1./x, 1./y, 1)</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">주의</div>MATLAB 에서 <code>log</code> 는 <strong>자연로그 $\ln$</strong>, 상용로그는 <code>log10</code>. 지수·거듭제곱 선형화에는 반드시 $\ln$ 을 쓴다.</div>
+</section>
+
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="정리">
+  <div class="eyebrow">9-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>비선형 $\to$ <strong>변환 · 회귀 · 복원</strong> 3단계로 선형 회귀 재사용.</li>
+      <li>지수·거듭제곱 $=\ln$ 변환, 포화 $=$ 역수 변환.</li>
+      <li>복원: $a=e^{A_0}$(지수·거듭), $a=1/A_0$(포화).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>거듭제곱에서 $X=x$ 로 둠(실제 $X=\ln x$).</li>
+      <li>$A_1$ 을 그대로 $a$ 로 착각(복원 공식 누락).</li>
+      <li>$\log10$ 을 $\ln$ 대신 사용.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 모델의 <strong>선형화식·회귀변수·복원</strong> 서술.</li>
+      <li>변환표 채워 $A_0,A_1$ 구하고 $a,b$ 로 <strong>복원</strong>.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 9-4 결정계수 R² ════════════════════ -->
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="문제">
+  <div class="eyebrow">9-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">이 적합, 얼마나 좋은가 <span class="en">· how good is the fit?</span></h1>
+  <div class="analogy"><span class="ic">📊</span><div class="tx"><b>직관</b> — 아무 정보 없이 예측하면 최선은 <b>평균값</b> $\bar y$ 다. 회귀 곡선이 평균선보다 데이터를 얼마나 더 잘 설명하는가? — 그 개선 비율이 $R^2$. 1에 가까울수록 곡선이 평균을 크게 이긴다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">적합도를 하나의 숫자로 요약하는 <strong>결정계수 $R^2$</strong> 는 "모델이 전체 변동 중 몇 %를 설명하는가" 를 나타낸다. 총변동을 <strong>회귀 변동</strong> 과 <strong>잔차 변동</strong> 으로 분해해 정의한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">정의</div>
+        <div class="keqrow"><span class="keqcap">$R^2$</span><span class="keqline">$ R^2 = 1 - \dfrac{SS_{\text{res}}}{SS_{\text{tot}}} $</span></div>
+        <div class="keqrow"><span class="keqcap">$SS_{\text{tot}}$</span><span class="keqline">$ \sum (y_i-\bar y)^2 $</span></div>
+        <div class="keqrow"><span class="keqcap">$SS_{\text{res}}$</span><span class="keqline">$ \sum (y_i-f(x_i))^2 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">해석 눈금</div>
+      <div class="terms">
+        <div class="term"><b>$R^2=1$</b> 완벽 — 모든 점이 곡선 위</div>
+        <div class="term"><b>$0\lt R^2\lt1$</b> 변동의 일부만 설명</div>
+        <div class="term"><b>$R^2=0$</b> 평균값만큼의 예측력</div>
+        <div class="term"><b>$SS_{\text{tot}}=SS_{\text{reg}}+SS_{\text{res}}$</b> 변동 분해</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>$R^2$ 는 잔차를 <strong>총변동으로 정규화</strong>한 값 — 단위·스케일에 무관해 서로 다른 적합을 비교할 수 있다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="원리">
+  <div class="eyebrow">9-4 · 원리 · Variance decomposition</div>
+  <h1 class="stage-h">총변동을 둘로 쪼갠다</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">변동 분해</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">총변동</span><span class="keqline">$ SS_{\text{tot}}=\sum(y_i-\bar y)^2 $</span></div>
+        <div class="keqrow"><span class="keqcap">회귀변동</span><span class="keqline">$ SS_{\text{reg}}=\sum(f(x_i)-\bar y)^2 $</span></div>
+        <div class="keqrow"><span class="keqcap">잔차변동</span><span class="keqline">$ SS_{\text{res}}=\sum(y_i-f(x_i))^2 $</span></div>
+      </div>
+      <div class="keqnote">$SS_{\text{tot}}=SS_{\text{reg}}+SS_{\text{res}}$ 이므로 $R^2=\dfrac{SS_{\text{reg}}}{SS_{\text{tot}}}=1-\dfrac{SS_{\text{res}}}{SS_{\text{tot}}}$.</div>
+    </div>
+    <div>
+      <div class="vcap">$SS_{\text{tot}}=SS_{\text{reg}}+SS_{\text{res}}$ (막대 분해)</div>
+      <svg viewBox="0 0 460 210" width="100%" style="max-width:520px;display:block;margin:0 auto">
+        <text x="12" y="42" fill="#71717a" font-size="12">tot</text>
+        <rect x="70" y="26" width="360" height="30" rx="5" fill="#2563eb"/>
+        <text x="250" y="46" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">100%</text>
+        <text x="222" y="92" text-anchor="middle" fill="#71717a" font-size="12">= 분해 =</text>
+        <text x="12" y="132" fill="#71717a" font-size="12">reg</text>
+        <rect x="70" y="116" width="306" height="30" rx="5" fill="#0ea5e9"/>
+        <text x="223" y="136" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">R² ≈ 85%</text>
+        <text x="12" y="180" fill="#71717a" font-size="12">res</text>
+        <rect x="70" y="164" width="54" height="30" rx="5" fill="#dc2626"/>
+        <text x="150" y="184" fill="#dc2626" font-size="11">(1−R²) ≈ 15%</text>
+      </svg>
+      <div class="keqnote">회귀변동 비율이 곧 $R^2$. 잔차변동이 작을수록 파란 막대가 총변동을 꽉 채운다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="시연">
+  <div class="eyebrow">9-4 · 시연 · Compute R² step by step</div>
+  <h1 class="stage-h">단계표로 $R^2$ — 예측·잔차·합</h1>
+  <p class="lede">공통 데이터에 $y=0.29+1.91x$ 를 적합했다. $\bar y=6.02$. 각 점의 잔차 제곱과 총편차 제곱을 채워 두 합을 구한다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">예측값 · 두 제곱 항</div>
+      <table class="ktab"><thead><tr><th>$x_i$</th><th>$y_i$</th><th>$f(x_i)$</th><th>$(y_i-f)^2$</th><th>$(y_i-\bar y)^2$</th></tr></thead><tbody>
+        <tr><td>1</td><td>2.1</td><td>2.20</td><td>0.0100</td><td>15.366</td></tr>
+        <tr><td>2</td><td>3.9</td><td>4.11</td><td>0.0441</td><td>4.494</td></tr>
+        <tr><td>3</td><td>6.2</td><td>6.02</td><td>0.0324</td><td>0.032</td></tr>
+        <tr><td>4</td><td>7.8</td><td>7.93</td><td>0.0169</td><td>3.168</td></tr>
+        <tr><td>5</td><td>10.1</td><td>9.84</td><td>0.0676</td><td>16.646</td></tr>
+        <tr><td>$\sum$</td><td>—</td><td>—</td><td>0.1710</td><td>39.708</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">결과</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">$SS_{\text{res}}$</span><span class="keqline">$ 0.1710 $</span></div>
+        <div class="keqrow"><span class="keqcap">$SS_{\text{tot}}$</span><span class="keqline">$ 39.708 $</span></div>
+        <div class="keqrow"><span class="keqcap">$R^2$</span><span class="keqline">$ 1-\dfrac{0.1710}{39.708}=0.9957 $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">해석</div>$R^2\approx0.996$ — 변동의 $99.6\%$ 를 직선이 설명한다. 매우 좋은 적합.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">$R^2$ 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 결정계수</div>
+    <p class="prob-statement">어떤 적합에서 $SS_{\text{res}}=0.171$, $SS_{\text{tot}}=39.708$ 을 얻었다. <strong>$R^2$</strong> 를 구하시오. (소수 4자리)</p>
+    <div class="given"><span class="chip">$R^2=1-SS_{\text{res}}/SS_{\text{tot}}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.9957" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ R^2=1-\frac{0.171}{39.708}=1-0.00431=0.99569 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ R^2 \approx 0.9957 $$</div><b>정답:</b> 잔차변동이 총변동의 $0.43\%$ 에 불과 → 설명력 $99.6\%$.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="수렴">
+  <div class="eyebrow">9-4 · 수렴 · Adjusted R²</div>
+  <h1 class="stage-h">차수를 올리면 R²는 무조건 오른다 — 수정 R²</h1>
+  <p class="lede">변수를 추가하면 $R^2$ 는 <strong>절대 감소하지 않는다</strong> — 잡음까지 맞춰서라도 오르기 때문. 그래서 자유도로 벌점을 준 <strong>수정 결정계수</strong> 로 과적합을 걸러낸다. 아래 슬라이더로 데이터 수 $n$·변수 수 $p$ 를 바꿔 벌점 효과를 확인하라.</p>
+  <div class="calc"
+    data-title="수정 결정계수 — R²_adj = 1 − (1−R²)(n−1)/(n−p−1)"
+    data-desc="원 R²는 고정. 데이터 n이 적고 변수 p가 많을수록 벌점이 커져 수정 R²가 떨어진다."
+    data-vars='[{"sym":"R2","label":"원 결정계수 R²","min":0.5,"max":1,"step":0.005,"val":0.99},{"sym":"n","label":"데이터 수 n","min":4,"max":40,"step":1,"val":6},{"sym":"p","label":"변수(차수) 수 p","min":1,"max":8,"step":1,"val":2}]'
+    data-expr="1 - (1 - R2) * (n - 1) / (n - p - 1)"
+    data-out="수정 R²_adj"
+    data-barmax="1"
+    data-note="n이 p에 가까워지면(자유도 고갈) 수정 R²가 급락 — 불필요한 변수 추가에 대한 경고.">
+  </div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">정의</div>$$ R^2_{\text{adj}} = 1 - \frac{(1-R^2)(n-1)}{n-p-1} $$ 유효한 변수를 넣으면 오르고, <strong>불필요한 변수를 넣으면 오히려 내려간다</strong> — 이것이 원 $R^2$ 와의 결정적 차이.</div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="함정">
+  <div class="eyebrow">9-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">$R^2$ 를 믿을 수 없을 때</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 높은 R² ≠ 좋은 모델</h4><p>$n$ 개 점에 $n-1$ 차를 쓰면 $R^2=1$ 이지만 <b>과적합</b>. 검증셋·수정 $R^2$ 로 재판단.</p></div>
+    <div class="pitfall"><h4>⚠ 외삽엔 무의미</h4><p>$R^2$ 는 적합 구간 <b>안</b>의 설명력. 구간 밖 예측의 신뢰도와는 무관.</p></div>
+    <div class="pitfall"><h4>⚠ 인과 아님</h4><p>$R^2$ 는 상관의 크기일 뿐 <b>인과관계</b>를 뜻하지 않는다.</p></div>
+    <div class="pitfall"><h4>⚠ 비선형 변환 후 비교 주의</h4><p>$\ln$ 공간에서 계산한 $R^2$ 와 원공간 $R^2$ 는 <b>다르다</b> — 같은 척도로만 비교.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="코드">
+  <div class="eyebrow">9-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — R²와 수정 R²</h1>
+  <div class="codeblock"><div class="code-cap">rsquared.m</div><pre><code>x = [1 2 3 4 5];  y = [2.1 3.9 6.2 7.8 10.1];
+
+p    = polyfit(x, y, 1);        <span class="cm">% 직선 적합</span>
+yhat = polyval(p, x);           <span class="cm">% 예측값 f(x_i)</span>
+
+SSres = sum((y - yhat).^2);     <span class="cm">% 잔차 변동</span>
+SStot = sum((y - mean(y)).^2);  <span class="cm">% 총 변동</span>
+R2    = 1 - SSres / SStot;
+fprintf('R^2 = %.4f\n', R2);
+<span class="out">% R^2 = 0.9957</span>
+
+<span class="cm">% 수정 결정계수 (n = 데이터 수, pdeg = 변수 수)</span>
+n = numel(x);  pdeg = 1;
+R2adj = 1 - (1 - R2) * (n - 1) / (n - pdeg - 1);
+fprintf('R^2_adj = %.4f\n', R2adj);
+<span class="out">% R^2_adj = 0.9943</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">적합도 판정 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · R²</div>
+    <p class="prob-statement">2차 다항 적합에서 $SS_{\text{res}}=0.045$, $SS_{\text{tot}}=22.5$ 이다. <strong>$R^2$</strong> 를 구하시오. (소수 4자리)</p>
+    <div class="given"><span class="chip">$R^2=1-0.045/22.5$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.998" data-tol="0.002"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ R^2=1-\frac{0.045}{22.5}=1-0.002=0.998 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ R^2 = 0.998 $$</div><b>정답:</b> 설명력 $99.8\%$.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 수정 R²</div>
+    <p class="prob-statement">$n=6$ 데이터, 변수 $p=2$(2차 다항), $R^2=0.999$ 일 때 <strong>수정 결정계수 $R^2_{\text{adj}}$</strong> 를 구하시오. (소수 4자리)</p>
+    <div class="given"><span class="chip">$R^2_{\text{adj}}=1-\dfrac{(1-R^2)(n-1)}{n-p-1}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.9983" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ R^2_{\text{adj}}=1-\frac{(1-0.999)(6-1)}{6-2-1}=1-\frac{0.001\times5}{3}=1-0.001667 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ R^2_{\text{adj}}\approx 0.9983 $$</div><b>정답:</b> 원 $R^2(0.999)$ 보다 소폭 하락 — 변수 수 벌점이 반영됨.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="정리">
+  <div class="eyebrow">9-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$R^2=1-SS_{\text{res}}/SS_{\text{tot}}$, 변동 설명 비율 $[0,1]$.</li>
+      <li>$SS_{\text{tot}}=SS_{\text{reg}}+SS_{\text{res}}$ 로 분해.</li>
+      <li>과적합 방지 = <strong>수정 $R^2$</strong>(자유도 벌점).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$\bar y$ 대신 다른 기준으로 $SS_{\text{tot}}$ 계산.</li>
+      <li>높은 $R^2$ 만 보고 과적합 간과.</li>
+      <li>변환 공간과 원공간 $R^2$ 를 혼용 비교.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>잔차·총편차 표로 $R^2$ <strong>계산</strong>.</li>
+      <li>차수↑ 시 $R^2$ 단조 증가와 <strong>수정 $R^2$ 의 역할</strong> 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=9;</script>
+<script src="/na-track.js" defer></script>
+</body></html>
