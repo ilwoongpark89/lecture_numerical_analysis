@@ -1,0 +1,311 @@
+/* 수치해석 고유 인터랙티브 — 반복 스테퍼(.stepper).
+   학생이 알고리즘을 한 스텝씩 진행하며 표+그래프로 수렴을 관찰한다.
+   data-kind: root-bracket | root-tangent | root-secant | fixed-point | matrix-iter | integration
+   (채점 인터랙션은 엔진의 .prob/.ans-input + na-track 재사용 — 여기선 탐색·시연만.) */
+(function () {
+  "use strict";
+
+  // ── 수식 컴파일: "x^3 - x - 2" → JS 함수 ──
+  function compileFn(expr, vars) {
+    var s = String(expr || "0")
+      .replace(/\^/g, "**")
+      .replace(/\b(sin|cos|tan|asin|acos|atan|atan2|exp|log2|log10|sqrt|abs|sinh|cosh|tanh|sign|cbrt|floor|ceil|round|pow|max|min)\b/g, "Math.$1")
+      .replace(/\bln\b/g, "Math.log")
+      .replace(/\bpi\b/gi, "Math.PI")
+      .replace(/(^|[^a-zA-Z.])e\b/g, "$1Math.E");
+    try { return Function.apply(null, (vars || ["x"]).concat(["return (" + s + ");"])); }
+    catch (e) { return function () { return NaN; }; }
+  }
+  function num(v, d) { var x = parseFloat(v); return isFinite(x) ? x : d; }
+  function fmt(x, p) {
+    if (!isFinite(x)) return "—";
+    var a = Math.abs(x);
+    if (a !== 0 && (a < 1e-4 || a >= 1e6)) return x.toExponential(p == null ? 3 : p);
+    return (Math.round(x * 1e8) / 1e8).toString();
+  }
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+
+  // ── SVG 함수 플롯 (축 + 곡선 + x축), 좌표 매퍼 반환 ──
+  function plotBase(fn, xMin, xMax, opts) {
+    opts = opts || {};
+    var W = 520, H = 300, pad = { l: 34, r: 14, t: 14, b: 30 };
+    var pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+    // y 범위: 샘플링
+    var yMin = opts.yMin, yMax = opts.yMax;
+    if (yMin == null || yMax == null) {
+      var lo = Infinity, hi = -Infinity;
+      for (var i = 0; i <= 200; i++) {
+        var x = xMin + (i / 200) * (xMax - xMin), y = fn(x);
+        if (isFinite(y)) { if (y < lo) lo = y; if (y > hi) hi = y; }
+      }
+      if (!isFinite(lo)) { lo = -1; hi = 1; }
+      if (lo === hi) { lo -= 1; hi += 1; }
+      var mg = (hi - lo) * 0.12; yMin = lo - mg; yMax = hi + mg;
+    }
+    var mx = function (x) { return pad.l + ((x - xMin) / (xMax - xMin)) * pw; };
+    var my = function (y) { return pad.t + ph - ((y - yMin) / (yMax - yMin)) * ph; };
+    var svg = [];
+    svg.push('<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:560px;display:block;margin:0 auto">');
+    // grid
+    for (var g = 0; g <= 4; g++) {
+      var gy = pad.t + (g / 4) * ph;
+      svg.push('<line x1="' + pad.l + '" y1="' + gy + '" x2="' + (W - pad.r) + '" y2="' + gy + '" stroke="#eef1f4" stroke-width="1"/>');
+    }
+    // x-axis (y=0)
+    if (yMin < 0 && yMax > 0) {
+      var zy = my(0);
+      svg.push('<line x1="' + pad.l + '" y1="' + zy + '" x2="' + (W - pad.r) + '" y2="' + zy + '" stroke="#94a3b8" stroke-width="1"/>');
+    }
+    svg.push('<line x1="' + pad.l + '" y1="' + pad.t + '" x2="' + pad.l + '" y2="' + (pad.t + ph) + '" stroke="#94a3b8" stroke-width="1"/>');
+    // curve
+    var d = "", started = false;
+    for (var k = 0; k <= 300; k++) {
+      var xx = xMin + (k / 300) * (xMax - xMin), yy = fn(xx);
+      if (!isFinite(yy)) { started = false; continue; }
+      d += (started ? "L" : "M") + mx(xx).toFixed(1) + "," + my(yy).toFixed(1) + " "; started = true;
+    }
+    if (opts.curve !== false) svg.push('<path d="' + d + '" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linejoin="round"/>');
+    return { W: W, H: H, mx: mx, my: my, yMin: yMin, yMax: yMax, svg: svg, close: function () { svg.push("</svg>"); return svg.join(""); } };
+  }
+
+  // ════════ 반복 계산 (kind 별) ════════
+  function iterate(cfg) {
+    var rows = [], k = cfg.kind, steps = cfg.steps;
+    if (k === "root-bracket") {
+      var f = cfg.f, a = cfg.a, b = cfg.b;
+      for (var i = 1; i <= steps; i++) {
+        var c = (a + b) / 2, fc = f(c);
+        rows.push({ i: i, a: a, b: b, c: c, fc: fc, w: Math.abs(b - a) });
+        if (Math.abs(fc) < 1e-13) break;
+        if (f(a) * fc < 0) b = c; else a = c;
+      }
+    } else if (k === "root-tangent") {
+      var f2 = cfg.f, df = cfg.df, x = cfg.x0;
+      for (var j = 0; j < steps; j++) {
+        var fx = f2(x), dfx = df(x), xn = x - fx / dfx;
+        rows.push({ i: j, xn: x, fx: fx, dfx: dfx, xn1: xn });
+        if (!isFinite(xn) || Math.abs(fx) < 1e-13) break;
+        x = xn;
+      }
+    } else if (k === "root-secant") {
+      var f3 = cfg.f, x0 = cfg.x0, x1 = cfg.x1;
+      for (var s = 0; s < steps; s++) {
+        var f0 = f3(x0), f1 = f3(x1), xn2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+        rows.push({ i: s, x0: x0, x1: x1, f1: f1, xn1: xn2 });
+        if (!isFinite(xn2) || Math.abs(f1) < 1e-13) break;
+        x0 = x1; x1 = xn2;
+      }
+    } else if (k === "fixed-point") {
+      var g = cfg.g, xf = cfg.x0;
+      for (var p = 0; p < steps; p++) {
+        var gx = g(xf);
+        rows.push({ i: p, xn: xf, gxn: gx, diff: Math.abs(gx - xf) });
+        if (!isFinite(gx) || Math.abs(gx - xf) < 1e-13) { xf = gx; break; }
+        xf = gx;
+      }
+    } else if (k === "matrix-iter") {
+      var A = cfg.A, bb = cfg.b, n = bb.length, xv = cfg.x0.slice(), gs = cfg.mode === "gs";
+      var errOf = function (v) { if (!cfg.sol) return null; var m = 0; for (var t = 0; t < n; t++) m = Math.max(m, Math.abs(v[t] - cfg.sol[t])); return m; };
+      rows.push({ i: 0, x: xv.slice(), err: errOf(xv) });
+      for (var it = 1; it <= steps; it++) {
+        var xnew = xv.slice();
+        for (var r = 0; r < n; r++) {
+          var sum = 0;
+          for (var col = 0; col < n; col++) if (col !== r) sum += A[r][col] * (gs ? xnew[col] : xv[col]);
+          xnew[r] = (bb[r] - sum) / A[r][r];
+        }
+        xv = xnew;
+        rows.push({ i: it, x: xv.slice(), err: errOf(xv) });
+      }
+    } else if (k === "integration") {
+      var fi = cfg.f, ia = cfg.a, ib = cfg.b, rule = cfg.rule, nn = cfg.n0;
+      for (var q = 0; q < steps; q++) {
+        var est = rule === "simpson" ? simpson(fi, ia, ib, nn) : trap(fi, ia, ib, nn);
+        var er = cfg.trueVal != null ? Math.abs(est - cfg.trueVal) : null;
+        rows.push({ i: q, n: nn, h: (ib - ia) / nn, est: est, err: er });
+        nn *= 2;
+      }
+    }
+    return rows;
+  }
+  function trap(f, a, b, n) { var h = (b - a) / n, s = (f(a) + f(b)) / 2; for (var i = 1; i < n; i++) s += f(a + i * h); return s * h; }
+  function simpson(f, a, b, n) { if (n % 2) n++; var h = (b - a) / n, s = f(a) + f(b); for (var i = 1; i < n; i++) s += (i % 2 ? 4 : 2) * f(a + i * h); return s * h / 3; }
+
+  // ════════ 렌더 (kind 별 plot + table) ════════
+  function renderPlot(cfg, rows, step) {
+    var k = cfg.kind;
+    if (k === "matrix-iter") return "";
+    if (k === "integration") {
+      var P0 = plotBase(cfg.f, cfg.a, cfg.b, {}); var r0 = rows[Math.max(0, step - 1)]; var n = r0 ? r0.n : cfg.n0;
+      var h = (cfg.b - cfg.a) / n;
+      for (var i = 0; i < n && i < 400; i++) {
+        var xL = cfg.a + i * h, xR = xL + h;
+        P0.svg.push('<path d="M' + P0.mx(xL) + ',' + P0.my(0) + ' L' + P0.mx(xL) + ',' + P0.my(cfg.f(xL)) + ' L' + P0.mx(xR) + ',' + P0.my(cfg.f(xR)) + ' L' + P0.mx(xR) + ',' + P0.my(0) + ' Z" fill="#2563eb" fill-opacity="0.10" stroke="#2563eb" stroke-width="0.8"/>');
+      }
+      return P0.close();
+    }
+    // root/fixed-point plots
+    var fn = k === "fixed-point" ? cfg.g : cfg.f;
+    var P = plotBase(k === "fixed-point" ? cfg.g : cfg.f, cfg.xmin, cfg.xmax, k === "fixed-point" ? { curve: false } : {});
+    if (k === "fixed-point") {
+      // y=x and y=g(x) + cobweb
+      var d1 = "", d2 = "";
+      for (var t = 0; t <= 200; t++) { var xx = cfg.xmin + (t / 200) * (cfg.xmax - cfg.xmin); d1 += (t ? "L" : "M") + P.mx(xx) + "," + P.my(xx) + " "; var gy = cfg.g(xx); if (isFinite(gy)) d2 += (t ? "L" : "M") + P.mx(xx) + "," + P.my(gy) + " "; }
+      P.svg.push('<path d="' + d1 + '" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4 3"/>');
+      P.svg.push('<path d="' + d2 + '" fill="none" stroke="#2563eb" stroke-width="2.4"/>');
+      var cx = cfg.x0;
+      for (var c = 0; c < step && c < rows.length; c++) {
+        var g1 = rows[c].gxn;
+        P.svg.push('<line x1="' + P.mx(cx) + '" y1="' + P.my(cx) + '" x2="' + P.mx(cx) + '" y2="' + P.my(g1) + '" stroke="#0891b2" stroke-width="1.3"/>');
+        P.svg.push('<line x1="' + P.mx(cx) + '" y1="' + P.my(g1) + '" x2="' + P.mx(g1) + '" y2="' + P.my(g1) + '" stroke="#0891b2" stroke-width="1.3"/>');
+        cx = g1;
+      }
+      return P.close();
+    }
+    if (k === "root-bracket") {
+      var cur = rows[Math.min(step, rows.length) - 1];
+      if (cur && step > 0) {
+        P.svg.push('<rect x="' + P.mx(cur.a) + '" y="14" width="' + (P.mx(cur.b) - P.mx(cur.a)) + '" height="' + (P.H - 44) + '" fill="#2563eb" fill-opacity="0.08" stroke="#2563eb" stroke-dasharray="5 3" stroke-width="1.3"/>');
+        P.svg.push('<line x1="' + P.mx(cur.c) + '" y1="14" x2="' + P.mx(cur.c) + '" y2="' + (P.H - 30) + '" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>');
+        P.svg.push('<circle cx="' + P.mx(cur.c) + '" cy="' + P.my(cur.fc) + '" r="4.5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>');
+      }
+      if (cfg.root != null) P.svg.push('<line x1="' + P.mx(cfg.root) + '" y1="14" x2="' + P.mx(cfg.root) + '" y2="' + (P.H - 30) + '" stroke="#16a34a" stroke-width="1" stroke-dasharray="2 4"/>');
+      return P.close();
+    }
+    if (k === "root-tangent" || k === "root-secant") {
+      for (var ti = 0; ti < step && ti < rows.length; ti++) {
+        var R = rows[ti], op = (0.35 + 0.65 * (ti / Math.max(step - 1, 1))).toFixed(2);
+        if (k === "root-tangent") {
+          var xL2 = R.xn - (cfg.xmax - cfg.xmin) * 0.28, xR2 = R.xn + (cfg.xmax - cfg.xmin) * 0.16;
+          var ty = function (t) { return R.fx + R.dfx * (t - R.xn); };
+          P.svg.push('<line x1="' + P.mx(xL2) + '" y1="' + P.my(ty(xL2)) + '" x2="' + P.mx(xR2) + '" y2="' + P.my(ty(xR2)) + '" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="5 3" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.xn) + '" cy="' + P.my(R.fx) + '" r="4" fill="#2563eb" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#f59e0b" opacity="' + op + '"/>');
+        } else {
+          P.svg.push('<circle cx="' + P.mx(R.x1) + '" cy="' + P.my(R.f1) + '" r="4" fill="#2563eb" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#f59e0b" opacity="' + op + '"/>');
+        }
+      }
+      if (cfg.root != null) P.svg.push('<line x1="' + P.mx(cfg.root) + '" y1="14" x2="' + P.mx(cfg.root) + '" y2="' + (P.H - 30) + '" stroke="#16a34a" stroke-width="1" stroke-dasharray="2 4"/>');
+      return P.close();
+    }
+    return P.close();
+  }
+
+  function renderTable(cfg, rows, step) {
+    var k = cfg.kind, head, body = "";
+    var shown = rows.slice(0, step);
+    if (k === "root-bracket") {
+      head = ["k", "a", "b", "c=(a+b)/2", "f(c)", "|b−a|"];
+      shown.forEach(function (r) { body += tr([r.i, fmt(r.a, 5), fmt(r.b, 5), fmt(r.c, 6), fmt(r.fc, 3), fmt(r.w, 3)]); });
+    } else if (k === "root-tangent") {
+      head = ["n", "xₙ", "f(xₙ)", "f'(xₙ)", "xₙ₊₁"];
+      shown.forEach(function (r) { body += tr([r.i, fmt(r.xn, 8), fmt(r.fx, 3), fmt(r.dfx, 4), fmt(r.xn1, 8)]); });
+    } else if (k === "root-secant") {
+      head = ["n", "xₙ₋₁", "xₙ", "f(xₙ)", "xₙ₊₁"];
+      shown.forEach(function (r) { body += tr([r.i, fmt(r.x0, 6), fmt(r.x1, 6), fmt(r.f1, 3), fmt(r.xn1, 8)]); });
+    } else if (k === "fixed-point") {
+      head = ["n", "xₙ", "g(xₙ)", "|Δ|"];
+      shown.forEach(function (r) { body += tr([r.i, fmt(r.xn, 8), fmt(r.gxn, 8), fmt(r.diff, 3)]); });
+    } else if (k === "matrix-iter") {
+      var n = cfg.b.length, cols = ["k"]; for (var c = 0; c < n; c++) cols.push("x" + (c + 1)); if (cfg.sol) cols.push("max err");
+      head = cols;
+      shown.forEach(function (r) { var cells = [r.i]; r.x.forEach(function (v) { cells.push(fmt(v, 6)); }); if (cfg.sol) cells.push(r.err == null ? "" : r.err.toExponential(2)); body += tr(cells); });
+    } else if (k === "integration") {
+      head = ["단계", "n", "h", "적분 근사", cfg.trueVal != null ? "오차" : "Δ"];
+      shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].est : null; body += tr([r.i + 1, r.n, fmt(r.h, 4), fmt(r.est, 8), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.est - last).toExponential(2) : "—")]); });
+    }
+    var ths = head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("");
+    return '<div class="stp-tblwrap"><table class="stp-tbl"><thead><tr>' + ths + "</tr></thead><tbody>" + (body || '<tr><td colspan="' + head.length + '" class="stp-empty">"다음 반복" 을 눌러 시작하세요</td></tr>') + "</tbody></table></div>";
+  }
+  function tr(cells) { return "<tr>" + cells.map(function (c, i) { return '<td' + (i === 0 ? ' class="stp-k"' : "") + ">" + esc(c) + "</td>"; }).join("") + "</tr>"; }
+
+  function statusLine(cfg, rows, step) {
+    if (step === 0) return "";
+    var r = rows[Math.min(step, rows.length) - 1];
+    if (cfg.kind === "matrix-iter") return r.err == null ? "" : (r.err < 1e-4 ? "✓ 수렴 — 정확한 해에 도달" : "max error = " + r.err.toExponential(2) + " · 정답에 접근 중");
+    if (cfg.kind === "integration") return r.err != null ? (r.err < 1e-6 ? "✓ 충분히 수렴 (오차 " + r.err.toExponential(2) + ")" : "오차 " + r.err.toExponential(2) + " · n 을 2배로 세분하면 오차 급감") : "n=" + r.n + " · 근사 " + fmt(r.est, 8);
+    var approx = cfg.kind === "root-bracket" ? r.c : (cfg.kind === "fixed-point" ? r.gxn : r.xn1);
+    var e = cfg.root != null ? Math.abs(approx - cfg.root) : null;
+    if (e != null) return e < 1e-6 ? "✓ 수렴 — 근 ≈ " + fmt(approx, 8) + " (오차 " + e.toExponential(2) + ")" : "근사 근 ≈ " + fmt(approx, 8) + " · 오차 " + e.toExponential(2);
+    return "근사 근 ≈ " + fmt(approx, 8);
+  }
+
+  // ── 파싱 + 초기화 ──
+  function parseCfg(el) {
+    var kind = el.getAttribute("data-kind") || "root-tangent";
+    var cfg = { kind: kind, steps: parseInt(el.getAttribute("data-steps") || "10", 10) };
+    if (kind === "matrix-iter") {
+      try { cfg.A = JSON.parse(el.getAttribute("data-a")); cfg.b = JSON.parse(el.getAttribute("data-b")); cfg.x0 = JSON.parse(el.getAttribute("data-x0") || "null") || cfg.b.map(function () { return 0; }); } catch (e) { cfg.A = [[1]]; cfg.b = [0]; cfg.x0 = [0]; }
+      cfg.mode = el.getAttribute("data-mode") || "jacobi";
+      try { cfg.sol = JSON.parse(el.getAttribute("data-sol") || "null"); } catch (e) { cfg.sol = null; }
+      cfg.steps = cfg.steps || 12;
+    } else if (kind === "integration") {
+      cfg.f = compileFn(el.getAttribute("data-fn")); cfg.a = num(el.getAttribute("data-a"), 0); cfg.b = num(el.getAttribute("data-b"), 1);
+      cfg.rule = el.getAttribute("data-rule") || "trap"; cfg.n0 = parseInt(el.getAttribute("data-n0") || "2", 10);
+      var tv = el.getAttribute("data-true"); cfg.trueVal = tv != null ? num(tv, null) : null; cfg.steps = cfg.steps || 7;
+    } else {
+      cfg.f = compileFn(el.getAttribute("data-fn"));
+      cfg.xmin = num(el.getAttribute("data-xmin"), 0); cfg.xmax = num(el.getAttribute("data-xmax"), 2);
+      cfg.root = el.getAttribute("data-root") != null ? num(el.getAttribute("data-root"), null) : null;
+      if (kind === "root-bracket") { cfg.a = num(el.getAttribute("data-a"), cfg.xmin); cfg.b = num(el.getAttribute("data-b"), cfg.xmax); cfg.steps = cfg.steps || 12; }
+      if (kind === "root-tangent") { cfg.df = compileFn(el.getAttribute("data-dfn")); cfg.x0 = num(el.getAttribute("data-x0"), (cfg.xmin + cfg.xmax) / 2); cfg.steps = cfg.steps || 8; }
+      if (kind === "root-secant") { cfg.x0 = num(el.getAttribute("data-x0"), cfg.xmin); cfg.x1 = num(el.getAttribute("data-x1"), cfg.xmax); cfg.steps = cfg.steps || 10; }
+      if (kind === "fixed-point") { cfg.g = compileFn(el.getAttribute("data-gfn")); cfg.x0 = num(el.getAttribute("data-x0"), (cfg.xmin + cfg.xmax) / 2); cfg.steps = cfg.steps || 12; }
+    }
+    return cfg;
+  }
+
+  function init(el) {
+    if (el.getAttribute("data-init")) return; el.setAttribute("data-init", "1");
+    var cfg = parseCfg(el);
+    var rows = iterate(cfg);
+    var maxStep = rows.length;
+    var step = 0, timer = null;
+    var title = el.getAttribute("data-title") || "반복 시연";
+    var note = el.getAttribute("data-note") || "";
+    el.innerHTML =
+      '<div class="stp-head">' + esc(title) + "</div>" +
+      (note ? '<div class="stp-note">' + note + "</div>" : "") +
+      '<div class="stp-body"><div class="stp-viz"></div><div class="stp-side"></div></div>' +
+      '<div class="stp-ctrl">' +
+      '<button type="button" class="stp-btn stp-next">다음 반복 →</button>' +
+      '<button type="button" class="stp-btn stp-play">자동 재생</button>' +
+      '<button type="button" class="stp-btn stp-reset">초기화</button>' +
+      '<input type="range" class="stp-range" min="0" max="' + maxStep + '" value="0"/>' +
+      '<span class="stp-count">0 / ' + maxStep + "</span></div>" +
+      '<div class="stp-status"></div>';
+    var viz = el.querySelector(".stp-viz"), side = el.querySelector(".stp-side"), status = el.querySelector(".stp-status");
+    var range = el.querySelector(".stp-range"), count = el.querySelector(".stp-count");
+    var nextB = el.querySelector(".stp-next"), playB = el.querySelector(".stp-play"), resetB = el.querySelector(".stp-reset");
+
+    function render() {
+      var plot = renderPlot(cfg, rows, step);
+      viz.innerHTML = plot; viz.style.display = plot ? "block" : "none";
+      side.innerHTML = renderTable(cfg, rows, step);
+      status.innerHTML = statusLine(cfg, rows, step);
+      status.className = "stp-status" + (step > 0 && /✓/.test(status.textContent) ? " ok" : "");
+      range.value = step; count.textContent = step + " / " + maxStep;
+      nextB.disabled = step >= maxStep;
+    }
+    function go(s) { step = Math.max(0, Math.min(maxStep, s)); render(); }
+    nextB.addEventListener("click", function () { go(step + 1); });
+    resetB.addEventListener("click", function () { stop(); go(0); });
+    range.addEventListener("input", function () { stop(); go(parseInt(range.value, 10)); });
+    function stop() { if (timer) { clearInterval(timer); timer = null; playB.textContent = "자동 재생"; } }
+    playB.addEventListener("click", function () {
+      if (timer) { stop(); return; }
+      if (step >= maxStep) go(0);
+      playB.textContent = "일시정지";
+      timer = setInterval(function () { if (step >= maxStep) { stop(); return; } go(step + 1); }, 700);
+    });
+    render();
+  }
+
+  function initAll() { Array.prototype.forEach.call(document.querySelectorAll(".stepper"), init); }
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
+    else initAll();
+  }
+  if (typeof module !== "undefined" && module.exports) module.exports = { compileFn: compileFn, iterate: iterate, trap: trap, simpson: simpson };
+})();

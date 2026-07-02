@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 4 · Nonlinear Equations I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 4</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 4 · Nonlinear Equations I</div>
+    <h1 class="intro-h">$x^3 - x - 2 = 0$ — <span class="hl">이 근을 손으로 풀 수 있는가?</span></h1>
+    <p class="intro-sub">2차 방정식엔 근의 공식이 있다. 3차·4차도 (끔찍하지만) 있다. 그러나 $x^3-x-2=0$, $\cos x = x$, $xe^x = 1$ 처럼 조금만 섞이면 <strong>닫힌 형태의 공식이 존재하지 않는다.</strong> 그럼 공학자는 어떻게 근을 구할까?</p>
+    <div class="intro-teaser">답 — <em>반복(iteration).</em> 근을 한 번에 맞히는 대신, <em>점점 가까워지는 수열</em>을 컴퓨터로 만든다. 이번 주는 그 첫 두 방법을 <strong>직접 돌려본다.</strong></div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 4 · 이번 주 여정</div>
+    <h1 class="intro-h">근을 <span class="hl">가두고 · 접선으로 찌른다</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">4-1</span><span><span class="rt">근의 존재성</span> <span class="rd">— 중간값 정리로 "여기 근이 있다"를 보장</span></span></div>
+      <div class="rm-item"><span class="rn">4-2</span><span><span class="rt">이분법</span> <span class="rd">— 구간을 절반씩 줄여 확실하게 (느리지만 안전)</span></span></div>
+      <div class="rm-item"><span class="rn">4-3</span><span><span class="rt">Newton-Raphson</span> <span class="rd">— 접선으로 도약 (빠르지만 조심)</span></span></div>
+      <div class="rm-item"><span class="rn">4-4</span><span><span class="rt">수렴 속도 비교</span> <span class="rd">— 선형 vs 이차, 언제 무엇을</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 함수 하나로 두 방법을 <em>같은 화면에서 반복</em>시켜 본다 — $f(x)=x^3-x-2$, 근 $\approx 1.5214$.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 학습법 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 4 · 수치해석은 "돌려봐야" 안다</div>
+    <h1 class="intro-h">각 방법을 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">직접 돌린다</div><ul><li><strong>시연</strong>: "다음 반복" 을 눌러 수열이 근으로 가는 걸 눈으로 본다.</li><li><strong>직접계산</strong>: 한 반복을 손으로 계산해 넣고 채점받는다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: 초기값을 잘못 주면 발산·순환하는 걸 확인한다.</li><li>왜 "빠른 방법이 항상 좋지 않은지" 를 몸으로 안다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 4-2 이분법 ════════════════════ -->
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="문제">
+  <div class="eyebrow">4-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">가장 확실한 방법 <span class="en">· Bisection: never fails</span></h1>
+  <div class="analogy"><span class="ic">🎯</span><div class="tx"><b>직관</b> — 숫자 맞히기 게임과 같다. 1~100 중 상대의 수를 맞힐 때 <b>가운데(50)</b>를 부르고 "높다/낮다" 로 <b>범위를 절반</b>으로 줄인다. 이분법도 똑같이, 근이 든 구간을 매번 절반으로 줄여 <b>반드시</b> 좁혀 간다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">연속함수 $f$가 구간 양 끝에서 <strong>부호가 다르면</strong>($f(a)f(b)<0$), 그 사이에 <strong>근이 반드시 존재</strong>한다(중간값 정리). 이분법은 이 사실만으로 근을 가둬 좁힌다 — 도함수도, 좋은 초기값도 필요 없다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">가정</span><span class="keqline">$ f(a)\,f(b) < 0 $</span></div>
+        <div class="keqrow"><span class="keqcap">중점</span><span class="keqline">$ c = \dfrac{a+b}{2} $</span></div>
+        <div class="keqrow"><span class="keqcap">오차 한계</span><span class="keqline">$ |\varepsilon_n| \le \dfrac{b-a}{2^{n}} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>브래킷 $[a,b]$</b> 근을 가둔 구간</div>
+        <div class="term"><b>중점 $c$</b> 다음 근사값 후보</div>
+        <div class="term"><b>부호 판정</b> $f(a)f(c)$ 로 어느 반쪽에 근이 있나</div>
+        <div class="term"><b>선형 수렴</b> 매 반복 오차가 정확히 $\tfrac12$</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>이분법은 <strong>수렴이 보장</strong>된다. 단점은 <strong>느림</strong>(선형) — 그래서 뒤의 Newton과 짝을 이룬다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="원리">
+  <div class="eyebrow">4-2 · 원리 · Algorithm</div>
+  <h1 class="stage-h">구간을 절반으로 — 알고리즘</h1>
+  <div class="algo">
+    <div class="algo-h">Bisection Algorithm</div>
+    <ol>
+      <li>$f(a)f(b) < 0$ 인 초기 구간 $[a,b]$ 를 잡는다.</li>
+      <li>중점 <b>$c = (a+b)/2$</b> 와 $f(c)$ 를 계산한다.</li>
+      <li>$|f(c)|$ 또는 $|b-a|/2$ 가 허용오차보다 작으면 <b>$c$ 를 근으로 반환</b>.</li>
+      <li>$f(a)f(c) < 0$ 이면 근은 왼쪽 → <b>$b \leftarrow c$</b>, 아니면 <b>$a \leftarrow c$</b>.</li>
+      <li>2로 돌아가 반복한다.</li>
+    </ol>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">왜 되는가</div>중간값 정리 덕분에 매 반복 후에도 <strong>부호가 다른 끝점</strong>이 유지되므로 근은 항상 구간 안에 남아 있고, 구간 폭은 <strong>매번 정확히 절반</strong>이 된다.</div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="시연">
+  <div class="eyebrow">4-2 · 시연 · Step-through</div>
+  <h1 class="stage-h">직접 반복시켜 보기 — 구간이 조여든다</h1>
+  <p class="lede">"다음 반복" 을 누르면 중점 $c$(주황)가 찍히고 근이 든 <strong>절반</strong>만 남는다. 구간 폭 $|b-a|$ 이 매번 반으로 주는 것을 표에서 확인하라. 초록 점선이 실제 근 $\approx 1.5214$.</p>
+  <div class="stepper"
+    data-kind="root-bracket"
+    data-fn="x^3 - x - 2"
+    data-a="1" data-b="2"
+    data-xmin="0.7" data-xmax="2.2"
+    data-root="1.5213797068"
+    data-steps="16"
+    data-title="이분법 — f(x) = x³ − x − 2,  [a,b]=[1,2]"
+    data-note="주황=중점 c, 파랑 곡선=f(x), 초록 점선=참근. 표의 |b−a| 가 매 반복 절반으로 줄어든다."></div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 이분법 2회 반복</div>
+    <p class="prob-statement">$f(x)=x^3-x-2$, 초기 구간 $[1,2]$. 1회 반복: $c_1=1.5$, $f(1.5)=-1.25<0$ 이고 $f(1)=-2<0$ 이므로 같은 부호 → 근은 오른쪽, 구간은 $[1.5,\,2]$ 로 갱신된다. <strong>2회 반복의 중점 $c_2$</strong> 를 구하시오.</p>
+    <div class="given"><span class="chip">$[a,b]=[1.5,\,2]$</span><span class="chip">$c_2=(a+b)/2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.75" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 갱신된 구간</div>$$ [a,b] = [1.5,\ 2] $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 중점</div>$$ c_2 = \frac{1.5 + 2}{2} = 1.75 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ c_2 = 1.75 $$</div><b>정답:</b> $f(1.75)=1.61>0$ 이므로 다음엔 $[1.5,\,1.75]$ 로 좁혀진다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="수렴">
+  <div class="eyebrow">4-2 · 수렴 · Convergence</div>
+  <h1 class="stage-h">얼마나 빠른가 — 선형 수렴</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">오차 한계와 필요 반복 횟수</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">$n$회 후 오차</span><span class="keqline">$ |\varepsilon_n| \le \dfrac{b-a}{2^{n}} $</span></div>
+        <div class="keqrow"><span class="keqcap">필요 반복</span><span class="keqline">$ n \ge \log_2\!\dfrac{b-a}{\text{tol}} $</span></div>
+      </div>
+      <div class="callout warn"><div class="ct">선형(1차) 수렴</div>매 반복 오차가 상수비 $\tfrac12$ 로 줄어든다 — 유효 자릿수는 약 <strong>3회당 1자리</strong>($2^{10}\approx10^3$). 확실하지만 느리다.</div>
+    </div>
+    <div>
+      <div class="vcap">$[1,2]$ 에서 정밀도별 반복 횟수</div>
+      <table class="ktab"><thead><tr><th>목표 오차</th><th>필요 반복 $n$</th></tr></thead><tbody>
+        <tr><td>$10^{-2}$</td><td>7</td></tr>
+        <tr><td>$10^{-4}$</td><td>14</td></tr>
+        <tr><td>$10^{-6}$</td><td>20</td></tr>
+        <tr><td>$10^{-10}$</td><td>34</td></tr>
+      </tbody></table>
+      <div class="keqnote">$n \ge \log_2(1/\text{tol})$ 이므로 정밀도를 100배 높일 때마다 약 $\log_2 100\approx 6.6$ 회가 더 필요하다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="함정">
+  <div class="eyebrow">4-2 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">이분법이 막히는 경우</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 브래킷을 못 잡는다</h4><p><b>$f(a)f(b)<0$ 인 구간</b>을 미리 찾아야 한다. 근이 어디쯤인지 모르면 이 시작 조건 자체가 어렵다.</p></div>
+    <div class="pitfall"><h4>⚠ 짝수 중근을 놓친다</h4><p>$f(x)=(x-1)^2$ 처럼 접하는 근은 <b>부호가 바뀌지 않아</b> 이분법으로 못 잡는다.</p></div>
+    <div class="pitfall"><h4>⚠ 느리다</h4><p>선형 수렴이라 Newton 대비 <b>수 배~수십 배</b> 반복이 필요하다. 정밀도가 중요하면 비효율적.</p></div>
+    <div class="pitfall"><h4>⚠ 복소근 불가</h4><p>실수 축 위 부호변화만 이용 → <b>복소수 근</b>은 찾을 수 없다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="코드">
+  <div class="eyebrow">4-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 그대로 돌려보기</h1>
+  <div class="codeblock"><div class="code-cap">bisection.m</div><pre><code>function [root, n] = bisection(f, a, b, tol)
+  <span class="cm">% f(a)*f(b) &lt; 0 인 구간에서 근을 찾는다</span>
+  if f(a)*f(b) &gt; 0, error('부호가 같습니다 — 구간을 다시'); end
+  for n = 1:100
+      c = (a + b) / 2;            <span class="cm">% 중점</span>
+      if abs(f(c)) &lt; tol || (b-a)/2 &lt; tol
+          root = c; return;       <span class="cm">% 수렴</span>
+      end
+      if f(a)*f(c) &lt; 0, b = c; else, a = c; end
+  end
+end
+
+<span class="cm">% 사용</span>
+f = @(x) x.^3 - x - 2;
+[root, n] = bisection(f, 1, 2, 1e-6);
+<span class="out">% root = 1.5213797  (n = 20)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 필요 반복 횟수</div>
+    <p class="prob-statement">구간 $[1,2]$ 에서 이분법으로 오차 $10^{-6}$ 이하를 보장하려면 <strong>최소 몇 번</strong> 반복해야 하는가? ($n \ge \log_2((b-a)/\text{tol})$)</p>
+    <div class="given"><span class="chip">$b-a=1$</span><span class="chip">$\text{tol}=10^{-6}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="20" data-tol="0.0"/><span class="ans-unit">회</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ n \ge \log_2\!\frac{1}{10^{-6}} = \log_2(10^6) = 19.93 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ n = 20 $$</div><b>정답:</b> 올림하여 20회. 정밀도를 더 높여도 반복이 완만하게만 늘어난다(로그).</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 구간 폭</div>
+    <p class="prob-statement">초기 구간 폭이 $2$ 일 때, <strong>10회 반복 후</strong> 구간 폭 $|b-a|$ 는? $(2/2^{10})$</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답 (소수/지수)" data-answer="0.001953125" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \frac{2}{2^{10}} = \frac{2}{1024} \approx 1.95\times10^{-3} $$</div>
+      <div class="ans-final"><b>정답:</b> 약 $0.00195$. 매 반복 절반이므로 $2^{10}\approx10^3$ 배 줄었다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="정리">
+  <div class="eyebrow">4-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$f(a)f(b)<0$ → 중점 $c=(a+b)/2$ 로 <strong>구간 절반</strong> 축소.</li>
+      <li>오차 $|\varepsilon_n|\le (b-a)/2^n$, 필요 반복 $n\ge\log_2((b-a)/\text{tol})$.</li>
+      <li><strong>수렴 보장</strong>(장점) · <strong>선형·느림</strong>(단점) · 도함수 불필요.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>부호 판정을 $f(c)$ 단독으로 — 반드시 <strong>$f(a)f(c)$</strong> 곱의 부호.</li>
+      <li>구간 갱신에서 어느 끝을 $c$ 로 바꿀지 혼동.</li>
+      <li>중근($(x-1)^2$)에 적용 시도 — 부호 안 바뀜.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$n\ge\log_2((b-a)/\text{tol})$ 로 <strong>반복 횟수 계산</strong>.</li>
+      <li>주어진 초기 반복 2~3회 <strong>손으로 브래킷 추적</strong>.</li>
+      <li>이분법 vs Newton 장단점 비교(보장 vs 속도).</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 4-3 Newton-Raphson ════════════════════ -->
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="문제">
+  <div class="eyebrow">4-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">더 빠를 순 없을까 <span class="en">· Newton: use the slope</span></h1>
+  <div class="analogy"><span class="ic">🎿</span><div class="tx"><b>직관</b> — 이분법은 눈을 감고 반씩 좁힌다. Newton은 <b>기울기(접선)</b>라는 힌트를 쓴다. 현재 점에서 곡선의 접선을 긋고, 그 접선이 $x$축과 만나는 곳으로 <b>도약</b>한다 — 곡선이 얌전하면 한두 번 만에 근에 닿는다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">근처에서 $f$ 를 <strong>접선(1차 Taylor)</strong> 으로 근사하고, 그 선형식의 근을 다음 근사값으로 삼는다. 정보(도함수)를 더 쓰는 대가로 <strong>이차 수렴</strong>이라는 폭발적인 속도를 얻는다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">Taylor 1차</span><span class="keqline">$ 0 \approx f(x_n) + f'(x_n)(x_{n+1}-x_n) $</span></div>
+        <div class="keqrow"><span class="keqcap">점화식</span><span class="keqline">$ x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)} $</span></div>
+        <div class="keqrow"><span class="keqcap">오차 재귀</span><span class="keqline">$ |\varepsilon_{n+1}| \approx C\,|\varepsilon_n|^2 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>$x_n$</b> 현재 근사값</div>
+        <div class="term"><b>$f'(x_n)$</b> 접선의 기울기 (필수)</div>
+        <div class="term"><b>이차 수렴</b> 매 반복 유효 자릿수 약 <b>2배</b></div>
+        <div class="term"><b>선형화</b> 곡선을 접선으로 바꿔치기</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>빠르다(이차). 대신 <strong>도함수가 필요</strong>하고 <strong>초기값·형상에 민감</strong>하다 — 함정 단계에서 직접 깨뜨려 본다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="원리">
+  <div class="eyebrow">4-3 · 원리 · Derivation</div>
+  <h1 class="stage-h">접선의 $x$절편 — 점화식 유도</h1>
+  <p class="assume"><b>아이디어:</b> $x_n$ 에서 $f$ 를 접선으로 근사하고, 그 <b>접선의 $x$절편</b>을 다음 근사값으로 삼는다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 접선</h4><div class="sub">$x_n$ 에서 선형화</div><div class="eq">$ y = f(x_n) + f'(x_n)(x-x_n) $</div><p>곡선을 접선으로 바꿔치기 (1차 Taylor).</p></div>
+    <div class="dcard"><h4>② $x$절편</h4><div class="sub">$y=0$ 놓기</div><div class="eq">$ 0 = f(x_n) + f'(x_n)(x_{n+1}-x_n) $</div><p>접선이 $x$축과 만나는 점 = 다음 근사값.</p></div>
+    <div class="dcard"><h4>③ 정리</h4><div class="sub">$x_{n+1}$ 로</div><div class="eq">$ x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)} $</div><p>Newton–Raphson 점화식.</p></div>
+  </div>
+  <div class="callout warn"><div class="ct">주의</div>$f'(x_n)=0$ 이면 접선이 수평이라 $x$절편이 없어 <strong>정의되지 않는다</strong>(0으로 나눔). 함정 단계 참고.</div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="시연">
+  <div class="eyebrow">4-3 · 시연 · Step-through</div>
+  <h1 class="stage-h">접선을 따라 근으로 — 직접 반복</h1>
+  <p class="lede">"다음 반복" 마다 접선(청록)이 그어지고 그 $x$절편(주황)이 다음 $x_{n+1}$ 이 된다. 표의 $f(x_n)$ 이 <strong>얼마나 빨리 0으로</strong> 가는지(이분법과 비교) 보라 — 보통 3~4회면 끝난다.</p>
+  <div class="stepper"
+    data-kind="root-tangent"
+    data-fn="x^3 - x - 2"
+    data-dfn="3*x^2 - 1"
+    data-x0="1.5"
+    data-xmin="0.7" data-xmax="2.2"
+    data-root="1.5213797068"
+    data-steps="6"
+    data-title="Newton — f(x)=x³−x−2,  f'(x)=3x²−1,  x₀=1.5"
+    data-note="청록 점선=접선, 주황=접선의 x절편(다음 근사). 표의 f(xₙ) 이 이차로 급락한다."></div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Newton 1회 반복</div>
+    <p class="prob-statement">$f(x)=x^3-x-2$, $f'(x)=3x^2-1$, $x_0=1.5$. Newton 공식으로 <strong>$x_1$</strong> 을 구하시오. (소수 4자리)</p>
+    <div class="given"><span class="chip">$f(1.5)=-0.125$</span><span class="chip">$f'(1.5)=5.75$</span><span class="chip">$x_1=x_0-\dfrac{f}{f'}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.521739" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 함수·도함수 값</div>$$ f(1.5)=3.375-1.5-2=-0.125,\quad f'(1.5)=3(2.25)-1=5.75 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 대입</div>$$ x_1 = 1.5 - \frac{-0.125}{5.75} = 1.5 + 0.021739 = 1.521739 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_1 \approx 1.521739 $$</div><b>정답:</b> 단 1회로 이미 근($1.52138$)과 소수 3자리까지 일치 — 이차 수렴의 위력.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="수렴">
+  <div class="eyebrow">4-3 · 수렴 · Convergence</div>
+  <h1 class="stage-h">이차 수렴 — 자릿수가 두 배씩</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">오차 재귀와 의미</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">단근에서</span><span class="keqline">$ |\varepsilon_{n+1}| \approx \left|\dfrac{f''}{2f'}\right|\,|\varepsilon_n|^2 $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">이차(2차) 수렴</div>오차가 <strong>제곱</strong>으로 줄어 유효 자릿수가 매 반복 <strong>약 두 배</strong>. $10^{-1}\to10^{-2}\to10^{-4}\to10^{-8}\to10^{-16}$.</div>
+    </div>
+    <div>
+      <div class="vcap">같은 정밀도 도달 반복 수</div>
+      <table class="ktab"><thead><tr><th>방법</th><th>$10^{-6}$ 까지</th><th>수렴 차수</th></tr></thead><tbody>
+        <tr><td>이분법</td><td>~20 회</td><td>선형 (1)</td></tr>
+        <tr><td>Newton</td><td>~5 회</td><td>이차 (2)</td></tr>
+      </tbody></table>
+      <div class="keqnote">단, 이차 수렴은 <b style="color:var(--ink)">단근·좋은 초기값</b> 가정 하에서다. 중근이면 선형으로 떨어지고, 초기값이 나쁘면 아예 수렴하지 않는다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="함정">
+  <div class="eyebrow">4-3 · 함정 · Break it</div>
+  <h1 class="stage-h">Newton이 실패하는 순간 — 직접 깨뜨려 보기</h1>
+  <p class="lede">아래 스테퍼는 $f(x)=x^3-2x+2$, 초기값 $x_0=0$. "다음 반복" 을 눌러 보라 — 값이 <strong>$0\to1\to0\to1$ 로 순환</strong>하며 절대 수렴하지 않는다. 초기값 하나가 Newton의 성패를 가른다.</p>
+  <div class="stepper"
+    data-kind="root-tangent"
+    data-fn="x^3 - 2*x + 2"
+    data-dfn="3*x^2 - 2"
+    data-x0="0"
+    data-xmin="-1.6" data-xmax="1.6"
+    data-steps="8"
+    data-title="발산·순환 — f(x)=x³−2x+2,  x₀=0 (cycling)"
+    data-note="xₙ 이 0과 1 사이를 오간다 — 수렴 실패. 초기값을 바꾸면 결과가 달라진다."></div>
+  <div class="pitfalls" style="margin-top:14px">
+    <div class="pitfall"><h4>⚠ $f'(x_n)=0$</h4><p>접선이 수평 → 0으로 나눔. 극값 근처에서 발생.</p></div>
+    <div class="pitfall"><h4>⚠ 순환·발산</h4><p>나쁜 초기값에서 <b>진동하거나 멀어진다</b>(위 시연).</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="코드">
+  <div class="eyebrow">4-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 도함수를 함께 넘긴다</h1>
+  <div class="codeblock"><div class="code-cap">newton.m</div><pre><code>function [root, n] = newton(f, df, x0, tol)
+  x = x0;
+  for n = 1:100
+      fx = f(x);
+      if abs(fx) &lt; tol, root = x; return; end
+      dfx = df(x);
+      if abs(dfx) &lt; eps, error("도함수가 0 — Newton 실패"); end
+      x = x - fx / dfx;          <span class="cm">% 접선의 x절편으로 도약</span>
+  end
+end
+
+<span class="cm">% 사용</span>
+f  = @(x) x.^3 - x - 2;
+df = @(x) 3*x.^2 - 1;
+[root, n] = newton(f, df, 1.5, 1e-12);
+<span class="out">% root = 1.521379706804568  (n = 4)</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">도함수가 어렵다면</div>$f'$ 를 직접 구하기 어려우면 다음 절 <strong>할선법(Secant)</strong> — 도함수 없이 두 점의 기울기로 근사 — 을 쓴다.</div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 제곱근 알고리즘</div>
+    <p class="prob-statement">$\sqrt{2}$ 는 $f(x)=x^2-2=0$ 의 근이다. Newton 점화식은 $x_{n+1}=\tfrac12(x_n+2/x_n)$. $x_0=1$ 에서 <strong>$x_1$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$x_0=1$</span><span class="chip">$x_{n+1}=\tfrac12(x_n+2/x_n)$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.5" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_1 = \tfrac12\!\left(1 + \tfrac{2}{1}\right) = \tfrac12(3) = 1.5 $$</div>
+      <div class="ans-final"><b>정답:</b> 다음 $x_2=1.41\overline{6}$, $x_3\approx1.41422$ — 몇 스텝 만에 $\sqrt2=1.41421$.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 이차 수렴 판정</div>
+    <p class="prob-statement">어떤 반복의 오차가 $10^{-2}\to10^{-4}\to10^{-8}$ 로 줄었다. 다음 반복의 오차 규모는 대략? (이차 수렴 $\varepsilon_{n+1}\sim\varepsilon_n^2$)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="예: 1e-16" data-answer="1e-16" data-tol="0.5"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="ans-final"><div class="ans-eq">$$ (10^{-8})^2 = 10^{-16} $$</div><b>정답:</b> 이차 수렴 = 지수가 매 반복 두 배 → 기계 정밀도에 즉시 도달.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="정리">
+  <div class="eyebrow">4-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$x_{n+1}=x_n-f(x_n)/f'(x_n)$ — 접선의 $x$절편으로 도약.</li>
+      <li><strong>이차 수렴</strong>(단근): 자릿수 매 반복 약 2배.</li>
+      <li>도함수 필요 · 초기값·형상에 민감(발산·순환 가능).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$f'(x_n)=0$ 처리 누락(0으로 나눔).</li>
+      <li>중근에 이차 수렴 가정 — 실제론 선형.</li>
+      <li>부호·도함수 계산 실수 → 엉뚱한 근/발산.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>점화식으로 <strong>1~2회 손 계산</strong>($x_1, x_2$).</li>
+      <li>이분법 대비 <strong>수렴 차수·반복 수</strong> 비교.</li>
+      <li>실패 조건 3종(도함수 0 · 순환 · 나쁜 초기값) 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=4;</script>
+<script src="/na-track.js" defer></script>
+</body></html>
