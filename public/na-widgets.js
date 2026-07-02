@@ -125,6 +125,17 @@
         rows.push({ i: q, n: nn, h: (ib - ia) / nn, est: est, err: er });
         nn *= 2;
       }
+    } else if (k === "ode") {
+      var fo = cfg.f, ox = cfg.x0, oy = cfg.y0, oh = cfg.h, om = cfg.method;
+      rows.push({ i: 0, x: ox, y: oy, err: cfg.trueFn ? Math.abs(oy - cfg.trueFn(ox)) : null });
+      for (var oi = 0; oi < steps; oi++) {
+        var kk1 = fo(ox, oy), oyn;
+        if (om === "rk4") { var kk2 = fo(ox + oh / 2, oy + oh / 2 * kk1), kk3 = fo(ox + oh / 2, oy + oh / 2 * kk2), kk4 = fo(ox + oh, oy + oh * kk3); oyn = oy + oh / 6 * (kk1 + 2 * kk2 + 2 * kk3 + kk4); }
+        else if (om === "heun") { oyn = oy + oh / 2 * (kk1 + fo(ox + oh, oy + oh * kk1)); }
+        else { oyn = oy + oh * kk1; }
+        ox = ox + oh; oy = oyn;
+        rows.push({ i: oi + 1, x: ox, y: oy, err: cfg.trueFn ? Math.abs(oy - cfg.trueFn(ox)) : null });
+      }
     }
     return rows;
   }
@@ -143,6 +154,22 @@
         P0.svg.push('<path d="M' + P0.mx(xL) + ',' + P0.my(0) + ' L' + P0.mx(xL) + ',' + P0.my(cfg.f(xL)) + ' L' + P0.mx(xR) + ',' + P0.my(cfg.f(xR)) + ' L' + P0.mx(xR) + ',' + P0.my(0) + ' Z" fill="#2563eb" fill-opacity="0.10" stroke="#2563eb" stroke-width="0.8"/>');
       }
       return P0.close();
+    }
+    if (k === "ode") {
+      var oxs = rows.map(function (r) { return r.x; }), oys = rows.map(function (r) { return r.y; });
+      var ox0 = oxs[0], oxN = oxs[oxs.length - 1];
+      var oall = oys.slice();
+      if (cfg.trueFn) for (var ot = 0; ot <= 60; ot++) { var oxx = ox0 + (ot / 60) * (oxN - ox0); var ov = cfg.trueFn(oxx); if (isFinite(ov)) oall.push(ov); }
+      var olo = Math.min.apply(null, oall), ohi = Math.max.apply(null, oall);
+      if (!isFinite(olo)) { olo = -1; ohi = 1; } if (olo === ohi) { olo -= 1; ohi += 1; }
+      var omg = (ohi - olo) * 0.12;
+      var PO = plotBase(function () { return NaN; }, ox0, oxN, { yMin: olo - omg, yMax: ohi + omg, curve: false });
+      if (cfg.trueFn) { var td = ""; for (var t2 = 0; t2 <= 120; t2++) { var xx2 = ox0 + (t2 / 120) * (oxN - ox0); var yv2 = cfg.trueFn(xx2); if (isFinite(yv2)) td += (td ? "L" : "M") + PO.mx(xx2).toFixed(1) + "," + PO.my(yv2).toFixed(1) + " "; } PO.svg.push('<path d="' + td + '" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 3"/>'); }
+      var nd = "";
+      for (var s2 = 0; s2 < step && s2 < rows.length; s2++) nd += (s2 ? "L" : "M") + PO.mx(rows[s2].x).toFixed(1) + "," + PO.my(rows[s2].y).toFixed(1) + " ";
+      if (nd) PO.svg.push('<path d="' + nd + '" fill="none" stroke="#2563eb" stroke-width="2.4"/>');
+      for (var s3 = 0; s3 < step && s3 < rows.length; s3++) PO.svg.push('<circle cx="' + PO.mx(rows[s3].x).toFixed(1) + '" cy="' + PO.my(rows[s3].y).toFixed(1) + '" r="3.5" fill="#2563eb"/>');
+      return PO.close();
     }
     // root/fixed-point plots
     var fn = k === "fixed-point" ? cfg.g : cfg.f;
@@ -214,6 +241,9 @@
     } else if (k === "integration") {
       head = ["단계", "n", "h", "적분 근사", cfg.trueVal != null ? "오차" : "Δ"];
       shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].est : null; body += tr([r.i + 1, r.n, fmt(r.h, 4), fmt(r.est, 8), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.est - last).toExponential(2) : "—")]); });
+    } else if (k === "ode") {
+      head = cfg.trueFn ? ["n", "xₙ", "yₙ (근사)", "정확해", "오차"] : ["n", "xₙ", "yₙ"];
+      shown.forEach(function (r) { var c = [r.i, fmt(r.x, 4), fmt(r.y, 6)]; if (cfg.trueFn) { c.push(fmt(cfg.trueFn(r.x), 6)); c.push(r.err != null ? r.err.toExponential(2) : "—"); } body += tr(c); });
     }
     var ths = head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("");
     return '<div class="stp-tblwrap"><table class="stp-tbl"><thead><tr>' + ths + "</tr></thead><tbody>" + (body || '<tr><td colspan="' + head.length + '" class="stp-empty">"다음 반복" 을 눌러 시작하세요</td></tr>') + "</tbody></table></div>";
@@ -223,6 +253,7 @@
   function statusLine(cfg, rows, step) {
     if (step === 0) return "";
     var r = rows[Math.min(step, rows.length) - 1];
+    if (cfg.kind === "ode") return "x=" + fmt(r.x, 3) + ", y≈" + fmt(r.y, 5) + (r.err != null ? " · 오차 " + r.err.toExponential(2) : "");
     if (cfg.kind === "matrix-iter") return r.err == null ? "" : (r.err < 1e-4 ? "✓ 수렴 — 정확한 해에 도달" : "max error = " + r.err.toExponential(2) + " · 정답에 접근 중");
     if (cfg.kind === "integration") return r.err != null ? (r.err < 1e-6 ? "✓ 충분히 수렴 (오차 " + r.err.toExponential(2) + ")" : "오차 " + r.err.toExponential(2) + " · n 을 2배로 세분하면 오차 급감") : "n=" + r.n + " · 근사 " + fmt(r.est, 8);
     var approx = cfg.kind === "root-bracket" ? r.c : (cfg.kind === "fixed-point" ? r.gxn : r.xn1);
@@ -244,6 +275,13 @@
       cfg.f = compileFn(el.getAttribute("data-fn")); cfg.a = num(el.getAttribute("data-a"), 0); cfg.b = num(el.getAttribute("data-b"), 1);
       cfg.rule = el.getAttribute("data-rule") || "trap"; cfg.n0 = parseInt(el.getAttribute("data-n0") || "2", 10);
       var tv = el.getAttribute("data-true"); cfg.trueVal = tv != null ? num(tv, null) : null; cfg.steps = cfg.steps || 7;
+    } else if (kind === "ode") {
+      cfg.f = compileFn(el.getAttribute("data-fn"), ["x", "y"]);
+      cfg.x0 = num(el.getAttribute("data-x0"), 0); cfg.y0 = num(el.getAttribute("data-y0"), 1);
+      cfg.h = num(el.getAttribute("data-h"), 0.1); cfg.method = el.getAttribute("data-method") || "euler";
+      var xend = el.getAttribute("data-xend");
+      cfg.steps = xend != null ? Math.max(1, Math.round((num(xend, 1) - cfg.x0) / cfg.h)) : parseInt(el.getAttribute("data-steps") || "10", 10);
+      var otf = el.getAttribute("data-true"); cfg.trueFn = otf ? compileFn(otf, ["x"]) : null;
     } else {
       cfg.f = compileFn(el.getAttribute("data-fn"));
       cfg.xmin = num(el.getAttribute("data-xmin"), 0); cfg.xmax = num(el.getAttribute("data-xmax"), 2);
