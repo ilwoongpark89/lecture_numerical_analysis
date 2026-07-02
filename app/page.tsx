@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { hasStudentSession } from "@/lib/cookies";
-import { WEEKS } from "@/lib/curriculum";
+import { WEEKS, firstReady } from "@/lib/curriculum";
 
 const career = [
   { year: "2008–2011", label: "B.S. 서울대학교" },
@@ -42,7 +42,7 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a
-              href={entryHref(1)}
+              href={entryHref((firstReady() ?? WEEKS[3]).week)}
               className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-lg font-semibold text-white shadow-sm transition hover:bg-accent-hover"
             >
               강의 입장
