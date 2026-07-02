@@ -1,10 +1,51 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
-/* KaTeX 수식: 어두운 배경에서 보이도록 흰색 강제 */
-.katex,
-.katex * {
-  color: #e2e8f0 !important;
+:root {
+  /* 액티브 제품(랜딩·enter·admin·라이트 강의)이 화이트 → body 기본 화이트.
+     아직 다크인 강의 콘텐츠(lecture/*)는 각자 bg-slate-950 명시 → 영향 없음. */
+  --background: #ffffff;
+  --foreground: #18181b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-plus-jakarta);
+  --font-mono: var(--font-geist-mono);
+  /* 단일 액센트(블루) — text-accent / bg-accent / border-accent / *-accent-soft 생성 */
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-soft: #eff6ff;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f4f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.2); /* --accent #2563eb */
+  color: inherit;
 }
 
 @keyframes shake {
@@ -14,7 +55,12 @@
   60% { transform: translateX(-4px); }
   80% { transform: translateX(4px); }
 }
-
 .animate-shake {
   animation: shake 0.4s ease-in-out;
 }
+
+/* KaTeX 색: currentColor 상속 → 라이트(어두운 글자)·다크(밝은 글자) 양쪽 자동.
+   아직 다크로 남은 강의 콘텐츠는 .dark-lecture 스코프에서 밝게 강제(task: 라이트 전환 시 제거). */
+.katex { color: inherit; }
+.dark-lecture .katex,
+.dark-lecture .katex * { color: #e2e8f0; }

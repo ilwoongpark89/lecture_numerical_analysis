@@ -4,3 +4,10 @@ out/
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
+.vercel
+
+# env — 절대 커밋 금지 (Supabase 키·관리자 토큰·반코드 포함)
+.env
+.env*.local
+.env.local
+.env.production

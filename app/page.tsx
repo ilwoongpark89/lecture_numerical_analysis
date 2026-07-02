@@ -1,452 +1,177 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { hasStudentSession } from "@/lib/cookies";
+import { WEEKS } from "@/lib/curriculum";
 
 const career = [
-  { year: "2008-2011", label: "B.S. 서울대학교" },
-  { year: "2011-2013", label: "M.S. 서울대학교" },
-  { year: "2014-2018", label: "Ph.D. NTNU (노르웨이)" },
-  { year: "2018-2021", label: "연구교수, 제주대학교" },
+  { year: "2008–2011", label: "B.S. 서울대학교" },
+  { year: "2011–2013", label: "M.S. 서울대학교" },
+  { year: "2014–2018", label: "Ph.D. NTNU (노르웨이)" },
+  { year: "2018–2021", label: "연구교수, 제주대학교" },
   { year: "2022", label: "연구조교수, 서울대학교" },
-  { year: "2022-현재", label: "조교수, 인하대학교" },
-];
-
-const courseInfo = [
-  { label: "강의 시간", value: "TBD" },
-  { label: "강의실", value: "TBD" },
-  { label: "평가", value: "TBD" },
-  { label: "교재", value: "TBD" },
-  { label: "소프트웨어", value: "TBD" },
-  { label: "조교", value: "TBD" },
-];
-
-const weeks = [
-  {
-    week: 1, topic: "Introduction", color: "from-blue-500 to-cyan-500", ready: true,
-    desc: "수치해석 개론",
-    details: ["수치해석이란 무엇인가", "해석해 vs 수치해", "공학 응용 사례", "강의 로드맵"],
-  },
-  {
-    week: 2, topic: "MATLAB Fundamentals", color: "from-emerald-500 to-teal-500", ready: true,
-    desc: "MATLAB 기초",
-    details: ["MATLAB 환경과 기본 문법", "벡터/행렬 연산", "스크립트 및 함수 작성", "그래프 시각화"],
-  },
-  {
-    week: 3, topic: "Errors", color: "from-amber-500 to-orange-500", ready: true,
-    desc: "반올림 오차와 절단 오차",
-    details: ["IEEE 754 부동소수점", "머신 엡실론, 상쇄 오차", "Taylor 급수와 절단 오차", "오차 전파, 수렴 차수 O(h^n)"],
-  },
-  {
-    week: 4, topic: "Nonlinear Equations I", color: "from-rose-500 to-pink-500", ready: true,
-    desc: "Bisection & Newton-Raphson",
-    details: ["근의 존재성 (중간값 정리)", "이분법 알고리즘과 수렴 속도", "Newton-Raphson 유도와 구현", "2차 수렴의 의미"],
-  },
-  {
-    week: 5, topic: "Nonlinear Equations II", color: "from-pink-500 to-fuchsia-500", ready: true,
-    desc: "Secant Method 및 응용",
-    details: ["Secant Method", "다중근과 수렴 실패 사례", "비선형 연립방정식 개요", "MATLAB 구현 실습"],
-  },
-  {
-    week: 6, topic: "Gauss Elimination", color: "from-indigo-500 to-violet-500", ready: true,
-    desc: "가우스 소거법과 LU 분해",
-    details: ["가우스 소거법", "부분 피벗팅", "LU 분해", "행렬 조건수와 ill-conditioning"],
-  },
-  {
-    week: 7, topic: "Iterative Methods", color: "from-sky-500 to-blue-500", ready: true,
-    desc: "연립방정식의 반복법",
-    details: ["Jacobi 반복법", "Gauss-Seidel 반복법", "수렴 조건 (대각 우세)", "대규모 희소행렬 응용"],
-  },
-  {
-    week: 8, topic: "Mid-term Exam", color: "from-gray-500 to-slate-500", ready: false, exam: true,
-    desc: "중간고사 (Weeks 1–7)",
-    details: [],
-  },
-  {
-    week: 9, topic: "Curve Fitting", color: "from-emerald-500 to-teal-500", ready: true,
-    desc: "최소자승법과 회귀 분석",
-    details: ["최소자승법 원리", "선형 회귀 (직선, 다항식)", "비선형 회귀의 선형화", "결정계수 R² 평가"],
-  },
-  {
-    week: 10, topic: "Interpolation", color: "from-violet-500 to-purple-500", ready: true,
-    desc: "보간법",
-    details: ["Lagrange 보간 다항식", "Newton 차분 보간", "Runge 현상", "Cubic Spline 보간"],
-  },
-  {
-    week: 11, topic: "Numerical Integration", color: "from-fuchsia-500 to-pink-500", ready: true,
-    desc: "수치적분",
-    details: ["사다리꼴 공식과 오차", "Simpson 1/3, 3/8 공식", "복합 공식", "Gauss Quadrature"],
-  },
-  {
-    week: 12, topic: "Numerical Differentiation", color: "from-cyan-500 to-sky-500", ready: false,
-    desc: "수치미분",
-    details: ["전방/후방/중앙 차분", "고차 정확도 공식", "Richardson 외삽법", "편미분의 수치 근사"],
-  },
-  {
-    week: 13, topic: "ODE", color: "from-purple-500 to-indigo-500", ready: false,
-    desc: "상미분방정식",
-    details: ["Euler 방법", "개선 Euler (Heun)", "4차 Runge-Kutta (RK4)", "연립 ODE, 고차 ODE 변환"],
-  },
-  {
-    week: 14, topic: "PDE & Eigenvalues", color: "from-orange-500 to-amber-500", ready: false,
-    desc: "편미분방정식 입문과 고유값 문제",
-    details: ["열전도 방정식의 유한차분", "파동 방정식 개요", "Power Method", "고유값 문제의 공학 응용"],
-  },
-  {
-    week: 15, topic: "Final Exam", color: "from-gray-500 to-slate-500", ready: false, exam: true,
-    desc: "기말고사 (Weeks 9–14)",
-    details: [],
-  },
+  { year: "2022–현재", label: "조교수, 인하대학교" },
 ];
 
 export default function Home() {
-  const [password, setPassword] = useState("");
-  const [unlocked, setUnlocked] = useState(false);
-  const [shake, setShake] = useState(false);
+  // 로그인 세션 유무로만 판정 — 본인 인증은 /enter 단일 경로.
+  const [hasSession, setHasSession] = useState(false);
+  useEffect(() => setHasSession(hasStudentSession()), []);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem("mftel-unlocked") === "true") {
-      setUnlocked(true);
-    }
-  }, []);
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password.toUpperCase() === "MFTEL") {
-      setUnlocked(true);
-      sessionStorage.setItem("mftel-unlocked", "true");
-    } else {
-      setShake(true);
-      setTimeout(() => setShake(false), 500);
-    }
-  };
+  // 세션 있으면 강의로 직접, 없으면 /enter(학번 등록/로그인) 경유.
+  const entryHref = (week: number) =>
+    hasSession ? `/lecture/${week}` : `/enter?next=/lecture/${week}`;
 
   return (
-    <main className="min-h-screen bg-slate-950">
-      {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-blue-500/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
-          <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-cyan-500/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
-          {/* Grid pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-              backgroundSize: "60px 60px",
-            }}
-          />
-        </div>
-
-        <div className="container relative z-10 mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-sm text-gray-400">
-              2026 Fall Semester | Inha University
-            </span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-5xl md:text-8xl font-bold tracking-tight text-white mb-2"
-          >
-            Numerical
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-5xl md:text-8xl font-bold tracking-tight mb-6"
-          >
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400">
-              Analysis
-            </span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8"
-          >
-            수치해석 — 공학 문제를 컴퓨터로 푸는 방법
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-wrap justify-center gap-6 text-sm text-gray-500"
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-              Department of Mechanical Engineering
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-              16 Weeks
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              Prof. Il Woong Park
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Instructor */}
-      <section className="relative py-24 bg-slate-900">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-1/3 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
-        </div>
-
-        <div className="container relative mx-auto px-4 max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
-              Instructor
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">강사 소개</h2>
-          </motion.div>
-
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex flex-col md:flex-row gap-8 items-center md:items-start"
+    <main className="min-h-screen bg-white text-[#18181b]">
+      {/* ───────── Hero ───────── */}
+      <section className="relative flex min-h-[74vh] items-center justify-center overflow-hidden px-4 py-20">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] bg-accent-soft [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+        <div className="relative z-10 mx-auto max-w-3xl text-center">
+          <div className="mb-5 text-xs font-bold tracking-widest text-accent">
+            NUMERICAL ANALYSIS · 2026 FALL SEMESTER
+          </div>
+          <h1 className="mb-4 text-6xl font-bold leading-[1.05] tracking-tight md:text-8xl">
+            Numerical <span className="text-accent">Analysis</span>
+          </h1>
+          <p className="mx-auto mb-9 max-w-xl text-lg leading-relaxed text-[#52525b] md:text-xl">
+            Mathematics wants the <em className="font-semibold not-italic text-[#18181b]">exact</em> answer.
+            Engineering wants a <em className="font-semibold not-italic text-accent">usable</em> one.
+            <br className="hidden sm:block" />
+            손으로 못 푸는 방정식을 컴퓨터로 — 이분법부터 Runge–Kutta까지, 한 화면씩.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={entryHref(1)}
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-lg font-semibold text-white shadow-sm transition hover:bg-accent-hover"
             >
-              {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-6xl font-bold shadow-xl shadow-blue-500/20">
-                  P
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-3xl font-bold text-white mb-1">박일웅 (Il Woong Park)</h3>
-                <p className="text-lg text-blue-400 mb-4">조교수, 인하대학교 기계공학과</p>
-                <p className="text-gray-400 leading-relaxed mb-6">
-                  다상유동 및 열공학 연구실(MFTEL)을 이끌고 있으며, 열에너지 저장, 비등 열전달, 원자로 안전 등을 연구하고 있습니다.
-                  수치해석은 공학 연구의 핵심 도구이며, 이 강의를 통해 실제 공학 문제를 컴퓨터로 해결하는 능력을 키워드립니다.
-                </p>
-
-                {/* Career Timeline */}
-                <div className="space-y-3">
-                  {career.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.3, delay: i * 0.05 }}
-                      className="flex items-center gap-3"
-                    >
-                      <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
-                      <span className="text-sm text-blue-400 font-mono w-24 flex-shrink-0">{item.year}</span>
-                      <span className="text-gray-300 text-sm">{item.label}</span>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Links */}
-                <div className="flex flex-wrap gap-3 mt-6 justify-center md:justify-start">
-                  <motion.a
-                    href="https://mftel.vercel.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    MFTEL Lab
-                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </motion.a>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-sm text-gray-300">
-                    Inha University
-                  </span>
-                </div>
-              </div>
-            </motion.div>
+              강의 입장
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+            <a
+              href="#curriculum"
+              className="inline-flex items-center gap-2 rounded-full border border-[#e4e4e7] bg-white px-7 py-4 text-lg font-semibold text-[#18181b] transition hover:bg-[#f4f4f5]"
+            >
+              전체 커리큘럼
+            </a>
           </div>
         </div>
       </section>
 
-      {/* Course Info */}
-      <section className="py-20 bg-slate-950">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-4">
-              Course Info
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">강의 정보</h2>
-          </motion.div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {courseInfo.map((info, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="rounded-2xl bg-slate-900/60 border border-slate-800 p-5 text-center"
+      {/* ───────── Instructor ───────── */}
+      <section className="border-t border-[#e4e4e7] bg-[#fafafa] px-4 py-20">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-10">
+            <div className="mb-2 text-xs font-bold tracking-widest text-accent">INSTRUCTOR</div>
+            <h2 className="text-3xl font-bold md:text-4xl">강사 소개</h2>
+          </div>
+          <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
+            <div className="flex size-36 flex-shrink-0 items-center justify-center rounded-3xl bg-accent text-6xl font-bold text-white shadow-sm">
+              P
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="mb-1 text-2xl font-bold">박일웅 (Il Woong Park)</h3>
+              <p className="mb-4 font-medium text-accent">조교수, 인하대학교 기계공학과</p>
+              <p className="mb-6 leading-relaxed text-[#52525b]">
+                다상유동 및 열공학 연구실(MFTEL)을 이끌고 있으며, 열에너지 저장·비등 열전달·원자로 안전 등을
+                연구합니다. 수치해석은 공학 연구의 핵심 도구입니다 — 이 강의에서 실제 공학 문제를 컴퓨터로 푸는
+                능력을 함께 키웁니다.
+              </p>
+              <div className="space-y-2.5">
+                {career.map((item) => (
+                  <div key={item.year} className="flex items-center gap-3">
+                    <span className="size-1.5 flex-shrink-0 rounded-full bg-accent" />
+                    <span className="w-24 flex-shrink-0 font-mono text-sm text-[#71717a]">{item.year}</span>
+                    <span className="text-sm text-[#3f3f46]">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+              <a
+                href="https://mftel.inha.ac.kr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-hover"
               >
-                <p className="text-xs text-cyan-400 font-medium uppercase tracking-wider mb-2">
-                  {info.label}
-                </p>
-                <p className="text-sm text-white font-medium">{info.value}</p>
-              </motion.div>
-            ))}
+                MFTEL Lab
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Syllabus Grid */}
-      <section className="py-20 bg-slate-950">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-              Syllabus
-            </h2>
-            <p className="text-gray-400">
-              주차별 강의 내용을 클릭하여 확인하세요
+      {/* ───────── Curriculum ───────── */}
+      <section id="curriculum" className="border-t border-[#e4e4e7] px-4 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-9 text-center">
+            <div className="mb-2 text-xs font-bold tracking-widest text-accent">CURRICULUM</div>
+            <h2 className="mb-2 text-3xl font-bold md:text-4xl">16주 커리큘럼</h2>
+            <p className="text-[#71717a]">
+              강의는 <strong className="text-[#18181b]">학번</strong>으로 입장합니다. 첫 입장 때 본인 비밀번호를
+              설정하면, 이후 그 비밀번호로 학습 기록이 이어집니다.
             </p>
-          </motion.div>
+            <p className="mt-2 text-xs text-[#a1a1aa]">학습 기록은 담당 교수만 열람합니다.</p>
+          </div>
 
-          {/* Password Gate */}
-          {!unlocked && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="max-w-md mx-auto mb-10"
-            >
-              <form onSubmit={handlePasswordSubmit} className="flex gap-2">
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="수강생 인증 코드 입력"
-                  className={`flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors ${shake ? "animate-shake" : ""}`}
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold hover:from-blue-500 hover:to-cyan-500 transition-all"
-                >
-                  확인
-                </button>
-              </form>
-              <p className="text-xs text-gray-500 mt-2 text-center">2주차부터 인증 코드가 필요합니다</p>
-            </motion.div>
-          )}
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {weeks.map((w, i) => (
-              <motion.div
-                key={w.week}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.4, delay: i * 0.03 }}
-              >
-                {w.ready && (w.week === 1 || unlocked) ? (
-                  <Link href={`/lecture/${w.week}`} className="block group">
-                    <WeekCard w={w} />
-                  </Link>
-                ) : w.ready && !unlocked ? (
-                  <div className="opacity-60 cursor-not-allowed relative">
-                    <WeekCard w={w} />
-                    <div className="absolute top-3 right-3">
-                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {WEEKS.map((w) => {
+              const open = w.ready && !w.exam;
+              const tile = (
+                <div className="flex items-start gap-4">
+                  <span
+                    className={`flex size-10 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+                      open ? "bg-accent text-white" : "bg-[#f4f4f5] text-[#a1a1aa]"
+                    }`}
+                  >
+                    {w.exam ? (
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
+                    ) : (
+                      w.week
+                    )}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <h3 className={`truncate font-semibold ${open ? "text-[#18181b]" : "text-[#71717a]"}`}>{w.topic}</h3>
+                      <span className="flex-shrink-0 text-[11px] text-[#a1a1aa]">W{w.week}</span>
                     </div>
+                    <p className="mt-0.5 truncate text-sm text-[#a1a1aa]">{w.desc}</p>
+                    {w.exam && <p className="mt-1 text-xs text-[#a1a1aa]">시험 기간에 안내</p>}
+                    {!w.exam && !w.ready && <p className="mt-1 text-xs text-[#a1a1aa]">준비 중</p>}
+                    {open && !hasSession && <p className="mt-1 text-xs text-[#a1a1aa]">학번으로 입장 →</p>}
                   </div>
-                ) : (
-                  <div className="opacity-60">
-                    <WeekCard w={w} />
-                  </div>
-                )}
-              </motion.div>
-            ))}
+                </div>
+              );
+              return open ? (
+                <a
+                  key={w.week}
+                  href={entryHref(w.week)}
+                  className="group block rounded-2xl border border-[#e4e4e7] bg-white p-5 transition hover:border-accent/40 hover:shadow-sm"
+                >
+                  {tile}
+                </a>
+              ) : (
+                <div key={w.week} className="cursor-not-allowed rounded-2xl border border-[#f4f4f5] bg-[#fafafa] p-5">
+                  {tile}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 bg-slate-950 border-t border-slate-800">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-500 text-sm">
-            2026 Fall Semester | Numerical Analysis | Inha University, Dept. of Mechanical Engineering
-          </p>
-        </div>
+      <footer className="border-t border-[#e4e4e7] py-8 text-center">
+        <p className="text-sm text-[#71717a]">
+          2026 Fall Semester · Numerical Analysis · 인하대학교 기계공학과
+          <span className="mx-1.5 text-[#d4d4d8]">·</span>
+          <a href="/admin" className="text-[#a1a1aa] underline-offset-2 hover:text-accent hover:underline">교수 열람</a>
+        </p>
       </footer>
     </main>
-  );
-}
-
-function WeekCard({ w }: { w: (typeof weeks)[number] }) {
-  return (
-    <div
-      className={`relative rounded-2xl border transition-all duration-300 p-5 h-full ${
-        w.exam
-          ? "bg-slate-800/40 border-slate-700"
-          : "bg-slate-900/60 border-slate-800 hover:border-slate-600 group-hover:border-slate-600"
-      }`}
-    >
-      <div className="flex items-center gap-3 mb-3">
-        <div
-          className={`w-9 h-9 rounded-lg bg-gradient-to-br ${w.color} flex items-center justify-center text-white text-sm font-bold shadow-lg`}
-        >
-          {w.week}
-        </div>
-        <div className="text-xs text-gray-500 font-medium">
-          Week {w.week}
-        </div>
-        {w.ready && (
-          <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        )}
-      </div>
-      <h3 className="text-sm font-semibold text-white leading-snug mb-1">
-        {w.topic}
-      </h3>
-      <p className="text-xs text-gray-500 leading-relaxed mb-2">{w.desc}</p>
-      {w.details && w.details.length > 0 && (
-        <ul className="space-y-1">
-          {w.details.map((d, i) => (
-            <li key={i} className="flex items-start gap-1.5 text-[11px] text-gray-600">
-              <span className="mt-1.5 w-1 h-1 rounded-full bg-gray-600 flex-shrink-0" />
-              {d}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   );
 }
