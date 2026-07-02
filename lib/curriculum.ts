@@ -34,7 +34,7 @@ export const WEEKS: Week[] = [
     chapters: C(3, [[1, "부동소수점 표현"], [2, "머신 엡실론과 반올림"], [3, "Taylor 급수와 절단오차"], [4, "오차 전파와 수렴차수"]]) },
   { week: 4, title: "비선형 방정식 I", topic: "Nonlinear Equations I", desc: "이분법 & Newton-Raphson", ready: true,
     chapters: C(4, [[1, "근의 존재성"], [2, "이분법"], [3, "Newton-Raphson"], [4, "수렴 속도 비교"]]) },
-  { week: 5, title: "비선형 방정식 II", topic: "Nonlinear Equations II", desc: "할선법 및 응용", ready: false,
+  { week: 5, title: "비선형 방정식 II", topic: "Nonlinear Equations II", desc: "할선법 및 응용", ready: true,
     chapters: C(5, [[1, "할선법 (Secant)"], [2, "다중근과 수정 기법"], [3, "비선형 연립계"], [4, "방법 선택 전략"]]) },
   { week: 6, title: "가우스 소거법", topic: "Gauss Elimination", desc: "가우스 소거법과 LU 분해", ready: false,
     chapters: C(6, [[1, "가우스 소거법"], [2, "부분 피벗팅"], [3, "LU 분해"], [4, "조건수와 ill-conditioning"]]) },

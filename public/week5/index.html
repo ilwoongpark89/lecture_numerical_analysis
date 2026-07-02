@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 5 · Nonlinear Equations II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 5</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 5 · Nonlinear Equations II</div>
+    <h1 class="intro-h">Newton은 <span class="hl">$f'(x)$ 가 필요하다</span> — 없으면?</h1>
+    <p class="intro-sub">지난 주 Newton–Raphson은 매 반복마다 접선의 기울기 $f'(x)$ 를 계산했다. 그러나 실제 공학에서는 $f'$ 를 <strong>손으로 구할 수 없거나</strong>(복잡한 식), 함수가 <strong>실험 데이터·시뮬레이션</strong>으로만 주어져 미분이 아예 불가능한 경우가 많다. 게다가 근이 <strong>겹쳐 있거나</strong>, 미지수가 <strong>여러 개</strong>이면 이야기가 더 복잡해진다.</p>
+    <div class="intro-teaser">이번 주 — <em>도함수 없이 · 다중근 · 연립계.</em> 접선 대신 <em>할선(secant)</em>으로, 겹친 근은 <em>수정 공식</em>으로, 여러 변수는 <em>Jacobian</em>으로. 그리고 "언제 무엇을 쓸지" 를 정리한다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 5 · 이번 주 여정</div>
+    <h1 class="intro-h">도함수를 <span class="hl">버리고 · 겹친 근을 풀고 · 벡터로 확장</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">5-1</span><span><span class="rt">할선법 (Secant)</span> <span class="rd">— 도함수 없이 두 점의 기울기로, Newton에 버금가는 속도</span></span></div>
+      <div class="rm-item"><span class="rn">5-2</span><span><span class="rt">다중근과 수정 기법</span> <span class="rd">— 겹친 근에서 느려지는 Newton을 되살리는 법</span></span></div>
+      <div class="rm-item"><span class="rn">5-3</span><span><span class="rt">비선형 연립계</span> <span class="rd">— 미지수 $n$개, Jacobian 기반 다변수 Newton</span></span></div>
+      <div class="rm-item"><span class="rn">5-4</span><span><span class="rt">방법 선택 전략</span> <span class="rd">— 여섯 가지 도구, 언제 무엇을 (Brent · fzero · fsolve)</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 $f(x)=x^3-x-2$, 근 $\approx 1.5214$ 로 할선법을 <em>같은 화면에서 반복</em>시키고, 겹친 근·연립계는 새 예제로 <strong>직접 돌려본다.</strong></div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 학습법 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 5 · 수치해석은 "돌려봐야" 안다</div>
+    <h1 class="intro-h">각 방법을 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">직접 돌린다</div><ul><li><strong>시연</strong>: "다음 반복" 을 눌러 할선·접선·고정점이 근으로 가는 걸 눈으로 본다.</li><li><strong>직접계산</strong>: 한 반복을 손으로 계산해 넣고 채점받는다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: 겹친 근·특이 Jacobian·나쁜 $g(x)$ 로 수렴이 무너지는 걸 확인한다.</li><li>"가장 빠른 방법이 항상 정답은 아니다" 를 몸으로 안다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 5-1 할선법 ════════════════════ -->
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="문제">
+  <div class="eyebrow">5-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">도함수가 없을 때 <span class="en">· Secant: Newton without $f'$</span></h1>
+  <div class="analogy"><span class="ic">📐</span><div class="tx"><b>직관</b> — Newton은 <b>접선(tangent)</b>으로 도약한다. 그런데 접선을 그으려면 기울기 $f'(x)$ 가 필요하다. 대신 <b>이미 지나온 두 점</b>을 이은 직선(<b>할선, secant</b>)의 기울기를 쓰면? 도함수 없이도 거의 같은 속도로 근을 향한다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">Newton–Raphson은 매 반복 $f'(x_n)$ 를 요구한다. 그러나 <strong>도함수를 해석적으로 구하기 어렵거나</strong>, 함수가 <strong>수치적으로만 정의</strong>(실험·시뮬레이션)되면 쓸 수 없다. 할선법은 $f'$ 를 <strong>유한 차분</strong>으로 근사해 이 문제를 피한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">유한 차분 근사</span><span class="keqline">$ f'(x_n) \approx \dfrac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}} $</span></div>
+        <div class="keqrow"><span class="keqcap">점화식</span><span class="keqline">$ x_{n+1} = x_n - f(x_n)\,\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})} $</span></div>
+        <div class="keqrow"><span class="keqcap">수렴 차수</span><span class="keqline">$ p = \dfrac{1+\sqrt5}{2}\approx 1.618 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>할선 (secant)</b> 두 점을 잇는 직선</div>
+        <div class="term"><b>$x_{n-1},x_n$</b> 최근 두 근사값 (초기값 2개)</div>
+        <div class="term"><b>초선형 수렴</b> 선형보다 빠르고 이차보단 느림</div>
+        <div class="term"><b>도함수 불필요</b> Newton의 최대 부담 제거</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>할선법은 <strong>도함수 없이</strong> 수렴 차수 $\approx 1.618$(황금비) 을 얻는다. 대가는 <strong>초기값이 2개</strong> 필요하다는 것. 단, 이분법과 달리 <strong>부호가 다를 필요는 없다.</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="원리">
+  <div class="eyebrow">5-1 · 원리 · Derivation</div>
+  <h1 class="stage-h">접선을 할선으로 바꿔치기 — 점화식 유도</h1>
+  <p class="assume"><b>아이디어:</b> Newton 공식의 $f'(x_n)$ 자리에, 두 점 $(x_{n-1},x_n)$ 으로 만든 <b>유한 차분</b>을 대입한다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① Newton 시작</h4><div class="sub">도함수가 필요</div><div class="eq">$ x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)} $</div><p>$f'(x_n)$ 를 어떻게 없앨까?</p></div>
+    <div class="dcard"><h4>② 유한 차분</h4><div class="sub">두 점의 기울기</div><div class="eq">$ f'(x_n)\approx\dfrac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}} $</div><p>접선(tangent) 대신 할선(secant) 기울기.</p></div>
+    <div class="dcard"><h4>③ 대입·정리</h4><div class="sub">할선의 $x$절편</div><div class="eq">$ x_{n+1}=x_n-f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})} $</div><p>Secant 점화식.</p></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">형제 방법 — False Position (Regula Falsi)</div>같은 할선을 쓰되 <strong>구간 $[a,b]$ 를 유지</strong>해 항상 근을 가둔다: $ c = a - f(a)\dfrac{b-a}{f(b)-f(a)} $. 부호 판정으로 구간을 갱신하므로 <strong>수렴 보장</strong>(장점)이나, 한쪽 끝이 고정되면(stagnation) 느려질 수 있다(Illinois·Pegasus 변형으로 개선).</div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="시연">
+  <div class="eyebrow">5-1 · 시연 · Step-through</div>
+  <h1 class="stage-h">할선을 따라 근으로 — 직접 반복</h1>
+  <p class="lede">"다음 반복" 을 누르면 최근 두 점 $(x_{n-1},x_n)$(파랑)을 잇는 할선의 $x$절편(주황)이 다음 $x_{n+1}$ 이 된다. 표의 $f(x_n)$ 이 <strong>도함수 없이도</strong> 얼마나 빨리 0으로 가는지 보라. 초록 점선이 실제 근 $\approx 1.5214$.</p>
+  <div class="stepper"
+    data-kind="root-secant"
+    data-fn="x^3 - x - 2"
+    data-x0="1" data-x1="2"
+    data-xmin="0.7" data-xmax="2.2"
+    data-root="1.5213797068"
+    data-steps="7"
+    data-title="할선법 — f(x) = x³ − x − 2,  x₀=1, x₁=2"
+    data-note="파랑=현재 점 (xₙ, f(xₙ)), 주황=할선의 x절편(다음 근사). 첫 스텝 x₂ = 4/3 ≈ 1.3333."></div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 할선법 1회 반복</div>
+    <p class="prob-statement">$f(x)=x^3-x-2$, 초기값 $x_0=1,\;x_1=2$. 할선 점화식으로 <strong>$x_2$</strong> 를 구하시오. (소수 4자리)</p>
+    <div class="given"><span class="chip">$f(1)=-2$</span><span class="chip">$f(2)=4$</span><span class="chip">$x_2=x_1-f(x_1)\dfrac{x_1-x_0}{f(x_1)-f(x_0)}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.333333" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 함수값</div>$$ f(1)=1-1-2=-2,\qquad f(2)=8-2-2=4 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 대입</div>$$ x_2 = 2 - 4\cdot\frac{2-1}{4-(-2)} = 2 - \frac{4}{6} = 1.3333 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_2 = \tfrac{4}{3}\approx 1.3333 $$</div><b>정답:</b> 도함수를 전혀 쓰지 않았다. 다음 스텝은 $x_3\approx1.4627$ 로 근 $1.52138$ 을 향해 초선형으로 접근한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="수렴">
+  <div class="eyebrow">5-1 · 수렴 · Convergence</div>
+  <h1 class="stage-h">황금비 속도 — 초선형 수렴</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">수렴 차수와 의미</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">오차 재귀</span><span class="keqline">$ |\varepsilon_{n+1}|\approx C\,|\varepsilon_n|^{p} $</span></div>
+        <div class="keqrow"><span class="keqcap">차수</span><span class="keqline">$ p=\dfrac{1+\sqrt5}{2}\approx 1.618 $</span></div>
+      </div>
+      <div class="callout key"><div class="ct">초선형(superlinear) 수렴</div>수렴 차수가 <strong>황금비</strong>와 같다. 이분법(1)보다 훨씬 빠르고 Newton(2)보다는 약간 느리지만, <strong>반복당 함수 평가가 1회</strong>뿐이라(Newton은 $f+f'=2$회) 실측 효율은 종종 Newton과 비슷하다.</div>
+    </div>
+    <div>
+      <div class="vcap">세 방법 비교 (근 $1.52138$ 까지)</div>
+      <table class="ktab"><thead><tr><th>방법</th><th>수렴 차수</th><th>도함수</th><th>초기값</th></tr></thead><tbody>
+        <tr><td>이분법</td><td>1 (선형)</td><td>불필요</td><td>구간 $[a,b]$</td></tr>
+        <tr><td>할선법</td><td>$\approx 1.618$</td><td>불필요</td><td>점 2개</td></tr>
+        <tr><td>Newton</td><td>2 (이차)</td><td>필요</td><td>점 1개</td></tr>
+      </tbody></table>
+      <div class="keqnote">할선법은 초기값 2개가 필요하지만, 이분법과 달리 $f(x_0)f(x_1)<0$ 일 필요가 없다 — 근처의 두 점이면 된다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="함정">
+  <div class="eyebrow">5-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">할선법이 무너지는 경우</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 0으로 나눔</h4><p>$f(x_n)=f(x_{n-1})$ 이면 할선이 <b>수평</b>이라 분모가 0. 두 점의 함수값이 같아질 때 발생.</p></div>
+    <div class="pitfall"><h4>⚠ 수렴 보장 없음</h4><p>이분법과 달리 구간을 가두지 않는다. <b>나쁜 초기값</b>에서는 발산·진동할 수 있다.</p></div>
+    <div class="pitfall"><h4>⚠ False Position 정체</h4><p>구간을 유지하는 변형은 한쪽 끝이 <b>고정(stagnation)</b>되어 수렴이 선형으로 느려질 수 있다.</p></div>
+    <div class="pitfall"><h4>⚠ 두 점이 너무 멀면</h4><p>초기 두 점이 근에서 멀면 <b>엉뚱한 근</b>으로 가거나 근 사이를 건너뛸 수 있다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="코드">
+  <div class="eyebrow">5-1 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 그대로 돌려보기</h1>
+  <div class="codeblock"><div class="code-cap">secant.m</div><pre><code>function [root, iter] = secant(f, x0, x1, tol, maxiter)
+  <span class="cm">% 도함수 없이 f(x)=0 의 근을 찾는다 (초기값 2개)</span>
+  if nargin &lt; 4, tol = 1e-10; end
+  if nargin &lt; 5, maxiter = 100; end
+  xPrev = x0;  xCurr = x1;  fPrev = f(xPrev);
+  for iter = 1:maxiter
+      fCurr = f(xCurr);
+      if abs(fCurr) &lt; tol, root = xCurr; return; end
+      denom = fCurr - fPrev;
+      if abs(denom) &lt; eps, error('할선 수평 — 분모 0'); end
+      xNext = xCurr - fCurr * (xCurr - xPrev) / denom;   <span class="cm">% 할선의 x절편</span>
+      xPrev = xCurr;  fPrev = fCurr;  xCurr = xNext;
+  end
+  root = xCurr;
+end
+
+<span class="cm">% 사용</span>
+f = @(x) x.^3 - x - 2;
+[root, iter] = secant(f, 1, 2, 1e-12, 50);
+<span class="out">%  x2 = 1.3333333  x3 = 1.4626870  x4 = 1.5311843</span>
+<span class="out">%  x5 = 1.5209353  x6 = 1.5213797  →  root = 1.521379706804568</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">반복당 비용</div>Newton은 매 반복 $f$ 와 $f'$ 를 <strong>둘 다</strong> 평가하지만, 할선법은 이전 $f(x_{n-1})$ 를 재사용해 <strong>새 $f$ 한 번</strong>만 계산한다.</div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 수렴 차수</div>
+    <p class="prob-statement">할선법의 수렴 차수 $p$ 는 황금비와 같다. $p=(1+\sqrt5)/2$ 의 값은? (소수 3자리)</p>
+    <div class="given"><span class="chip">$\sqrt5\approx 2.2360679$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.618" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ p=\frac{1+\sqrt5}{2}=\frac{1+2.23607}{2}=1.61803 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ p\approx 1.618 $$</div><b>정답:</b> 선형(1)과 이차(2) 사이 — 초선형(superlinear).</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · False Position 1회</div>
+    <p class="prob-statement">$f(x)=x^3-x-2$, 구간 $[1,2]$ 에서 False Position(할선) 1회 반복의 근사값 $c_1$ 은? ($c=a-f(a)\dfrac{b-a}{f(b)-f(a)}$)</p>
+    <div class="given"><span class="chip">$f(1)=-2$</span><span class="chip">$f(2)=4$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.333333" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ c_1 = 1 - (-2)\cdot\frac{2-1}{4-(-2)} = 1 + \frac{2}{6} = 1.3333 $$</div>
+      <div class="ans-final"><b>정답:</b> 약 $1.3333$ — 두 끝점이 같으므로 <strong>첫 스텝은 할선법과 동일</strong>하다. 이후 False Position은 구간을 유지하며 한쪽에서 접근한다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="정리">
+  <div class="eyebrow">5-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$x_{n+1}=x_n-f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})}$ — 할선의 $x$절편.</li>
+      <li><strong>도함수 불필요</strong> · 초선형 수렴 $p\approx1.618$ · 반복당 $f$ 1회.</li>
+      <li>초기값 2개 필요, 부호 조건 불필요. 수렴 <strong>보장은 없음</strong>.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$f(x_n)=f(x_{n-1})$(분모 0) 처리 누락.</li>
+      <li>점 이동 $x_{n-1}\leftarrow x_n$ 갱신 순서 혼동.</li>
+      <li>수렴 보장이 있다고 오해(이분법과 혼동).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>점화식으로 <strong>$x_2$ 손 계산</strong> (첫 스텝 $=4/3$).</li>
+      <li>이분법·할선·Newton <strong>수렴 차수·도함수·초기값</strong> 비교표.</li>
+      <li>할선 vs False Position 차이(구간 유지 여부).</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 5-2 다중근과 수정 기법 ════════════════════ -->
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="문제">
+  <div class="eyebrow">5-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">근이 겹치면 Newton이 느려진다 <span class="en">· Multiple roots</span></h1>
+  <div class="analogy"><span class="ic">🔬</span><div class="tx"><b>직관</b> — $f(x)=(x-1)^2$ 은 $x=1$ 에서 <b>x축에 접한다</b>. 관통이 아니라 스치듯 닿기 때문에 근 근처에서 $f'\to0$, 접선이 거의 수평이 된다. Newton의 이차 수렴이 무너져 <b>선형으로 기어간다.</b></div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">근 $r$ 이 <strong>중복도 $m$</strong> 을 가진다 함은 $f(x)=(x-r)^m h(x),\;h(r)\neq0$ 인 것. 이때 $f(r)=f'(r)=\cdots=f^{(m-1)}(r)=0$ 이므로, Newton 공식 $f/f'$ 이 근처에서 $0/0$ 부정형이 되어 수렴이 <strong>이차 → 선형</strong>으로 퇴화한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">중복도별 거동</div>
+        <div class="keqrow"><span class="keqcap">$m=1$ 단근</span><span class="keqline">$ f(r)=0,\;f'(r)\neq0 $ — 관통</span></div>
+        <div class="keqrow"><span class="keqcap">$m=2$ 이중근</span><span class="keqline">$ f(r)=f'(r)=0 $ — 접함</span></div>
+        <div class="keqrow"><span class="keqcap">$m=3$ 삼중근</span><span class="keqline">$ f''(r)=0 $ — 변곡점 관통</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>중복도 $m$</b> 근이 겹친 횟수</div>
+        <div class="term"><b>선형 퇴화</b> $m\ge2$ 이면 수렴 차수 1</div>
+        <div class="term"><b>Modified Newton</b> $\times m$ 로 이차 복원</div>
+        <div class="term"><b>$u(x)=f/f'$</b> 중근→단근 변환</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>겹친 근은 표준 Newton으로 <strong>느리게만</strong> 수렴한다. 중복도 $m$ 을 알면 공식에 $m$ 을 곱하고, 모르면 $u(x)=f/f'$ 로 단근으로 바꿔 <strong>이차 수렴을 되살린다.</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="원리">
+  <div class="eyebrow">5-2 · 원리 · Remedies</div>
+  <h1 class="stage-h">이차 수렴을 되살리는 세 가지 수정</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① 표준 Newton</h4><div class="sub">중근에서 선형</div><div class="eq">$ x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)} $</div><p>$(x-r)^m$ 에서 오차가 매 반복 $\left(1-\tfrac1m\right)$ 배로만 준다.</p></div>
+    <div class="dcard"><h4>② Modified ($m$ 알 때)</h4><div class="sub">이차 복원</div><div class="eq">$ x_{n+1}=x_n-m\,\dfrac{f(x_n)}{f'(x_n)} $</div><p>중복도 $m$ 을 곱하면 다시 <strong>이차 수렴</strong>.</p></div>
+    <div class="dcard"><h4>③ $u(x)$ ($m$ 모를 때)</h4><div class="sub">중근→단근</div><div class="eq">$ x_{n+1}=x_n-\dfrac{f f'}{(f')^2-f f''} $</div><p>$u=f/f'$ 는 단근만 가짐. $f''$ 필요.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">보너스 — Deflation(수축)</div>근 $r_1$ 을 찾은 뒤 $g(x)=\dfrac{f(x)}{x-r_1}$ 로 나눠 차수를 줄이고 나머지 근을 찾는다. 다항식에 유용하나 <strong>수치 오차 누적</strong>에 주의(역순으로 다듬기).</div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="시연">
+  <div class="eyebrow">5-2 · 시연 · Step-through</div>
+  <h1 class="stage-h">이중근에서 Newton이 기어가는 모습 — 직접 반복</h1>
+  <p class="lede">$f(x)=(x-1)^2$ (x축에 <strong>접하는</strong> 포물선), $x_0=1.8$. "다음 반복" 을 눌러 보라 — 접선의 $x$절편이 근 $x=1$ 까지 <strong>매번 절반씩만</strong> 다가간다($1.8\to1.4\to1.2\to1.1\dots$). 이차가 아니라 <strong>선형</strong> 수렴임을 표의 $x_n$ 에서 확인하라.</p>
+  <div class="stepper"
+    data-kind="root-tangent"
+    data-fn="(x-1)^2"
+    data-dfn="2*(x-1)"
+    data-x0="1.8"
+    data-xmin="0.85" data-xmax="2.0"
+    data-root="1"
+    data-steps="12"
+    data-title="이중근 Newton — f(x)=(x−1)²,  x₀=1.8 (선형 crawl)"
+    data-note="근 x=1 까지 오차가 매 반복 정확히 ½ 로만 준다 — 이차 수렴이 무너진 증거. Modified Newton(×2)이면 한 스텝에 도달."></div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Modified Newton 1회</div>
+    <p class="prob-statement">$f(x)=(x-1)^2$ (이중근, $m=2$), $f'(x)=2(x-1)$, $x_0=0.5$. Modified Newton $x_{n+1}=x_n-m\dfrac{f}{f'}$ 으로 <strong>$x_1$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$f(0.5)=0.25$</span><span class="chip">$f'(0.5)=-1$</span><span class="chip">$m=2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 값</div>$$ f(0.5)=(0.5-1)^2=0.25,\quad f'(0.5)=2(0.5-1)=-1 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 대입 ($\times m=2$)</div>$$ x_1 = 0.5 - 2\cdot\frac{0.25}{-1} = 0.5 + 0.5 = 1.0 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_1 = 1.0 $$</div><b>정답:</b> <strong>단 1회</strong>에 정확한 근에 도달! 표준 Newton이면 $x_1=0.5-0.25/(-1)=0.75$ 로 절반만 왔을 것($\times m$ 의 위력).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="수렴">
+  <div class="eyebrow">5-2 · 수렴 · Convergence</div>
+  <h1 class="stage-h">중복도가 수렴을 얼마나 죽이나 — 직접 실험</h1>
+  <p class="lede">표준 Newton으로 $f=(x-1)^m$ 을 풀면 오차가 매 반복 $\left(1-\tfrac1m\right)$ 배로만 준다. 슬라이더로 중복도 $m$ 과 반복 수 $n$ 을 바꿔 <strong>오차가 얼마나 남는지</strong> 확인하라 ($m=1$ 이면 1스텝에 0).</p>
+  <div class="two">
+    <div class="col2">
+      <div class="calc"
+        data-title="표준 Newton 오차 감소 — f(x)=(x−1)^m, 초기 오차 0.5"
+        data-desc="오차 재귀: |εₙ| = 0.5 · (1 − 1/m)ⁿ.  m이 클수록 감소가 완만하다."
+        data-vars='[{"sym":"m","label":"중복도 m","min":1,"max":5,"step":1,"val":2},{"sym":"n","label":"Newton 반복 n","min":0,"max":20,"step":1,"val":5}]'
+        data-expr="0.5 * Math.pow(1 - 1/m, n)"
+        data-out="오차 |εₙ|"
+        data-barmax="0.5"
+        data-note="m=1: 한 스텝에 오차 0 (이차 수렴). m=2: ×½씩. m=3: ×⅔씩 — 매우 느림.">
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">중복도별 수렴 (표준 vs 수정)</div>
+      <table class="ktab"><thead><tr><th>중복도 $m$</th><th>표준 Newton</th><th>Modified ($\times m$)</th></tr></thead><tbody>
+        <tr><td>$1$ (단근)</td><td>이차 · 빠름</td><td>—</td></tr>
+        <tr><td>$2$ (이중근)</td><td>선형 · 느림</td><td>이차 복원</td></tr>
+        <tr><td>$3$ (삼중근)</td><td>선형 · 더 느림</td><td>이차 복원</td></tr>
+        <tr><td>$4$</td><td>선형 · 극히 느림</td><td>이차 복원</td></tr>
+      </tbody></table>
+      <div class="keqnote">오차 감소율 $=1-\tfrac1m$: 이중근 $\tfrac12$, 삼중근 $\tfrac23$, 사중근 $\tfrac34$ — $m$ 이 클수록 1 에 가까워 거의 안 준다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="함정">
+  <div class="eyebrow">5-2 · 함정 · Failure Gallery</div>
+  <h1 class="stage-h">반복법이 실패하는 네 가지 방식</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 순환 (Cycling)</h4><p>두 값 사이를 오가며 수렴 안 함. 예: $f(x)=x^3-2x+2,\;x_0=0$ → $0\!\to\!1\!\to\!0\!\to\!1$.</p></div>
+    <div class="pitfall"><h4>⚠ 발산 (Divergence)</h4><p>반복값이 무한대로 멀어짐. 예: $f(x)=\arctan x$ 를 큰 $x_0$ 에서 시작.</p></div>
+    <div class="pitfall"><h4>⚠ 잘못된 근</h4><p>여러 근 중 원치 않은 근으로 수렴. 초기값이 어느 근으로 갈지 결정.</p></div>
+    <div class="pitfall"><h4>⚠ 초기값 민감도</h4><p>초기값의 미세한 차이가 전혀 다른 결과로(Newton fractal basin).</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="코드">
+  <div class="eyebrow">5-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — Modified Newton과 $u(x)$ 기법</h1>
+  <div class="codeblock"><div class="code-cap">modified_newton.m — 방법 ② (m 알 때)</div><pre><code>function x = modified_newton(f, df, x0, m, tol)
+  for k = 1:100
+      x = x0 - m * f(x0) / df(x0);       <span class="cm">% ×m 로 이차 복원</span>
+      if abs(x - x0) &lt; tol, return; end
+      x0 = x;
+  end
+end
+
+f  = @(x) (x-1).^2;   df = @(x) 2*(x-1);
+root = modified_newton(f, df, 0.5, 2, 1e-12);
+<span class="out">% root = 1.000000000000  (m=2 → 사실상 1스텝 수렴)</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">newton_u.m — 방법 ③ (m 모를 때)</div><pre><code>function x = newton_u(f, df, d2f, x0, tol)
+  for k = 1:100
+      fv = f(x0);  dfv = df(x0);  d2fv = d2f(x0);
+      x = x0 - (fv*dfv) / (dfv^2 - fv*d2fv);   <span class="cm">% u(x)=f/f' 에 Newton</span>
+      if abs(x - x0) &lt; tol, return; end
+      x0 = x;
+  end
+end
+
+f = @(x)(x-1).^3;  df = @(x)3*(x-1).^2;  d2f = @(x)6*(x-1);
+root = newton_u(f, df, d2f, 2.0, 1e-12);
+<span class="out">% root = 1.000000000000  (삼중근도 이차 수렴)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 표준 Newton 1회 (이중근)</div>
+    <p class="prob-statement">$f(x)=(x-1)^2$, $f'(x)=2(x-1)$, $x_0=0.5$. <strong>표준</strong> Newton으로 $x_1$ 을 구하시오. (수정 없이 $\times1$)</p>
+    <div class="given"><span class="chip">$f(0.5)=0.25$</span><span class="chip">$f'(0.5)=-1$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.75" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_1 = 0.5 - \frac{0.25}{-1} = 0.5 + 0.25 = 0.75 $$</div>
+      <div class="ans-final"><b>정답:</b> $0.75$ — 오차가 $0.5\to0.25$ 로 정확히 <strong>절반</strong>만 줄었다(선형). Modified($\times2$)는 한 번에 $1.0$.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 삼중근 오차 감소율</div>
+    <p class="prob-statement">삼중근($m=3$)에서 표준 Newton의 오차는 매 반복 몇 배로 주는가? ($1-1/m$, 소수 4자리)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.6667" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 1-\frac1m = 1-\frac13 = \frac23 \approx 0.6667 $$</div>
+      <div class="ans-final"><b>정답:</b> 약 $0.6667$ — 매 반복 오차의 $\tfrac23$ 만 남으니 이중근($\tfrac12$)보다도 느리다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="정리">
+  <div class="eyebrow">5-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>중복도 $m\ge2$ → 표준 Newton <strong>선형 퇴화</strong>(오차 $\times(1-1/m)$).</li>
+      <li>$m$ 알면 $\times m$ (Modified), 모르면 $u=f/f'$ 로 이차 복원.</li>
+      <li>Deflation으로 찾은 근을 인수분해해 나머지 근 탐색.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>중근에 표준 Newton 쓰고 이차 수렴 기대.</li>
+      <li>$u(x)$ 기법에서 $f''$ 누락.</li>
+      <li>순환·발산을 알고리즘 오류로 오해(초기값 문제).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>중복도 판정($f,f',f''$ 의 0 여부).</li>
+      <li>Modified Newton <strong>1~2회 손 계산</strong>.</li>
+      <li>표준 vs 수정 <strong>수렴 차수 비교</strong> 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 5-3 비선형 연립계 ════════════════════ -->
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="문제">
+  <div class="eyebrow">5-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">미지수가 여럿이면 <span class="en">· $\mathbf{F}(\mathbf{x})=\mathbf{0}$</span></h1>
+  <div class="analogy"><span class="ic">🧮</span><div class="tx"><b>직관</b> — 1차원에서 근은 곡선이 x축과 만나는 점이었다. 2차원에서는 두 <b>곡선의 교점</b>을 찾는다 — 예: 원 $x^2+y^2=4$ 와 쌍곡선 $xy=1$ 이 만나는 곳. 방정식 $n$개, 미지수 $n$개를 <b>동시에</b> 0으로 만든다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">일반형은 $\mathbf F:\mathbb R^n\!\to\!\mathbb R^n$ 에 대해 $\mathbf F(\mathbf x)=\mathbf 0$ 을 만족하는 $\mathbf x$ 찾기. 1차원 $f(x)=0$ 의 확장이며, 해가 <strong>여러 개</strong> 존재할 수 있고 초기값에 따라 다른 해로 수렴한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">예제 시스템 ($n=2$)</div>
+        <div class="keqrow"><span class="keqcap">$F_1$</span><span class="keqline">$ x^2+y^2-4=0 $ (원)</span></div>
+        <div class="keqrow"><span class="keqcap">$F_2$</span><span class="keqline">$ xy-1=0 $ (쌍곡선)</span></div>
+        <div class="keqrow"><span class="keqcap">해</span><span class="keqline">$ (x,y)\approx(1.9319,\,0.5176) $ 외 3개</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">원 ∩ 쌍곡선 — 교점 4개</div>
+      <svg viewBox="0 0 280 280" width="100%" style="max-width:340px;display:block;margin:0 auto">
+        <line x1="15" y1="140" x2="265" y2="140" stroke="#94a3b8" stroke-width="1"/>
+        <line x1="140" y1="15" x2="140" y2="265" stroke="#94a3b8" stroke-width="1"/>
+        <circle cx="140" cy="140" r="100" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+        <path d="M162.5,28.9 L167.5,49.1 L175,68.6 L185,84.4 L200,98.3 L220,108.8 L245,116.2 L265,120" fill="none" stroke="#7c3aed" stroke-width="2.2"/>
+        <path d="M117.5,251.1 L112.5,230.9 L105,211.4 L95,195.6 L80,181.7 L60,171.2 L35,163.8 L15,160" fill="none" stroke="#7c3aed" stroke-width="2.2"/>
+        <circle cx="236.6" cy="114.1" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
+        <circle cx="165.9" cy="43.4" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
+        <circle cx="43.4" cy="165.9" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
+        <circle cx="114.1" cy="236.6" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
+        <text x="248" y="135" fill="#2563eb" font-size="11" font-family="monospace">x²+y²=4</text>
+        <text x="196" y="80" fill="#7c3aed" font-size="11" font-family="monospace">xy=1</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="원리">
+  <div class="eyebrow">5-3 · 원리 · Algorithm</div>
+  <h1 class="stage-h">다변수 Newton — Jacobian으로 선형화</h1>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">1차원의 $f'(x)$ 자리에 <strong>Jacobian 행렬</strong> $J$ 가 들어간다. 접선(스칼라 기울기) 대신 <strong>접평면</strong>(선형 근사)을 만들어 그 근을 다음 근사값으로 삼는다.</p>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">Jacobian</span><span class="keqline">$ J(\mathbf x)=\left[\dfrac{\partial F_i}{\partial x_j}\right] $</span></div>
+        <div class="keqrow"><span class="keqcap">예제의 $J$</span><span class="keqline">$ \begin{bmatrix} 2x & 2y\\ y & x \end{bmatrix} $</span></div>
+        <div class="keqrow"><span class="keqcap">점화식</span><span class="keqline">$ \mathbf x_{n+1}=\mathbf x_n-J^{-1}\mathbf F $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="algo">
+        <div class="algo-h">Newton for Systems</div>
+        <ol>
+          <li>초기 벡터 $\mathbf x_0$ 를 잡는다.</li>
+          <li>$\mathbf F(\mathbf x_n)$ 와 $J(\mathbf x_n)$ 을 계산.</li>
+          <li>선형계 <b>$J\,\Delta\mathbf x=-\mathbf F$</b> 를 푼다(역행렬 대신).</li>
+          <li>갱신 <b>$\mathbf x_{n+1}=\mathbf x_n+\Delta\mathbf x$</b>.</li>
+          <li>$\lVert\Delta\mathbf x\rVert<\text{tol}$ 이면 종료, 아니면 2로.</li>
+        </ol>
+      </div>
+      <div class="callout warn"><div class="ct">왜 역행렬을 안 구하나</div>$J^{-1}$ 직접 계산은 $O(n^3)$ 로 비싸고 불안정. 대신 선형계 $J\Delta\mathbf x=-\mathbf F$ 를 푼다(MATLAB backslash <strong>\</strong>).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="시연">
+  <div class="eyebrow">5-3 · 시연 · Step table</div>
+  <h1 class="stage-h">첫 반복을 손으로 — $\mathbf x_0=(2,\,0.5)$</h1>
+  <p class="lede">시스템은 반복 스테퍼 대신 <strong>단계표</strong>로 따라간다. $\mathbf x_0=(2,0.5)$ 에서 $\mathbf F,\,J$ 를 세우고 선형계를 풀어 $\Delta\mathbf x$ 를 얻는다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">1회 반복 유도</div>
+      <table class="ktab"><thead><tr><th>단계</th><th>계산</th></tr></thead><tbody>
+        <tr><td>$\mathbf F(\mathbf x_0)$</td><td>$[\,4{+}0.25{-}4,\;1{-}1\,]=[0.25,\,0]$</td></tr>
+        <tr><td>$J(\mathbf x_0)$</td><td>$\begin{bmatrix}4&1\\0.5&2\end{bmatrix},\;\det=7.5$</td></tr>
+        <tr><td>$\Delta\mathbf x=-J^{-1}\mathbf F$</td><td>$[-0.0667,\;0.0167]$</td></tr>
+        <tr><td>$\mathbf x_1$</td><td>$(1.9333,\;0.5167)$</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">이후 수렴 (이차)</div>
+      <table class="ktab"><thead><tr><th>반복 $i$</th><th>$\mathbf x_i$</th><th>$\lVert\Delta\mathbf x\rVert$</th></tr></thead><tbody>
+        <tr><td>1</td><td>$(1.93333,\,0.51667)$</td><td>$6.9\!\times\!10^{-2}$</td></tr>
+        <tr><td>2</td><td>$(1.93185,\,0.51764)$</td><td>$1.7\!\times\!10^{-3}$</td></tr>
+        <tr><td>3</td><td>$(1.93185,\,0.51764)$</td><td>$1.1\!\times\!10^{-6}$</td></tr>
+        <tr><td>4</td><td>$(1.93185,\,0.51764)$</td><td>$4.7\!\times\!10^{-13}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">$\lVert\Delta\mathbf x\rVert$ 의 지수가 매 반복 약 <strong>두 배</strong>로 급락 — 다변수 Newton도 <strong>이차 수렴</strong>이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Jacobian 행렬식</div>
+    <p class="prob-statement">예제 시스템의 Jacobian $J=\begin{bmatrix}2x&2y\\y&x\end{bmatrix}$. 초기값 $\mathbf x_0=(2,\,0.5)$ 에서 <strong>$\det J(\mathbf x_0)$</strong> 를 구하시오.</p>
+    <div class="given"><span class="chip">$J=\begin{bmatrix}4&1\\0.5&2\end{bmatrix}$</span><span class="chip">$\det=ad-bc$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="7.5" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · $J$ 대입</div>$$ J(2,0.5)=\begin{bmatrix}2(2)&2(0.5)\\0.5&2\end{bmatrix}=\begin{bmatrix}4&1\\0.5&2\end{bmatrix} $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 행렬식</div>$$ \det J = 4\cdot2 - 1\cdot0.5 = 7.5 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \det J = 7.5 $$</div><b>정답:</b> $\det\neq0$ 이므로 $J$ 는 <strong>가역</strong> — 선형계 $J\Delta\mathbf x=-\mathbf F$ 를 풀 수 있다. (참고: $\mathbf x_0=(1,1)$ 이면 $\det=0$ 특이!)</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="수렴">
+  <div class="eyebrow">5-3 · 수렴 · Convergence</div>
+  <h1 class="stage-h">이차 수렴과 대체 기법</h1>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">해에 충분히 가깝고 $J$ 가 가역이면, 다변수 Newton도 <strong>이차 수렴</strong>($\lVert\varepsilon_{n+1}\rVert\le C\lVert\varepsilon_n\rVert^2$)한다. 다만 매 반복 $J$($n^2$개 편미분)와 선형계 풀이($O(n^3)$)가 필요해 <strong>대규모에서 비싸다.</strong></p>
+      <div class="callout key"><div class="ct">이차 수렴</div>위 표에서 $\lVert\Delta\mathbf x\rVert$ 가 $10^{-2}\!\to\!10^{-3}\!\to\!10^{-6}\!\to\!10^{-13}$ — 지수가 두 배씩 뛴다.</div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">비용을 줄이는 대체 기법</div>
+      <div class="terms">
+        <div class="term"><b>유한차분 $J$</b> $\partial F_i/\partial x_j\approx[F_i(\mathbf x+h\mathbf e_j)-F_i]/h$ — 해석 미분 불필요</div>
+        <div class="term"><b>Broyden</b> $J$ 를 rank-1 업데이트로 근사(quasi-Newton), 반복당 $F$ 1회</div>
+        <div class="term"><b>line search</b> 발산 방지용 보폭 축소</div>
+        <div class="term"><b>trust region</b> 신뢰 반경 안에서만 이동</div>
+      </div>
+      <div class="keqnote">Broyden은 초선형 수렴 — Newton보다 반복은 많아도 Jacobian 재계산이 없어 효율적.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="함정">
+  <div class="eyebrow">5-3 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">연립계에서 특히 조심할 것</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 특이 Jacobian</h4><p>$\det J=0$ 이면 선형계를 못 푼다. 예: $\mathbf x_0=(1,1)$ → $J=\begin{bmatrix}2&2\\1&1\end{bmatrix}$, $\det=0$. 초기값을 바꿔야 함.</p></div>
+    <div class="pitfall"><h4>⚠ 초기값 민감도</h4><p>1차원보다 훨씬 심하다. 해가 여러 개라 <b>초기값이 어느 해로 갈지</b> 결정하며, 나쁜 값은 발산.</p></div>
+    <div class="pitfall"><h4>⚠ $O(n^3)$ 비용</h4><p>큰 시스템에서 매 반복 선형계 풀이가 <b>지배적 비용</b>. 희소성·근사 Jacobian 활용 필요.</p></div>
+    <div class="pitfall"><h4>⚠ 원하지 않는 해</h4><p>교점이 4개 — 부호나 사분면을 반영해 <b>초기값을 신중히</b> 골라야 목표 해로 간다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="코드">
+  <div class="eyebrow">5-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 직접 Newton과 fsolve</h1>
+  <div class="codeblock"><div class="code-cap">newton_system.m</div><pre><code>function x = newton_system(F, J, x0, tol, maxiter)
+  if nargin &lt; 4, tol = 1e-10; end
+  if nargin &lt; 5, maxiter = 100; end
+  x = x0;
+  for i = 1:maxiter
+      dx = -J(x) \ F(x);        <span class="cm">% 선형계 J*dx = -F 풀이</span>
+      x  = x + dx;
+      if norm(dx) &lt; tol
+          fprintf('Converged in %d iterations.\n', i);  return;
+      end
+  end
+end
+
+<span class="cm">% 사용 — 원/쌍곡선 교점</span>
+F = @(x) [x(1)^2 + x(2)^2 - 4;  x(1)*x(2) - 1];
+J = @(x) [2*x(1), 2*x(2);       x(2),   x(1)];
+x = newton_system(F, J, [2; 0.5], 1e-12, 50);
+<span class="out">% x = [1.93185165, 0.51763809]   (4 iterations)</span></code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">MATLAB 내장 — fsolve (Jacobian 자동 근사)</div><pre><code>x = fsolve(@(x) [x(1)^2 + x(2)^2 - 4; x(1)*x(2) - 1], [2; 0.5]);
+<span class="cm">% 옵션: 알고리즘·허용오차·Jacobian 직접 제공</span>
+opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
+<span class="out">% x = [1.93185165, 0.51763809]</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 잔차 성분</div>
+    <p class="prob-statement">$F_1(x,y)=x^2+y^2-4$. 초기값 $\mathbf x_0=(2,\,0.5)$ 에서 <strong>$F_1(\mathbf x_0)$</strong> 의 값은?</p>
+    <div class="given"><span class="chip">$x=2,\;y=0.5$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.25" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ F_1 = 2^2 + 0.5^2 - 4 = 4 + 0.25 - 4 = 0.25 $$</div>
+      <div class="ans-final"><b>정답:</b> $0.25$. $F_2=2\cdot0.5-1=0$ 이므로 $\mathbf F=[0.25,\,0]$ — 두 번째 식은 이미 만족.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 갱신된 좌표</div>
+    <p class="prob-statement">$\Delta\mathbf x=[-0.0667,\,0.0167]$ 일 때, $\mathbf x_1=\mathbf x_0+\Delta\mathbf x$ 의 <strong>첫 성분</strong> 은? ($\mathbf x_0=(2,0.5)$)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.9333" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 2 + (-0.0667) = 1.9333 $$</div>
+      <div class="ans-final"><b>정답:</b> 약 $1.9333$ — 한 스텝 만에 해 $1.93185$ 에 소수 2자리까지 근접(이차 수렴).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="정리">
+  <div class="eyebrow">5-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$\mathbf F(\mathbf x)=\mathbf 0$ → $J\,\Delta\mathbf x=-\mathbf F$ 풀고 $\mathbf x_{n+1}=\mathbf x_n+\Delta\mathbf x$.</li>
+      <li>$f'$ 대신 <strong>Jacobian $J$</strong>, 역행렬 대신 <strong>선형계 풀이</strong>.</li>
+      <li>해 근처·$J$ 가역이면 <strong>이차 수렴</strong>.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$J^{-1}$ 을 직접 계산($O(n^3)$·불안정) — backslash 사용.</li>
+      <li>특이 $J$(예 $\mathbf x_0=(1,1)$) 미확인.</li>
+      <li>편미분 배열 순서 $\partial F_i/\partial x_j$ 혼동.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$\mathbf F,\,J$ 세우고 $\det J$ 계산.</li>
+      <li>1회 반복 $\mathbf x_1$ 손 계산(2×2 선형계).</li>
+      <li>fsolve vs 직접 구현, Broyden(quasi-Newton) 개념.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 5-4 방법 선택 전략 ════════════════════ -->
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="문제">
+  <div class="eyebrow">5-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">도구가 여섯 개 <span class="en">· Which one, when?</span></h1>
+  <div class="analogy"><span class="ic">🛠️</span><div class="tx"><b>직관</b> — 이분법·할선·Newton·수정 Newton·고정점·Brent. 각각 <b>속도·안정성·요구조건</b>이 다르다. 마치 공구함처럼, 문제의 성질(구간·도함수·중근)에 맞는 도구를 골라야 한다. "가장 빠른 것" 이 아니라 "이 문제에 맞는 것".</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">근을 찾는 방법은 크게 두 축으로 나뉜다: <strong>가둠(bracketing)</strong> 여부와 <strong>도함수</strong> 필요 여부. 실전의 정답은 대개 둘의 <strong>하이브리드</strong>(안전한 이분법 + 빠른 할선/보간)다 — 그것이 Brent의 방법.</p>
+      <div class="keqbox">
+        <div class="keq-label">세 가지 판단 축</div>
+        <div class="keqrow"><span class="keqcap">축 1 · 안전성</span><span class="keqline">구간 $[a,b]$ 로 가둘 수 있나? → 수렴 보장</span></div>
+        <div class="keqrow"><span class="keqcap">축 2 · 속도</span><span class="keqline">도함수를 쓸 수 있나? → 이차 수렴</span></div>
+        <div class="keqrow"><span class="keqcap">축 3 · 구조</span><span class="keqline">중근? 연립? $x=g(x)$ 형태?</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">실전 원칙</div>① 그래프로 근의 위치·개수 파악 → ② 이분법으로 구간 좁힘 → ③ 할선/Newton으로 마무리. 범용 해결사는 <strong>Brent(MATLAB fzero)</strong>.</div>
+      <div class="callout warn"><div class="ct">Brent's Method</div>이분법(안전) + 할선(속도) + 역이차보간(IQI, 더 빠름)을 <strong>결합</strong>. 각 반복에서 빠른 방법을 시도하되, 결과가 구간을 벗어나면 <strong>이분법으로 안전 복귀</strong>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="원리">
+  <div class="eyebrow">5-4 · 원리 · Decision Tree</div>
+  <h1 class="stage-h">빠른 선택 — 결정 트리</h1>
+  <div class="algo">
+    <div class="algo-h">Which root-finder?</div>
+    <ol>
+      <li>구간 $[a,b]$ 를 알고 <b>$f(a)f(b)<0$</b> 인가?
+        <ul style="margin:4px 0 0 0;padding-left:18px;list-style:disc;color:var(--gray)">
+          <li><b>Yes</b> → 도함수 계산 가능? &nbsp;가능 → <b>Newton + Bisection 하이브리드</b> / 불가 → <b>Brent (fzero)</b></li>
+          <li><b>No</b> → 초기 추정값만 있는가? (아래 단계로)</li>
+        </ul>
+      </li>
+      <li>초기값만 있을 때: 도함수 있음 → <b>Newton–Raphson</b></li>
+      <li>중근 의심 → <b>Modified Newton</b> ($\times m$ 또는 $u(x)$)</li>
+      <li>도함수 없음 → <b>Secant(할선법)</b></li>
+      <li>$x=g(x)$ 형태가 자연스럽고 $|g'|<1$ → <b>Fixed-Point</b></li>
+    </ol>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">고정점의 열쇠 — $g$ 선택</div>$f(x)=0$ 을 $x=g(x)$ 로 바꾸는 방법은 여럿이며, <strong>$|g'(x^*)|<1$ 인 형태를 골라야</strong> 수렴한다. 같은 방정식도 $g$ 를 잘못 고르면 발산 — 다음 시연에서 확인한다.</div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="시연">
+  <div class="eyebrow">5-4 · 시연 · Step-through</div>
+  <h1 class="stage-h">고정점 반복 — $x=\cos x$ 거미줄(cobweb)</h1>
+  <p class="lede">$f(x)=\cos x - x=0$ 을 $x=g(x)=\cos x$ 로 바꿔 $x_{n+1}=\cos(x_n)$ 을 반복한다. "다음 반복" 을 누르면 파랑 $y=g(x)$ 와 회색 $y=x$ 사이를 <strong>거미줄</strong>처럼 오가며 고정점 $x^*\approx0.7391$(Dottie number)로 수렴한다. 여기서 $|g'(x^*)|=|\sin x^*|\approx0.67<1$ 이라 수렴이 보장된다.</p>
+  <div class="stepper"
+    data-kind="fixed-point"
+    data-gfn="cos(x)"
+    data-x0="0.5"
+    data-xmin="0" data-xmax="1.4"
+    data-root="0.7390851332"
+    data-steps="20"
+    data-title="고정점 반복 — x = cos(x),  x₀=0.5"
+    data-note="파랑=g(x)=cos x, 회색 점선=y=x. 계단이 교점 x*≈0.7391 로 수렴. x₁=cos(0.5)=0.8776."></div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="수렴">
+  <div class="eyebrow">5-4 · 수렴 · Master Table</div>
+  <h1 class="stage-h">여섯 방법 한눈에 — 비교표</h1>
+  <table class="ktab"><thead><tr><th>방법</th><th>수렴 차수</th><th>도함수</th><th>구간 보장</th><th>적합 상황</th></tr></thead><tbody>
+    <tr><td>이분법 Bisection</td><td>선형 (1)</td><td>불필요</td><td>보장</td><td>안정성 최우선</td></tr>
+    <tr><td>False Position</td><td>초선형</td><td>불필요</td><td>보장</td><td>이분법보다 빠르게</td></tr>
+    <tr><td>Newton–Raphson</td><td>이차 (2)</td><td>$f'$</td><td>없음</td><td>도함수 가능할 때</td></tr>
+    <tr><td>Modified Newton</td><td>이차 (2)</td><td>$f',f''$</td><td>없음</td><td>중근 존재 시</td></tr>
+    <tr><td>Secant 할선법</td><td>$\approx1.618$</td><td>불필요</td><td>없음</td><td>도함수 없을 때</td></tr>
+    <tr><td>Brent (fzero)</td><td>초선형</td><td>불필요</td><td>보장</td><td>범용 (기본 추천)</td></tr>
+    <tr><td>Fixed-Point</td><td>선형 (1)</td><td>불필요</td><td>조건부 $|g'|<1$</td><td>$x=g(x)$ 자연스러울 때</td></tr>
+  </tbody></table>
+  <div class="callout key" style="margin-top:14px"><div class="ct">한 줄 요약</div>안전이 중요하면 <strong>가둠 방법</strong>(이분법·False Position·Brent), 속도가 중요하고 $f'$ 가 있으면 <strong>Newton</strong>, $f'$ 가 없으면 <strong>할선법</strong>. 모르겠으면 <strong>Brent(fzero)</strong> — 안전과 속도를 함께 준다.</div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="함정">
+  <div class="eyebrow">5-4 · 함정 · Wrong Choice</div>
+  <h1 class="stage-h">잘못된 선택의 대가</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 가둠 없이 Newton</h4><p>구간 보장이 없어 나쁜 초기값에서 <b>발산·순환</b>. 안전이 필요하면 Brent를.</p></div>
+    <div class="pitfall"><h4>⚠ 정밀도에 이분법만</h4><p>선형이라 $10^{-10}$ 까지 수십 회. 빠른 방법과 <b>하이브리드</b>가 정답.</p></div>
+    <div class="pitfall"><h4>⚠ 나쁜 $g(x)$ 고정점</h4><p>$|g'(x^*)|>1$ 이면 <b>발산</b>. 같은 식도 $g$ 를 잘 골라야 수렴.</p></div>
+    <div class="pitfall"><h4>⚠ 중근에 표준 Newton</h4><p>이차를 기대하지만 <b>선형</b>으로 기어감. Modified/$u(x)$ 로 전환.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="코드">
+  <div class="eyebrow">5-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">범용 해결사 — fzero / fsolve</h1>
+  <div class="codeblock"><div class="code-cap">fzero — 단일 방정식 (내부적으로 Brent)</div><pre><code>f = @(x) x.^3 - x - 2;
+<span class="cm">% 구간 지정 → 부호변화로 반드시 수렴 (Brent)</span>
+root  = fzero(f, [1, 2])          <span class="out">% root = 1.5213797068</span>
+<span class="cm">% 초기 추정값만 지정 → 스스로 구간 탐색</span>
+root2 = fzero(f, 1.5)             <span class="out">% root2 = 1.5213797068</span>
+<span class="cm">% 옵션</span>
+opts  = optimset('Display','iter','TolX',1e-12);
+root3 = fzero(f, [1, 2], opts);</code></pre></div>
+  <div class="codeblock" style="margin-top:12px"><div class="code-cap">fsolve — 연립 방정식</div><pre><code>x = fsolve(@(x) [x(1)^2 + x(2)^2 - 4;  x(1)*x(2) - 1], [2; 0.5]);
+<span class="out">% x = [1.93185165, 0.51763809]</span></code></pre></div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">실무 기본값</div>단일 방정식이면 <strong>fzero</strong>, 연립이면 <strong>fsolve</strong>. 직접 구현은 알고리즘 이해·특수 상황(대규모·희소)에서만.</div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 이분법 반복 횟수</div>
+    <p class="prob-statement">구간 $[1,2]$ 에서 이분법으로 오차 $10^{-10}$ 이하를 보장하려면 <strong>최소 몇 번</strong> 반복? ($n\ge\log_2((b-a)/\text{tol})$)</p>
+    <div class="given"><span class="chip">$b-a=1$</span><span class="chip">$\text{tol}=10^{-10}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="34" data-tol="0.03"/><span class="ans-unit">회</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ n\ge\log_2\frac{1}{10^{-10}}=10\log_2 10 = 33.22 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ n = 34 $$</div><b>정답:</b> 올림하여 34회. 할선법은 같은 정밀도를 <strong>7~8회</strong>면 도달 — 하이브리드의 이유.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 고정점 첫 반복</div>
+    <p class="prob-statement">$x=g(x)=\cos x$, $x_0=0.5$. 고정점 반복 1회 후 <strong>$x_1$</strong> 은? (라디안, 소수 4자리)</p>
+    <div class="given"><span class="chip">$x_1=\cos(0.5)$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.877583" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_1 = \cos(0.5\,\text{rad}) = 0.87758 $$</div>
+      <div class="ans-final"><b>정답:</b> 약 $0.8776$. 이후 $0.6390,\,0.8027,\dots$ 로 진동하며 $x^*\approx0.7391$ 로 수렴($|g'|<1$).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="정리">
+  <div class="eyebrow">5-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>두 축: <strong>가둠(안전)</strong> ⊥ <strong>도함수(속도)</strong>. 실전은 하이브리드.</li>
+      <li><strong>Brent(fzero)</strong> = 이분법+할선+IQI, 안전과 속도 동시.</li>
+      <li>고정점은 $|g'(x^*)|<1$ 인 $g$ 선택이 관건.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>가둠 없이 Newton 써서 발산.</li>
+      <li>중근에 표준 Newton(선형 퇴화).</li>
+      <li>고정점 $g$ 를 아무렇게나 골라 발산.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 상황에 <strong>적합한 방법 선택</strong> + 근거 서술.</li>
+      <li>이분법 필요 반복 $n\ge\log_2((b-a)/\text{tol})$ 계산.</li>
+      <li>여섯 방법 <strong>수렴 차수·도함수·보장</strong> 비교표 복원.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=5;</script>
+<script src="/na-track.js" defer></script>
+</body></html>
