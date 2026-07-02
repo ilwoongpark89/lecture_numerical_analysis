@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 12 · Numerical Differentiation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 12</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 / 문제 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 미분 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 12 · Numerical Differentiation</div>
+    <h1 class="intro-h">함수식이 없고 <span class="hl">데이터 점만 있다면, 도함수는?</span></h1>
+    <p class="intro-sub">미분은 종이 위에서는 규칙을 따라 기계적으로 구한다. 그러나 공학에서 함수는 흔히 <strong>실험 표·센서 측정·시뮬레이션 출력</strong>으로만 주어진다 — 닫힌 식이 없으니 미분 규칙을 쓸 수 없다. 속도(위치의 미분), 열유속(온도의 미분), 응력(변위의 미분)은 모두 <strong>이런 이산 데이터에서</strong> 뽑아내야 한다.</p>
+    <div class="intro-teaser">답 — <em>차분(difference).</em> 도함수의 정의 $\lim_{h\to0}\frac{f(x+h)-f(x)}{h}$ 에서 극한을 <strong>유한한 $h$</strong> 로 멈춘다. 이번 주는 그 근사가 <em>얼마나 정확한지</em>, 그리고 <em>$h$ 를 무작정 줄이면 왜 오히려 나빠지는지</em>를 직접 계산해 본다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 여정 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 미분 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 12 · 이번 주 여정</div>
+    <h1 class="intro-h">차분으로 <span class="hl">미분하고 · 정확도를 끌어올린다</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">12-1</span><span><span class="rt">전·후·중앙 차분</span> <span class="rd">— 도함수 정의에서 극한을 멈춘 세 가지 기본 공식과 정확도 차수</span></span></div>
+      <div class="rm-item"><span class="rn">12-2</span><span><span class="rt">고차 정확도 공식</span> <span class="rd">— Taylor 항을 더 상쇄해 $O(h^4)$ · 2계 도함수 근사</span></span></div>
+      <div class="rm-item"><span class="rn">12-3</span><span><span class="rt">Richardson 외삽</span> <span class="rd">— 두 개의 성긴 근사를 조합해 정확도를 공짜로 올린다</span></span></div>
+      <div class="rm-item"><span class="rn">12-4</span><span><span class="rt">편미분 근사</span> <span class="rd">— 2변수 격자에서 $\partial f/\partial x$, 교차·라플라시안 스텐실</span></span></div>
+    </div>
+    <div class="intro-teaser">기준 예제는 $f(x)=e^{x}$, $f'(1)=e\approx2.71828$ — 답을 정확히 알기에 <em>오차를 눈으로 잰다.</em> 반복이 아니라 <strong>한 번의 조합</strong>으로 미분값을 얻는 것이 이번 주의 성격이다.</div>
+  </div>
+</section>
+
+<!-- ════════ 시작 / 학습법 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 미분 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 12 · 수치해석은 "직접 계산해 봐야" 안다</div>
+    <h1 class="intro-h">각 공식을 <span class="hl">이 순서로</span> 익힌다</h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span><span class="flow-arr">→</span>
+      <span class="flowstep">연습</span>
+    </div>
+    <div class="two" style="margin-top:20px">
+      <div class="col2"><div class="callout key"><div class="ct">직접 계산한다</div><ul><li>수치 미분은 <strong>반복(iteration)이 아니다</strong> — 스텝을 눌러 수렴시키는 대신, 몇 개의 점을 조합해 <strong>한 번에</strong> 미분값을 얻는다.</li><li><strong>직접계산</strong>: 표의 점들로 차분을 손으로 넣고 채점받는다.</li></ul></div></div>
+      <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: $h$ 를 계속 줄이면 절단오차는 줄지만 <strong>반올림오차가 폭발</strong>한다 — 최적 $h$ 가 존재함을 표로 확인한다.</li><li>"작을수록 좋다"는 직관이 왜 틀리는지 몸으로 안다.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 12-1 전·후·중앙 차분 ════════════════════ -->
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="문제">
+  <div class="eyebrow">12-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">극한을 유한하게 멈추면 <span class="en">· Stop the limit at finite $h$</span></h1>
+  <div class="analogy"><span class="ic">📏</span><div class="tx"><b>직관</b> — 도함수는 "한 점에서의 기울기"지만, 우리가 잴 수 있는 건 언제나 <b>두 점 사이의 기울기</b>(할선)다. 점을 아주 가깝게($h$ 작게) 두면 할선의 기울기가 접선(도함수)에 근접한다. 문제는 "얼마나 가까워야, 얼마나 정확한가"이다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">도함수의 정의 $f'(x)=\lim_{h\to0}\dfrac{f(x+h)-f(x)}{h}$ 에서 극한을 없애고 <strong>유한한 $h$</strong> 로 멈추면 근사식이 된다. 어느 점을 쓰느냐에 따라 <strong>세 가지</strong> 기본 공식이 나오고, 정확도가 서로 다르다.</p>
+      <div class="keqbox">
+        <div class="keq-label">세 가지 1계 차분</div>
+        <div class="keqrow"><span class="keqcap">전진(forward)</span><span class="keqline">$ f'\approx\dfrac{f(x+h)-f(x)}{h}\ \ (O(h)) $</span></div>
+        <div class="keqrow"><span class="keqcap">후진(backward)</span><span class="keqline">$ f'\approx\dfrac{f(x)-f(x-h)}{h}\ \ (O(h)) $</span></div>
+        <div class="keqrow"><span class="keqcap">중앙(central)</span><span class="keqline">$ f'\approx\dfrac{f(x+h)-f(x-h)}{2h}\ \ (O(h^2)) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>스텝 $h$</b> 표본 점 간격 (격자 폭)</div>
+        <div class="term"><b>절단오차</b> Taylor 급수를 자른 데서 생기는 오차</div>
+        <div class="term"><b>정확도 차수 $O(h^p)$</b> $h$ 를 반으로 줄일 때 오차가 $2^{-p}$ 배</div>
+        <div class="term"><b>중앙차분</b> 대칭이라 1차 항이 상쇄 → $O(h^2)$</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>같은 $h$ 라도 <strong>중앙차분이 압도적으로 정확</strong>하다($O(h^2)$). 대칭 배치로 오차의 홀수 항이 저절로 사라지기 때문이다 — 공짜로 얻는 정확도.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="원리">
+  <div class="eyebrow">12-1 · 원리 · Derivation</div>
+  <h1 class="stage-h">Taylor 전개로 오차 차수까지 — 유도</h1>
+  <p class="assume"><b>아이디어:</b> $f(x\pm h)$ 를 Taylor 전개한 뒤, 목표한 도함수만 남기고 나머지를 <b>소거</b>한다. 남은 최저차 항이 곧 <b>오차의 차수</b>다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 전진차분</h4><div class="sub">$f(x{+}h)$ 한 개 전개</div><div class="eq">$ f(x{+}h)=f{+}hf'{+}\tfrac{h^2}{2}f''{+}\cdots $</div><p>정리하면 $f'=\dfrac{f(x{+}h)-f(x)}{h}-\dfrac{h}{2}f''(\xi)$ → 오차 $O(h)$.</p></div>
+    <div class="dcard"><h4>② 중앙차분</h4><div class="sub">$f(x{+}h)-f(x{-}h)$</div><div class="eq">$ f(x{+}h)-f(x{-}h)=2hf'+\tfrac{h^3}{3}f'''{+}\cdots $</div><p>짝수항($f''$)이 <strong>상쇄</strong>. $f'=\dfrac{f(x{+}h)-f(x{-}h)}{2h}-\dfrac{h^2}{6}f'''(\xi)$ → $O(h^2)$.</p></div>
+    <div class="dcard"><h4>③ 차수의 의미</h4><div class="sub">오차 $\propto h^p$</div><div class="eq">$ E(h)\approx C\,h^{p} $</div><p>$h\!\to\!h/2$ 이면 전진은 오차 $\tfrac12$, 중앙은 $\tfrac14$. 차수 $p$ 가 클수록 급감.</p></div>
+  </div>
+  <div class="callout warn"><div class="ct">주의 — 대칭이 열쇠</div>중앙차분이 $O(h^2)$ 인 것은 $x$ 를 <strong>가운데</strong> 두어 좌우 오차가 상쇄되기 때문이다. 전진·후진은 한쪽으로 치우쳐 있어 1차 항($\tfrac{h}{2}f''$)이 남는다.</div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="시연">
+  <div class="eyebrow">12-1 · 시연 · Three slopes</div>
+  <h1 class="stage-h">세 할선을 한 그림에서 비교 — $f(x)=e^x,\ x=1,\ h=0.1$</h1>
+  <p class="lede">수치 미분은 반복이 아니므로 스테퍼가 없다. 대신 세 공식이 <strong>같은 점들</strong>을 어떻게 다르게 잇는지 그림과 표로 본다. 참값은 $f'(1)=e\approx2.71828$. 중앙(초록) 할선의 기울기가 접선에 가장 가깝다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">전진·후진·중앙 할선</div>
+      <svg viewBox="0 0 320 240" width="100%" style="max-width:360px;display:block;margin:0 auto">
+        <line x1="40" y1="205" x2="300" y2="205" stroke="#94a3b8" stroke-width="1"/>
+        <path d="M55,182 C110,162 150,138 175,118 C205,92 240,64 270,40" fill="none" stroke="#2563eb" stroke-width="2.4"/>
+        <!-- guide verticals -->
+        <line x1="100" y1="158" x2="100" y2="205" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="175" y1="118" x2="175" y2="205" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="250" y1="58" x2="250" y2="205" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+        <!-- backward secant -->
+        <line x1="100" y1="158" x2="175" y2="118" stroke="#7c3aed" stroke-width="2.2"/>
+        <!-- forward secant -->
+        <line x1="175" y1="118" x2="250" y2="58" stroke="#f59e0b" stroke-width="2.2"/>
+        <!-- central secant -->
+        <line x1="100" y1="158" x2="250" y2="58" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="6 3"/>
+        <circle cx="100" cy="158" r="4.5" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+        <circle cx="175" cy="118" r="4.5" fill="#334155"/>
+        <circle cx="250" cy="58" r="4.5" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+        <text x="90" y="223" fill="#475569" font-size="11" font-family="monospace">x−h</text>
+        <text x="167" y="223" fill="#475569" font-size="11" font-family="monospace">x</text>
+        <text x="240" y="223" fill="#475569" font-size="11" font-family="monospace">x+h</text>
+        <text x="120" y="150" fill="#7c3aed" font-size="10" font-family="monospace">후진</text>
+        <text x="205" y="78" fill="#f59e0b" font-size="10" font-family="monospace">전진</text>
+        <text x="150" y="100" fill="#16a34a" font-size="10" font-family="monospace">중앙</text>
+      </svg>
+    </div>
+    <div>
+      <div class="vcap">같은 $h=0.1$ 에서의 근사값과 오차</div>
+      <table class="ktab"><thead><tr><th>공식</th><th>근사값</th><th>오차 $|E|$</th></tr></thead><tbody>
+        <tr><td>전진 $O(h)$</td><td>$2.85884$</td><td>$1.41\times10^{-1}$</td></tr>
+        <tr><td>후진 $O(h)$</td><td>$2.58679$</td><td>$1.31\times10^{-1}$</td></tr>
+        <tr><td><b>중앙</b> $O(h^2)$</td><td>$\mathbf{2.72281}$</td><td>$\mathbf{4.53\times10^{-3}}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">중앙차분의 오차가 전진·후진보다 약 <strong>30배</strong> 작다 — 함수 평가 횟수는 똑같이 2회인데도. 대칭 배치의 힘이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">중앙차분 한 번 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 중앙차분</div>
+    <p class="prob-statement">$f(x)=x^3$ 의 $x=2$ 에서 도함수를 <strong>중앙차분</strong>($h=0.1$)으로 근사하시오. $f(2.1)=9.261,\ f(1.9)=6.859$. (참값 $f'(2)=12$)</p>
+    <div class="given"><span class="chip">$f(2.1)=9.261$</span><span class="chip">$f(1.9)=6.859$</span><span class="chip">$f'\approx\dfrac{f(x+h)-f(x-h)}{2h}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="12.01" data-tol="0.002"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 분자</div>$$ f(2.1)-f(1.9)=9.261-6.859=2.402 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · $2h$ 로 나눔</div>$$ \frac{2.402}{2(0.1)}=\frac{2.402}{0.2}=12.01 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ f'(2)\approx 12.01 $$</div><b>정답:</b> 참값 $12$ 와 오차 $0.01$ — $O(h^2)$ 답게 $h^2=0.01$ 규모. 전진차분이면 $12.61$(오차 $0.61$)로 훨씬 부정확하다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="수렴">
+  <div class="eyebrow">12-1 · 수렴 · Order of accuracy</div>
+  <h1 class="stage-h">$h$ 를 반으로 — 전진은 $\tfrac12$, 중앙은 $\tfrac14$</h1>
+  <div class="two">
+    <div class="col2">
+      <div class="calc"
+        data-title="중앙차분 절단오차 — f(x)=eˣ, x=1"
+        data-desc="절단오차 ≈ (h²/6)·|f'''| = (h²/6)·e.  슬라이더로 h 를 바꿔 h²에 비례해 급감함을 확인하라."
+        data-vars='[{"sym":"h","label":"스텝 h","min":0.01,"max":0.5,"step":0.005,"val":0.1}]'
+        data-expr="2.718281828 * h * h / 6"
+        data-out="절단오차 ≈"
+        data-barmax="0.11"
+        data-note="h=0.1 → 4.5e-3,  h=0.05 → 1.1e-3 (¼배),  h=0.025 → 2.8e-4 (¼배). 차수 2의 표식이다.">
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">$h$ 축소에 따른 실측 오차 ($f=e^x,\,x=1$)</div>
+      <table class="ktab"><thead><tr><th>$h$</th><th>전진 오차 $O(h)$</th><th>중앙 오차 $O(h^2)$</th></tr></thead><tbody>
+        <tr><td>$0.1$</td><td>$1.41\times10^{-1}$</td><td>$4.53\times10^{-3}$</td></tr>
+        <tr><td>$0.05$</td><td>$6.91\times10^{-2}$</td><td>$1.13\times10^{-3}$</td></tr>
+        <tr><td>$0.025$</td><td>$3.43\times10^{-2}$</td><td>$2.83\times10^{-4}$</td></tr>
+        <tr><td>비 (반감 시)</td><td>$\div\,2$</td><td>$\div\,4$</td></tr>
+      </tbody></table>
+      <div class="keqnote">$h$ 를 반으로 줄일 때 전진은 오차가 $2$배 좋아지고, 중앙은 $4$배 좋아진다 — 이것이 $O(h)$ 대 $O(h^2)$ 의 실질적 차이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="함정">
+  <div class="eyebrow">12-1 · 함정 · Break it</div>
+  <h1 class="stage-h">$h$ 를 계속 줄이면? — 반올림오차의 반격</h1>
+  <p class="lede">"$h$ 는 작을수록 좋다"는 직관은 <strong>절단오차</strong>만 볼 때 이야기다. $h$ 가 너무 작으면 $f(x+h)$ 와 $f(x-h)$ 가 거의 같아져 <strong>거의 같은 두 수의 뺄셈(catastrophic cancellation)</strong> 이 일어나고, 그 차이를 아주 작은 $2h$ 로 나눠 <strong>반올림오차가 증폭</strong>된다. 최적 $h$ 가 존재한다.</p>
+  <div class="two">
+    <div class="col2">
+      <div class="calc"
+        data-title="총 오차 = 절단 + 반올림 — 중앙차분, 배정밀도"
+        data-desc="h = 10^p. 총오차 ≈ 0.453·h² (절단, ∝h²) + 1.36e-16 / h (반올림, ∝1/h). p 슬라이더를 왼쪽으로 밀어 U자 바닥을 찾아라."
+        data-vars='[{"sym":"p","label":"log₁₀ h  (h = 10^p)","min":-9,"max":-1,"step":0.5,"val":-1}]'
+        data-expr="0.453*Math.pow(10,2*p) + 1.36e-16*Math.pow(10,-p)"
+        data-out="총 오차 ≈"
+        data-note="최소는 p ≈ −5.2 (h ≈ 6×10⁻⁶) 부근. 더 줄이면 반올림항 1/h 이 지배해 오차가 오히려 커진다.">
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">$h$ 별 두 오차원 (중앙차분, $\varepsilon_\text{mach}\approx10^{-16}$)</div>
+      <table class="ktab"><thead><tr><th>$h$</th><th>절단 $\propto h^2$</th><th>반올림 $\propto 1/h$</th></tr></thead><tbody>
+        <tr><td>$10^{-1}$</td><td>$4.5\times10^{-3}$</td><td>$1.4\times10^{-15}$</td></tr>
+        <tr><td>$10^{-3}$</td><td>$4.5\times10^{-7}$</td><td>$1.4\times10^{-13}$</td></tr>
+        <tr><td>$10^{-5}$</td><td>$4.5\times10^{-11}$</td><td>$1.4\times10^{-11}$</td></tr>
+        <tr><td>$10^{-7}$</td><td>$4.5\times10^{-15}$</td><td>$1.4\times10^{-9}$</td></tr>
+        <tr><td>$10^{-9}$</td><td>$4.5\times10^{-19}$</td><td>$1.4\times10^{-7}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">두 오차원이 교차하는 $h\approx10^{-5}$ 부근이 최소. 그보다 작게 하면 <strong>반올림이 지배</strong>해 오차가 다시 커진다.</div>
+    </div>
+  </div>
+  <div class="pitfalls" style="margin-top:12px">
+    <div class="pitfall"><h4>⚠ 상쇄(cancellation)</h4><p>$h\to0$ 이면 $f(x+h)\approx f(x-h)$ — 유효숫자가 뺄셈에서 사라진다.</p></div>
+    <div class="pitfall"><h4>⚠ 최적 $h$ 존재</h4><p>중앙차분은 $h_\text{opt}\sim\varepsilon_\text{mach}^{1/3}\approx10^{-5}$. "작을수록"은 거짓.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="코드">
+  <div class="eyebrow">12-1 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 세 공식과 오차 표</h1>
+  <div class="codeblock"><div class="code-cap">diff_basic.m</div><pre><code>f = @(x) exp(x);          <span class="cm">% 예제 함수 (참값 f'(1)=e)</span>
+x = 1;  true_d = exp(1);
+
+fwd = @(h) (f(x+h) - f(x))   / h;        <span class="cm">% 전진 O(h)</span>
+bwd = @(h) (f(x)   - f(x-h)) / h;        <span class="cm">% 후진 O(h)</span>
+cen = @(h) (f(x+h) - f(x-h)) / (2*h);    <span class="cm">% 중앙 O(h^2)</span>
+
+for h = [0.1 0.05 0.025]
+    fprintf('h=%.3f | fwd err=%.2e | cen err=%.2e\n', ...
+             h, abs(fwd(h)-true_d), abs(cen(h)-true_d));
+end
+<span class="out">% h=0.100 | fwd err=1.41e-01 | cen err=4.53e-03</span>
+<span class="out">% h=0.050 | fwd err=6.91e-02 | cen err=1.13e-03</span>
+<span class="out">% h=0.025 | fwd err=3.43e-02 | cen err=2.83e-04</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">데이터가 표로 올 때</div>함수 핸들 대신 벡터 $[x_i,\,f_i]$ 만 있으면 이웃 표본으로 차분한다: 내부점은 중앙차분, 양 끝점은 한쪽 데이터만 있으므로 전진/후진(또는 다음 절의 편측 $O(h^2)$ 공식)을 쓴다. MATLAB <span class="cm">gradient(f, h)</span> 가 이 규칙을 자동 적용한다.</div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 전진차분</div>
+    <p class="prob-statement">$f(x)=\ln x$ 의 $x=1$ 에서 <strong>전진차분</strong>($h=0.1$)으로 $f'(1)$ 을 근사하시오. $\ln(1.1)=0.095310,\ \ln(1)=0$. (참값 $1$)</p>
+    <div class="given"><span class="chip">$\ln 1.1=0.095310$</span><span class="chip">$f'\approx\dfrac{f(x+h)-f(x)}{h}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.95310" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \frac{0.095310-0}{0.1}=0.95310 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ f'(1)\approx0.9531 $$</div><b>정답:</b> 오차 $\approx0.047$ — $O(h)$ 라 $h=0.1$ 규모. 중앙차분이면 $0.9967$ 로 훨씬 정확했을 것.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 중앙차분</div>
+    <p class="prob-statement">$f(x)=\sin x$ 의 $x=0$ 에서 <strong>중앙차분</strong>($h=0.1$)으로 $f'(0)$ 을 근사하시오. $\sin(0.1)=0.099833,\ \sin(-0.1)=-0.099833$. (참값 $\cos 0=1$)</p>
+    <div class="given"><span class="chip">$\sin(\pm0.1)=\pm0.099833$</span><span class="chip">$f'\approx\dfrac{f(x+h)-f(x-h)}{2h}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.99833" data-tol="0.003"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \frac{0.099833-(-0.099833)}{2(0.1)}=\frac{0.199666}{0.2}=0.99833 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ f'(0)\approx0.99833 $$</div><b>정답:</b> 오차 $1.7\times10^{-3}\approx h^2/6$ — 중앙차분의 $O(h^2)$ 확인.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="정리">
+  <div class="eyebrow">12-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>전진·후진 $=\dfrac{f(x\pm h)\mp f(x)}{\pm h}$ 는 $O(h)$, 중앙 $=\dfrac{f(x+h)-f(x-h)}{2h}$ 는 $O(h^2)$.</li>
+      <li>대칭 배치가 홀수 오차항을 상쇄 → 같은 비용으로 한 차수 이득.</li>
+      <li>$h$ 반감 시 오차: 전진 $\div2$, 중앙 $\div4$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>중앙차분 분모를 $h$ 로 씀 — <strong>$2h$</strong> 가 맞다.</li>
+      <li>$h$ 를 무한정 줄이면 정확해진다고 착각(반올림 폭발).</li>
+      <li>표 양 끝점에 중앙차분 시도(이웃 점 부족).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 점으로 세 차분값 <strong>손 계산</strong> + 참값과 오차 비교.</li>
+      <li>Taylor 전개로 <strong>오차 차수 유도</strong>(왜 중앙이 $O(h^2)$).</li>
+      <li>최적 $h$ 존재 이유(절단 $\propto h^2$ vs 반올림 $\propto 1/h$).</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 12-2 고차 정확도 공식 ════════════════════ -->
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="문제">
+  <div class="eyebrow">12-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">더 많은 점으로 더 정확하게 <span class="en">· $O(h^2)\to O(h^4)$</span></h1>
+  <div class="analogy"><span class="ic">🎯</span><div class="tx"><b>직관</b> — 중앙차분은 두 점만 쓴다. 점을 <b>네 개</b>($x\pm h,\ x\pm2h$) 쓰면 Taylor의 다음 오차항($h^3$ 계수)까지 <b>가중치를 맞춰 소거</b>할 수 있다. 사진을 더 많은 화소로 찍는 셈 — 같은 $h$ 에서 훨씬 선명한 도함수.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$O(h^2)$ 보다 더 정확하려면 표본을 늘려 Taylor 오차항을 추가로 상쇄한다. 또한 <strong>2계 도함수</strong> $f''$ 도 세 점 조합으로 직접 근사할 수 있다 — 열전도·진동 방정식에서 핵심.</p>
+      <div class="keqbox">
+        <div class="keq-label">고차 · 2계 공식</div>
+        <div class="keqrow"><span class="keqcap">1계 $O(h^4)$</span><span class="keqline">$ \dfrac{-f_{+2}+8f_{+1}-8f_{-1}+f_{-2}}{12h} $</span></div>
+        <div class="keqrow"><span class="keqcap">2계 $O(h^2)$</span><span class="keqline">$ \dfrac{f(x{+}h)-2f(x)+f(x{-}h)}{h^2} $</span></div>
+        <div class="keqrow"><span class="keqcap">편측 1계 $O(h^2)$</span><span class="keqline">$ \dfrac{-3f(x)+4f(x{+}h)-f(x{+}2h)}{2h} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>스텐실(stencil)</b> 공식이 쓰는 표본 점들의 패턴</div>
+        <div class="term"><b>가중치</b> Taylor 소거로 결정되는 계수 $(-1,8,-8,1)/12$</div>
+        <div class="term"><b>2계 중앙</b> $\dfrac{f_{+1}-2f_0+f_{-1}}{h^2}$ — 곡률 근사</div>
+        <div class="term"><b>편측 공식</b> 경계에서 한쪽 데이터만으로 $O(h^2)$</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>가중치 $(-1,8,-8,1)/12$ 은 우연이 아니라 <strong>Taylor 항 소거 조건</strong>에서 유일하게 결정된다. 점을 늘리면 차수를 올릴 수 있으나, 반올림·경계 처리 부담도 함께 는다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="원리">
+  <div class="eyebrow">12-2 · 원리 · Weight matching</div>
+  <h1 class="stage-h">가중치는 어떻게 정해지나 — 소거 조건</h1>
+  <div class="algo">
+    <div class="algo-h">1계 $O(h^4)$ 공식의 유도 아이디어</div>
+    <ol>
+      <li>두 개의 중앙차분을 준비한다: $D(h)=\dfrac{f_{+1}-f_{-1}}{2h}$ (오차 $c\,h^2+d\,h^4+\cdots$).</li>
+      <li>스텝 $2h$ 짜리 $D(2h)=\dfrac{f_{+2}-f_{-2}}{4h}$ 는 오차 $4c\,h^2+\cdots$.</li>
+      <li>$h^2$ 항을 없애도록 조합: $\dfrac{4D(h)-D(2h)}{3}$ → $h^2$ 소거, 남는 최저차 $O(h^4)$.</li>
+      <li>정리하면 가중치 $\dfrac{-f_{+2}+8f_{+1}-8f_{-1}+f_{-2}}{12h}$ 를 얻는다.</li>
+    </ol>
+  </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">2계 도함수도 같은 원리</div>$f(x+h)+f(x-h)=2f(x)+h^2f''+\tfrac{h^4}{12}f''''+\cdots$ 에서 $f',\,f'''$ 항이 <strong>대칭으로 상쇄</strong>되어, $f''\approx\dfrac{f_{+1}-2f_0+f_{-1}}{h^2}$ ($O(h^2)$) 가 곧바로 나온다.</div>
+</section>
+
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="시연">
+  <div class="eyebrow">12-2 · 시연 · Stencil compare</div>
+  <h1 class="stage-h">2점 $O(h^2)$ 대 4점 $O(h^4)$ — 같은 $h$, 다른 정밀도</h1>
+  <p class="lede">$f(x)=e^x,\ x=1,\ h=0.1$ 에서 두 공식의 <strong>모든 항을 한 표</strong>로 계산해 나란히 둔다. 표본을 두 개 더 썼을 뿐인데 오차가 <strong>수백 배</strong> 작아진다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">4점 $O(h^4)$ 공식의 항별 계산 ($h=0.1$)</div>
+      <table class="ktab"><thead><tr><th>항</th><th>값</th><th>가중</th></tr></thead><tbody>
+        <tr><td>$-f(1.2)$</td><td>$-3.320117$</td><td>$\times1$</td></tr>
+        <tr><td>$+8f(1.1)$</td><td>$+24.033328$</td><td>$\times8$</td></tr>
+        <tr><td>$-8f(0.9)$</td><td>$-19.676825$</td><td>$\times8$</td></tr>
+        <tr><td>$+f(0.8)$</td><td>$+2.225541$</td><td>$\times1$</td></tr>
+        <tr><td>합 $/\,12h$</td><td colspan="2">$3.261927/1.2=2.718273$</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">두 공식의 오차 ($f=e^x,\,x=1$, 참값 $e$)</div>
+      <table class="ktab"><thead><tr><th>$h$</th><th>2점 중앙 $O(h^2)$</th><th>4점 $O(h^4)$</th></tr></thead><tbody>
+        <tr><td>$0.1$</td><td>$4.53\times10^{-3}$</td><td>$9.08\times10^{-6}$</td></tr>
+        <tr><td>$0.05$</td><td>$1.13\times10^{-3}$</td><td>$5.68\times10^{-7}$</td></tr>
+        <tr><td>비 (반감 시)</td><td>$\div\,4$</td><td>$\div\,16$</td></tr>
+      </tbody></table>
+      <div class="keqnote">$h$ 반감 시 $O(h^4)$ 는 오차가 $2^4=16$배 좋아진다. $h=0.1$ 에서 이미 4점 공식이 2점보다 약 <strong>500배</strong> 정확하다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">2계 도함수 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 2계 중앙차분</div>
+    <p class="prob-statement">$f(x)=x^4$ 의 $x=1$ 에서 <strong>2계 도함수</strong>를 중앙차분($h=0.1$)으로 근사하시오. $f(1.1)=1.4641,\ f(1)=1,\ f(0.9)=0.6561$. (참값 $f''(1)=12$)</p>
+    <div class="given"><span class="chip">$f(1.1)=1.4641$</span><span class="chip">$f(0.9)=0.6561$</span><span class="chip">$f''\approx\dfrac{f_{+1}-2f_0+f_{-1}}{h^2}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="12.02" data-tol="0.002"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 분자</div>$$ 1.4641-2(1)+0.6561=0.1202 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · $h^2=0.01$ 로 나눔</div>$$ \frac{0.1202}{0.01}=12.02 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ f''(1)\approx12.02 $$</div><b>정답:</b> 참값 $12$, 오차 $0.02$ — $O(h^2)$($=\tfrac{h^2}{12}f''''$ 규모). 분모가 $h^2$ 임을 놓치지 말 것.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="수렴">
+  <div class="eyebrow">12-2 · 수렴 · Order gains</div>
+  <h1 class="stage-h">차수가 오르면 $h$ 축소 효과가 폭발</h1>
+  <div class="two">
+    <div class="col2">
+      <div class="calc"
+        data-title="4점 O(h⁴) 절단오차 — f(x)=eˣ, x=1"
+        data-desc="절단오차 ≈ (h⁴/30)·|f⁽⁵⁾| = (h⁴/30)·e.  h 를 조금만 줄여도 h⁴ 로 급감한다."
+        data-vars='[{"sym":"h","label":"스텝 h","min":0.02,"max":0.4,"step":0.005,"val":0.1}]'
+        data-expr="2.718281828 * Math.pow(h,4) / 30"
+        data-out="O(h⁴) 절단오차 ≈"
+        data-note="h=0.1 → ~9e-6,  h=0.05 → ~5.7e-7 (1/16배). 2점 O(h²)의 4.5e-3 과 비교하라.">
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">정확도 차수별 $h$ 축소 효과</div>
+      <table class="ktab"><thead><tr><th>공식</th><th>차수</th><th>$h\!\to\!h/2$ 이득</th></tr></thead><tbody>
+        <tr><td>전진 1계</td><td>$O(h)$</td><td>$\times2$</td></tr>
+        <tr><td>중앙 1계 · 2계</td><td>$O(h^2)$</td><td>$\times4$</td></tr>
+        <tr><td>4점 1계</td><td>$O(h^4)$</td><td>$\times16$</td></tr>
+      </tbody></table>
+      <div class="keqnote">차수 $p$ 가 크면 조금의 세분으로 큰 정밀도를 얻는다. 단, 표본이 늘어 <strong>경계 근처</strong>에서 점이 부족해질 수 있고, 상쇄에 따른 반올림 민감도도 커진다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="코드">
+  <div class="eyebrow">12-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 고차 · 2계 공식</h1>
+  <div class="codeblock"><div class="code-cap">diff_highorder.m</div><pre><code>f = @(x) exp(x);  x = 1;  h = 0.1;
+
+<span class="cm">% 1계 도함수 — 4점 중앙 O(h^4)</span>
+d1 = (-f(x+2*h) + 8*f(x+h) - 8*f(x-h) + f(x-2*h)) / (12*h);
+
+<span class="cm">% 2계 도함수 — 3점 중앙 O(h^2)</span>
+d2 = (f(x+h) - 2*f(x) + f(x-h)) / h^2;
+
+<span class="cm">% 편측 1계 O(h^2) — 왼쪽 경계에서</span>
+d1_edge = (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h);
+
+fprintf('d1(O h^4)=%.8f  err=%.2e\n', d1, abs(d1-exp(1)));
+fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
+<span class="out">% d1(O h^4)=2.71827276  err=9.07e-06</span>
+<span class="out">% d2(O h^2)=2.71850919  (true 2.718282)</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">경계 처리</div>4점 공식은 양 끝에서 $x\pm2h$ 가 데이터 범위를 벗어난다. 이때는 편측 $O(h^2)$ 공식으로 대체해야 전체 격자에서 차수를 유지한다.</div>
+</section>
+
+<section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="정리">
+  <div class="eyebrow">12-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>4점 1계 $=\dfrac{-f_{+2}+8f_{+1}-8f_{-1}+f_{-2}}{12h}$ 는 $O(h^4)$.</li>
+      <li>2계 중앙 $=\dfrac{f_{+1}-2f_0+f_{-1}}{h^2}$ 는 $O(h^2)$ (분모 $h^2$).</li>
+      <li>가중치는 Taylor 항 소거 조건에서 유일하게 결정.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>2계 공식 분모를 $h$ 로 씀(정답 $h^2$).</li>
+      <li>4점 공식 가중치·부호 혼동($-1,8,-8,1$).</li>
+      <li>경계에서 4점 공식 억지 사용(범위 밖 점).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 5개 점으로 4점 $O(h^4)$ 값 <strong>손 계산</strong>.</li>
+      <li>2계 중앙차분으로 곡률/$f''$ 계산.</li>
+      <li>차수별 $h$ 반감 이득($2,4,16$) 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 12-3 Richardson 외삽 ════════════════════ -->
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="문제">
+  <div class="eyebrow">12-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">두 성긴 근사로 정밀한 답을 <span class="en">· Richardson extrapolation</span></h1>
+  <div class="analogy"><span class="ic">🔭</span><div class="tx"><b>직관</b> — 오차가 $c\,h^2$ 처럼 $h$ 에 <b>규칙적으로</b> 의존한다면, 서로 다른 $h$ 로 두 번 재고 그 규칙을 역이용해 <b>$h\to0$ 극한을 추정</b>할 수 있다. 두 개의 흐릿한 사진을 겹쳐 선명한 한 장을 만드는 셈 — 새 함수 평가 없이 정확도만 올린다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">중앙차분 근사 $D(h)$ 의 오차는 $D(h)=f'+c\,h^2+O(h^4)$. 스텝을 반으로 한 $D(h/2)$ 는 오차가 $\tfrac14$. 이 둘을 <strong>선형결합</strong>해 $h^2$ 항을 소거하면 한 차수 높은 근사가 공짜로 나온다.</p>
+      <div class="keqbox">
+        <div class="keq-label">Richardson 공식 (중앙차분 기반)</div>
+        <div class="keqrow"><span class="keqcap">두 근사</span><span class="keqline">$ D(h),\ D(h/2) $</span></div>
+        <div class="keqrow"><span class="keqcap">$h^2$ 소거</span><span class="keqline">$ D_\text{R}=\dfrac{4\,D(h/2)-D(h)}{3} $</span></div>
+        <div class="keqrow"><span class="keqcap">새 오차</span><span class="keqline">$ O(h^4) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>외삽(extrapolation)</b> $h\to0$ 극한을 추정</div>
+        <div class="term"><b>계수 $4=2^p$</b> 기저 차수 $p=2$ 에서 옴</div>
+        <div class="term"><b>오차 항 소거</b> 두 식의 $h^2$ 를 상쇄</div>
+        <div class="term"><b>Romberg</b> 이를 반복 적용한 적분판(다음 주제)</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>계수 $\tfrac{4D(h/2)-D(h)}{3}$ 의 $4=2^2$ 는 <strong>기저 공식의 차수 $p=2$</strong> 에서 결정된다. 일반형은 $\dfrac{2^p D(h/2)-D(h)}{2^p-1}$. 규칙적 오차 구조를 아는 것이 열쇠.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="원리">
+  <div class="eyebrow">12-3 · 원리 · Derivation</div>
+  <h1 class="stage-h">$h^2$ 를 지우는 산수 — 유도</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① 두 오차식</h4><div class="sub">같은 $c$, 다른 $h$</div><div class="eq">$ D(h)=f'+c\,h^2 $</div><p>$ D(h/2)=f'+c\,\dfrac{h^2}{4} $ — 오차가 $\tfrac14$.</p></div>
+    <div class="dcard"><h4>② 4배 후 빼기</h4><div class="sub">$h^2$ 항 맞추기</div><div class="eq">$ 4D(h/2)=4f'+c\,h^2 $</div><p>$4D(h/2)-D(h)=3f'$ — $c\,h^2$ 가 <strong>소거</strong>.</p></div>
+    <div class="dcard"><h4>③ 정리</h4><div class="sub">$f'$ 추정</div><div class="eq">$ D_\text{R}=\dfrac{4D(h/2)-D(h)}{3} $</div><p>남은 오차는 $O(h^4)$ — 두 차수 이득.</p></div>
+  </div>
+  <div class="callout warn"><div class="ct">전제 — 오차가 짝수 차수만</div>Richardson이 계수 $4$ 로 깔끔한 이유는 중앙차분 오차가 $c\,h^2+d\,h^4+\cdots$ 처럼 <strong>짝수 차수</strong>뿐이기 때문이다. 전진차분($O(h)$) 기반이면 $2^p=2^1=2$ 를 써야 하고, 오차 구조가 규칙적이지 않으면 이득이 줄어든다.</div>
+</section>
+
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="시연">
+  <div class="eyebrow">12-3 · 시연 · One combine</div>
+  <h1 class="stage-h">두 근사 → 한 번의 조합 — $f(x)=e^x,\ x=1$</h1>
+  <p class="lede">$h=0.2$ 와 $h=0.1$ 짜리 중앙차분 두 개를 조합한다. 각각은 $O(h^2)$ 라 오차가 $10^{-2}\!\sim\!10^{-3}$ 이지만, Richardson 결과는 곧바로 $10^{-6}$ 대 — 12-2의 4점 $O(h^4)$ 공식과 <strong>같은 정밀도</strong>를 새 함수 평가 없이 얻는다.</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">조합 단계표 (참값 $e=2.718282$)</div>
+      <table class="ktab"><thead><tr><th>단계</th><th>값</th><th>오차</th></tr></thead><tbody>
+        <tr><td>$D(0.2)$</td><td>$2.736440$</td><td>$1.82\times10^{-2}$</td></tr>
+        <tr><td>$D(0.1)$</td><td>$2.722815$</td><td>$4.53\times10^{-3}$</td></tr>
+        <tr><td>$4D(0.1)-D(0.2)$</td><td>$8.154819$</td><td>—</td></tr>
+        <tr><td>$\div\,3$ (Richardson)</td><td>$\mathbf{2.718273}$</td><td>$\mathbf{9.1\times10^{-6}}$</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">왜 이득인가</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">$D(0.2)$ 오차</span><span class="keqline">$ \sim 1.8\times10^{-2} $</span></div>
+        <div class="keqrow"><span class="keqcap">$D(0.1)$ 오차</span><span class="keqline">$ \sim 4.5\times10^{-3} $</span></div>
+        <div class="keqrow"><span class="keqcap">$D_\text{R}$ 오차</span><span class="keqline">$ \sim 9\times10^{-6} $</span></div>
+      </div>
+      <div class="keqnote">$O(h^2)$ 두 개를 조합해 $O(h^4)$ 를 만들었다 — 오차가 약 <strong>500배</strong> 줄었다. 함수 평가는 이미 계산한 네 점($x\pm0.1,\,x\pm0.2$)뿐.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">Richardson 조합 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · $h^2$ 소거</div>
+    <p class="prob-statement">중앙차분($O(h^2)$) 두 근사가 $D(h)=1.10,\ D(h/2)=1.04$ 로 얻어졌다. Richardson 외삽값 $D_\text{R}=\dfrac{4D(h/2)-D(h)}{3}$ 을 구하시오.</p>
+    <div class="given"><span class="chip">$D(h)=1.10$</span><span class="chip">$D(h/2)=1.04$</span><span class="chip">$D_\text{R}=\dfrac{4D(h/2)-D(h)}{3}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.02" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 분자</div>$$ 4(1.04)-1.10=4.16-1.10=3.06 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · $\div3$</div>$$ \frac{3.06}{3}=1.02 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ D_\text{R}=1.02 $$</div><b>정답:</b> 더 정밀한 $D(h/2)=1.04$ 쪽으로 당겨진 뒤 그 너머로 살짝 외삽됐다. 두 근사의 $h^2$ 오차가 상쇄되어 $O(h^4)$ 정확도.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="수렴">
+  <div class="eyebrow">12-3 · 수렴 · Order lift</div>
+  <h1 class="stage-h">한 번의 외삽 = 두 차수 상승</h1>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">기저 공식이 $O(h^p)$ 이고 오차가 짝수 차수뿐이면, Richardson 한 번으로 $O(h^{p+2})$ 가 된다. 이를 <strong>반복</strong>하면($h,h/2,h/4,\dots$) 표를 채워 $O(h^6),O(h^8)\dots$ 로 올라가는데, 적분에서 이 반복형이 곧 <strong>Romberg 적분</strong>이다.</p>
+      <div class="callout key"><div class="ct">일반 계수</div>기저 차수 $p$ 에서 조합 계수는 $\dfrac{2^{p}D(h/2)-D(h)}{2^{p}-1}$. 중앙차분 $p=2$ → $\dfrac{4D(h/2)-D(h)}{3}$.</div>
+    </div>
+    <div class="col2">
+      <div class="vcap">외삽 전후 오차 ($f=e^x,\,x=1$)</div>
+      <table class="ktab"><thead><tr><th>대상</th><th>차수</th><th>오차 ($h=0.1$기준)</th></tr></thead><tbody>
+        <tr><td>$D(0.2)$</td><td>$O(h^2)$</td><td>$1.8\times10^{-2}$</td></tr>
+        <tr><td>$D(0.1)$</td><td>$O(h^2)$</td><td>$4.5\times10^{-3}$</td></tr>
+        <tr><td>$D_\text{R}$</td><td>$O(h^4)$</td><td>$9\times10^{-6}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">두 개의 $O(h^2)$ 를 $O(h^4)$ 로 끌어올렸다. 반올림 한계($\approx10^{-11}$, 12-1 함정) 위에서는 외삽이 매우 효율적이지만, 그 아래로는 반올림에 막힌다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="코드">
+  <div class="eyebrow">12-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 한 줄 조합</h1>
+  <div class="codeblock"><div class="code-cap">richardson.m</div><pre><code>function DR = richardson(f, x, h)
+  <span class="cm">% 중앙차분(O h^2) 두 개를 조합 → O(h^4)</span>
+  D_h  = (f(x+h)   - f(x-h))   / (2*h);       <span class="cm">% 스텝 h</span>
+  D_h2 = (f(x+h/2) - f(x-h/2)) / h;           <span class="cm">% 스텝 h/2 → 2*(h/2)=h</span>
+  DR   = (4*D_h2 - D_h) / 3;                  <span class="cm">% h^2 항 소거</span>
+end
+
+f = @(x) exp(x);
+DR = richardson(f, 1, 0.2);
+fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
+<span class="out">% Richardson=2.71827276  err=9.07e-06   (D(0.2), D(0.1) 조합)</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">반복 외삽 (Romberg 미리보기)</div>같은 조합을 표로 반복하면 $O(h^6),O(h^8),\dots$ 로 계속 올릴 수 있다. 다만 반올림 바닥($\sim10^{-11}$)에 닿으면 더 세분해도 개선이 멈춘다 — 12-1의 최적 $h$ 논리와 동일.</div>
+</section>
+
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="정리">
+  <div class="eyebrow">12-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$D_\text{R}=\dfrac{4D(h/2)-D(h)}{3}$ — 중앙차분 두 개로 $O(h^4)$.</li>
+      <li>계수 $4=2^p$ 는 기저 차수 $p=2$ 에서 결정(일반 $\tfrac{2^pD(h/2)-D(h)}{2^p-1}$).</li>
+      <li>규칙적(짝수 차수) 오차 구조가 전제. 반복형 = Romberg.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$D(h)$ 와 $D(h/2)$ 위치 뒤바꿈(더 정밀한 쪽에 $\times4$).</li>
+      <li>전진차분($p=1$)에 계수 $4$ 사용($2$ 가 맞다).</li>
+      <li>반올림 바닥 아래에서도 계속 정확해진다고 착각.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>두 근사값으로 Richardson <strong>손 계산</strong>.</li>
+      <li>계수 $\tfrac{2^p\cdots}{2^p-1}$ 를 기저 차수로부터 유도.</li>
+      <li>얻는 차수($p\to p+2$) 및 전제 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 12-4 편미분 근사 ════════════════════ -->
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="문제">
+  <div class="eyebrow">12-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">격자 위의 도함수 <span class="en">· $\partial f/\partial x$ on a grid</span></h1>
+  <div class="analogy"><span class="ic">🗺️</span><div class="tx"><b>직관</b> — 온도 지도처럼 함수가 2차원 격자 $f(x_i,y_j)$ 로 주어질 때, "동쪽으로 얼마나 가파른가"($\partial f/\partial x$)는 <b>좌우 이웃 칸</b>만으로, "북쪽 기울기"($\partial f/\partial y$)는 <b>위아래 칸</b>으로 잰다. 1차원 중앙차분을 방향별로 따로 적용하는 것이다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">편미분은 한 변수만 움직이고 나머지는 고정한다. 따라서 1차원 차분을 <strong>그 방향으로만</strong> 쓴다. 라플라시안 $\nabla^2 f=f_{xx}+f_{yy}$ 는 <strong>5점 스텐실</strong>로, 열·확산·전위 방정식(PDE)의 뼈대가 된다.</p>
+      <div class="keqbox">
+        <div class="keq-label">2차원 중앙 스텐실</div>
+        <div class="keqrow"><span class="keqcap">$\partial f/\partial x$</span><span class="keqline">$ \dfrac{f(x{+}h,y)-f(x{-}h,y)}{2h} $</span></div>
+        <div class="keqrow"><span class="keqcap">$\partial f/\partial y$</span><span class="keqline">$ \dfrac{f(x,y{+}h)-f(x,y{-}h)}{2h} $</span></div>
+        <div class="keqrow"><span class="keqcap">교차 $\partial^2 f/\partial x\partial y$</span><span class="keqline">$ \dfrac{f_{++}-f_{+-}-f_{-+}+f_{--}}{4h^2} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="vcap">5점 라플라시안 스텐실</div>
+      <svg viewBox="0 0 240 200" width="100%" style="max-width:280px;display:block;margin:0 auto">
+        <line x1="120" y1="40" x2="120" y2="160" stroke="#cbd5e1" stroke-width="1.4"/>
+        <line x1="60" y1="100" x2="180" y2="100" stroke="#cbd5e1" stroke-width="1.4"/>
+        <circle cx="120" cy="100" r="14" fill="#2563eb"/>
+        <text x="120" y="105" fill="#fff" font-size="13" font-family="monospace" text-anchor="middle">−4</text>
+        <circle cx="180" cy="100" r="13" fill="#e0edff" stroke="#2563eb" stroke-width="1.6"/>
+        <text x="180" y="105" fill="#2563eb" font-size="13" font-family="monospace" text-anchor="middle">+1</text>
+        <circle cx="60" cy="100" r="13" fill="#e0edff" stroke="#2563eb" stroke-width="1.6"/>
+        <text x="60" y="105" fill="#2563eb" font-size="13" font-family="monospace" text-anchor="middle">+1</text>
+        <circle cx="120" cy="40" r="13" fill="#e0edff" stroke="#2563eb" stroke-width="1.6"/>
+        <text x="120" y="45" fill="#2563eb" font-size="13" font-family="monospace" text-anchor="middle">+1</text>
+        <circle cx="120" cy="160" r="13" fill="#e0edff" stroke="#2563eb" stroke-width="1.6"/>
+        <text x="120" y="165" fill="#2563eb" font-size="13" font-family="monospace" text-anchor="middle">+1</text>
+        <text x="120" y="188" fill="#475569" font-size="10" font-family="monospace" text-anchor="middle">∇²f ≈ (Σ이웃 − 4f₀)/h²</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="원리">
+  <div class="eyebrow">12-4 · 원리 · Directional</div>
+  <h1 class="stage-h">방향별 1차원 차분 — 스텐실 조립</h1>
+  <div class="algo">
+    <div class="algo-h">라플라시안 5점 공식 유도</div>
+    <ol>
+      <li>$x$ 방향 2계 중앙: $f_{xx}\approx\dfrac{f(x{+}h,y)-2f(x,y)+f(x{-}h,y)}{h^2}$.</li>
+      <li>$y$ 방향 2계 중앙: $f_{yy}\approx\dfrac{f(x,y{+}h)-2f(x,y)+f(x,y{-}h)}{h^2}$.</li>
+      <li>둘을 더하면 중심항 $-2-2=-4$: $\nabla^2 f\approx\dfrac{f_{E}+f_{W}+f_{N}+f_{S}-4f_0}{h^2}$.</li>
+      <li>교차 도함수는 네 <b>대각 이웃</b>을 $(+,-,-,+)$ 로 조합해 $4h^2$ 로 나눈다.</li>
+    </ol>
+  </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">차원의 분리</div>편미분은 "한 방향 1차원 문제"의 집합이다. 그래서 12-1~12-3의 모든 결과(차수·최적 $h$·Richardson)가 <strong>각 방향에 그대로</strong> 적용된다 — 새 이론이 아니라 <strong>방향별 재사용</strong>이다.</div>
+</section>
+
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="시연">
+  <div class="eyebrow">12-4 · 시연 · Cross derivative</div>
+  <h1 class="stage-h">교차 도함수를 네 대각점으로 — $f(x,y)=x^2y+xy^2$</h1>
+  <p class="lede">$(x_0,y_0)=(2,1),\ h=0.1$ 에서 $\dfrac{\partial^2 f}{\partial x\partial y}$ 를 4점 스텐실로 계산한다. 참값은 $2x+2y=6$. 이 함수는 각 방향으로 2차라 중앙차분이 <strong>정확히</strong> 맞는다(오차 $0$).</p>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">네 대각점 ($h=0.1$)</div>
+      <table class="ktab"><thead><tr><th>점</th><th>$f$ 값</th><th>부호</th></tr></thead><tbody>
+        <tr><td>$f(2.1,\,1.1)$</td><td>$7.392$</td><td>$+$</td></tr>
+        <tr><td>$f(2.1,\,0.9)$</td><td>$5.670$</td><td>$-$</td></tr>
+        <tr><td>$f(1.9,\,1.1)$</td><td>$6.270$</td><td>$-$</td></tr>
+        <tr><td>$f(1.9,\,0.9)$</td><td>$4.788$</td><td>$+$</td></tr>
+        <tr><td>합 $/\,4h^2$</td><td colspan="2">$0.240/0.04=6.0$</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="vcap">방향별 1계 편미분 (같은 점)</div>
+      <table class="ktab"><thead><tr><th>도함수</th><th>근사식</th><th>값</th></tr></thead><tbody>
+        <tr><td>$\partial f/\partial x$</td><td>$\dfrac{f(2.1,1)-f(1.9,1)}{0.2}$</td><td>$5.0$</td></tr>
+        <tr><td>$\partial f/\partial y$</td><td>$\dfrac{f(2,1.1)-f(2,0.9)}{0.2}$</td><td>$8.0$</td></tr>
+      </tbody></table>
+      <div class="keqnote">참값: $\partial f/\partial x=2xy+y^2=5$, $\partial f/\partial y=x^2+2xy=8$, 교차 $=2x+2y=6$ — 모두 정확히 일치(2차 함수 + 중앙차분).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">편미분 한 방향 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · $\partial f/\partial x$</div>
+    <p class="prob-statement">$f(x,y)=x^2+y^2$ 의 점 $(3,2)$ 에서 $\dfrac{\partial f}{\partial x}$ 를 <strong>중앙차분</strong>($h=0.1$)으로 근사하시오. $f(3.1,2)=13.61,\ f(2.9,2)=12.41$. (참값 $2x=6$)</p>
+    <div class="given"><span class="chip">$f(3.1,2)=13.61$</span><span class="chip">$f(2.9,2)=12.41$</span><span class="chip">$\dfrac{\partial f}{\partial x}\approx\dfrac{f(x+h,y)-f(x-h,y)}{2h}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="6" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 분자 (y 고정)</div>$$ 13.61-12.41=1.20 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · $2h=0.2$ 로 나눔</div>$$ \frac{1.20}{0.2}=6.0 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \frac{\partial f}{\partial x}(3,2)=6.0 $$</div><b>정답:</b> 참값 $2x=6$ 과 정확히 일치. $y$ 는 두 점에서 같은 값($2$)이라 자동으로 소거된다 — 한 방향만 움직이는 편미분의 성질.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="함정">
+  <div class="eyebrow">12-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">2차원에서 새로 생기는 함정</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 방향 혼동</h4><p>$\partial f/\partial x$ 는 <b>$y$ 를 고정</b>하고 $x$ 만 $\pm h$. 대각점을 쓰면 편미분이 아니다.</p></div>
+    <div class="pitfall"><h4>⚠ $h_x\neq h_y$</h4><p>격자 간격이 방향마다 다르면 각 공식에 <b>해당 방향 간격</b>을 써야 한다($2h_x$, $2h_y$).</p></div>
+    <div class="pitfall"><h4>⚠ 교차항 분모</h4><p>$\partial^2 f/\partial x\partial y$ 분모는 $4h^2$ (단순 $h^2$ 아님). 부호 패턴 $(+,-,-,+)$ 주의.</p></div>
+    <div class="pitfall"><h4>⚠ 경계 격자점</h4><p>도메인 가장자리에서는 한쪽 이웃이 없어 편측 공식/유령점(ghost node)이 필요.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="코드">
+  <div class="eyebrow">12-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 편미분 · 교차 · 라플라시안</h1>
+  <div class="codeblock"><div class="code-cap">partial_diff.m</div><pre><code>f = @(x,y) x.^2.*y + x.*y.^2;   <span class="cm">% 예제 (2,1)에서 fx=5, fy=8, fxy=6</span>
+x = 2; y = 1; h = 0.1;
+
+fx  = (f(x+h,y) - f(x-h,y)) / (2*h);          <span class="cm">% ∂f/∂x</span>
+fy  = (f(x,y+h) - f(x,y-h)) / (2*h);          <span class="cm">% ∂f/∂y</span>
+fxy = (f(x+h,y+h) - f(x+h,y-h) ...
+     - f(x-h,y+h) + f(x-h,y-h)) / (4*h^2);    <span class="cm">% ∂²f/∂x∂y</span>
+lap = (f(x+h,y) + f(x-h,y) + f(x,y+h) ...
+     + f(x,y-h) - 4*f(x,y)) / h^2;            <span class="cm">% 라플라시안 ∇²f</span>
+
+fprintf('fx=%.4f  fy=%.4f  fxy=%.4f  lap=%.4f\n', fx, fy, fxy, lap);
+<span class="out">% fx=5.0000  fy=8.0000  fxy=6.0000  lap=6.0000</span></code></pre></div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">PDE로 가는 다리</div>라플라시안 5점 스텐실을 격자 전체에 세우면 $\nabla^2 f=0$(Laplace) · $\nabla^2 f=g$(Poisson) 이 <strong>선형 연립방정식</strong>이 된다 — Week 초반의 반복법(Jacobi·Gauss-Seidel)과 이번 주 차분이 여기서 만난다.</div>
+</section>
+
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="정리">
+  <div class="eyebrow">12-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>편미분 = 한 방향만 중앙차분(나머지 변수 고정).</li>
+      <li>라플라시안 5점: $\dfrac{f_E+f_W+f_N+f_S-4f_0}{h^2}$.</li>
+      <li>교차 $\partial^2/\partial x\partial y$: 대각 4점 $(+,-,-,+)/4h^2$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>편미분에서 다른 변수를 같이 움직임.</li>
+      <li>교차항 분모 $4h^2$ 대신 $h^2$ 사용.</li>
+      <li>비등간격 격자에서 방향별 $h$ 혼동.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>격자 값 표로 $\partial f/\partial x,\,\partial f/\partial y$ <strong>손 계산</strong>.</li>
+      <li>5점 라플라시안·교차 스텐실 세우기.</li>
+      <li>차분 → 선형계(PDE 이산화) 연결 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=12;</script>
+<script src="/na-track.js" defer></script>
+</body></html>
