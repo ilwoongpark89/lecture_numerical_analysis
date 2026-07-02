@@ -62,6 +62,85 @@
   </div>
 </section>
 
+<!-- ════════════════════ 4-1 근의 존재성 ════════════════════ -->
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="문제">
+  <div class="eyebrow">4-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">반복은 어디서 시작하나 <span class="en">· Where is the root?</span></h1>
+  <div class="analogy"><span class="ic">🔦</span><div class="tx"><b>직관</b> — 어두운 방에서 물건을 찾으려면 먼저 "이 방 안에 있다"는 걸 알아야 한다. 이분법도 근을 좁히기 전에 <b>근이 든 구간</b>을 먼저 확보해야 한다. 그 보증서가 <b>중간값 정리</b>다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">이분법·할선법 같은 <strong>브래킷 방법</strong>은 시작할 구간 $[a,b]$ 가 반드시 근을 품어야 한다. 그렇지 않으면 아예 돌릴 수 없다. "근이 있다"를 어떻게 보증할까?</p>
+      <div class="keqbox">
+        <div class="keq-label">중간값 정리 (IVT)</div>
+        <div class="keqrow"><span class="keqcap">조건</span><span class="keqline">$ f \text{ 연속},\ f(a)\,f(b) < 0 $</span></div>
+        <div class="keqrow"><span class="keqcap">결론</span><span class="keqline">$ \exists\, r \in (a,b): f(r)=0 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>양 끝의 <strong>부호가 다르면</strong>(곱이 음수) 연속함수는 그 사이 어딘가에서 반드시 $0$ 을 지난다 — 근이 <strong>적어도 하나</strong> 존재.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="원리">
+  <div class="eyebrow">4-1 · 원리 · Bracket search</div>
+  <h1 class="stage-h">부호 변화로 근을 가둔다</h1>
+  <div class="algo">
+    <div class="algo-h">Incremental Search (브래킷 탐색)</div>
+    <ol>
+      <li>구간을 일정 간격 $\Delta x$ 로 스캔하며 $f$ 를 계산한다.</li>
+      <li>이웃한 두 점에서 <b>부호가 바뀌면</b>($f(x_i)f(x_{i+1})<0$) 그 사이에 근이 있다.</li>
+      <li>그 소구간 $[x_i, x_{i+1}]$ 을 <b>브래킷</b>으로 이분법·할선법에 넘긴다.</li>
+    </ol>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">주의</div>간격 $\Delta x$ 가 크면 <strong>두 근이 한 칸에 같이</strong> 들어(부호 안 바뀜) 놓칠 수 있다. 촘촘히 스캔할수록 안전하지만 계산이 는다.</div>
+</section>
+
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">부호로 브래킷 찾기 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 정수점 부호</div>
+    <p class="prob-statement">$f(x)=x^3-x-2$ 를 정수점에서 보면 $f(1)=-2$, $f(2)=?$ 를 계산하여, 근이 $[1,2]$ 에 있음을 확인하시오. <strong>$f(2)$</strong> 값을 입력하라.</p>
+    <div class="given"><span class="chip">$f(2)=2^3-2-2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="4" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ f(2)=8-2-2=4>0,\qquad f(1)=1-1-2=-2<0 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ f(1)f(2) = (-2)(4) = -8 < 0 $$</div><b>정답:</b> 부호가 다르므로 $[1,2]$ 안에 근이 존재 — 이분법 시작 구간으로 적합.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="함정">
+  <div class="eyebrow">4-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">중간값 정리가 놓치는 것</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 존재만, 개수·위치는 모름</h4><p>IVT는 근이 <b>적어도 하나</b> 있다만 말한다. 몇 개인지, 정확히 어디인지는 별도로 좁혀야 한다.</p></div>
+    <div class="pitfall"><h4>⚠ 중근(접점)은 못 잡음</h4><p>$(x-1)^2$ 은 $x=1$ 에서 축에 <b>접</b>해 부호가 안 바뀐다 → 브래킷 방법 무력.</p></div>
+    <div class="pitfall"><h4>⚠ 불연속이면 무효</h4><p>$1/x$ 는 $[-1,1]$ 에서 부호가 바뀌지만 근이 아니라 <b>불연속</b>일 뿐 — 연속 가정 필수.</p></div>
+    <div class="pitfall"><h4>⚠ 성긴 스캔의 누락</h4><p>간격이 크면 <b>가까운 두 근</b>이 한 칸에 들어 부호 변화가 상쇄된다.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="정리">
+  <div class="eyebrow">4-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>연속 $f$ 에서 $f(a)f(b)<0$ → $(a,b)$ 에 <strong>근 존재</strong>(IVT).</li>
+      <li>부호 변화 스캔으로 <strong>브래킷</strong>을 확보해 반복법에 넘긴다.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>중근·불연속에도 IVT 적용.</li>
+      <li>부호 변화 없음 = 근 없음으로 단정(짝수 중근 가능).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 함수의 <strong>정수점 부호</strong>로 브래킷 구간 찾기.</li>
+      <li>IVT의 <strong>가정(연속)·한계(존재만)</strong> 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
 <!-- ════════════════════ 4-2 이분법 ════════════════════ -->
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="문제">
   <div class="eyebrow">4-2 · 문제 · Motivation</div>
@@ -418,6 +497,79 @@ df = @(x) 3*x.^2 - 1;
       <li>점화식으로 <strong>1~2회 손 계산</strong>($x_1, x_2$).</li>
       <li>이분법 대비 <strong>수렴 차수·반복 수</strong> 비교.</li>
       <li>실패 조건 3종(도함수 0 · 순환 · 나쁜 초기값) 서술.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 4-4 수렴 속도 비교 ════════════════════ -->
+<section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="문제">
+  <div class="eyebrow">4-4 · 문제 · Which method?</div>
+  <h1 class="stage-h">안전한 이분법 vs 빠른 Newton <span class="en">· speed ⟷ safety</span></h1>
+  <div class="analogy"><span class="ic">⚖️</span><div class="tx"><b>직관</b> — 이분법은 느리지만 <b>절대 실패하지 않는</b> 거북이, Newton은 빠르지만 <b>넘어질 수 있는</b> 토끼다. 실무는 둘의 장점을 섞는다: 거북이로 근처까지 안전하게 간 뒤 토끼로 마무리(하이브리드).</div></div>
+  <p class="lede">같은 방정식 $f(x)=x^3-x-2$ 를 두 방법으로 <strong>나란히 반복</strong>시켜 "같은 근에 몇 번 만에 닿는가" 를 직접 비교한다.</p>
+</section>
+
+<section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="시연">
+  <div class="eyebrow">4-4 · 시연 · Side by side</div>
+  <h1 class="stage-h">같은 근, 다른 속도 — 직접 세어 보기</h1>
+  <p class="lede">두 스테퍼를 각각 끝까지 진행시키며 <strong>반복 횟수</strong>를 비교하라. 이분법은 폭이 절반씩(선형), Newton은 $f(x_n)$ 이 제곱으로 급락(이차)한다.</p>
+  <div class="two">
+    <div class="col2">
+      <div class="stepper"
+        data-kind="root-bracket" data-fn="x^3 - x - 2" data-a="1" data-b="2"
+        data-xmin="0.7" data-xmax="2.2" data-root="1.5213797068" data-steps="20"
+        data-title="이분법 (선형)" data-note="구간 폭이 매번 절반. ~20회 필요."></div>
+    </div>
+    <div class="col2">
+      <div class="stepper"
+        data-kind="root-tangent" data-fn="x^3 - x - 2" data-dfn="3*x^2 - 1" data-x0="1.5"
+        data-xmin="0.7" data-xmax="2.2" data-root="1.5213797068" data-steps="6"
+        data-title="Newton (이차)" data-note="f(xₙ) 이 제곱으로 급락. ~4회면 끝."></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="수렴">
+  <div class="eyebrow">4-4 · 수렴 · Order matters</div>
+  <h1 class="stage-h">선형 vs 이차 — 숫자로</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">수렴 차수 정의</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">수렴 차수 $p$</span><span class="keqline">$ |\varepsilon_{n+1}| \approx C\,|\varepsilon_n|^{p} $</span></div>
+        <div class="keqrow"><span class="keqcap">이분법</span><span class="keqline">$ p=1 $ (선형)</span></div>
+        <div class="keqrow"><span class="keqcap">Newton</span><span class="keqline">$ p=2 $ (이차)</span></div>
+      </div>
+      <div class="callout key"><div class="ct">해석</div>$p=1$ 은 자릿수가 <strong>일정하게</strong>, $p=2$ 는 <strong>배로</strong> 늘어난다. 그래서 정밀도가 높을수록 격차가 폭발한다.</div>
+    </div>
+    <div>
+      <div class="vcap">$f(x)=x^3-x-2$, $10^{-6}$ 까지</div>
+      <table class="ktab"><thead><tr><th>방법</th><th>반복 수</th><th>도함수</th><th>수렴 보장</th></tr></thead><tbody>
+        <tr><td>이분법</td><td>~20</td><td>불필요</td><td>✓ 항상</td></tr>
+        <tr><td>할선법</td><td>~7</td><td>불필요</td><td>△ 조건부</td></tr>
+        <tr><td>Newton</td><td>~5</td><td>필요</td><td>△ 초기값 의존</td></tr>
+      </tbody></table>
+      <div class="keqnote">실무 <b style="color:var(--ink)">하이브리드</b>(예: Brent): 이분법으로 안전하게 가두고, 가능할 때 Newton/할선으로 도약 — 보장과 속도를 모두.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="정리">
+  <div class="eyebrow">4-4 · 정리 · Choose</div>
+  <h1 class="stage-h">언제 무엇을 — 방법 선택</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>선택 기준</h4><ul>
+      <li><strong>안전 최우선</strong> · 브래킷 있음 → 이분법.</li>
+      <li><strong>속도 최우선</strong> · 도함수 쉽고 초기값 좋음 → Newton.</li>
+      <li><strong>도함수 어려움</strong> → 할선법(Newton 유사 속도, 도함수 불필요).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>"빠른 방법이 항상 좋다" — 발산 위험 무시.</li>
+      <li>수렴 차수 $p$ 와 반복 수를 혼동.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 오차 수열로 <strong>수렴 차수 $p$ 판정</strong>.</li>
+      <li>세 방법(이분·할선·Newton) <strong>장단점·보장·도함수</strong> 비교표.</li>
     </ul></div>
   </div>
 </section>
