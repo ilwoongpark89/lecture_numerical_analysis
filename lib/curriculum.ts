@@ -51,9 +51,9 @@ export const WEEKS: Week[] = [
     chapters: C(12, [[1, "전·후·중앙 차분"], [2, "고차 정확도 공식"], [3, "Richardson 외삽"], [4, "편미분 근사"]]) },
   { week: 13, title: "상미분방정식", topic: "ODE", desc: "Euler·Heun·Runge-Kutta", ready: true,
     chapters: C(13, [[1, "Euler 방법"], [2, "개선 Euler (Heun)"], [3, "Runge-Kutta (RK4)"], [4, "연립·고차 ODE"]]) },
-  { week: 14, title: "편미분방정식", topic: "PDE", desc: "유한차분: 열·라플라스·파동", ready: false,
+  { week: 14, title: "편미분방정식", topic: "PDE", desc: "유한차분: 열·라플라스·파동", ready: true,
     chapters: C(14, [[1, "유한차분 개요"], [2, "열전도 (포물형)"], [3, "라플라스 (타원형)"], [4, "파동 (쌍곡형)"]]) },
-  { week: 15, title: "고유값 문제", topic: "Eigenvalue Problems", desc: "거듭제곱법과 QR", ready: false,
+  { week: 15, title: "고유값 문제", topic: "Eigenvalue Problems", desc: "거듭제곱법과 QR", ready: true,
     chapters: C(15, [[1, "고유값 문제"], [2, "거듭제곱법 (Power)"], [3, "역·shift 거듭제곱"], [4, "QR 개요"]]) },
   { week: 16, title: "기말고사", topic: "Final Exam", desc: "기말고사 (Weeks 9–15)", ready: false, exam: true, chapters: [] },
 ];

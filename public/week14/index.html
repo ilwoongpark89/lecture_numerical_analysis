@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 14 · PDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 14</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 14 · Partial Differential Equations</div>
+    <h1 class="intro-h">벽 속 온도장, 물결 — <span class="hl">공간·시간 위의 함수</span></h1>
+    <p class="intro-sub">지금까지는 $y(x)$ 한 변수였다. 그러나 열이 판 전체로 퍼지고($T(x,t)$), 물결이 퍼지는 현상은 <strong>편미분방정식(PDE)</strong>이다. 도함수가 여러 방향으로 얽혀 해석해가 거의 없다.</p>
+    <div class="intro-teaser">답 — <em>격자.</em> 공간·시간을 잘게 나눠 각 미분을 <strong>차분</strong>으로 바꾸면, PDE가 거대한 <strong>연립방정식</strong>이 된다. 이번 주는 그 격자를 <strong>직접 갱신·수렴</strong>시켜 본다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 14 · 이번 주 여정</div>
+    <h1 class="intro-h">세 얼굴의 PDE — <span class="hl">확산·평형·전파</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">14-1</span><span><span class="rt">유한차분 개요</span> <span class="rd">— 미분을 격자 위 차분으로</span></span></div>
+      <div class="rm-item"><span class="rn">14-2</span><span><span class="rt">열전도 (포물형)</span> <span class="rd">— FTCS 시간 전진, 안정조건</span></span></div>
+      <div class="rm-item"><span class="rn">14-3</span><span><span class="rt">라플라스 (타원형)</span> <span class="rd">— 평형 온도장, 반복으로 풀기</span></span></div>
+      <div class="rm-item"><span class="rn">14-4</span><span><span class="rt">파동 (쌍곡형)</span> <span class="rd">— 물결 전파, CFL 조건</span></span></div>
+    </div>
+    <div class="intro-teaser">유형마다 성격이 다르다 — 확산은 <em>퍼지고</em>, 평형은 <em>매끄럽고</em>, 파동은 <em>전파</em>한다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 14 · 학습법</div>
+    <h1 class="intro-h">차분 → 격자 → <span class="hl">전진 또는 반복</span></h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리(차분)</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연·직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴·안정</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span>
+    </div>
+    <div class="callout key" style="margin-top:18px"><div class="ct">핵심 흐름</div>포물형(열)은 <strong>시간 전진</strong>(FTCS), 타원형(라플라스)은 <strong>반복 수렴</strong>(Jacobi), 쌍곡형(파동)은 <strong>안정 스텝(CFL)</strong> — 유형이 방법을 정한다.</div>
+  </div>
+</section>
+
+<section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="문제">
+  <div class="eyebrow">14-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">미분을 어떻게 컴퓨터에 <span class="en">· Finite Differences</span></h1>
+  <div class="analogy"><span class="ic">🕸️</span><div class="tx"><b>직관</b> — 연속 공간에 <b>격자(그물)</b>를 씌우고, 각 격자점의 값만 미지수로 둔다. 미분(기울기·곡률)은 <b>이웃 격자점의 차이</b>로 근사한다 — 무한을 유한으로 바꾸는 것이 수치 PDE의 첫 걸음.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">공간을 $\Delta x$, 시간을 $\Delta t$ 간격 격자로 나누고, 각 편미분을 <strong>Taylor 전개 기반 차분</strong>으로 바꾼다. PDE 한 개가 격자점 수만큼의 <strong>대수 방정식</strong>이 된다.</p>
+      <div class="keqbox">
+        <div class="keq-label">핵심 차분 (2계 중심)</div>
+        <div class="keqrow"><span class="keqcap">1계</span><span class="keqline">$ \dfrac{\partial u}{\partial x}\approx\dfrac{u_{i+1}-u_{i-1}}{2\Delta x} $</span></div>
+        <div class="keqrow"><span class="keqcap">2계</span><span class="keqline">$ \dfrac{\partial^2 u}{\partial x^2}\approx\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2} $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>2계 중심차분 $\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2}$ 가 <strong>확산·평형·파동</strong> PDE 모두의 뼈대. 오차 $O(\Delta x^2)$.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="원리">
+  <div class="eyebrow">14-1 · 원리 · Classification</div>
+  <h1 class="stage-h">세 유형과 그에 맞는 방법</h1>
+  <div class="vizgrid">
+    <div>
+      <table class="ktab"><thead><tr><th>유형</th><th>예</th><th>성격</th></tr></thead><tbody>
+        <tr><td>포물형</td><td>$u_t=\alpha u_{xx}$ 열</td><td>확산(퍼짐)</td></tr>
+        <tr><td>타원형</td><td>$\nabla^2u=0$ 라플라스</td><td>평형(매끄러움)</td></tr>
+        <tr><td>쌍곡형</td><td>$u_{tt}=c^2u_{xx}$ 파동</td><td>전파(이동)</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="callout key"><div class="ct">유형이 방법을 정한다</div>포물·쌍곡은 <strong>시간 전진</strong>(안정조건 있음), 타원은 시간이 없어 <strong>반복 수렴</strong>으로 평형장을 맞춘다.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">2계 차분 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 라플라시안 근사</div>
+    <p class="prob-statement">격자값 $u_{i-1}=10$, $u_i=20$, $u_{i+1}=50$, $\Delta x=1$. 2계 중심차분 $\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2}$ 를 구하시오.</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="20" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \frac{50-2(20)+10}{1^2}=\frac{20}{1}=20 $$</div><b>정답:</b> 양수 → 아래로 볼록(곡률 &gt; 0).</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="함정">
+  <div class="eyebrow">14-1 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">격자를 잘못 잡으면</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 성긴 격자</h4><p>$\Delta x$ 가 크면 오차 $O(\Delta x^2)$ 가 커진다 — 급변 영역에서 특히.</p></div>
+    <div class="pitfall"><h4>⚠ 안정조건 무시</h4><p>시간 전진(포물·쌍곡)은 $\Delta t$ 를 $\Delta x$ 에 맞춰야 — 어기면 <b>발산</b>.</p></div>
+    <div class="pitfall"><h4>⚠ 경계조건 오류</h4><p>경계값(Dirichlet)·경계기울기(Neumann) 처리를 틀리면 전체 해가 틀린다.</p></div>
+    <div class="pitfall"><h4>⚠ 차원의 저주</h4><p>2D·3D 격자는 미지수가 $N^2,N^3$ 로 폭증 → 반복법·희소행렬 필수.</p></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="정리">
+  <div class="eyebrow">14-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>격자 + Taylor 차분 → PDE를 <strong>대수 방정식</strong>으로.</li>
+      <li>2계 중심 $\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2}$, 오차 $O(\Delta x^2)$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$\Delta x^2$ 분모 누락.</li>
+      <li>경계점을 미지수로 착각.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>주어진 격자값으로 <strong>1·2계 차분 계산</strong>.</li>
+      <li>PDE 3유형 판별.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="문제">
+  <div class="eyebrow">14-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">열은 시간에 따라 퍼진다 <span class="en">· Heat / FTCS</span></h1>
+  <div class="analogy"><span class="ic">🔥</span><div class="tx"><b>직관</b> — 막대 한쪽을 데우면 열이 <b>시간이 지나며</b> 옆으로 스며 균일해진다. 각 시각의 온도 분포를 이전 시각에서 <b>한 시간 스텝씩 전진</b>시켜 얻는다 — ODE의 Euler를 공간 격자에 적용한 셈.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">열확산 방정식 $\dfrac{\partial T}{\partial t}=\alpha\dfrac{\partial^2 T}{\partial x^2}$ 에 시간 전방차분+공간 2계 중심차분을 쓰면 <strong>FTCS</strong> 명시적 갱신식을 얻는다.</p>
+      <div class="keqbox">
+        <div class="keq-label">FTCS 갱신 ($\lambda=\alpha\Delta t/\Delta x^2$)</div>
+        <div class="keqrow"><span class="keqcap">전진</span><span class="keqline">$ T_i^{n+1}=T_i^{n}+\lambda\,(T_{i+1}^{n}-2T_i^{n}+T_{i-1}^{n}) $</span></div>
+        <div class="keqrow"><span class="keqcap">안정</span><span class="keqline">$ \lambda=\alpha\dfrac{\Delta t}{\Delta x^2}\le\tfrac12 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>새 온도 = 옛 온도 + $\lambda$×(이웃과의 곡률). $\lambda\le\tfrac12$ 를 어기면 <strong>발산</strong>.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">FTCS 한 시간스텝 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · FTCS 갱신</div>
+    <p class="prob-statement">$\lambda=0.4$. 어느 시각 $T_{i-1}=0,\ T_i=100,\ T_{i+1}=0$ 일 때, 다음 시각 <strong>$T_i^{n+1}$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$T_i^{n+1}=T_i+\lambda(T_{i+1}-2T_i+T_{i-1})$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="20" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ 100+0.4(0-200+0)=100-80=20 $$</div><b>정답:</b> 뜨거운 점이 이웃으로 열을 나눠 급락 — 확산이 봉우리를 깎는다.</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="수렴">
+  <div class="eyebrow">14-2 · 수렴 · Stability</div>
+  <h1 class="stage-h">안정 조건 $\lambda\le\tfrac12$</h1>
+  <div class="callout key"><div class="ct">von Neumann 안정성</div>$\lambda=\alpha\Delta t/\Delta x^2\le\tfrac12$ 일 때만 오차가 감쇠. <strong>공간 격자를 반으로</strong> 줄이면 $\Delta t$ 는 <strong>1/4</strong> 로 — 명시적 방법의 큰 대가.</div>
+  <div class="keqnote" style="margin-top:14px">그래서 세밀한 격자엔 <b style="color:var(--ink)">음함수(implicit)</b> 방법(BTCS·Crank-Nicolson)을 쓴다 — 무조건 안정이지만 매 스텝 연립방정식을 푼다.</div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="함정">
+  <div class="eyebrow">14-2 · 함정 · Break it</div>
+  <h1 class="stage-h">$\lambda>\tfrac12$ 이면 폭발</h1>
+  <p class="lede">$\lambda=0.6$ 로 FTCS를 돌리면 온도가 <strong>부호를 바꾸며 진동·폭발</strong>한다(물리적으로 불가능). 아래는 $T_i=100$ 봉우리($\lambda=0.6$, 이웃 0)의 진행 — 발산을 확인하라.</p>
+  <div class="stp-tblwrap" style="max-width:420px;margin-top:12px"><table class="stp-tbl"><thead><tr><th class="stp-k">스텝 n</th><th>중앙 $T_i$ ($\lambda=0.6$)</th></tr></thead><tbody>
+    <tr><td class="stp-k">0</td><td>100</td></tr>
+    <tr><td class="stp-k">1</td><td>−20</td></tr>
+    <tr><td class="stp-k">2</td><td>76</td></tr>
+    <tr><td class="stp-k">3</td><td>−135</td></tr>
+    <tr><td class="stp-k">4</td><td>320</td></tr>
+  </tbody></table></div>
+  <div class="pitfalls" style="margin-top:14px">
+    <div class="pitfall"><h4>⚠ 조건 위반 = 발산</h4><p>$\lambda>\tfrac12$ 면 고주파 오차가 <b>증폭</b>. 격자를 세밀히 해도 폭발.</p></div>
+    <div class="pitfall"><h4>⚠ 해결</h4><p>$\Delta t$ 를 줄이거나 <b>음함수법</b>(무조건 안정)으로 전환.</p></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="코드">
+  <div class="eyebrow">14-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — FTCS 시간 전진</h1>
+  <div class="codeblock"><div class="code-cap">heat_ftcs.m</div><pre><code>lam = 0.4;                  <span class="cm">% = alpha*dt/dx^2  (&lt;= 0.5)</span>
+T = zeros(1, N);  T(mid) = 100;      <span class="cm">% 초기 봉우리</span>
+for n = 1:steps
+    Tn = T;
+    for i = 2:N-1
+        T(i) = Tn(i) + lam*(Tn(i+1) - 2*Tn(i) + Tn(i-1));
+    end
+end
+<span class="out">% 봉우리가 시간에 따라 매끄럽게 퍼진다</span></code></pre></div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="정리">
+  <div class="eyebrow">14-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>FTCS $T_i^{n+1}=T_i^n+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n)$.</li>
+      <li>명시적 안정 $\lambda=\alpha\Delta t/\Delta x^2\le\tfrac12$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$\lambda$ 계산 시 $\Delta x^2$ 누락.</li>
+      <li>갱신 시 <strong>옛 값 $T^n$</strong> 사용(제자리 갱신 금지).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$\lambda$ 계산·안정 여부.</li>
+      <li>FTCS <strong>1스텝 손계산</strong>.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="문제">
+  <div class="eyebrow">14-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">평형 온도장 <span class="en">· Laplace ∇²u = 0</span></h1>
+  <div class="analogy"><span class="ic">🧊</span><div class="tx"><b>직관</b> — 시간이 충분히 흘러 <b>더 안 변하는</b> 정상상태 온도장. 시간항이 없어 "전진"이 아니라, 각 내부점이 <b>이웃 넷의 평균</b>이 될 때까지 <b>반복</b>해서 맞춘다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$\nabla^2 u=0$ 을 5점 차분하면 각 내부 격자점이 <strong>이웃 4점의 평균</strong>이라는 조건이 된다. 이는 거대한 <strong>연립방정식 $A\mathbf{u}=\mathbf{b}$</strong> — Jacobi/Gauss-Seidel 반복으로 푼다(7주 재사용!).</p>
+      <div class="keqbox">
+        <div class="keq-label">5점 평균 (Jacobi 갱신)</div>
+        <div class="keqrow"><span class="keqcap">평형</span><span class="keqline">$ u_{i,j}=\tfrac14(u_{i+1,j}+u_{i-1,j}+u_{i,j+1}+u_{i,j-1}) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>타원형은 <strong>반복 수렴</strong>. 초기 추측에서 "이웃 평균" 갱신을 반복하면 평형 온도장으로 수렴.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="시연">
+  <div class="eyebrow">14-3 · 시연 · Step-through</div>
+  <h1 class="stage-h">이웃 평균 반복 — 평형으로 수렴</h1>
+  <p class="lede">$2\times2$ 내부 격자(윗변 $100$°, 나머지 $0$°)의 라플라스 문제 $A\mathbf{u}=\mathbf{b}$ 를 Jacobi로 반복한다. 네 격자점이 <strong>정확한 평형값 $(37.5,37.5,12.5,12.5)$</strong> 로 수렴하는 걸 표에서 확인하라.</p>
+  <div class="stepper"
+    data-kind="matrix-iter"
+    data-a="[[4,-1,-1,0],[-1,4,0,-1],[-1,0,4,-1],[0,-1,-1,4]]"
+    data-b="[100,100,0,0]"
+    data-x0="[0,0,0,0]"
+    data-mode="jacobi"
+    data-sol="[37.5,37.5,12.5,12.5]"
+    data-steps="18"
+    data-title="라플라스 Jacobi — 윗변 100°, 내부 2×2 격자"
+    data-note="각 점 = 이웃 4점 평균. 대칭이라 u₁=u₂, u₃=u₄ → (37.5,37.5,12.5,12.5) 수렴."></div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 반복 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 이웃 평균 1회</div>
+    <p class="prob-statement">한 내부점의 네 이웃이 $100, 0, 0, 50$ 이다. Jacobi 갱신값(이웃 평균) <strong>$u$</strong> 를 구하시오.</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="37.5" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ u=\tfrac14(100+0+0+50)=\tfrac{150}{4}=37.5 $$</div><b>정답:</b> 모든 내부점이 이런 관계를 <b>동시에</b> 만족할 때까지 반복.</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="코드">
+  <div class="eyebrow">14-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 격자 릴렉스</h1>
+  <div class="codeblock"><div class="code-cap">laplace_jacobi.m</div><pre><code>U = zeros(n, n);  U(1,:) = 100;      <span class="cm">% 윗변 100°</span>
+for it = 1:maxit
+    Uold = U;
+    for i = 2:n-1
+        for j = 2:n-1
+            U(i,j) = 0.25*(Uold(i+1,j)+Uold(i-1,j)+Uold(i,j+1)+Uold(i,j-1));
+        end
+    end
+    if max(abs(U(:)-Uold(:))) &lt; tol, break; end   <span class="cm">% 수렴 판정</span>
+end
+<span class="out">% Gauss-Seidel(제자리 갱신)이면 ~2배 빨리 수렴</span></code></pre></div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="정리">
+  <div class="eyebrow">14-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$\nabla^2u=0$ → 5점: 각 점 = <strong>이웃 4 평균</strong>.</li>
+      <li>거대 연립 → <strong>Jacobi/Gauss-Seidel 반복</strong>(7주).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>시간항이 없는데 "전진" 시도(반복 수렴이 맞다).</li>
+      <li>경계값을 갱신 대상에 포함.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>격자 라플라스를 <strong>연립방정식으로</strong>.</li>
+      <li>이웃 평균 <strong>1~2 반복</strong> 손계산.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="문제">
+  <div class="eyebrow">14-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">물결은 전파한다 <span class="en">· Wave / CFL</span></h1>
+  <div class="analogy"><span class="ic">🌊</span><div class="tx"><b>직관</b> — 파동 $\partial_{tt}u=c^2\partial_{xx}u$ 는 모양을 유지하며 <b>속도 $c$ 로 이동</b>한다. 수치 격자는 한 스텝에 정보를 최대 한 칸씩 옮기므로, <b>물리 파동이 한 스텝에 한 칸 이상 못 가게</b> $\Delta t$ 를 제한 — CFL 조건.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">시간·공간 모두 2계 중심차분 → 명시적 갱신식. 안정성은 <strong>Courant 수</strong> $C=c\Delta t/\Delta x\le 1$ 로 결정된다.</p>
+      <div class="keqbox">
+        <div class="keq-label">CFL 안정 조건</div>
+        <div class="keqrow"><span class="keqcap">Courant</span><span class="keqline">$ C=\dfrac{c\,\Delta t}{\Delta x}\le 1 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>수치 전파 속도 $\ge$ 물리 전파 속도라야 안정. $C>1$ 이면 <strong>발산</strong>.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">CFL 조건 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 최대 시간 스텝</div>
+    <p class="prob-statement">파동 속도 $c=2$, 격자 $\Delta x=0.1$. CFL($C\le1$)을 만족하는 <strong>최대 $\Delta t$</strong> 는?</p>
+    <div class="given"><span class="chip">$C=c\Delta t/\Delta x\le 1$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.05" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \Delta t\le\frac{\Delta x}{c}=\frac{0.1}{2}=0.05 $$</div><b>정답:</b> $\Delta t>0.05$ 면 발산. 파동 안정조건은 확산보다 완만($\Delta t\propto\Delta x$).</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="정리">
+  <div class="eyebrow">14-4 · 정리 · Summary</div>
+  <h1 class="stage-h">세 유형 총정리</h1>
+  <div class="vizgrid">
+    <div>
+      <table class="ktab"><thead><tr><th>유형</th><th>예</th><th>방법</th><th>안정</th></tr></thead><tbody>
+        <tr><td>포물형</td><td>열전도</td><td>FTCS 전진</td><td>$\lambda\le\tfrac12$</td></tr>
+        <tr><td>타원형</td><td>라플라스</td><td>반복 수렴</td><td>항상</td></tr>
+        <tr><td>쌍곡형</td><td>파동</td><td>중심 전진</td><td>$C\le1$</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="sumcard key"><h4>시험 포인트</h4><ul>
+        <li>PDE 유형 판별 → 방법·안정조건 매칭.</li>
+        <li>$\lambda\le\tfrac12$ · $C\le1$ 로 <strong>$\Delta t$ 상한</strong>.</li>
+        <li>라플라스를 연립으로 세워 <strong>반복 1스텝</strong>.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=14;</script>
+<script src="/na-track.js" defer></script>
+</body></html>

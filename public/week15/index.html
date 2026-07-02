@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 15 · Eigenvalue Problems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 15</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 15 · Eigenvalue Problems</div>
+    <h1 class="intro-h">$A\mathbf{x}=\lambda\mathbf{x}$ — <span class="hl">방향을 바꾸지 않는 벡터</span></h1>
+    <p class="intro-sub">진동의 고유진동수, 구조물의 좌굴 하중, 구글 PageRank, 주성분 분석(PCA) — 모두 <strong>고유값</strong> 문제다. 그런데 $\det(A-\lambda I)=0$ 을 손으로 푸는 건 $3\times3$ 만 넘어도 사실상 불가능하다.</p>
+    <div class="intro-teaser">답 — <em>반복.</em> 행렬을 벡터에 <strong>거듭 곱하면</strong> 가장 센 고유방향만 살아남는다. 이번 주는 그 수렴을 <strong>직접 돌려본다.</strong></div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 15 · 이번 주 여정</div>
+    <h1 class="intro-h">가장 센 것부터 <span class="hl">모두까지</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">15-1</span><span><span class="rt">고유값 문제</span> <span class="rd">— 정의·의미, 왜 직접 못 푸나</span></span></div>
+      <div class="rm-item"><span class="rn">15-2</span><span><span class="rt">거듭제곱법 (Power)</span> <span class="rd">— 최대 고유값을 반복으로</span></span></div>
+      <div class="rm-item"><span class="rn">15-3</span><span><span class="rt">역·shift 거듭제곱</span> <span class="rd">— 최소·특정 고유값 겨냥</span></span></div>
+      <div class="rm-item"><span class="rn">15-4</span><span><span class="rt">QR 개요</span> <span class="rd">— 모든 고유값을 한꺼번에</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 <em>$A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$</em> (고유값 $4.618,\ 2.382$)로 거듭제곱 수렴을 직접 본다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 15 · 학습법</div>
+    <h1 class="intro-h">곱하고 <span class="hl">정규화하고 반복</span></h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연(반복)</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span>
+    </div>
+    <div class="callout key" style="margin-top:18px"><div class="ct">핵심 흐름</div>거듭제곱법 = "$A\mathbf{x}$ 곱하고, 최대성분으로 나눠 정규화, 반복". 최대성분이 <strong>고유값</strong>으로, 벡터가 <strong>고유벡터</strong>로 수렴한다.</div>
+  </div>
+</section>
+
+<section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="문제">
+  <div class="eyebrow">15-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">방향을 지키는 벡터 <span class="en">· Eigen-what?</span></h1>
+  <div class="analogy"><span class="ic">🧭</span><div class="tx"><b>직관</b> — 행렬 $A$ 를 곱하면 대부분 벡터는 방향이 <b>휜다</b>. 그런데 어떤 특별한 방향(고유벡터)은 방향은 그대로, <b>길이만 $\lambda$ 배</b> 된다. 그 방향이 시스템의 "고유한 축"이다 — 진동 모드·주성분·안정 방향.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$A\mathbf{x}=\lambda\mathbf{x}$ 를 만족하는 $\lambda$(고유값)와 $\mathbf{x}\ne 0$(고유벡터). 직접 풀려면 $\det(A-\lambda I)=0$ 인데, 이는 $n$차 다항식이라 $n\ge5$ 면 <strong>근의 공식이 없다</strong>(Abel).</p>
+      <div class="keqbox">
+        <div class="keq-label">정의</div>
+        <div class="keqrow"><span class="keqcap">고유방정식</span><span class="keqline">$ A\mathbf{x}=\lambda\mathbf{x} $</span></div>
+        <div class="keqrow"><span class="keqcap">특성방정식</span><span class="keqline">$ \det(A-\lambda I)=0 $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>손으로 못 푸니 <strong>반복법</strong>으로 접근 — 큰 것부터(거듭제곱), 특정 것(shift), 전부(QR).</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">고유값 확인 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 특성방정식</div>
+    <p class="prob-statement">$A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$ 의 특성방정식 $\lambda^2-7\lambda+11=0$ 에서 <strong>두 고유값의 합</strong>(대각합, trace)은?</p>
+    <div class="given"><span class="chip">$\lambda_1+\lambda_2=\text{tr}(A)$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="7" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \lambda_1+\lambda_2=4+3=7,\quad \lambda_{1,2}=\tfrac{7\pm\sqrt5}{2}=4.618,\ 2.382 $$</div><b>정답:</b> 합=trace=7, 곱=det=11. 대각합·행렬식으로 검산할 수 있다.</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="정리">
+  <div class="eyebrow">15-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$A\mathbf{x}=\lambda\mathbf{x}$ — 방향 불변, 길이 $\lambda$ 배.</li>
+      <li>$\sum\lambda=\text{tr}(A)$, $\prod\lambda=\det(A)$ (검산).</li>
+      <li>$n\ge5$ 는 <strong>반복법</strong> 필수.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$2\times2$ 특성방정식·고유값·고유벡터 손계산.</li>
+      <li>trace·det 로 고유값 검산.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="문제">
+  <div class="eyebrow">15-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">가장 센 것만 살아남는다 <span class="en">· Power Method</span></h1>
+  <div class="analogy"><span class="ic">📣</span><div class="tx"><b>직관</b> — 임의의 벡터를 $A$ 로 계속 곱하면, <b>가장 큰 고유값</b> 성분이 매번 가장 크게 증폭돼 다른 성분을 압도한다. 마치 합창에서 제일 큰 목소리만 남는 것처럼 — 곧 벡터가 <b>지배 고유벡터</b> 방향으로 정렬된다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$\mathbf{x}$ 를 고유벡터들의 합으로 쓰면 $A^k\mathbf{x}$ 에서 $\lambda_{\max}^k$ 항이 지배한다. 매 반복 <strong>최대성분으로 정규화</strong>해 발산을 막고, 그 최대성분이 $\lambda_{\max}$ 로 수렴한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">거듭제곱 반복</div>
+        <div class="keqrow"><span class="keqcap">곱하기</span><span class="keqline">$ \mathbf{y}=A\mathbf{x}_k $</span></div>
+        <div class="keqrow"><span class="keqcap">고유값 근사</span><span class="keqline">$ \lambda\approx\max_i|y_i| $</span></div>
+        <div class="keqrow"><span class="keqcap">정규화</span><span class="keqline">$ \mathbf{x}_{k+1}=\mathbf{y}/\lambda $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>곱하고→최대성분 뽑고(=$\lambda$)→나눠 정규화, 반복. <strong>지배 고유값</strong> 하나를 얻는다.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="시연">
+  <div class="eyebrow">15-2 · 시연 · Iterate</div>
+  <h1 class="stage-h">반복이 고유값으로 수렴 — 표로 보기</h1>
+  <p class="lede">$A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$, 초기 $\mathbf{x}_0=(1,0)$. 매 반복 최대성분 $\lambda$ 가 <strong>$4.618$</strong>(정확 지배 고유값)로, 벡터가 $(1,\,0.618)$ 로 수렴하는 것을 확인하라.</p>
+  <div class="stp-tblwrap" style="max-width:520px;margin-top:12px"><table class="stp-tbl"><thead><tr><th class="stp-k">k</th><th>$A\mathbf{x}_k$</th><th>$\lambda$ (최대성분)</th><th>정규화 $\mathbf{x}_{k+1}$</th></tr></thead><tbody>
+    <tr><td class="stp-k">0</td><td>(4, 1)</td><td>4.000</td><td>(1, 0.250)</td></tr>
+    <tr><td class="stp-k">1</td><td>(4.25, 1.75)</td><td>4.250</td><td>(1, 0.412)</td></tr>
+    <tr><td class="stp-k">2</td><td>(4.41, 2.24)</td><td>4.412</td><td>(1, 0.507)</td></tr>
+    <tr><td class="stp-k">3</td><td>(4.51, 2.52)</td><td>4.507</td><td>(1, 0.559)</td></tr>
+    <tr><td class="stp-k">4</td><td>(4.56, 2.68)</td><td>4.559</td><td>(1, 0.587)</td></tr>
+    <tr><td class="stp-k">5</td><td>(4.59, 2.76)</td><td>4.587</td><td>(1, 0.601)</td></tr>
+    <tr><td class="stp-k">⋯</td><td>⋯</td><td>4.618</td><td>(1, 0.618)</td></tr>
+  </tbody></table></div>
+  <div class="stp-status ok" style="margin-top:12px">✓ $\lambda\to 4.618$, 고유벡터 $\to(1,\,0.618)$ (황금비 관련). 수렴 속도 $\propto|\lambda_2/\lambda_1|=2.382/4.618\approx0.52$.</div>
+</section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 반복 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 거듭제곱 1회</div>
+    <p class="prob-statement">$A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$, $\mathbf{x}_0=(1,0)$. $A\mathbf{x}_0$ 의 <strong>최대성분(=$\lambda$ 첫 근사)</strong>을 구하시오.</p>
+    <div class="given"><span class="chip">$A\mathbf{x}_0=(4\cdot1+1\cdot0,\ 1\cdot1+3\cdot0)$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="4" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ A\mathbf{x}_0=(4,\,1)\Rightarrow \lambda\approx 4,\quad \mathbf{x}_1=(1,\,0.25) $$</div><b>정답:</b> 첫 근사 $4$ 에서 반복하며 $4.618$ 로 수렴.</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="수렴">
+  <div class="eyebrow">15-2 · 수렴 · Rate</div>
+  <h1 class="stage-h">수렴 속도 = 고유값 비</h1>
+  <div class="callout key"><div class="ct">$|\lambda_2/\lambda_1|$</div>오차가 매 반복 비율 <strong>$|\lambda_2/\lambda_1|$</strong> 로 감소(선형). 예제는 $2.382/4.618\approx0.52$ — 두 고유값이 <strong>가까울수록</strong>(비율→1) 느리다.</div>
+  <div class="keqnote" style="margin-top:14px">Rayleigh 몫 $\dfrac{\mathbf{x}^TA\mathbf{x}}{\mathbf{x}^T\mathbf{x}}$ 를 쓰면 대칭행렬에서 수렴이 <b style="color:var(--ink)">2차</b>로 빨라진다.</div>
+</section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="함정">
+  <div class="eyebrow">15-2 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">거듭제곱이 막히는 경우</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 지배 고유값 하나만</h4><p>$|\lambda_1|=|\lambda_2|$ 이거나 복소 켤레면 수렴하지 않는다.</p></div>
+    <div class="pitfall"><h4>⚠ 느린 수렴</h4><p>$|\lambda_2/\lambda_1|\approx1$ 이면 매우 느림 → <b>shift</b> 로 가속.</p></div>
+    <div class="pitfall"><h4>⚠ 나쁜 초기벡터</h4><p>$\mathbf{x}_0$ 가 지배 고유벡터에 <b>수직</b>이면(성분 0) 못 잡는다.</p></div>
+    <div class="pitfall"><h4>⚠ 최대 하나뿐</h4><p>전체 고유값이 필요하면 <b>QR</b>(15-4)로.</p></div>
+  </div>
+</section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="코드">
+  <div class="eyebrow">15-2 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 곱하고 정규화</h1>
+  <div class="codeblock"><div class="code-cap">power_method.m</div><pre><code>function [lam, x] = power_method(A, x, tol)
+  lam = 0;
+  for k = 1:1000
+      y = A * x;
+      [~, idx] = max(abs(y));
+      lam_new = y(idx);            <span class="cm">% 최대성분 = 고유값 근사</span>
+      x = y / lam_new;             <span class="cm">% 정규화</span>
+      if abs(lam_new - lam) &lt; tol, lam = lam_new; return; end
+      lam = lam_new;
+  end
+end
+
+<span class="cm">% 사용</span>
+A = [4 1; 1 3];
+[lam, x] = power_method(A, [1;0], 1e-8);
+<span class="out">% lam ≈ 4.6180,  x ≈ [1; 0.6180]</span></code></pre></div>
+</section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="정리">
+  <div class="eyebrow">15-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$\mathbf{y}=A\mathbf{x}$ → $\lambda=\max|y_i|$ → 정규화, 반복.</li>
+      <li>지배 고유값 하나, 수렴 $\propto|\lambda_2/\lambda_1|$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>정규화 누락 → 발산·오버플로.</li>
+      <li>고유값을 최대성분이 아닌 노름으로 착각.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>거듭제곱 <strong>1~2 반복</strong> 손계산.</li>
+      <li>수렴 속도 $|\lambda_2/\lambda_1|$ 계산.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="문제">
+  <div class="eyebrow">15-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">최소·특정 고유값 겨냥 <span class="en">· Inverse / Shifted</span></h1>
+  <div class="analogy"><span class="ic">🎯</span><div class="tx"><b>직관</b> — 거듭제곱은 <b>가장 큰</b> 것만 준다. 그런데 $A^{-1}$ 의 최대 고유값 = $A$ 의 <b>최소</b> 고유값(역수). 또 $(A-\mu I)$ 로 <b>이동</b>하면 $\mu$ 에 <b>가장 가까운</b> 고유값을 겨냥할 수 있다 — 조준경을 바꾸는 셈.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede"><strong>역 거듭제곱</strong>은 $A^{-1}$(실제론 $A\mathbf{y}=\mathbf{x}$ 를 매 반복 푼다)에 거듭제곱 → <strong>최소</strong> 고유값. <strong>shift</strong> $(A-\mu I)^{-1}$ 은 $\mu$ 근처 고유값을 <strong>가속 수렴</strong>으로 잡는다.</p>
+      <div class="keqbox">
+        <div class="keq-label">역·shift 반복</div>
+        <div class="keqrow"><span class="keqcap">역</span><span class="keqline">$ (A-\mu I)\,\mathbf{y}=\mathbf{x}_k $ 풀기</span></div>
+        <div class="keqrow"><span class="keqcap">정규화</span><span class="keqline">$ \mathbf{x}_{k+1}=\mathbf{y}/\max|y_i| $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>매 반복 <strong>연립방정식(6주 LU)</strong> 을 풀어 원하는 고유값을 겨냥. Rayleigh-shift는 <strong>3차</strong> 수렴까지.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">역 거듭제곱 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 최소 고유값</div>
+    <p class="prob-statement">$A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$ 의 고유값이 $4.618,\ 2.382$ 이다. 역 거듭제곱법이 수렴하는 <strong>고유값</strong>(=최소)은?</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.382" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ A^{-1}\text{의 최대 고유값}=1/\lambda_{\min}(A)\Rightarrow \lambda_{\min}=2.382 $$</div><b>정답:</b> 역 거듭제곱은 최소 고유값 $2.382$ 로 수렴.</div></div>
+  </div>
+</section>
+<section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="정리">
+  <div class="eyebrow">15-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>역 거듭제곱 → <strong>최소</strong> 고유값.</li>
+      <li>shift $(A-\mu I)^{-1}$ → $\mu$ <strong>근처</strong> 고유값, 가속.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$A^{-1}$ 고유값 = $1/\lambda$ 관계.</li>
+      <li>shift $\mu$ 선택이 수렴 속도에 미치는 영향.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="문제">
+  <div class="eyebrow">15-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">모든 고유값을 한꺼번에 <span class="en">· QR Algorithm</span></h1>
+  <div class="analogy"><span class="ic">🔁</span><div class="tx"><b>직관</b> — 거듭제곱은 하나씩. 전부 필요하면 <b>QR 분해</b>를 반복한다: $A=QR$ 로 쪼갠 뒤 <b>순서를 바꿔</b> $A'=RQ$ 로 재조립하기를 반복하면, $A$ 가 점점 <b>삼각행렬</b>이 되어 <b>대각선에 모든 고유값</b>이 드러난다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">$A_k=Q_kR_k$ (직교·상삼각 분해) → $A_{k+1}=R_kQ_k$. 이 반복은 고유값을 보존하면서 $A$ 를 상삼각(Schur)형으로 몰아간다. 실무 고유값 계산(<code>eig</code>)의 핵심.</p>
+      <div class="keqbox">
+        <div class="keq-label">QR 반복</div>
+        <div class="keqrow"><span class="keqcap">분해</span><span class="keqline">$ A_k=Q_kR_k $</span></div>
+        <div class="keqrow"><span class="keqcap">재조립</span><span class="keqline">$ A_{k+1}=R_kQ_k $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>같은 고유값 유지($A_{k+1}=Q_k^{-1}A_kQ_k$, 닮음). 대각선이 <strong>모든 고유값</strong>으로 수렴. shift·Hessenberg 로 가속.</div>
+    </div>
+  </div>
+</section>
+<section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="정리">
+  <div class="eyebrow">15-4 · 정리 · Summary</div>
+  <h1 class="stage-h">고유값 방법 총정리</h1>
+  <div class="vizgrid">
+    <div>
+      <table class="ktab"><thead><tr><th>방법</th><th>얻는 것</th><th>핵심</th></tr></thead><tbody>
+        <tr><td>거듭제곱</td><td>최대 $\lambda$</td><td>$A\mathbf{x}$ 반복</td></tr>
+        <tr><td>역 거듭제곱</td><td>최소 $\lambda$</td><td>$A^{-1}$ 반복</td></tr>
+        <tr><td>shift</td><td>$\mu$ 근처</td><td>$(A-\mu I)^{-1}$</td></tr>
+        <tr><td>QR</td><td>모든 $\lambda$</td><td>$A=QR\to RQ$</td></tr>
+      </tbody></table>
+    </div>
+    <div>
+      <div class="sumcard key"><h4>시험 포인트</h4><ul>
+        <li>목적(최대/최소/전체)에 <strong>방법 매칭</strong>.</li>
+        <li>QR이 <strong>닮음변환</strong>이라 고유값 보존.</li>
+        <li>거듭제곱 수렴 속도 $|\lambda_2/\lambda_1|$.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=15;</script>
+<script src="/na-track.js" defer></script>
+</body></html>
