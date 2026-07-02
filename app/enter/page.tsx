@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { SID_RE, PW_MIN } from "@/lib/validation";
 import { weekOf } from "@/lib/curriculum";
 
-// 목적지 = 강의(/lecture/1..15)만 허용 (open-redirect·프로토콜상대 차단).
-const NEXT_OK = /^\/lecture\/(1[0-5]|[1-9])(\/|$|\?)/;
+// 목적지 = 정적 강의(/week1..15)만 허용 (open-redirect·프로토콜상대 차단).
+const NEXT_OK = /^\/week(1[0-5]|[1-9])(\/|$|\?)/;
 
 type Step = "id" | "register" | "login" | "admin";
 
@@ -15,12 +15,12 @@ const card =
 
 function EnterForm() {
   const params = useSearchParams();
-  const next = params.get("next") || "/lecture/1";
+  const next = params.get("next") || "/week1";
   const wk = (() => {
-    const m = next.match(/^\/lecture\/(\d+)/);
+    const m = next.match(/^\/week(\d+)/);
     return m ? Number(m[1]) : 1;
   })();
-  const dest = NEXT_OK.test(next) ? next : "/lecture/1";
+  const dest = NEXT_OK.test(next) ? next : "/week1";
   const weekTitle = weekOf(wk)?.title ?? "강의실 입장";
 
   const [step, setStep] = useState<Step>("id");

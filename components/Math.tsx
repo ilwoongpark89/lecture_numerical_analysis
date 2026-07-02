@@ -2,14 +2,11 @@
 
 import { InlineMath, BlockMath } from "react-katex";
 
-const KATEX_COLOR = "#e2e8f0";
-
+// KaTeX 는 currentColor 를 상속 → 라이트(어두운 글자)·다크(밝은 글자) 컨텍스트 모두 자동.
 export function M({ children }: { children: string }) {
-  const colored = `\\textcolor{${KATEX_COLOR}}{${children}}`;
-  return <InlineMath math={colored} />;
+  return <InlineMath math={children} />;
 }
 
 export function MBlock({ children }: { children: string }) {
-  const colored = `\\textcolor{${KATEX_COLOR}}{${children}}`;
-  return <BlockMath math={colored} />;
+  return <BlockMath math={children} />;
 }

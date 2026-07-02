@@ -18,9 +18,9 @@ export default function Home() {
   const [hasSession, setHasSession] = useState(false);
   useEffect(() => setHasSession(hasStudentSession()), []);
 
-  // 세션 있으면 강의로 직접, 없으면 /enter(학번 등록/로그인) 경유.
+  // 세션 있으면 강의로 직접, 없으면 /enter(학번 등록/로그인) 경유. 강의 = 정적 슬라이드(/week{N}).
   const entryHref = (week: number) =>
-    hasSession ? `/lecture/${week}` : `/enter?next=/lecture/${week}`;
+    hasSession ? `/week${week}` : `/enter?next=/week${week}`;
 
   return (
     <main className="min-h-screen bg-white text-[#18181b]">
