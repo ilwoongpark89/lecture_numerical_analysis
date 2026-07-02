@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.4"/>
+<title>수치해석 · Week 13 · ODE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/lecture.css"/>
+</head><body>
+<header><span class="brand">수치해석<span class="sep">·</span>Numerical Analysis<span class="sep">·</span>Week 13</span><div class="chrail" id="chrail"></div></header>
+<div class="stepbar" id="stepbar"></div>
+<main><div class="stage" id="stage">
+
+<!-- ════════ 시작 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="문제">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 13 · Ordinary Differential Equations</div>
+    <h1 class="intro-h">$\dfrac{dy}{dx}=x-y$ — <span class="hl">$y(x)$ 를 어떻게 그릴까?</span></h1>
+    <p class="intro-sub">공학의 거의 모든 변화(냉각·운동·회로·개체수)는 미분방정식으로 쓰인다. 그런데 대부분은 <strong>해석해가 없다.</strong> 도함수(기울기)만 아는데 함수 자체를 어떻게 얻을까?</p>
+    <div class="intro-teaser">답 — <em>한 걸음씩 전진.</em> 현재 점의 기울기로 다음 점을 예측하고, 그 점에서 또 예측한다. 이번 주는 그 전진을 <strong>직접 돌려본다.</strong></div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="여정">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 13 · 이번 주 여정</div>
+    <h1 class="intro-h">기울기로 <span class="hl">한 걸음씩 전진</span></h1>
+    <div class="roadmap" style="margin-top:14px">
+      <div class="rm-item"><span class="rn">13-1</span><span><span class="rt">Euler 방법</span> <span class="rd">— 접선 하나로 직진 (가장 단순, 1차)</span></span></div>
+      <div class="rm-item"><span class="rn">13-2</span><span><span class="rt">개선 Euler (Heun)</span> <span class="rd">— 예측+수정으로 곡률 반영 (2차)</span></span></div>
+      <div class="rm-item"><span class="rn">13-3</span><span><span class="rt">Runge-Kutta (RK4)</span> <span class="rd">— 네 기울기 평균 (실무 표준, 4차)</span></span></div>
+      <div class="rm-item"><span class="rn">13-4</span><span><span class="rt">연립·고차 ODE</span> <span class="rd">— 벡터로 확장, 고차를 1차 시스템으로</span></span></div>
+    </div>
+    <div class="intro-teaser">공통 예제 <em>$y'=x-y,\ y(0)=1$</em> (정확해 $y=x-1+2e^{-x}$)로 세 방법을 같은 화면에서 전진시켜 정확도를 비교한다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="정리">
+  <div class="intro">
+    <div class="intro-eyebrow">WEEK 13 · 수치해석은 "돌려봐야" 안다</div>
+    <h1 class="intro-h">각 방법을 <span class="hl">이 순서로</span></h1>
+    <div class="flow">
+      <span class="flowstep on">문제</span><span class="flow-arr">→</span>
+      <span class="flowstep">원리</span><span class="flow-arr">→</span>
+      <span class="flowstep on">시연</span><span class="flow-arr">→</span>
+      <span class="flowstep on">직접계산</span><span class="flow-arr">→</span>
+      <span class="flowstep">수렴</span><span class="flow-arr">→</span>
+      <span class="flowstep on">함정</span><span class="flow-arr">→</span>
+      <span class="flowstep">코드</span>
+    </div>
+    <div class="callout key" style="margin-top:18px"><div class="ct">직접 돌리고 깨뜨린다</div><ul><li><strong>시연</strong>: "다음 반복" 으로 수치해가 정확해(회색 점선)를 따라가는(혹은 벗어나는) 걸 본다.</li><li><strong>함정</strong>: $h$ 를 크게 주면 Euler가 <strong>발산</strong>하는 걸 눈으로 확인한다.</li></ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 13-1 Euler ════════════════════ -->
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="문제">
+  <div class="eyebrow">13-1 · 문제 · Motivation</div>
+  <h1 class="stage-h">가장 단순한 전진 <span class="en">· Euler: follow the tangent</span></h1>
+  <div class="analogy"><span class="ic">🚶</span><div class="tx"><b>직관</b> — 안개 속을 걷는데 발밑의 <b>경사(기울기)</b>만 보인다. 그 방향으로 <b>한 걸음(h)</b> 딛고, 새 자리에서 또 경사를 보고 한 걸음. 이렇게 기울기만으로 경로 전체를 그린다 — 그게 Euler 법이다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">초기값 $y(x_0)=y_0$ 와 기울기 $y'=f(x,y)$ 만 주어졌을 때, 현재 점의 접선을 따라 $h$ 만큼 직진해 다음 점을 얻는다. 가장 단순하지만 모든 ODE 해법의 <strong>출발점</strong>이다.</p>
+      <div class="keqbox">
+        <div class="keq-label">이번 절의 뼈대</div>
+        <div class="keqrow"><span class="keqcap">문제</span><span class="keqline">$ y' = f(x,y),\quad y(x_0)=y_0 $</span></div>
+        <div class="keqrow"><span class="keqcap">Euler 전진</span><span class="keqline">$ y_{n+1} = y_n + h\,f(x_n, y_n) $</span></div>
+        <div class="keqrow"><span class="keqcap">전역 오차</span><span class="keqline">$ O(h) $ — 1차</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="keq-label">핵심 용어</div>
+      <div class="terms">
+        <div class="term"><b>스텝 크기 $h$</b> 한 걸음의 폭</div>
+        <div class="term"><b>기울기 $f(x_n,y_n)$</b> 현재 점 접선</div>
+        <div class="term"><b>국소 오차</b> 한 스텝당 $O(h^2)$</div>
+        <div class="term"><b>전역 오차</b> 누적 $O(h)$ — 1차</div>
+      </div>
+      <div class="callout key"><div class="ct">핵심</div>단순·빠르지만 <strong>1차</strong>라 느리고, 곡률을 못 봐 오차가 <strong>누적</strong>된다. 큰 $h$ 에선 <strong>발산</strong>도 한다(함정 참고).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="원리">
+  <div class="eyebrow">13-1 · 원리 · Derivation</div>
+  <h1 class="stage-h">Taylor 1차 절단 — 알고리즘</h1>
+  <p class="assume"><b>아이디어:</b> $y(x_{n+1})$ 를 $x_n$ 에서 Taylor 전개하고 <b>1차 항까지만</b> 남긴다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① Taylor</h4><div class="sub">$x_n$ 에서 전개</div><div class="eq">$ y(x_n{+}h)=y_n+h\,y'_n+\tfrac{h^2}{2}y''_n+\cdots $</div><p>정확한 다음 값은 무한 급수.</p></div>
+    <div class="dcard"><h4>② 절단</h4><div class="sub">1차까지</div><div class="eq">$ y_{n+1}\approx y_n+h\,y'_n $</div><p>$h^2$ 이후를 버림 → 국소오차 $O(h^2)$.</p></div>
+    <div class="dcard"><h4>③ 대입</h4><div class="sub">$y'=f$</div><div class="eq">$ y_{n+1}=y_n+h\,f(x_n,y_n) $</div><p>Euler 점화식.</p></div>
+  </div>
+  <div class="algo">
+    <div class="algo-h">Euler Algorithm</div>
+    <ol>
+      <li>$x=x_0,\ y=y_0$ 로 시작.</li>
+      <li><b>$y \leftarrow y + h\,f(x,y)$</b>, 그다음 <b>$x \leftarrow x + h$</b>.</li>
+      <li>$x$ 가 끝점에 도달할 때까지 2를 반복.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="시연">
+  <div class="eyebrow">13-1 · 시연 · Step-through</div>
+  <h1 class="stage-h">한 걸음씩 전진 — 정확해를 따라가나?</h1>
+  <p class="lede">"다음 반복" 마다 접선을 따라 한 스텝 전진한다(파랑). 회색 점선이 정확해 $y=x-1+2e^{-x}$. Euler는 곡선 <strong>안쪽으로 직진</strong>해 점점 아래로 벌어지는 걸 관찰하라.</p>
+  <div class="stepper"
+    data-kind="ode" data-fn="x - y" data-x0="0" data-y0="1" data-h="0.2" data-xend="2"
+    data-method="euler" data-true="x - 1 + 2*exp(-x)"
+    data-title="Euler — y′=x−y, y(0)=1, h=0.2"
+    data-note="파랑=수치해 전진, 회색 점선=정확해. 오차열이 매 스텝 커진다(누적)."></div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Euler 1스텝</div>
+    <p class="prob-statement">$y'=x-y$, $y(0)=1$, $h=0.2$. Euler 공식으로 <strong>$y_1$</strong> (즉 $y(0.2)$ 근사)을 구하시오.</p>
+    <div class="given"><span class="chip">$f(0,1)=0-1=-1$</span><span class="chip">$y_1=y_0+h\,f$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.8" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 기울기</div>$$ f(0,1)=0-1=-1 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 전진</div>$$ y_1=1+0.2\times(-1)=0.8 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ y_1 = 0.8 $$</div><b>정답:</b> 정확값 $y(0.2)=0.8375$ — Euler는 이미 $0.037$ 아래로 벗어났다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="수렴">
+  <div class="eyebrow">13-1 · 수렴 · Convergence</div>
+  <h1 class="stage-h">1차 수렴 — $h$ 절반이면 오차 절반</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">전역 오차의 차수</div>
+      <div class="keqbox">
+        <div class="keqrow"><span class="keqcap">국소 오차</span><span class="keqline">$ O(h^2) $ (한 스텝)</span></div>
+        <div class="keqrow"><span class="keqcap">전역 오차</span><span class="keqline">$ O(h) $ (스텝 수 $\propto 1/h$)</span></div>
+      </div>
+      <div class="callout warn"><div class="ct">1차의 대가</div>$h$ 를 $\tfrac12$ 로 줄이면 오차도 대략 $\tfrac12$ — 정밀도를 10배 높이려면 스텝을 <strong>10배</strong> 늘려야 한다. 그래서 실무는 RK4를 쓴다.</div>
+    </div>
+    <div>
+      <div class="vcap">$y(2)$ 에서 $h$ 별 Euler 오차</div>
+      <table class="ktab"><thead><tr><th>$h$</th><th>$y(2)$ 근사</th><th>오차</th></tr></thead><tbody>
+        <tr><td>0.4</td><td>1.156</td><td>0.115</td></tr>
+        <tr><td>0.2</td><td>1.215</td><td>0.056</td></tr>
+        <tr><td>0.1</td><td>1.242</td><td>0.029</td></tr>
+        <tr><td>0.05</td><td>1.256</td><td>0.015</td></tr>
+      </tbody></table>
+      <div class="keqnote">정확값 $y(2)=1+2e^{-2}=1.2707$. $h$ 를 반씩 줄일 때 오차가 <b style="color:var(--ink)">대략 반씩</b> 줄어드는 것이 1차 수렴의 지문이다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="함정">
+  <div class="eyebrow">13-1 · 함정 · Break it</div>
+  <h1 class="stage-h">$h$ 가 크면 발산한다 — 직접 깨뜨려 보기</h1>
+  <p class="lede">감쇠 방정식 $y'=-15y,\ y(0)=1$ 의 정확해는 $e^{-15x}\to 0$ 으로 얌전히 사라진다. 그러나 $h=0.2$ Euler는 <strong>부호가 튀며 폭발</strong>한다. "다음 반복" 을 눌러 확인하라 — 안정하려면 $h<2/15\approx0.133$ 이어야 한다.</p>
+  <div class="stepper"
+    data-kind="ode" data-fn="-15*y" data-x0="0" data-y0="1" data-h="0.2" data-xend="1.6"
+    data-method="euler" data-true="exp(-15*x)"
+    data-title="발산 — y′=−15y, y(0)=1, h=0.2 (불안정)"
+    data-note="정확해는 0으로 감쇠하는데 수치해는 −2, +4, −8 … 로 폭발. h·|λ|=3>2 → 불안정."></div>
+  <div class="pitfalls" style="margin-top:14px">
+    <div class="pitfall"><h4>⚠ 안정 한계</h4><p>$y'=\lambda y$ 에서 <b>$|1+h\lambda|>1$</b> 이면 발산. Euler 안정영역이 좁다.</p></div>
+    <div class="pitfall"><h4>⚠ 강성(stiff)</h4><p>빠른·느린 성분이 섞이면 안정조건이 $h$ 를 극단적으로 조인다 → 음함수법 필요.</p></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="코드">
+  <div class="eyebrow">13-1 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 전진 루프</h1>
+  <div class="codeblock"><div class="code-cap">euler.m</div><pre><code>function [x, y] = euler(f, x0, y0, h, xend)
+  x = x0:h:xend;  y = zeros(size(x));  y(1) = y0;
+  for n = 1:numel(x)-1
+      y(n+1) = y(n) + h * f(x(n), y(n));   <span class="cm">% 접선으로 한 걸음</span>
+  end
+end
+
+<span class="cm">% 사용</span>
+f = @(x, y) x - y;
+[x, y] = euler(f, 0, 1, 0.2, 2);
+<span class="out">% y(end) ≈ 1.215  (정확값 1.2707)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">공학 계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 지수 성장</div>
+    <p class="prob-statement">$y'=y$, $y(0)=1$ (정확해 $e^x$), $h=0.1$. Euler로 <strong>$y_1$</strong> 을 구하시오.</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.1" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ y_1=1+0.1\cdot 1=1.1 $$</div><b>정답:</b> 정확값 $e^{0.1}=1.1052$ — 이미 조금 낮다.</div></div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 안정 스텝</div>
+    <p class="prob-statement">$y'=-20y$ 에 Euler를 안정하게 적용하려면 <strong>스텝 $h$ 의 상한</strong>은? ($|1+h\lambda|<1$, $\lambda=-20$)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="예: 0.1" data-answer="0.1" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ |1-20h|<1 \Rightarrow 0<h<\tfrac{2}{20}=0.1 $$</div><b>정답:</b> $h<0.1$. 넘으면 발산.</div></div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="정리">
+  <div class="eyebrow">13-1 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>$y_{n+1}=y_n+h f(x_n,y_n)$ — 접선으로 한 걸음.</li>
+      <li>국소 $O(h^2)$, <strong>전역 $O(h)$ (1차)</strong>.</li>
+      <li>큰 $h$ 는 <strong>발산</strong>: $y'=\lambda y$ 안정 $|1+h\lambda|<1$.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$x$ 갱신 순서 혼동(기울기는 <strong>옛 점</strong>에서).</li>
+      <li>국소·전역 오차 차수 혼동(2 vs 1).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>1~2스텝 <strong>손 전진</strong>($y_1,y_2$).</li>
+      <li>안정 조건으로 <strong>$h$ 상한</strong> 계산.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 13-2 Heun ════════════════════ -->
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="문제">
+  <div class="eyebrow">13-2 · 문제 · Motivation</div>
+  <h1 class="stage-h">한 번 더 보고 결정한다 <span class="en">· Heun: predict &amp; correct</span></h1>
+  <div class="analogy"><span class="ic">🔭</span><div class="tx"><b>직관</b> — Euler는 <b>출발점 기울기</b>만 믿고 직진해 곡선을 놓친다. Heun은 일단 Euler로 <b>도착 예상점</b>을 찍어 거기 기울기도 본 뒤, <b>두 기울기의 평균</b>으로 다시 걷는다 — 곡률을 반영해 훨씬 정확하다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">예측(predictor)–수정(corrector) 구조로 국소 정확도를 한 차 높인 <strong>2차</strong> 방법이다. 기울기를 두 번 평가하는 대가로 오차가 급감한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">Heun 점화식</div>
+        <div class="keqrow"><span class="keqcap">예측</span><span class="keqline">$ \tilde y = y_n + h\,f(x_n,y_n) $</span></div>
+        <div class="keqrow"><span class="keqcap">수정</span><span class="keqline">$ y_{n+1}=y_n+\tfrac{h}{2}\!\left[f(x_n,y_n)+f(x_{n+1},\tilde y)\right] $</span></div>
+        <div class="keqrow"><span class="keqcap">전역 오차</span><span class="keqline">$ O(h^2) $ — 2차</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>시작·도착 <strong>두 기울기의 평균</strong>으로 걷는다(사다리꼴 적분과 동형). 기울기 2회 평가로 <strong>2차</strong> 정확도.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="원리">
+  <div class="eyebrow">13-2 · 원리 · Algorithm</div>
+  <h1 class="stage-h">예측 → 수정</h1>
+  <div class="algo">
+    <div class="algo-h">Heun Algorithm (한 스텝)</div>
+    <ol>
+      <li>시작 기울기 <b>$k_1=f(x_n,y_n)$</b>.</li>
+      <li>Euler 예측 <b>$\tilde y=y_n+h\,k_1$</b>, 도착 기울기 <b>$k_2=f(x_n+h,\tilde y)$</b>.</li>
+      <li>평균으로 전진 <b>$y_{n+1}=y_n+\tfrac{h}{2}(k_1+k_2)$</b>.</li>
+    </ol>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">왜 정확한가</div>구간의 <strong>양 끝 기울기를 평균</strong>하는 것은 적분을 <strong>사다리꼴</strong>로 근사하는 것과 같다 → 곡률의 1차 효과를 잡아 $O(h^2)$.</div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="시연">
+  <div class="eyebrow">13-2 · 시연 · Step-through</div>
+  <h1 class="stage-h">같은 문제, 더 붙는 곡선</h1>
+  <p class="lede">같은 $y'=x-y,\ y(0)=1,\ h=0.2$ 를 Heun으로 전진시킨다. Euler(13-1)와 <strong>오차열을 비교</strong>하라 — 같은 $h$ 인데 정확해(회색)에 훨씬 밀착한다.</p>
+  <div class="stepper"
+    data-kind="ode" data-fn="x - y" data-x0="0" data-y0="1" data-h="0.2" data-xend="2"
+    data-method="heun" data-true="x - 1 + 2*exp(-x)"
+    data-title="Heun — y′=x−y, y(0)=1, h=0.2 (2차)"
+    data-note="Euler와 동일한 h 인데 오차가 한 자릿수 이상 작다."></div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · Heun 1스텝</div>
+    <p class="prob-statement">$y'=x-y$, $y(0)=1$, $h=0.2$. Heun으로 <strong>$y_1$</strong> 을 구하시오. (예측 $\tilde y=0.8$)</p>
+    <div class="given"><span class="chip">$k_1=f(0,1)=-1$</span><span class="chip">$\tilde y=0.8$</span><span class="chip">$k_2=f(0.2,0.8)=-0.6$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.84" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 두 기울기</div>$$ k_1=-1,\quad \tilde y=1+0.2(-1)=0.8,\quad k_2=0.2-0.8=-0.6 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 평균 전진</div>$$ y_1=1+\tfrac{0.2}{2}(-1-0.6)=1-0.16=0.84 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ y_1=0.84 $$</div><b>정답:</b> 정확값 $0.8375$ — Euler의 $0.8$ 보다 훨씬 가깝다(오차 $0.0025$).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="수렴">
+  <div class="eyebrow">13-2 · 수렴 · Convergence</div>
+  <h1 class="stage-h">2차 수렴 — $h$ 절반이면 오차 1/4</h1>
+  <div class="callout key"><div class="ct">$O(h^2)$</div>$h$ 를 $\tfrac12$ 로 줄이면 오차는 대략 <strong>$\tfrac14$</strong>. Euler(반씩) 대비 훨씬 빠르게 정확해진다 — 기울기 2회 평가의 값어치.</div>
+  <div class="keqnote" style="margin-top:14px">$y(2)$ 오차: Euler $h{=}0.2$ 는 $0.056$, Heun $h{=}0.2$ 는 $\approx 0.0042$ — 같은 계산량 근처에서 <b style="color:var(--ink)">십수 배</b> 정확.</div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="정리">
+  <div class="eyebrow">13-2 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>예측 $\tilde y=y_n+hk_1$ → 수정 $y_{n+1}=y_n+\tfrac h2(k_1+k_2)$.</li>
+      <li><strong>2차</strong> $O(h^2)$ · 사다리꼴 적분과 동형.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$k_2$ 를 <strong>예측점 $\tilde y$</strong> 가 아닌 $y_n$ 에서 계산.</li>
+      <li>$\tfrac h2$ 누락(단순 평균 아님).</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>predictor–corrector <strong>1스텝 손계산</strong>.</li>
+      <li>Euler vs Heun <strong>수렴 차수·오차</strong> 비교.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 13-3 RK4 ════════════════════ -->
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="문제">
+  <div class="eyebrow">13-3 · 문제 · Motivation</div>
+  <h1 class="stage-h">실무의 표준 <span class="en">· RK4: four slopes</span></h1>
+  <div class="analogy"><span class="ic">🎯</span><div class="tx"><b>직관</b> — Heun이 두 기울기를 평균했다면, RK4는 <b>구간 안 네 곳</b>(시작·중간 두 번·끝)의 기울기를 가중 평균한다. 중간을 두 번 보정해 곡률을 정교하게 반영 → <b>4차</b> 정확도로 대부분의 공학 ODE의 기본값이 된다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">한 스텝에 기울기를 <strong>네 번</strong> 평가해 가중 평균한다. 계산량은 늘지만 정확도가 $O(h^4)$ 라 같은 정밀도를 훨씬 큰 $h$ 로 달성한다 — 실무 표준.</p>
+      <div class="keqbox">
+        <div class="keq-label">RK4 (한 스텝)</div>
+        <div class="keqrow"><span class="keqcap">네 기울기</span><span class="keqline">$ k_1=f(x_n,y_n) $</span></div>
+        <div class="keqrow"><span class="keqcap"></span><span class="keqline">$ k_2=f(x_n+\tfrac h2, y_n+\tfrac h2 k_1) $</span></div>
+        <div class="keqrow"><span class="keqcap"></span><span class="keqline">$ k_3=f(x_n+\tfrac h2, y_n+\tfrac h2 k_2) $</span></div>
+        <div class="keqrow"><span class="keqcap"></span><span class="keqline">$ k_4=f(x_n+h, y_n+h k_3) $</span></div>
+        <div class="keqrow"><span class="keqcap">전진</span><span class="keqline">$ y_{n+1}=y_n+\tfrac h6(k_1+2k_2+2k_3+k_4) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>중간 기울기 $k_2,k_3$ 에 <strong>가중치 2</strong>. Simpson 적분과 동형으로 <strong>4차</strong> $O(h^4)$. MATLAB <code>ode45</code> 의 뿌리.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="시연">
+  <div class="eyebrow">13-3 · 시연 · Step-through</div>
+  <h1 class="stage-h">네 기울기의 위력 — 거의 겹친다</h1>
+  <p class="lede">같은 $y'=x-y,\ y(0)=1,\ h=0.2$ 를 RK4로 전진. 오차열이 $10^{-4}\sim10^{-5}$ 수준으로 <strong>정확해(회색)와 사실상 겹친다</strong> — Euler/Heun과 비교하라.</p>
+  <div class="stepper"
+    data-kind="ode" data-fn="x - y" data-x0="0" data-y0="1" data-h="0.2" data-xend="2"
+    data-method="rk4" data-true="x - 1 + 2*exp(-x)"
+    data-title="RK4 — y′=x−y, y(0)=1, h=0.2 (4차)"
+    data-note="같은 h 인데 오차 ~1e-5. 곡선과 겹쳐 보인다."></div>
+</section>
+
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 스텝을 손으로 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · RK4 1스텝</div>
+    <p class="prob-statement">$y'=x-y$, $y(0)=1$, $h=0.2$. 주어진 네 기울기로 <strong>$y_1$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$k_1=-1$</span><span class="chip">$k_2=-0.8$</span><span class="chip">$k_3=-0.82$</span><span class="chip">$k_4=-0.636$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.8375" data-tol="0.002"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">가중 평균</div>$$ y_1=1+\tfrac{0.2}{6}\big[(-1)+2(-0.8)+2(-0.82)+(-0.636)\big] $$</div>
+      <div class="dstep2"><div class="step-label">계산</div>$$ =1+\tfrac{0.2}{6}(-4.876)=1-0.1625=0.8375 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ y_1\approx 0.8375 $$</div><b>정답:</b> 정확값 $0.83746$ 과 소수 4자리 일치 — 단 한 스텝에!</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="수렴">
+  <div class="eyebrow">13-3 · 수렴 · Compare</div>
+  <h1 class="stage-h">세 방법 한눈에 비교</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">$y(2)$ 오차, $h=0.2$ 동일</div>
+      <table class="ktab"><thead><tr><th>방법</th><th>차수</th><th>$y(2)$ 오차</th></tr></thead><tbody>
+        <tr><td>Euler</td><td>1</td><td>$5.6\times10^{-2}$</td></tr>
+        <tr><td>Heun</td><td>2</td><td>$4.2\times10^{-3}$</td></tr>
+        <tr><td>RK4</td><td>4</td><td>$8.5\times10^{-6}$</td></tr>
+      </tbody></table>
+      <div class="keqnote">기울기 평가 횟수(스텝당 1·2·4)는 조금 늘지만, 오차는 <b style="color:var(--ink)">천~만 배</b> 작아진다 — RK4가 표준인 이유.</div>
+    </div>
+    <div>
+      <div class="callout key"><div class="ct">$O(h^4)$</div>$h$ 를 $\tfrac12$ 로 줄이면 오차 $\tfrac{1}{16}$. 큰 스텝으로도 높은 정밀도 → 계산 효율 최고.</div>
+      <div class="callout warn" style="margin-top:12px"><div class="ct">한계</div>강성(stiff) 문제엔 명시적 RK4도 안정조건에 묶인다 → 음함수 RK/BDF.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="코드">
+  <div class="eyebrow">13-3 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 네 기울기</h1>
+  <div class="codeblock"><div class="code-cap">rk4.m</div><pre><code>function [x, y] = rk4(f, x0, y0, h, xend)
+  x = x0:h:xend;  y = zeros(size(x));  y(1) = y0;
+  for n = 1:numel(x)-1
+      k1 = f(x(n),        y(n));
+      k2 = f(x(n)+h/2,    y(n)+h/2*k1);
+      k3 = f(x(n)+h/2,    y(n)+h/2*k2);
+      k4 = f(x(n)+h,      y(n)+h*k3);
+      y(n+1) = y(n) + h/6*(k1 + 2*k2 + 2*k3 + k4);
+  end
+end
+
+<span class="cm">% 사용 (또는 내장 ode45)</span>
+f = @(x,y) x - y;
+[x, y] = rk4(f, 0, 1, 0.2, 2);
+<span class="out">% y(end) ≈ 1.27069  (정확값 1.27067)</span></code></pre></div>
+</section>
+
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="정리">
+  <div class="eyebrow">13-3 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>네 기울기 가중평균 $\tfrac16(k_1+2k_2+2k_3+k_4)$.</li>
+      <li><strong>4차</strong> $O(h^4)$ · 실무 표준(<code>ode45</code>).</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>$k_2,k_3$ 를 <strong>이전 $k$</strong> 로 갱신하는 순서 실수.</li>
+      <li>가중치 $1,2,2,1$ 와 $\tfrac h6$ 혼동.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$k_1\!\sim\!k_4$ 및 <strong>1스텝 손계산</strong>.</li>
+      <li>Euler·Heun·RK4 <strong>차수·오차·비용</strong> 표.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ════════════════════ 13-4 연립·고차 ════════════════════ -->
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="문제">
+  <div class="eyebrow">13-4 · 문제 · Motivation</div>
+  <h1 class="stage-h">진동·궤도는 <span class="hl">2차 이상</span>이다</h1>
+  <div class="analogy"><span class="ic">🪀</span><div class="tx"><b>직관</b> — 용수철 $y''+\omega^2 y=0$, 행성 궤도, 회로 — 대부분 <b>2차 이상</b> 또는 <b>연립</b>이다. 좋은 소식: 고차 한 개는 <b>1차 여러 개(시스템)</b>로 바꿔, 지금까지의 Euler/RK4를 <b>벡터로</b> 그대로 쓰면 된다.</div></div>
+  <div class="two">
+    <div class="col2">
+      <p class="lede">보조변수를 도입해 고차 ODE를 1차 연립계로 <strong>차수 낮추기</strong> 한 뒤, RK4를 각 성분에 <strong>벡터로</strong> 적용한다.</p>
+      <div class="keqbox">
+        <div class="keq-label">차수 낮추기 (예: $y''=f(x,y,y')$)</div>
+        <div class="keqrow"><span class="keqcap">치환</span><span class="keqline">$ v=y' $</span></div>
+        <div class="keqrow"><span class="keqcap">시스템</span><span class="keqline">$ y'=v,\quad v'=f(x,y,v) $</span></div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">핵심</div>고차 → <strong>1차 시스템</strong>. 상태를 벡터 $\mathbf{y}=[y,v]^T$ 로 묶으면 Euler/RK4 공식이 <strong>그대로</strong> 성립.</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="직접계산">
+  <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">차수 낮추기 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">직접계산 · 시스템 변환 후 Euler</div>
+    <p class="prob-statement">$y''=-y$, $y(0)=1$, $y'(0)=0$ 을 $y'=v,\ v'=-y$ 로 놓고 $h=0.1$ Euler 1스텝. <strong>$y_1$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$y_1=y_0+h v_0$</span><span class="chip">$v_0=0$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.0" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">벡터 Euler</div>$$ y_1=y_0+h v_0=1+0.1\cdot 0=1,\qquad v_1=v_0+h(-y_0)=0+0.1(-1)=-0.1 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ y_1=1.0,\quad v_1=-0.1 $$</div><b>정답:</b> $y$ 는 아직 $1$, 속도 $v$ 가 음으로 생겨 다음 스텝부터 내려간다(진동 시작).</div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="코드">
+  <div class="eyebrow">13-4 · 코드 · MATLAB</div>
+  <h1 class="stage-h">구현 — 상태 벡터 + ode45</h1>
+  <div class="codeblock"><div class="code-cap">spring.m — y'' + y = 0</div><pre><code><span class="cm">% 상태 Y = [y; v],  Y' = [v; -y]</span>
+odefun = @(x, Y) [Y(2); -Y(1)];
+Y0 = [1; 0];                       <span class="cm">% y(0)=1, y'(0)=0</span>
+[x, Y] = ode45(odefun, [0 10], Y0);
+plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
+<span class="out">% 진동 해 cos(x) 를 재현</span></code></pre></div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">확장</div>$n$차 ODE → 상태 $n$개, 연립 $m$개 방정식 → 상태 $m$개. RK4/ode45는 벡터 $\mathbf{Y}$ 에 그대로 적용된다.</div>
+</section>
+
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
+  <div class="eyebrow">13-4 · 정리 · Summary</div>
+  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <div class="sumgrid">
+    <div class="sumcard key"><h4>핵심 정리</h4><ul>
+      <li>고차 → 보조변수로 <strong>1차 시스템</strong>.</li>
+      <li>상태 <strong>벡터</strong> $\mathbf{Y}$ 로 묶어 Euler/RK4 그대로.</li>
+    </ul></div>
+    <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
+      <li>초기조건 $y(0),y'(0)$ 을 <strong>모두</strong> 상태로 넣지 않음.</li>
+      <li>성분별 갱신 순서·짝 맞추기 실수.</li>
+    </ul></div>
+    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
+      <li>$y''=g$ 를 <strong>1차 시스템으로 변환</strong>.</li>
+      <li>벡터 Euler <strong>1스텝</strong>($y_1,v_1$).</li>
+    </ul></div>
+  </div>
+</section>
+
+</div></main>
+<footer><button class="nav-btn prev" id="prevBtn">← 이전</button><span class="foot-hint" id="footHint">← / → 또는 상단 단계 클릭으로 이동</span><button class="nav-btn next" id="nextBtn">다음 →</button></footer>
+<script src="/lecture-engine.js"></script>
+<script src="/na-widgets.js"></script>
+<script>window.NA_WEEK=13;</script>
+<script src="/na-track.js" defer></script>
+</body></html>

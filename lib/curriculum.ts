@@ -49,7 +49,7 @@ export const WEEKS: Week[] = [
     chapters: C(11, [[1, "사다리꼴 공식"], [2, "Simpson 공식"], [3, "복합 공식"], [4, "Gauss Quadrature"]]) },
   { week: 12, title: "수치미분", topic: "Numerical Differentiation", desc: "유한차분과 Richardson 외삽", ready: true,
     chapters: C(12, [[1, "전·후·중앙 차분"], [2, "고차 정확도 공식"], [3, "Richardson 외삽"], [4, "편미분 근사"]]) },
-  { week: 13, title: "상미분방정식", topic: "ODE", desc: "Euler·Heun·Runge-Kutta", ready: false,
+  { week: 13, title: "상미분방정식", topic: "ODE", desc: "Euler·Heun·Runge-Kutta", ready: true,
     chapters: C(13, [[1, "Euler 방법"], [2, "개선 Euler (Heun)"], [3, "Runge-Kutta (RK4)"], [4, "연립·고차 ODE"]]) },
   { week: 14, title: "편미분방정식", topic: "PDE", desc: "유한차분: 열·라플라스·파동", ready: false,
     chapters: C(14, [[1, "유한차분 개요"], [2, "열전도 (포물형)"], [3, "라플라스 (타원형)"], [4, "파동 (쌍곡형)"]]) },
