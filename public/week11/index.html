@@ -62,6 +62,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 적분 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-11-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 이상한 모양의 넓이를 재본 적</span>
+    <div class="lf-q">공식이 없는 <strong>제멋대로 생긴 넓이</strong>를 어림해야 했던 순간을 떠올려 보자 — 책상에 번진 커피 자국, 바닥에 떨어진 나뭇잎, 지도 위 호수나 우리나라의 크기, 손바닥에 고인 물웅덩이. 자를 대도 딱 떨어지지 않는 이 넓이를 너라면 어떻게 재겠는가? 정답을 맞히려 하지 말고, <em>어떤 조각으로 나눠 어떻게 더해 갔는지</em>를 생생하게 묘사해 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 나뭇잎을 모눈종이 위에 올려 꽉 찬 칸을 세거나, 세로로 얇게 <strong>조각</strong>을 내어 각 조각을 사각형·사다리꼴로 어림해 다 더한다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 곡선 아래를 얇은 <strong>조각</strong>으로 잘라 넓이를 더하는 이 습관이 이번 주 사다리꼴·Simpson 공식의 심장이다 — $\int_a^b f\,dx \approx \sum(\text{조각 넓이})$.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="수치 적분 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-11-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 속도계만 보며 간 거리 어림하기</span>
+    <div class="lf-q">주행거리계가 고장 났다고 하자. 차·자전거·버스를 타고 가며 <strong>속도계</strong>만 몇 분마다 힐끗 볼 수 있다면, 도착했을 때 <strong>총 이동 거리</strong>를 어떻게 어림하겠는가? 속도는 끊임없이 변하는데 너에겐 <em>띄엄띄엄한 몇 개의 값</em>뿐이다. 네 전략을 적어 보자 — 두 번의 속도 사이 빈틈을 어떻게 메웠는지, 그리고 더 자주 볼수록 왜 정확해지는지도 함께.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — $5$분마다 속도를 적어 두고, 이웃한 두 순간 속도의 <strong>평균</strong>에 $5$분을 곱해 조각 거리들을 만들어 모두 더한다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 전략을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "두 값의 평균 $\times$ 간격" 을 이어 붙인 것이 바로 <strong>사다리꼴 공식</strong> $\bigl(\tfrac{v_0+v_1}{2}\,\Delta t\bigr)$; 조각 안 곡선을 포물선으로 보면 한 차수 더 정확한 <strong>Simpson</strong> 이 된다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="수치 적분 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 왜 수치 적분인가</div>
+  <h1 class="stage-h">케플러, <span class="hl">포도주 통에서 적분을 만나다</span></h1>
+  <div class="reading">
+    <p>$1613$년, 천문학자 <strong>요하네스 케플러(Johannes Kepler)</strong>는 재혼을 앞두고 결혼식에 쓸 포도주를 사들였다. 그런데 상인이 통의 부피를 재는 방법이 이상했다 — 마개 구멍으로 <strong>막대 하나를 비스듬히</strong> 찔러 넣어 젖은 길이만 보고 값을 매겼다. 배가 불룩한 통도, 홀쭉한 통도 같은 잣대로. 케플러는 "이게 정말 맞나?" 를 그냥 넘기지 못했다.</p>
+    <p>그는 통을 <strong>수많은 얇은 원판으로 잘라</strong> 각 조각의 부피를 더하는 방식으로 곡면에 둘러싸인 부피를 다시 계산했고, $1615$년 <em>「포도주 통의 새로운 부피 측정법」(Nova Stereometria Doliorum Vinariorum)</em> 으로 펴냈다. 곡선으로 둘러싸인 크기를 <strong>잘게 조각내어 더한다</strong>는, 뉴턴·라이프니츠의 미적분보다 반세기 앞선 발상이었다.</p>
+    <div class="pullquote">곡선으로 둘러싸인 것도, 충분히 얇은 조각으로 자르면 더할 수 있다 — 넓이든, 포도주 통의 부피든.</div>
+    <p>훗날 이 아이디어는 <strong>뉴턴–코츠(Newton–Cotes) 공식</strong>으로 정리된다. 함수를 지나는 다항식(직선·포물선…)을 대신 적분하는 이 방법의 대표가 바로 <strong>사다리꼴 공식</strong>과 <strong>Simpson 공식</strong>이다. 재미있게도 "Simpson 공식" 은 토머스 심프슨보다 앞서 케플러가 이미 썼기에, 독일권에서는 지금도 <em>「케플러 통 공식」(Keplersche Fassregel)</em> 이라 부른다. 이번 주 우리가 직접 돌려 볼 그 공식이다.</p>
+    <p class="readmeta">배경: J. Kepler, <em>Nova Stereometria Doliorum Vinariorum</em>(1615) · Newton–Cotes 공식 · Simpson's rule (Keplersche Fassregel)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 11-1 사다리꼴 공식 ════════════════════ -->
 <section class="screen" data-ch="11-1" data-chtitle="사다리꼴 공식" data-stage="문제">
   <div class="eyebrow">11-1 · 문제 · Motivation</div>

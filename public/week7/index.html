@@ -62,6 +62,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-7-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 휘저은 물이 잔잔해질 때</span>
+    <div class="lf-q">컵이나 욕조의 물을 한 번 휘저었다가 가만히 두면, 울퉁불퉁하던 표면이 어느새 평평해진다. 솟은 곳은 내려앉고 팬 곳은 차오른다. 이렇게 <strong>제자리를 찾아 잔잔해지는</strong> 장면 — 출렁이다 멎는 물, 뜨거운 냄비가 식으며 온도가 고르게 퍼지는 것, 구겨졌다 펴지는 이불 등 — 을 하나 골라 생생히 묘사해 보자. 정답을 맞히려 하지 말고, <em>어느 지점이 왜, 어느 쪽으로 움직여 이웃과 같아졌는지</em>를 관찰해 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 봉우리처럼 솟은 물은 양옆으로 흘러 낮아지고, 움푹 팬 곳은 이웃에서 밀려온 물로 차오른다 → 결국 각 점의 높이가 <em>양옆의 중간(평균)</em>에 가까워진다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "각 점이 이웃의 평균 쪽으로 조금씩" — 이 반복이 이번 주 Jacobi·Gauss-Seidel 이 $A\mathbf{x}=\mathbf{b}$ 를 푸는 심장이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-7-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 여럿이 함께 줄·간격 맞출 때</span>
+    <div class="lf-q">단체 사진에서 "고르게 벌려 서 주세요" 할 때를 떠올려 보자. 방법 A는 <strong>다 같이 하나·둘·셋에 옆을 흘깃 보고 동시에</strong> 발을 옮기는 것, 방법 B는 <strong>한쪽 끝부터 한 명씩, 방금 자리를 잡은 앞사람을 보고</strong> 차례로 맞추는 것이다. 무거운 소파를 여럿이 옮겨 벽에 붙일 때든, 합창에서 음을 맞출 때든 좋다. 어느 쪽이 더 빨리 정렬될까? 네가 겪은 장면을 골라 <em>왜 최신 정보를 곧바로 쓰는 쪽이 빠른지</em>를 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 방법 A는 모두가 <em>방금 전 낡은 위치</em>를 기준 삼아 서로 어긋나기 쉽고, 방법 B는 앞사람의 <em>갓 고친 새 위치</em>를 곧장 반영해 뒤로 갈수록 오차가 덜 쌓인다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 A = Jacobi(모두 이전 값으로 동시에), B = Gauss-Seidel(새 값을 즉시 재사용) — 그래서 보통 Gauss-Seidel 이 약 2배 빠르다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 반복법의 탄생</div>
+  <h1 class="stage-h">가우스가 <span class="hl">"졸면서도 할 수 있다"</span>고 한 계산</h1>
+  <div class="reading">
+    <p>1820년대, 카를 프리드리히 가우스는 하노버 왕국의 땅을 <strong>삼각측량</strong>으로 재고 있었다. 관측에는 늘 오차가 끼었고, 이를 <strong>최소제곱법</strong>으로 다듬으면 미지수가 여러 개 얽힌 커다란 선형 연립방정식(정규방정식)이 쏟아져 나왔다. 소거법으로 끝까지 손계산을 밀어붙이는 일은 지치고 실수가 잦았다.</p>
+    <p>가우스의 우회는 이랬다 — 정확한 해를 한 번에 구하려 애쓰지 말고, 대충 추측한 뒤 방정식을 하나씩 훑으며 가장 크게 어긋난 미지수부터 조금씩 고쳐 나가자. 각 미지수를 "나머지가 지금 말하는 값"에 맞춰 다시 계산하는 것은, 곧 <strong>자신을 이웃들의 값에 맞춰 갱신</strong>하는 일이다. 이 손질을 반복할수록 방정식의 <em>어긋남(잔차)</em>이 사그라들었다.</p>
+    <div class="pullquote">가우스는 제자 게를링에게 보낸 편지(1823)에서 이 반복 계산을 두고 "반쯤 졸면서도, 혹은 다른 생각을 하면서도 할 수 있다"고 적었다.</div>
+    <p>이 아이디어를 1874년 <strong>자이델</strong>이 다듬어 오늘의 <strong>Gauss–Seidel 법</strong>이 되었고, 야코비는 1845년 모든 미지수를 옛값으로 <strong>동시에</strong> 갱신하는 변형을 내놓아 <strong>Jacobi 법</strong>으로 남았다. 20세기에 유한차분·유한요소가 등장하자, <em>각 격자점이 이웃의 평균으로 수렴</em>하는 이 완화(relaxation) 방식은 열·전위·유체 방정식을 푸는 표준 도구가 되었다 — 이번 주 두 방법이 바로 그 직계 후손이다.</p>
+    <p class="readmeta">배경: C. F. Gauss → C. L. Gerling 서신(1823) · P. L. von Seidel(1874) · C. G. J. Jacobi(1845)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 7-1 Jacobi 반복법 ════════════════════ -->
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="문제">
   <div class="eyebrow">7-1 · 문제 · Motivation</div>

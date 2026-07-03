@@ -60,6 +60,38 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-2-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 남이 그대로 따라 하도록 적어본 적</span>
+    <div class="lf-q">친구에게 라면 끓이는 법이나 우리 집 찾아오는 길을 — 옆에 없이도 그대로 따라 하도록 — <strong>글로만</strong> 적어준 적 있는가? "적당히", "조금", "알아서" 같은 말이 하나라도 끼면 상대는 엉뚱한 데서 멈추거나 헤맨다. 네가 무언가를 이렇게 단계로 적어(또는 적힌 걸 따라 하다 모호해서 실패해) 본 장면을 골라, <em>어디서 어긋났고 어떻게 하면 오해가 0이 되는지</em>를 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — "소금 적당히"가 아니라 "소금 $3$g", "왼쪽으로"가 아니라 "$3$번 출구에서 왼쪽 $50$m"… 애매함을 지울수록 남이 똑같이 재현한다.</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 컴퓨터는 세상에서 가장 고지식한 상대다 — 적힌 명령을 글자 그대로만 따른다. MATLAB 문법이 까다로워 보이는 건, 오해가 $0$ 이 되도록 "정확히" 적으라는 요구일 뿐이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-2-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 똑같은 일을 만 번 해야 한다면</span>
+    <div class="lf-q">반 학생 $30$ 명, 아니 $10000$ 명의 시험 점수를 <strong>전부 $5$ 점씩</strong> 올려 다시 적어야 한다면 어떻게 하겠는가? 하나씩 손으로 고치면 지치고 실수도 난다. 그런데 "전부 $5$ 더해" 라고 <strong>한 번에</strong> 시킬 수 있다면? 표 계산·사진 밝기 일괄 보정·문서 찾기바꾸기처럼, 네가 <em>'똑같은 일을 잔뜩' 을 한 번에 처리해 본</em>(또는 하나씩 하다 지쳐 본) 경험을 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 엑셀 한 칸에 수식을 쓰고 아래로 주욱 끌면 $1000$ 칸이 한 번에 채워진다 — 사람은 한 번 쓰고, 기계는 천 번 계산한다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 MATLAB 이 "행렬 실험실(Matrix Laboratory)" 인 이유 — 수 하나가 아니라 수천 개를 담은 벡터·행렬을 한 명령으로 통째 계산한다. <code>score = score + 5</code> 한 줄이 만 명을 올린다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 왜 MATLAB인가</div>
+  <h1 class="stage-h">행렬을 위한 <span class="hl">실험실</span></h1>
+  <div class="reading">
+    <p>$1970$ 년대 미국 뉴멕시코대의 수학교수 <strong>클리브 몰러(Cleve Moler)</strong> 에겐 고민이 있었다. 당시 최고의 수치 라이브러리 <strong>LINPACK·EISPACK</strong> 은 포트란(Fortran)으로 짜여 있어, 행렬 하나를 풀려 해도 학생들이 프로그램을 통째로 컴파일해야 했다. 수업에서 "행렬을 그냥 손대게" 하고 싶었던 그는, 포트란을 몰라도 <strong>명령 한 줄로</strong> 그 라이브러리를 부르는 작은 프로그램을 만들어 학생들에게 나눠줬다. 이름은 <strong>MATLAB — MATrix LABoratory</strong>.</p>
+    <div class="pullquote">다른 언어에선 "숫자 하나"가 기본 단위지만, MATLAB 에선 처음부터 <em>행렬</em>이 기본 단위다.</div>
+    <p>$1984$ 년 몰러는 잭 리틀·스티브 뱅거트와 회사(MathWorks)를 세워 MATLAB 을 상용화했고, 오늘날 공학·과학 계산의 사실상 표준이 되었다. 이번 주 우리가 익히는 <strong>벡터·행렬 연산</strong>이 이 언어의 심장인 이유이자, 앞으로 모든 수치 방법을 이 안에서 돌리게 될 이유다.</p>
+    <p class="readmeta">배경: Cleve Moler 와 MATLAB 의 탄생(1970년대~) · LINPACK/EISPACK · MathWorks(1984)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 2-1 환경과 문법 ════════════════════ -->
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="문제">
   <div class="eyebrow">2-1 · 문제 · Why MATLAB</div>

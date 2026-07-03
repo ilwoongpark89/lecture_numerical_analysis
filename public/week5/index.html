@@ -62,6 +62,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-5-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 두 번 재보고 그 다음을 가늠한 적</span>
+    <div class="lf-q">세면대나 양동이에 물을 받으며 "언제쯤 다 찰까?" 를 가늠해 본 적이 있는가. $30$초에 손가락 두 마디, $1$분에 네 마디 — 이렇게 <strong>두 번 눈금을 재보면</strong>, 굳이 수도꼭지의 정확한 유량(초당 몇 mL)을 몰라도 "이 속도면 앞으로 $1$분쯤" 하고 머릿속에 <strong>직선 하나를 그어</strong> 예측하게 된다. 물 받기, 자동차로 두 이정표를 지나며 도착 시각 어림하기, 국 간을 소금 한 꼬집씩 보며 맞추기 — 이렇게 <em>정확한 공식(비율)을 모른 채 관찰한 두 값만으로 다음을 겨눈</em> 경험을 하나 골라, 어떻게 예측했는지 생생히 적어보자. 정답을 맞히려 하지 말고, 두 관찰을 어떻게 이어 붙였는지를 묘사해 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — $30$초에 $2$cm, $60$초에 $4$cm 찼다면 → 초당 유량을 직접 안 구해도, 두 점 $(30,2),(60,4)$ 를 이은 직선을 늘려 "목표 $10$cm 는 약 $150$초" 라고 겨눈다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 도함수(정확한 기울기)를 몰라도 <strong>관찰한 두 점을 이은 직선(할선)</strong> 으로 근을 겨눈다 — 이 아이디어가 이번 주 할선법의 심장이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-5-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 가까워질수록 — 빨라졌나, 일정했나</span>
+    <div class="lf-q">카메라나 쌍안경의 초점 링을 돌려 흐릿한 상을 또렷하게 맞춰 본 적이 있는가. 멀 때는 한참 돌려도 티가 잘 안 나다가, <strong>초점 근처에선 아주 살짝만 돌려도 확 또렷</strong>해진다. 반대로 계단을 한 칸씩 내려가듯 <strong>매번 같은 만큼</strong> 좁혀지는 조율도 있다 — 다트를 과녁에 붙이기, 기타 줄을 기준음에 맞추기, 주차하며 조금씩 대기. 네가 무언가를 <em>반복해서 조율하며 목표에 다가간</em> 경험을 하나 떠올려, 목표에 <strong>얼마나 빨리</strong> 가까워졌는지 적어보자. 매 시도마다 남은 오차가 일정한 비율로 줄었는가, 아니면 가까워질수록 <strong>점점 빨라졌는가?</strong></div>
+    <div class="lf-eg"><b>예</b> 방향만 — 초점: 처음엔 반 바퀴 돌려도 그대로, 다 맞을 즈음엔 손끝만큼 돌려도 확 선명 → "가까울수록 가속". vs 다트: 매번 중심까지 거리가 얼추 절반씩 → "일정한 비율"…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 관찰을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "매번 일정 비율로" = 선형 수렴(이분법), "가까울수록 가속" = 초선형·이차 수렴(할선법 $p\approx1.618$ · Newton $p=2$) — 이번 주 수렴 차수의 감각이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 뉴턴보다 오래된 방법</div>
+  <h1 class="stage-h">도함수 없이 근 찾기는 <span class="hl">고대에 이미 있었다</span></h1>
+  <div class="reading">
+    <p>지난 주 Newton의 접선법은 미분(도함수)이라는 $17$세기의 도구를 쓴다. 그런데 "<strong>두 번 틀려 보고 그 사이를 겨누는</strong>" 방법은 미적분보다 수천 년 앞서 존재했다. 이집트의 <strong>린드 파피루스</strong>(약 기원전 $1650$년)에는 어림값을 하나 넣고 틀린 만큼 비례로 고치는 <strong>가위치법(false position)</strong> 이 적혀 있고, 고대 중국의 <strong>《구장산술》「영부족(盈不足)」</strong> 편은 어림값을 둘 넣어(하나는 남고 하나는 모자라게) 그 두 오차를 이어 답을 잡는 <strong>이중 가위치법</strong>을 담고 있다.</p>
+    <p>이 "두 오차(아랍어 <em>al-khaṭāʾayn</em>)" 의 규칙은 중세 이슬람 수학을 거쳐, $1202$년 피보나치의 <strong>《산반서(Liber Abaci)》</strong> 를 통해 유럽에 <em>regula elchataym</em> 이라는 이름으로 전해졌다. 두 시도 $x_0,x_1$ 의 함수값을 직선으로 이어 그 직선이 $0$ 을 지나는 곳을 다음 근사로 삼는 것 — 바로 오늘날의 <strong>할선법(secant)</strong> 과 같은 아이디어다.</p>
+    <div class="pullquote">두 번의 틀린 시도를 직선으로 이으면, 세 번째는 훨씬 덜 틀린다 — 도함수가 없어도.</div>
+    <p>Newton–Raphson이 등장한 것은 $17$세기 말(뉴턴 $\approx1669$, 랩슨 $1690$)이니, 도함수 없는 이 방법이 <strong>접선법보다 훨씬 오래된 셈</strong>이다. 현대에 와서 그 수렴 속도가 <strong>황금비 $\varphi=\tfrac{1+\sqrt5}{2}\approx1.618$</strong> 차수의 초선형임이 밝혀졌다 — 선형인 이분법보다 빠르고 이차인 Newton보다 약간 느리지만, <em>도함수가 필요 없다</em>는 고대의 장점을 그대로 간직한다.</p>
+    <p class="readmeta">배경: 가위치법(regula falsi) · 린드 파피루스(≈BC 1650) · 《구장산술》「영부족」 · 피보나치 《산반서》(1202) · 할선법 수렴차수 $\varphi\approx1.618$</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 5-1 할선법 ════════════════════ -->
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="문제">
   <div class="eyebrow">5-1 · 문제 · Motivation</div>

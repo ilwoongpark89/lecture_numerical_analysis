@@ -54,6 +54,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-13-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 속도만 보고 "잠시 뒤 어디쯤"을 어림한 적</span>
+    <div class="lf-q">버스나 차를 타고 갈 때, 속도계(또는 내비의 "$3$분 남음" 표시, 충전 "$20$분 남음")만 보고 <strong>"이 속도라면 곧 저기쯤 가 있겠다"</strong> 하고 머릿속으로 어림해 본 적이 있는가? 그런데 신호에 걸리거나 길이 뻥 뚫려 예측이 조금씩 어긋나던 순간을 하나 골라, <em>지금 이 순간의 상태(속도)로 어떻게 다음을 찍었고, 왜 빗나갔는지</em>를 생생하게 적어보자. 정답을 맞히려 하지 말고 관찰을 넓게 펼쳐 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 지금 $60$ km/h니까 $1$분 뒤엔 $1$ km 앞이겠지 → 그새 신호에 멈춰 실제론 $0.6$ km밖에 못 감 → 도착 시각도 자꾸 뒤로 밀림…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "지금의 기울기(속도)로 바로 다음 위치를 찍고, 거기서 또 찍는다" — 이 리듬이 이번 주 Euler 법의 한 걸음이다. 기울기가 도중에 변하면 그만큼 오차가 쌓인다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-13-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 한 번의 예측을 여러 번 재서 고쳐 본 적</span>
+    <div class="lf-q">먼 길을 갈 때 <strong>출발 순간의 속도 하나</strong>로만 "이 속도면 $2$시간" 하고 계산했다가 크게 빗나간 적, 혹은 반대로 중간중간 <strong>자주 확인하며</strong> 예상을 고쳐 잘 맞춘 적이 있는가? 처음 값 하나에만 기대는 것과, 여러 지점을 재서 <em>평균</em>을 내거나 걸음을 <em>잘게 쪼개</em> 자주 고치는 것 — 두 방식의 차이를 네 경험(운전·요리 시간·배터리 예측 등)으로 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 출발 때 $80$ km/h로 "$2$시간" 잡았지만 시내에선 $30$ km/h라 실제론 $3$시간 → 처음 속도와 도착 무렵 속도를 <em>평균</em> 냈다면 훨씬 가까웠을 것…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 전략을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 기울기를 한 곳에서만 재지 않고 여러 곳에서 재 평균 내면 훨씬 정확하다 — 개선 Euler(Heun)는 두 기울기의 평균, RK4는 네 기울기의 평균이다. 걸음을 잘게 쪼갤수록(작은 $h$) 어긋남도 준다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 기울기만으로 미래를 그리다</div>
+  <h1 class="stage-h">해를 못 써도 <span class="hl">미래는 계산된다</span></h1>
+  <div class="reading">
+    <p>뉴턴 이후, 자연의 거의 모든 변화 — 식어가는 커피, 흔들리는 진자, 퍼지는 전염병, 도는 행성 — 는 <strong>미분방정식</strong>으로 적혔다. 그런데 이 식들은 "지금 어떻게 변하는가(기울기)"만 말해줄 뿐, 정작 우리가 원하는 <em>$y(x)$ 곡선 전체</em>를 깔끔한 공식으로 내주는 경우는 드물다.</p>
+    <p><strong>레온하르트 오일러(Leonhard Euler)</strong>는 18세기에 가장 단순한 돌파구를 제안했다 — 곡선을 못 쓰겠다면, 한 점에서 <strong>접선을 따라 아주 조금만 전진</strong>하고, 새 점에서 또 접선을 긋고 전진하자. 곡선을 짧은 직선 조각들로 이어 붙이는 것이다. 뒤에 <strong>카를 룽게(Carl Runge, 1895)</strong>와 <strong>마르틴 쿠타(Martin Kutta, 1901)</strong>가 이 아이디어를 다듬어, 한 걸음 안에서 기울기를 <em>여러 번</em> 재 평균 내는 <strong>Runge–Kutta(RK4)</strong>로 발전시켰다.</p>
+    <div class="pullquote">미분방정식은 "지금 어떻게 변하는가"만 말해준다. 그 조각들을 이어 붙여 경로 전체를 그리는 일이 이번 주의 주제다.</div>
+    <p>이 소박해 보이는 "한 걸음씩 전진" 은 오늘날 로켓 궤도, 일기 예보, 회로 시뮬레이션을 돌리는 엔진이다. 정확한 공식이 없어도, 기울기와 작은 걸음만 있으면 미래를 그릴 수 있다 — 그것이 오일러가 연 수치적분의 힘이다.</p>
+    <p class="readmeta">배경: L. Euler, <em>Institutionum calculi integralis</em> (1768–70) · C. Runge (1895) · M. W. Kutta (1901)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 13-1 Euler ════════════════════ -->
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="문제">
   <div class="eyebrow">13-1 · 문제 · Motivation</div>

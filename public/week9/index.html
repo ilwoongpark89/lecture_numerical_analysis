@@ -61,6 +61,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-9-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 들쭉날쭉한 기록에 자를 대본 적</span>
+    <div class="lf-q">매일 아침 몸무게, 하루 걸음 수, 창가 화분의 키 — 무엇이든 좋으니 <strong>날마다 조금씩 재서 점으로 찍어 본 기록</strong>을 하나 떠올려 보자. 하루하루는 오르락내리락 제멋대로다. 그런데 한 달치를 멀리서 보면 "전체적으로 늘고 있다 / 줄고 있다" 는 방향이 어렴풋이 보인다. 그 방향을 마음속에서 <strong>직선 하나</strong>로 그어 본다면, 너는 그 선을 어디에 놓아야 "이 점들을 가장 잘 대표한다" 고 느끼겠는가? 어떤 점은 선보다 위로, 어떤 점은 아래로 벗어날 텐데 — 그 위아래 벗어남을 어떻게 균형 잡았는지 생생하게 적어보자. 정답을 맞히려 하지 말고 관찰을 넓게 펼쳐 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 어떤 날은 선보다 $0.3$ 위, 어떤 날은 $0.2$ 아래… 위로 벗어난 양과 아래로 벗어난 양이 얼추 상쇄되도록 선을 놓으면 어느 한쪽으로 치우치지 않는다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 모든 점을 통과시키는 대신 '위아래 벗어남(잔차)'을 고르게 나눠 전체 경향을 잡는 것 — 이게 이번 주 최소자승이 곡선을 앉히는 방식이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-9-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 크게 한 번 vs 작게 여러 번, 어느 게 더 나쁜가</span>
+    <div class="lf-q">농구 자유투나 다트, 혹은 주차를 떠올려 보자. A는 다섯 번 중 네 번은 거의 정확한데 딱 한 번 크게 빗나갔다. B는 다섯 번 모두 조금씩 어긋났다. 빗나간 거리를 <strong>그냥 다 더하면</strong> 둘이 같을 수도 있는데, 네 몸은 왜 '크게 한 번' 을 유독 더 아깝게 기억하는가? 오차 전체를 하나의 점수로 매긴다면, 그 '억울한 한 방' 이 크게 반영되도록 어떻게 셈하고 싶은지 — 네가 겪은 장면 하나를 골라 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 빗나간 거리를 그냥 더하면 $3+0+0+0+0=3$ 과 $0.6\times5=3$ 이 같다. 그런데 각각을 <em>제곱</em>해서 더하면 $9$ 대 $1.8$ — 큰 실수 한 방이 훨씬 무겁게…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 벗어남을 '제곱' 해서 더하면 큰 오차에 더 큰 벌점 — 이 선택이 최소자승이 절대값 대신 제곱합 $S=\sum e_i^2$ 을 최소화하는 이유다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 최소자승은 어디서 왔나</div>
+  <h1 class="stage-h">잃어버린 별을 <span class="hl">수학으로 되찾다</span></h1>
+  <div class="reading">
+    <p>$1801$년 새해 첫날, 이탈리아 천문학자 <strong>피아치(Giuseppe Piazzi)</strong>가 하늘에서 낯선 천체 하나를 포착했다 — 훗날 왜소행성으로 분류된 <strong>세레스(Ceres)</strong>. 그러나 $40$일 남짓 뒤 그 별은 태양 빛 뒤로 숨어 버렸고, 손에 남은 건 <em>흩어진 관측점 몇 개</em>뿐이었다. 언제 어디서 다시 나타날지 아무도 몰랐다.</p>
+    <p>스물넷의 <strong>가우스(Carl Friedrich Gauss)</strong>가 이 문제에 달려들었다. 관측값은 저마다 조금씩 틀리다. 그는 모든 관측을 억지로 통과시키는 대신, 관측 오차의 <strong>제곱합 $\sum e_i^2$ 이 가장 작아지는</strong> 궤도를 계산했다. 그가 지목한 지점에서, 그해 $12$월 세레스는 정말로 다시 발견됐다.</p>
+    <div class="pullquote">잃어버린 별을 되찾은 건 더 큰 망원경이 아니라, 오차를 다루는 수학이었다.</div>
+    <p>흥미롭게도 이 방법을 처음 활자로 발표한 사람은 프랑스의 <strong>르장드르(Legendre, 1805)</strong>였고, 가우스는 "나는 그전부터 써 왔다" 며 유명한 우선권 논쟁이 벌어졌다. 누가 먼저였든 두 사람이 도달한 결론은 같았다 — <em>측정은 늘 틀리니, 틀린 양의 제곱을 최소로 만드는 답을 참값으로 삼자.</em> 오늘 우리가 엑셀에서 '추세선' 을 누를 때 조용히 도는 계산이 바로 이, 이백 년 된 아이디어다.</p>
+    <p class="readmeta">배경: Legendre 『혜성 궤도 결정의 새로운 방법』 부록 «최소자승법»(1805) · Gauss 세레스 궤도 예측(1801) · 『천체운동론(Theoria Motus)』(1809)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 9-1 최소자승 원리 ════════════════════ -->
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="문제">
   <div class="eyebrow">9-1 · 문제 · Motivation</div>

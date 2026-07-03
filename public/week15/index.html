@@ -52,6 +52,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-15-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 늘려도 안 눕는 방향</span>
+    <div class="lf-q">사진 앱에서 사진을 가로로 쭉 잡아 늘리거나, 고무판·스타킹을 양옆으로 당겨 본 적 있는가? 가로로 그려진 선은 <strong>방향은 그대로, 길이만</strong> 길어지지만, 비스듬한 대각선 무늬는 점점 가로 쪽으로 <em>눕는다.</em> 이렇게 "늘리는 변형" 속에서 방향이 끝까지 안 변한 선과, 방향까지 휘어버린 선을 관찰한 장면 하나를 떠올려 생생히 적어보자. 정답을 맞히려 하지 말고, <em>어떤 방향이 방향을 지켰고 그때 길이가 몇 배가 됐는지</em>를 눈으로 좇아 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 화면을 가로로 $2$배 늘리면 가로선은 방향 그대로 $2$배, 세로선은 방향 그대로 $1$배, 대각선은 가로 쪽으로 눕는다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 변형해도 방향을 지키는 그 선이 이번 주 <strong>고유벡터</strong>, 그때 길이에 곱해진 배율이 <strong>고유값 $\lambda$</strong> 다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-15-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 반복될수록 하나만 남는다</span>
+    <div class="lf-q">텃밭이나 화단에 번식 속도가 서로 다른 식물 여러 종을 함께 심으면, 몇 해 지나 어떤 종이 화단을 차지하던가? (여러 소문·유행이 퍼지다 결국 하나만 남던 경험도 좋다.) 처음엔 뒤섞여 있다가 <strong>반복</strong>될수록 "가장 빨리 불어나는 하나"가 전체를 지배하는 장면을 골라, 그게 <em>몇 번의 반복 만에</em> 눈에 띄게 앞섰는지 적어보자. 전체를 $100\%$ 로 놓고 <em>비율</em>로 보면 그 하나의 비중이 어떻게 변하던가?</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 매년 $3$배 느는 종과 $1.5$배 느는 종을 같이 심으면, 처음엔 반반이어도 몇 해 뒤엔 $3$배 종이 화단의 거의 전부…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 관찰을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 행렬을 벡터에 거듭 곱하면(=반복 성장) 가장 센 고유값 방향만 살아남고, 매번 최대성분으로 나누는 <strong>정규화</strong>가 곧 "비율로 다시 보기" — 그게 <strong>거듭제곱법</strong>이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 왜 고유값인가</div>
+  <h1 class="stage-h">구글은 웹을 <span class="hl">고유벡터로 줄 세운다</span></h1>
+  <div class="reading">
+    <p>"고유값"의 <strong>고유</strong>는 독일어 <em>eigen</em>(자기 자신의·고유한)에서 왔다. 힐베르트(D. Hilbert)가 적분방정식을 연구하며 <strong>Eigenwert</strong>라 부른 것이 굳어졌다(1904). 행렬이 아무리 다른 벡터의 방향을 휘어도, 어떤 벡터는 <strong>자기 자신의 방향</strong>을 지킨다 — 그 방향이 그 시스템의 "본래 성질(고유한 축)"이다.</p>
+    <p>이 특별한 방향을 손으로 $\det(A-\lambda I)=0$ 을 풀어 찾는 건 크기가 조금만 커져도 불가능하다. 그래서 등장한 <strong>거듭제곱법</strong>은 "행렬을 벡터에 거듭 곱하면 가장 센 방향만 살아남는다"는 단순한 원리에 기댄 20세기 초의 오래된 반복법이다(폰 미제스 등, 1929).</p>
+    <div class="pullquote">웹 전체를 하나의 거대한 행렬로 보면, 각 페이지의 중요도는 그 행렬의 "지배 고유벡터"다.</div>
+    <p>1998년, 스탠퍼드 대학원생 <strong>래리 페이지</strong>와 <strong>세르게이 브린</strong>이 만든 구글의 <strong>PageRank</strong>가 바로 이 아이디어다. 수십억 개 웹페이지의 링크 관계를 하나의 거대한 행렬로 놓고, <em>거듭제곱법으로 지배 고유벡터를 구해</em> 페이지 순위를 매겼다. 손으로는 특성방정식조차 세울 수 없는 규모를, "곱하고 · 정규화하고 · 반복"만으로 풀어낸 것이다.</p>
+    <p class="readmeta">배경: Hilbert의 "Eigenwert"(1904) · von Mises 거듭제곱법(1929) · Google PageRank(Page–Brin, 1998)</p>
+  </div>
+</section>
+
 <section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="문제">
   <div class="eyebrow">15-1 · 문제 · Motivation</div>
   <h1 class="stage-h">방향을 지키는 벡터 <span class="en">· Eigen-what?</span></h1>

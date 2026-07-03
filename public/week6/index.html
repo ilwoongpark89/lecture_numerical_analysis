@@ -61,6 +61,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-6-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 영수증 두 장으로 낱개 값 되짚기</span>
+    <div class="lf-q">친구들과 분식집에 갔다. 어느 날 영수증엔 '떡볶이 $2$인분 + 김밥 $1$줄 = 9,000원', 다른 날엔 '떡볶이 $1$인분 + 김밥 $1$줄 = 6,000원' 만 찍혀 있다. 메뉴 하나하나의 값은 어디에도 안 적혀 있다. 그런데 두 영수증을 <strong>나란히 놓고 빼보면</strong> 떡볶이 한 인분 값이 툭 튀어나온다. 이렇게 '전체 합만 아는데 낱개 값을 되짚어 낸' 경험 — 영수증, 더치페이 정산, 게임 아이템 묶음값 — 을 하나 골라, 어떻게 알아냈는지 생생하게 적어보자. 정답보다 <em>어떻게 하나를 지워 문제를 줄였는지</em>가 궁금하다.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 위 식에서 아래 식을 빼면 김밥이 사라지고 '떡볶이 $1$인분 $=$ 3,000원' 만 남는다 → 이 값을 아래 식에 도로 넣으면 김밥도 3,000원…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "한 식에서 다른 식의 배수를 빼서 미지수 하나를 지운다" — 이 빼기 한 번이 곧 이번 주 가우스 소거법의 <strong>전진 소거</strong> 한 단계다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-6-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 하나가 정해지면 줄줄이 풀리는 순서</span>
+    <div class="lf-q">형·누나와 벽에 등을 대고 키를 재본 적 있을 것이다. 정확한 숫자는 몰라도 '나는 형보다 한 뼘 작다', '형은 아빠보다 조금 작다' 같은 <strong>관계</strong>는 몸으로 안다. 그런데 이 관계들만으로는 아무의 키도 딱 정해지지 않는다. 딱 <strong>한 사람</strong>의 키를 정확히 재는 순간, 그 값이 옆 사람, 또 그 옆 사람 키를 <strong>줄줄이</strong> 정해 버린다. 이렇게 '하나가 풀리자 나머지가 사슬처럼 따라 풀린' 경험 — 키·나이 순서, 잔돈 맞추기, 퍼즐 한 칸 — 을 골라, <em>어떤 순서로</em> 풀렸는지 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — '나 $=$ 형 $-5$', '형 $=$ 아빠 $-8$' 만으론 누구 키도 못 정한다. 그런데 내 키가 $170$ 으로 딱 정해지면 → 형 $175$ → 아빠 $183$ … 마지막 하나가 사슬 전체를 푼다.</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 경험을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 가우스 소거법의 마지막 줄은 미지수가 딱 하나($x_n$)라 바로 풀린다. 그 값을 위로 도로 넣어 $x_{n-1},\dots,x_1$ 을 차례로 푸는 것 — 이게 <strong>후진 대입</strong>이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 왜 소거법인가</div>
+  <h1 class="stage-h">가우스가 <span class="hl">발명하지 않은</span> 가우스 소거법</h1>
+  <div class="reading">
+    <p>우리는 이 방법을 <strong>가우스 소거법</strong>이라 부른다. 그런데 정작 이 알고리즘은 가우스(Carl Friedrich Gauss, 1777–1855)보다 <strong>약 2000년이나 앞서</strong> 존재했다.</p>
+    <p>고대 중국의 수학서 <strong>《구장산술(九章算術)》</strong>(漢, 약 1세기 편찬) 제8장의 이름이 바로 <strong>「방정(方程)」</strong> — 오늘날의 연립방정식이다. 당시 사람들은 계수를 <strong>산가지(算籌)</strong>로 격자판 위에 늘어놓고, 한 줄에 다른 줄의 배수를 곱해 빼며 아래쪽을 차례로 비워 나갔다. 지금 우리가 증대 행렬에서 하는 <em>전진 소거</em> 바로 그것이다.</p>
+    <div class="pullquote">"큰 문제를 미지수 하나씩 지워 작은 문제로 바꾼다" — 이 발상은 계산 도구가 산가지든 슈퍼컴퓨터든 변하지 않는다.</div>
+    <p>그럼 왜 가우스의 이름이 붙었을까? 가우스는 1800년대 초, 갓 발견된 <strong>소행성의 궤도</strong>를 관측 오차 속에서 최소제곱법으로 맞추며 이 소거 절차를 체계적인 표기로 다듬어 즐겨 썼다. 그의 명성 덕에 후대가 방법에 그의 이름을 붙였을 뿐, 사실 <em>한 명의 발명자는 없다.</em> 좋은 아이디어는 시대와 문명을 건너 여러 번 다시 태어난다 — 이번 주 우리가 손으로 따라갈 소거의 리듬도 그 오래된 지혜의 연장이다.</p>
+    <p class="readmeta">배경: 《九章算術》 제8장 方程 (漢, 약 1세기) · C. F. Gauss, 천체 궤도·최소제곱 계산 (1800년대 초)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 6-1 가우스 소거법 ════════════════════ -->
 <section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="문제">
   <div class="eyebrow">6-1 · 문제 · Motivation</div>

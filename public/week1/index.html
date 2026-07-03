@@ -62,6 +62,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-1-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 눈금 사이를 읽어 본 적</span>
+    <div class="lf-q">부엌에서 계량컵에 물을 붓는다. 눈금은 $200$ 과 $250\,\text{mL}$ 밖에 없는데 물은 그 사이 어디쯤에 멈춰 있다. 너는 몇 mL라고 적겠는가? "약 $230$"? 확신하는 자리는 어디까지고, <strong>마지막 한 자리</strong>는 사실 눈대중 아닌가? 계량컵·체중계 바늘·줄자·주유기 숫자처럼 — 정확한 값을 끝까지 알 수 없어 <strong>어림해서 만족</strong>한 장면을 하나 골라, 그때 <em>어느 자리까지 믿었고 어디부터 흐릿했는지</em>를 생생하게 적어보자. 정답을 맞히려 하지 말고 관찰을 넓게 펼쳐 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 체중계 바늘이 $63$ 과 $64\,\text{kg}$ 사이 딱 중간 → "$63.5$" 라 읽지만, $63.4$ 인지 $63.6$ 인지는 사실 모른다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 참값을 끝까지 알 수 없어 "충분히 가까운 값"으로 대신하는 것 — 그 어쩔 수 없는 틈이 이번 주 <strong>근사와 오차</strong>의 출발점이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-1-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 샤워 물 온도를 맞출 때</span>
+    <div class="lf-q">샤워 꼭지를 튼다. 처음엔 너무 차갑다 → 조금 돌린다 → 이번엔 좀 뜨겁다 → 다시 살짝 되돌린다. 너는 "정확히 몇 도가 되려면 꼭지를 몇 도 각도로" 계산해 <strong>한 번에</strong> 맞추지 않는다. <strong>돌리고 · 느끼고 · 다시 조정</strong>하며 원하는 온도로 <em>좁혀</em>간다. 이렇게 한 번에 못 맞히고 <strong>조금씩 고쳐가며 답에 다가간</strong> 경험(주차, 볼륨 맞추기, 그림 스케치 다듬기…)을 하나 골라, <em>무엇을 보고(피드백) 다음 조정을 얼마나 했는지</em>를 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 너무 뜨거우면 크게 되돌리고, 거의 맞으면 아주 조금만 — 가까워질수록 조정폭도 함께 작아진다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 경험을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "시도 → 오차 확인 → 보정 → 다시 시도" 이 반복(iteration)이 답에 수렴하는 것 — 손으로 못 푸는 방정식을 컴퓨터가 푸는 방식 그대로다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 근사와 반복의 뿌리</div>
+  <h1 class="stage-h">원을 <span class="hl">다각형으로 가둔</span> 사람</h1>
+  <div class="reading">
+    <p>원의 둘레와 지름의 비 $\pi$ 는 딱 떨어지는 분수로도, 끝나는 소수로도 적을 수 없다. 그렇다면 컴퓨터도 없던 고대에 사람들은 이 값을 어떻게 "알았을까"?</p>
+    <p><strong>아르키메데스</strong>(기원전 3세기)는 원 안쪽과 바깥쪽에 <strong>정다각형</strong>을 그렸다. 원 안에 딱 맞게 넣은 다각형의 둘레는 원보다 <em>짧고</em>, 원을 바깥에서 감싼 다각형의 둘레는 원보다 <em>길다</em>. 그래서 참값 $\pi$ 는 <strong>두 다각형 둘레 사이 어딘가</strong>에 반드시 갇힌다. 변의 수를 $6 \to 12 \to 24 \to 48 \to 96$ 으로 <strong>두 배씩 늘릴수록</strong> 위아래 두 값이 서로 조여든다.</p>
+    <div class="pullquote">$3\tfrac{10}{71} < \pi < 3\tfrac{1}{7}$ — 정확한 값은 몰라도, "얼마나 틀렸는지"는 안다.</div>
+    <p>이 한 장면에 수치해석의 세 기둥이 그대로 담겨 있다 — 다룰 수 없는 곡선을 <strong>다각형으로 근사</strong>하고, 변을 늘리며 <strong>반복</strong>하고, 참값을 위아래로 가둬 <strong>오차의 한계</strong>를 손에 쥔다. 이천 년 뒤 컴퓨터도 똑같은 정신으로 "손으로 못 푸는" 문제를 푼다.</p>
+    <p class="readmeta">배경: 아르키메데스 『원의 측정』(기원전 3세기) · 96각형으로 $3\tfrac{10}{71} < \pi < 3\tfrac{1}{7}$ (약 $3.1408 < \pi < 3.1429$)</p>
+  </div>
+</section>
+
 <!-- ════════════════════ 1-1 수치해석이란 ════════════════════ -->
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="문제">
   <div class="eyebrow">1-1 · 문제 · Motivation</div>

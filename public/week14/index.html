@@ -52,6 +52,39 @@
   </div>
 </section>
 
+<!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-14-1" data-kind="reflect">
+    <span class="lf-tag think">생각 1 · 열이 번지고 매끄러워지던 순간</span>
+    <div class="lf-q">뜨거운 국에 담가둔 금속 숟가락, 한쪽만 데워지는 전기장판, 손난로를 쥔 손바닥 — <strong>한쪽은 뜨겁고 다른 쪽은 미지근하던 것이 시간이 지나며 서서히 고르게 퍼지던</strong> 장면을 하나 떠올려 보자. 열이 <em>어디서 어디로</em> 흘렀는지, 그리고 처음의 <em>뾰족한 온도 차이</em>가 어떻게 뭉개져 매끄러워졌는지를 정답을 맞히려 하지 말고 생생하게 묘사해 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 국에 담근 숟가락 끝은 금방 뜨거운데 손잡이는 몇 분 뒤에야 따뜻해진다. 뜨거운 부분이 옆의 찬 부분에게 열을 조금씩 나눠 주며 차이가 줄어든다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 공간을 격자 칸으로 쪼갠 뒤 "각 칸 = 매 순간 이웃 칸들과 열을 조금씩 나눔"으로 갱신하는 것이 이번 주 열전도 FTCS($u_t=\alpha u_{xx}$)의 심장이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="생각">
+  <div class="longform" data-qid="reflect-14-2" data-kind="reflect">
+    <span class="lf-tag think">생각 2 · 팽팽히 걸린 천은 왜 매끄러운가</span>
+    <div class="lf-q">양 끝 높이가 다른 곳에 걸쳐 처진 빨랫줄, 해먹, 눌린 트램폴린 표면을 떠올려 보자. 가장자리(경계)는 고정돼 있지만 <strong>안쪽은 어디에도 뾰족한 봉우리 없이 매끄럽게</strong> 이어진다. 만약 <em>경계 높이만</em> 알고 있다면, 안쪽 한 점의 높이를 어떻게 어림하겠는가? 왜 그렇게 추측했는지 그 직관을 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 안쪽 한 점의 높이는 대략 그 점을 둘러싼 <em>이웃들 높이의 평균</em>쯤 된다. 그렇게 이웃 평균으로 자꾸 고쳐 넣다 보면 전체가 스스로 매끄러워진다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "각 격자점 = 이웃들의 평균"으로 계속 고쳐 나가면 평형 온도장이 나온다 — 이것이 라플라스 방정식 $\nabla^2 u = 0$ 의 Jacobi 반복이다.</div>
+  </div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="읽을거리">
+  <div class="eyebrow">읽을거리 · 왜 격자인가</div>
+  <h1 class="stage-h">손으로 <span class="hl">날씨를 계산한</span> 사람</h1>
+  <div class="reading">
+    <p>1922년, 영국의 <strong>루이스 프라이 리처드슨(Lewis Fry Richardson)</strong>은 지구의 대기를 <strong>격자 칸</strong>으로 잘게 나누고, 각 칸의 기압·온도·바람을 <strong>차분 방정식</strong>으로 이웃 칸과 연결해 다음 시각의 날씨를 계산하려 했다. 컴퓨터가 없던 시절, 그는 이 방대한 계산을 <em>연필과 종이로</em> 직접 수행했다.</p>
+    <p>그가 손으로 낸 첫 6시간 예보는 <strong>터무니없이 빗나갔다.</strong> 그러나 방법 자체는 옳았다 — 오늘날 모든 일기예보가 바로 이 격자–차분 방식으로 슈퍼컴퓨터 위에서 돌아간다. 리처드슨은 한 걸음 더 나아가, 거대한 홀에 <strong>수만 명이 각자 한 격자 칸을 맡아</strong> 동시에 계산하는 "예보 공장"을 상상했다 — 훗날의 병렬 컴퓨터를 미리 그린 셈이다.</p>
+    <div class="pullquote">연속된 자연을 격자 칸으로 쪼개고, 미분을 이웃 칸의 차이로 바꾼다 — PDE를 푸는 모든 이야기가 여기서 시작한다.</div>
+    <p>왜 첫 예보는 실패했을까? 뒤에 <strong>쿠랑–프리드리히스–레비(1928)</strong>가 실마리를 밝혔다 — 시간 격자 $\Delta t$ 를 공간 격자 $\Delta x$ 에 비해 <strong>너무 크게 잡으면 계산이 발산</strong>한다는 것이다. 이 <em>안정 조건(CFL)</em>이 바로 이번 주 열전도·파동에서 만날 "$\Delta t$ 를 함부로 키우지 말라"는 규칙이다.</p>
+    <p class="readmeta">배경: L. F. Richardson, 《Weather Prediction by Numerical Process》(1922) · Courant–Friedrichs–Lewy 조건(1928)</p>
+  </div>
+</section>
+
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="문제">
   <div class="eyebrow">14-1 · 문제 · Motivation</div>
   <h1 class="stage-h">미분을 어떻게 컴퓨터에 <span class="en">· Finite Differences</span></h1>
