@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
 
 :root {
   /* 액티브 제품(랜딩·enter·admin·라이트 강의)이 화이트 → body 기본 화이트.

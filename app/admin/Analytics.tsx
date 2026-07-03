@@ -33,7 +33,7 @@ function fmtDate(iso: string | null) {
 function hue(id: string) {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return ["#2563eb", "#0891b2", "#16a34a", "#7c3aed", "#db2777", "#ea580c"][h % 6];
+  return ["#1e40af", "#0891b2", "#16a34a", "#7c3aed", "#db2777", "#ea580c"][h % 6];
 }
 function Av({ id, sz = 34 }: { id: string; sz?: number }) {
   return <span className="flex flex-shrink-0 items-center justify-center rounded-lg font-bold text-white" style={{ background: hue(id), width: sz, height: sz, fontSize: sz * 0.38 }}>{id.slice(-2)}</span>;

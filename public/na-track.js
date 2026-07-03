@@ -101,7 +101,7 @@
     var brand = document.querySelector("header .brand");
     if (!brand) return;
     var chip = document.createElement("span");
-    chip.style.cssText = "margin-left:10px;padding:3px 10px;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;font-weight:700;font-size:12px;white-space:nowrap;cursor:pointer";
+    chip.style.cssText = "margin-left:10px;padding:3px 10px;border-radius:999px;background:#eef2fb;border:1px solid #cdd9f0;color:#1e40af;font-weight:700;font-size:12px;white-space:nowrap;cursor:pointer";
     chip.textContent = IS_PROF ? "👤 교수 열람" : "👤 " + sid;
     chip.title = IS_PROF ? "" : "클릭하면 로그아웃";
     brand.appendChild(chip);
@@ -134,8 +134,8 @@
       "#htlTocP{position:fixed;left:18px;bottom:120px;z-index:99999;width:min(288px,84vw);max-height:60vh;overflow:auto;background:#fff;" +
       "border:1px solid #e4e4e7;border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.16);padding:8px;display:none}#htlTocP.open{display:block}" +
       ".htlTocItem{display:block;width:100%;text-align:left;border:none;background:none;border-radius:8px;padding:8px 10px;font:13.5px/1.4 sans-serif;color:#3f3f46;cursor:pointer}" +
-      ".htlTocItem:hover{background:#f4f4f5}.htlTocItem.cur{background:#eff6ff;color:#2563eb;font-weight:700}" +
-      ".htlTocItem b{color:#18181b;margin-right:7px;font-variant-numeric:tabular-nums}.htlTocItem.cur b{color:#2563eb}";
+      ".htlTocItem:hover{background:#f4f4f5}.htlTocItem.cur{background:#eef2fb;color:#1e40af;font-weight:700}" +
+      ".htlTocItem b{color:#18181b;margin-right:7px;font-variant-numeric:tabular-nums}.htlTocItem.cur b{color:#1e40af}";
     document.head.appendChild(st);
     var tbtn = document.createElement("button");
     tbtn.id = "htlToc"; tbtn.type = "button"; tbtn.innerHTML = "☰ 목차";
@@ -169,15 +169,15 @@
     var st = document.createElement("style");
     st.textContent =
       "#htlNoteBtn{position:fixed;right:18px;bottom:74px;z-index:99998;display:flex;align-items:center;gap:6px;" +
-      "background:#2563eb;color:#fff;border:none;border-radius:999px;padding:10px 16px;font:600 13px/1 -apple-system,'Noto Sans KR',sans-serif;" +
+      "background:#1e40af;color:#fff;border:none;border-radius:999px;padding:10px 16px;font:600 13px/1 -apple-system,'Noto Sans KR',sans-serif;" +
       "box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer}#htlNoteBtn:hover{background:#1d4ed8}" +
       "#htlNotePanel{position:fixed;right:18px;bottom:120px;z-index:99999;width:min(320px,86vw);background:#fff;border:1px solid #e4e4e7;" +
       "border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.16);padding:14px;display:none}" +
       "#htlNotePanel.open{display:block}.htlNH{font:700 12px/1.4 sans-serif;color:#52525b;display:flex;align-items:center;gap:6px;margin-bottom:8px}" +
-      ".htlLock{font:700 10px/1 sans-serif;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px;padding:2px 7px}" +
+      ".htlLock{font:700 10px/1 sans-serif;color:#1e40af;background:#eef2fb;border:1px solid #cdd9f0;border-radius:999px;padding:2px 7px}" +
       "#htlNoteText{width:100%;box-sizing:border-box;border:1px solid #e4e4e7;border-radius:10px;padding:9px 11px;font:14px/1.5 sans-serif;" +
-      "resize:vertical;min-height:56px;outline:none}#htlNoteText:focus{border-color:#2563eb}" +
-      ".htlNSend{margin-top:8px;width:100%;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:9px;font:700 13px sans-serif;cursor:pointer}" +
+      "resize:vertical;min-height:56px;outline:none}#htlNoteText:focus{border-color:#1e40af}" +
+      ".htlNSend{margin-top:8px;width:100%;background:#1e40af;color:#fff;border:none;border-radius:10px;padding:9px;font:700 13px sans-serif;cursor:pointer}" +
       ".htlNSend:hover{background:#1d4ed8}.htlNOk{margin-top:8px;font:600 12px sans-serif;color:#16a34a;text-align:center;min-height:14px}";
     document.head.appendChild(st);
     var nbtn = document.createElement("button");
