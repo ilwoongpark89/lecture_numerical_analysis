@@ -200,10 +200,50 @@
   function trap(f, a, b, n) { var h = (b - a) / n, s = (f(a) + f(b)) / 2; for (var i = 1; i < n; i++) s += f(a + i * h); return s * h; }
   function simpson(f, a, b, n) { if (n % 2) n++; var h = (b - a) / n, s = f(a) + f(b); for (var i = 1; i < n; i++) s += (i % 2 ? 4 : 2) * f(a + i * h); return s * h / 3; }
 
+  // 범용 xy 플롯 (축 + 곡선 + 선택 참값 수평선). diff/matrix-iter/series 수렴 시각화용.
+  function xyPlot(allpts, curpts, opts) {
+    opts = opts || {};
+    if (!allpts.length) return "";
+    var W = 520, H = 232, pL = 54, pR = 16, pT = 14, pB = 34, pw = W - pL - pR, ph = H - pT - pB;
+    var xs = allpts.map(function (p) { return p[0]; }), ys = allpts.map(function (p) { return p[1]; });
+    if (opts.trueY != null) ys = ys.concat([opts.trueY]);
+    var xmin = Math.min.apply(null, xs), xmax = Math.max.apply(null, xs), ymin = Math.min.apply(null, ys), ymax = Math.max.apply(null, ys);
+    if (xmin === xmax) { xmin -= 0.5; xmax += 0.5; }
+    if (ymin === ymax) { ymin -= 1; ymax += 1; }
+    var yp = (ymax - ymin) * 0.12; ymin -= yp; ymax += yp;
+    var mx = function (x) { return pL + (x - xmin) / (xmax - xmin) * pw; };
+    var my = function (y) { return pT + ph - (y - ymin) / (ymax - ymin) * ph; };
+    var sv = ['<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:560px;display:block;margin:0 auto">'];
+    sv.push('<line x1="' + pL + '" y1="' + (pT + ph) + '" x2="' + (W - pR) + '" y2="' + (pT + ph) + '" stroke="#94a3b8"/>');
+    sv.push('<line x1="' + pL + '" y1="' + pT + '" x2="' + pL + '" y2="' + (pT + ph) + '" stroke="#94a3b8"/>');
+    if (opts.xlab) sv.push('<text x="' + ((pL + W - pR) / 2) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="12" fill="#64748b">' + opts.xlab + '</text>');
+    if (opts.ylab) sv.push('<text x="16" y="' + (pT + ph / 2) + '" text-anchor="middle" font-size="12" fill="#64748b" transform="rotate(-90 16 ' + (pT + ph / 2) + ')">' + opts.ylab + '</text>');
+    if (opts.trueY != null) { sv.push('<line x1="' + pL + '" y1="' + my(opts.trueY).toFixed(1) + '" x2="' + (W - pR) + '" y2="' + my(opts.trueY).toFixed(1) + '" stroke="#16a34a" stroke-width="1.4" stroke-dasharray="5 3"/>'); if (opts.trueLab) sv.push('<text x="' + (W - pR - 4) + '" y="' + (my(opts.trueY) - 4).toFixed(1) + '" text-anchor="end" font-size="11" fill="#16a34a">' + opts.trueLab + '</text>'); }
+    var d = ''; for (var i = 0; i < curpts.length; i++) d += (d ? 'L' : 'M') + mx(curpts[i][0]).toFixed(1) + ',' + my(curpts[i][1]).toFixed(1) + ' ';
+    if (d) sv.push('<path d="' + d + '" fill="none" stroke="#1e40af" stroke-width="2.4"/>');
+    for (var j = 0; j < curpts.length; j++) sv.push('<circle cx="' + mx(curpts[j][0]).toFixed(1) + '" cy="' + my(curpts[j][1]).toFixed(1) + '" r="3.6" fill="#1e40af"/>');
+    sv.push('</svg>'); return sv.join('');
+  }
+
   // ════════ 렌더 (kind 별 plot + table) ════════
   function renderPlot(cfg, rows, step) {
     var k = cfg.kind;
-    if (k === "matrix-iter" || k === "diff" || k === "series" || k === "gauss") return "";
+    if (k === "gauss") return "";
+    if (k === "diff") {
+      var dall = [], dcur = [];
+      for (var di = 0; di < rows.length; di++) { var dr = rows[di]; if (dr.err != null && dr.err > 0 && dr.h > 0) { var dp = [Math.log(dr.h) / Math.LN10, Math.log(dr.err) / Math.LN10]; dall.push(dp); if (di < step) dcur.push(dp); } }
+      return xyPlot(dall, dcur, { xlab: "log₁₀ h  (→ 큰 h)", ylab: "log₁₀ 오차" });
+    }
+    if (k === "matrix-iter") {
+      var mall = [], mcur = [];
+      for (var mi = 0; mi < rows.length; mi++) { var mr = rows[mi]; if (mr.err != null && mr.err > 0) { var mp = [mr.i, Math.log(mr.err) / Math.LN10]; mall.push(mp); if (mi < step) mcur.push(mp); } }
+      return xyPlot(mall, mcur, { xlab: "반복 k", ylab: "log₁₀ 오차 (수렴)" });
+    }
+    if (k === "series") {
+      var sall = [], scur = [];
+      for (var si = 0; si < rows.length; si++) { var sr = rows[si]; if (sr.sum != null) { var sp = [sr.n != null ? sr.n : sr.i, sr.sum]; sall.push(sp); if (si < step) scur.push(sp); } }
+      return xyPlot(sall, scur, { xlab: "항 n", ylab: "부분합", trueY: cfg.trueVal != null ? cfg.trueVal : null, trueLab: cfg.trueVal != null ? "참값" : null });
+    }
     if (k === "power") {
       var lamv = [];
       for (var qp = 1; qp < rows.length; qp++) if (rows[qp].lam != null) lamv.push(rows[qp].lam);
@@ -493,10 +533,154 @@
     render();
   }
 
-  function initAll() { Array.prototype.forEach.call(document.querySelectorAll(".stepper"), init); }
+  // ════════ 정적 그림 엔진 (nafig) — 수치해석 개념 시각화 ════════
+  function _n(el, a, d) { var v = parseFloat(el.getAttribute(a)); return isNaN(v) ? d : v; }
+  function _j(el, a, d) { try { var r = JSON.parse(el.getAttribute(a)); return r == null ? d : r; } catch (e) { return d; } }
+  var FG = { blue: '#1e40af', or: '#d97706', gr: '#16a34a', gray: '#94a3b8', red: '#b4353a', ink: '#334155', hair: '#e2e8f0' };
+  function _wrap(inner) { return '<svg viewBox="0 0 480 250" width="100%" style="max-width:520px;display:block;margin:0 auto">' + inner + '</svg>'; }
+  function _axes(pL, pT, pw, ph) { return '<line x1="' + pL + '" y1="' + (pT + ph) + '" x2="' + (pL + pw) + '" y2="' + (pT + ph) + '" stroke="' + FG.gray + '"/><line x1="' + pL + '" y1="' + pT + '" x2="' + pL + '" y2="' + (pT + ph) + '" stroke="' + FG.gray + '"/>'; }
+  function _lab(x, y, t, anc, col) { return '<text x="' + x + '" y="' + y + '" text-anchor="' + (anc || 'middle') + '" font-size="12" fill="' + (col || FG.ink) + '">' + t + '</text>'; }
+
+  function figFunc(el) {
+    var xmin = _n(el, 'data-xmin', -3), xmax = _n(el, 'data-xmax', 3);
+    var fns = _j(el, 'data-fns', null); // [{fn,label,color}] 다중곡선
+    if (!fns) fns = [{ fn: el.getAttribute('data-fn') || '0', label: el.getAttribute('data-label') || '', color: FG.blue }];
+    var roots = (el.getAttribute('data-roots') || '').split(',').filter(function (s) { return s.trim() !== ''; }).map(parseFloat);
+    var pts = _j(el, 'data-points', []);
+    var pL = 42, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30, N = 150;
+    var curves = fns.map(function (c) { var f = compileFn(c.fn, ['x']); var arr = []; for (var i = 0; i <= N; i++) { var x = xmin + (xmax - xmin) * i / N, y; try { y = f(x); } catch (e) { y = NaN; } if (isFinite(y)) arr.push([x, y]); } return { pts: arr, color: c.color || FG.blue, label: c.label }; });
+    var ally = []; curves.forEach(function (c) { c.pts.forEach(function (p) { ally.push(p[1]); }); }); pts.forEach(function (p) { ally.push(p[1]); });
+    var ymin = Math.min.apply(null, ally), ymax = Math.max.apply(null, ally); if (ymin === ymax) { ymin -= 1; ymax += 1; } var yp = (ymax - ymin) * 0.1; ymin -= yp; ymax += yp;
+    var mx = function (x) { return pL + (x - xmin) / (xmax - xmin) * pw; }, my = function (y) { return pT + ph - (y - ymin) / (ymax - ymin) * ph; };
+    var s = '';
+    if (ymin < 0 && ymax > 0) s += '<line x1="' + pL + '" y1="' + my(0).toFixed(1) + '" x2="' + (pL + pw) + '" y2="' + my(0).toFixed(1) + '" stroke="' + FG.gray + '" stroke-dasharray="3 3"/>';
+    s += _axes(pL, pT, pw, ph);
+    var pal = [FG.blue, FG.or, FG.gr, FG.red];
+    curves.forEach(function (c, ci) { var d = ''; c.pts.forEach(function (p) { d += (d ? 'L' : 'M') + mx(p[0]).toFixed(1) + ',' + my(p[1]).toFixed(1) + ' '; }); s += '<path d="' + d + '" fill="none" stroke="' + (fns.length > 1 ? pal[ci % 4] : c.color) + '" stroke-width="2.4"/>'; if (c.label) s += _lab(pL + pw - 4, pT + 16 + ci * 16, c.label, 'end', pal[ci % 4]); });
+    roots.forEach(function (r) { if (isFinite(r)) s += '<circle cx="' + mx(r).toFixed(1) + '" cy="' + my(0).toFixed(1) + '" r="5" fill="' + FG.red + '" stroke="#fff" stroke-width="1.5"/>'; });
+    pts.forEach(function (p) { s += '<circle cx="' + mx(p[0]).toFixed(1) + '" cy="' + my(p[1]).toFixed(1) + '" r="4.5" fill="' + FG.or + '" stroke="#fff" stroke-width="1.5"/>'; });
+    return _wrap(s);
+  }
+
+  function figScatter(el) {
+    var pts = _j(el, 'data-points', [[1, 2], [2, 4], [3, 5]]);
+    var fit = _j(el, 'data-fit', null); // [a0,a1]
+    var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+    var xmin = Math.min.apply(null, xs), xmax = Math.max.apply(null, xs), ymin = Math.min.apply(null, ys), ymax = Math.max.apply(null, ys);
+    var xr = (xmax - xmin) * 0.15 || 1, yr = (ymax - ymin) * 0.15 || 1; xmin -= xr; xmax += xr; ymin -= yr; ymax += yr;
+    var pL = 42, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30;
+    var mx = function (x) { return pL + (x - xmin) / (xmax - xmin) * pw; }, my = function (y) { return pT + ph - (y - ymin) / (ymax - ymin) * ph; };
+    var s = _axes(pL, pT, pw, ph);
+    if (fit) { var y1 = fit[0] + fit[1] * xmin, y2 = fit[0] + fit[1] * xmax; s += '<line x1="' + mx(xmin).toFixed(1) + '" y1="' + my(y1).toFixed(1) + '" x2="' + mx(xmax).toFixed(1) + '" y2="' + my(y2).toFixed(1) + '" stroke="' + FG.blue + '" stroke-width="2.4"/>'; pts.forEach(function (p) { var yf = fit[0] + fit[1] * p[0]; s += '<line x1="' + mx(p[0]).toFixed(1) + '" y1="' + my(p[1]).toFixed(1) + '" x2="' + mx(p[0]).toFixed(1) + '" y2="' + my(yf).toFixed(1) + '" stroke="' + FG.red + '" stroke-width="1.2" stroke-dasharray="2 2"/>'; }); }
+    pts.forEach(function (p) { s += '<circle cx="' + mx(p[0]).toFixed(1) + '" cy="' + my(p[1]).toFixed(1) + '" r="4.5" fill="' + FG.or + '" stroke="#fff" stroke-width="1.5"/>'; });
+    if (fit) s += _lab(pL + pw - 4, pT + 16, '잔차 = 점−직선', 'end', FG.red);
+    return _wrap(s);
+  }
+
+  function figHeat(el) {
+    var g = _j(el, 'data-grid', null);
+    if (!g) { g = []; var R = 8, C = 12; for (var r = 0; r < R; r++) { var row = []; for (var c = 0; c < C; c++) { row.push(Math.exp(-(Math.pow((r - R / 2) / 2.2, 2) + Math.pow((c - C / 2) / 3.2, 2)))); } g.push(row); } }
+    var rows = g.length, cols = g[0].length, lo = Infinity, hi = -Infinity;
+    g.forEach(function (row) { row.forEach(function (v) { lo = Math.min(lo, v); hi = Math.max(hi, v); }); }); if (lo === hi) hi = lo + 1;
+    var pL = 20, pT = 14, cw = (480 - 40) / cols, chh = Math.min(cw, (250 - 40) / rows), s = '';
+    function col(t) { t = (t - lo) / (hi - lo); var r = Math.round(30 + 210 * t), b = Math.round(200 - 170 * t), gg = Math.round(90 + 60 * (1 - Math.abs(t - 0.5) * 2)); return 'rgb(' + r + ',' + gg + ',' + b + ')'; }
+    for (var i = 0; i < rows; i++) for (var j = 0; j < cols; j++) s += '<rect x="' + (pL + j * cw).toFixed(1) + '" y="' + (pT + i * chh).toFixed(1) + '" width="' + (cw + 0.5).toFixed(1) + '" height="' + (chh + 0.5).toFixed(1) + '" fill="' + col(g[i][j]) + '"/>';
+    s += _lab(pL + cols * cw / 2, pT + rows * chh + 20, el.getAttribute('data-xlab') || '뜨거움(빨강) ↔ 차가움(파랑)', 'middle', FG.ink);
+    return _wrap(s);
+  }
+
+  function figStencil(el) {
+    var cx = 240, cy = 118, d = 62, s = '';
+    var pts = [[cx, cy, 'i,j', FG.blue], [cx, cy - d, 'i,j+1', FG.or], [cx, cy + d, 'i,j−1', FG.or], [cx - d, cy, 'i−1,j', FG.or], [cx + d, cy, 'i+1,j', FG.or]];
+    s += '<line x1="' + (cx - d) + '" y1="' + cy + '" x2="' + (cx + d) + '" y2="' + cy + '" stroke="' + FG.gray + '" stroke-width="1.5"/>';
+    s += '<line x1="' + cx + '" y1="' + (cy - d) + '" x2="' + cx + '" y2="' + (cy + d) + '" stroke="' + FG.gray + '" stroke-width="1.5"/>';
+    pts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="17" fill="' + p[3] + '" stroke="#fff" stroke-width="2"/><text x="' + p[0] + '" y="' + (p[1] + 4) + '" text-anchor="middle" font-size="11" fill="#fff">' + p[2] + '</text>'; });
+    s += _lab(cx, cy + d + 34, '5점 스텐실 — 중앙점 = 네 이웃의 평균으로 갱신', 'middle', FG.ink);
+    return _wrap(s);
+  }
+
+  function figVectors(el) {
+    var A = _j(el, 'data-matrix', [[2, 0.6], [0.6, 2]]);
+    var cx = 240, cy = 128, sc = 42, s = '';
+    for (var gx = -4; gx <= 4; gx++) s += '<line x1="' + (cx + gx * sc) + '" y1="' + (cy - 4 * sc) + '" x2="' + (cx + gx * sc) + '" y2="' + (cy + 4 * sc) + '" stroke="' + FG.hair + '"/><line x1="' + (cx - 4 * sc) + '" y1="' + (cy + gx * sc) + '" x2="' + (cx + 4 * sc) + '" y2="' + (cy + gx * sc) + '" stroke="' + FG.hair + '"/>';
+    s += '<line x1="' + (cx - 4 * sc) + '" y1="' + cy + '" x2="' + (cx + 4 * sc) + '" y2="' + cy + '" stroke="' + FG.gray + '"/><line x1="' + cx + '" y1="' + (cy - 3 * sc) + '" x2="' + cx + '" y2="' + (cy + 3 * sc) + '" stroke="' + FG.gray + '"/>';
+    function arr(vx, vy, color, w) { var ex = cx + vx * sc, ey = cy - vy * sc; return '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + color + '" stroke-width="' + w + '"/><circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="3.5" fill="' + color + '"/>'; }
+    // eigenvector (assume symmetric-ish dominant along [1,1]) — 일반 벡터 v 와 Av
+    var vs = _j(el, 'data-vecs', [[1, 0.3], [0.3, 1]]);
+    vs.forEach(function (v) { var av = [A[0][0] * v[0] + A[0][1] * v[1], A[1][0] * v[0] + A[1][1] * v[1]]; s += arr(v[0], v[1], FG.gray, 2); s += arr(av[0] / 2, av[1] / 2, FG.or, 2.6); });
+    // dominant eigendirection [1,1]/√2
+    s += arr(2.6, 2.6, FG.blue, 2.6); s += _lab(cx + 2.6 * sc, cy - 2.6 * sc - 6, '고유방향', 'middle', FG.blue);
+    s += _lab(240, 244, '회색 v → 주황 Av (방향 휨) · 파랑 = 안 휘는 고유방향', 'middle', FG.ink);
+    return _wrap(s);
+  }
+
+  function figConverge(el) {
+    var rates = _j(el, 'data-rates', [{ r: 0.6, label: 'Jacobi' }, { r: 0.35, label: 'Gauss–Seidel' }, { r: 0.15, label: 'SOR' }]);
+    var pL = 46, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30, K = 12;
+    var mx = function (k) { return pL + k / K * pw; }, my = function (le) { return pT + (0 - le) / 8 * ph; }; // le = log10(err) in [-8,0]
+    var s = _axes(pL, pT, pw, ph) + _lab(pL + pw / 2, 246, '반복 k', 'middle', FG.gray) + '<text x="16" y="' + (pT + ph / 2) + '" text-anchor="middle" font-size="12" fill="' + FG.gray + '" transform="rotate(-90 16 ' + (pT + ph / 2) + ')">log₁₀ 오차</text>';
+    var pal = [FG.or, FG.blue, FG.gr];
+    rates.forEach(function (rt, ri) { var d = ''; for (var k = 0; k <= K; k++) { var le = k * Math.log(rt.r) / Math.LN10; if (le < -8) le = -8; d += (d ? 'L' : 'M') + mx(k).toFixed(1) + ',' + my(le).toFixed(1) + ' '; } s += '<path d="' + d + '" fill="none" stroke="' + pal[ri % 3] + '" stroke-width="2.4"/>' + _lab(pL + pw - 4, pT + 16 + ri * 16, rt.label, 'end', pal[ri % 3]); });
+    return _wrap(s);
+  }
+
+  function figMatrix(el) {
+    var M = _j(el, 'data-mat', [[2, 1, -1], [0, 3, 2], [0, 0, 4]]);
+    var hi = _j(el, 'data-hi', []); // [[r,c],...]
+    var rows = M.length, cols = M[0].length, cw = 56, chh = 40, x0 = 240 - cols * cw / 2, y0 = 40, s = '';
+    s += '<text x="' + (x0 - 14) + '" y="' + (y0 + rows * chh / 2) + '" font-size="34" fill="' + FG.gray + '">[</text><text x="' + (x0 + cols * cw + 4) + '" y="' + (y0 + rows * chh / 2) + '" font-size="34" fill="' + FG.gray + '">]</text>';
+    for (var i = 0; i < rows; i++) for (var j = 0; j < cols; j++) { var isHi = hi.some(function (h) { return h[0] === i && h[1] === j; }); if (isHi) s += '<rect x="' + (x0 + j * cw).toFixed(1) + '" y="' + (y0 + i * chh - 22) + '" width="' + cw + '" height="' + chh + '" fill="#fef3c7" rx="6"/>'; s += '<text x="' + (x0 + j * cw + cw / 2).toFixed(1) + '" y="' + (y0 + i * chh + 4) + '" text-anchor="middle" font-size="17" fill="' + (isHi ? FG.or : FG.ink) + '">' + M[i][j] + '</text>'; }
+    if (el.getAttribute('data-cap2')) s += _lab(240, y0 + rows * chh + 24, el.getAttribute('data-cap2'), 'middle', FG.ink);
+    return _wrap(s);
+  }
+
+  function figNodes(el) {
+    var f = compileFn(el.getAttribute('data-fn') || 'x*x', ['x']);
+    var xmin = _n(el, 'data-xmin', 0), xmax = _n(el, 'data-xmax', 2);
+    var nodes = _j(el, 'data-nodes', [0.211, 1, 1.789]);
+    var pL = 42, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30, N = 120, arr = [];
+    for (var i = 0; i <= N; i++) { var x = xmin + (xmax - xmin) * i / N; arr.push([x, f(x)]); }
+    var ys = arr.map(function (p) { return p[1]; }).concat([0]); var ymin = Math.min.apply(null, ys), ymax = Math.max.apply(null, ys); var yp = (ymax - ymin) * 0.1 || 1; ymin -= yp; ymax += yp;
+    var mx = function (x) { return pL + (x - xmin) / (xmax - xmin) * pw; }, my = function (y) { return pT + ph - (y - ymin) / (ymax - ymin) * ph; };
+    var s = _axes(pL, pT, pw, ph);
+    // area fill under curve
+    var d = 'M' + mx(xmin).toFixed(1) + ',' + my(0).toFixed(1) + ' '; arr.forEach(function (p) { d += 'L' + mx(p[0]).toFixed(1) + ',' + my(p[1]).toFixed(1) + ' '; }); d += 'L' + mx(xmax).toFixed(1) + ',' + my(0).toFixed(1) + ' Z';
+    s += '<path d="' + d + '" fill="rgba(30,64,175,0.10)"/>';
+    var dc = ''; arr.forEach(function (p) { dc += (dc ? 'L' : 'M') + mx(p[0]).toFixed(1) + ',' + my(p[1]).toFixed(1) + ' '; }); s += '<path d="' + dc + '" fill="none" stroke="' + FG.blue + '" stroke-width="2.4"/>';
+    nodes.forEach(function (xn) { s += '<line x1="' + mx(xn).toFixed(1) + '" y1="' + my(0).toFixed(1) + '" x2="' + mx(xn).toFixed(1) + '" y2="' + my(f(xn)).toFixed(1) + '" stroke="' + FG.or + '" stroke-width="2"/><circle cx="' + mx(xn).toFixed(1) + '" cy="' + my(f(xn)).toFixed(1) + '" r="4" fill="' + FG.or + '"/>'; });
+    s += _lab(240, 246, '주황 = 적분점(node) — 곡선 아래 넓이를 이 점들로 근사', 'middle', FG.ink);
+    return _wrap(s);
+  }
+
+  function figErrorH(el) {
+    var pL = 46, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30, N = 80;
+    var mx = function (lh) { return pL + (lh - (-8)) / (0 - (-8)) * pw; }; // log10 h in [-8,0]
+    var my = function (le) { return pT + (0 - le) / 8 * ph; }; // log10 err in [-8,0]... but err can exceed; clamp
+    function pt(lh, le) { le = Math.max(-8, Math.min(0, le)); return mx(lh).toFixed(1) + ',' + my(le).toFixed(1); }
+    var s = _axes(pL, pT, pw, ph) + _lab(pL + pw / 2, 246, 'log₁₀ h', 'middle', FG.gray) + '<text x="16" y="' + (pT + ph / 2) + '" text-anchor="middle" font-size="12" fill="' + FG.gray + '" transform="rotate(-90 16 ' + (pT + ph / 2) + ')">log₁₀ 오차</text>';
+    var dt = '', dr = '', dtot = '';
+    for (var i = 0; i <= N; i++) { var lh = -8 + 8 * i / N; var trunc = lh + 0.3; var round = -8 - lh - 8.3; var tot = Math.log(Math.pow(10, trunc) + Math.pow(10, round)) / Math.LN10; dt += (dt ? 'L' : 'M') + pt(lh, trunc) + ' '; dr += (dr ? 'L' : 'M') + pt(lh, round) + ' '; dtot += (dtot ? 'L' : 'M') + pt(lh, tot) + ' '; }
+    s += '<path d="' + dt + '" fill="none" stroke="' + FG.gray + '" stroke-width="1.4" stroke-dasharray="4 3"/>' + _lab(pL + pw - 4, my(-0.5), '절단오차', 'end', FG.gray);
+    s += '<path d="' + dr + '" fill="none" stroke="' + FG.or + '" stroke-width="1.4" stroke-dasharray="4 3"/>' + _lab(pL + 4, my(-0.5), '반올림', 'start', FG.or);
+    s += '<path d="' + dtot + '" fill="none" stroke="' + FG.blue + '" stroke-width="2.6"/>' + _lab(240, pT + 12, '총오차 = 둘의 합 (V자, 최적 h 존재)', 'middle', FG.blue);
+    return _wrap(s);
+  }
+
+  var FIGS = { funcplot: figFunc, scatter: figScatter, heatmap: figHeat, stencil: figStencil, vectors: figVectors, convergence: figConverge, matrixgrid: figMatrix, nodes: figNodes, errorh: figErrorH };
+  function initFigs() {
+    Array.prototype.forEach.call(document.querySelectorAll('.nafig:not([data-init])'), function (el) {
+      el.setAttribute('data-init', '1');
+      var kind = el.getAttribute('data-fig'), svg = '';
+      try { if (FIGS[kind]) svg = FIGS[kind](el); } catch (e) { svg = '<div style="color:#b4353a;font-size:12px">figure error: ' + kind + '</div>'; }
+      var cap = el.getAttribute('data-cap');
+      el.innerHTML = svg + (cap ? '<div class="nafig-cap">' + cap + '</div>' : '');
+    });
+  }
+
+  function initAll() { Array.prototype.forEach.call(document.querySelectorAll(".stepper"), init); initFigs(); }
   if (typeof document !== "undefined") {
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
     else initAll();
   }
-  if (typeof module !== "undefined" && module.exports) module.exports = { compileFn: compileFn, iterate: iterate, trap: trap, simpson: simpson };
+  if (typeof module !== "undefined" && module.exports) module.exports = { compileFn: compileFn, iterate: iterate, trap: trap, simpson: simpson, FIGS: FIGS };
 })();

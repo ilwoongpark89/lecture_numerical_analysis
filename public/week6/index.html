@@ -455,6 +455,11 @@ end
   </div>
 </section>
 
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="그림">
+  <div class="eyebrow">6-2 · 그림 · 부분 피벗팅</div>
+  <h1 class="stage-h">왜 행을 바꾸나</h1>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[2,5,1],[4,1,2],[1,3,6]]" data-hi="[[1,0]]" data-cap2="1열 최대 |4| → 행 교환" data-cap="각 열에서 절댓값이 가장 큰 원소(주황)를 피벗 행으로 올린다 — 작은 피벗으로 나눌 때의 오차 폭증을 막는다."></div>
+</section>
 <section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="정리">
   <div class="eyebrow">6-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -605,6 +610,11 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">핵심 구분</div>$L,U$ 는 $A$ 만으로 결정된다 — <strong>우변 $\mathbf{b}$ 가 바뀌어도 재분해 없이</strong> 대입 두 번(전진 $L\mathbf{y}=\mathbf{b}$ → 후진 $U\mathbf{x}=\mathbf{y}$)만 반복한다.</div>
 </section>
 
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="그림">
+  <div class="eyebrow">6-3 · 그림 · LU 분해</div>
+  <h1 class="stage-h">A = L · U</h1>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[1,0,0],[2,1,0],[1,3,1]]" data-hi="[[1,0],[2,0],[2,1]]" data-cap2="L (하삼각, 대각=1, 주황=소거 배수)" data-cap="가우스 소거를 한 번 해두면 L·U 로 저장 — 우변 b 가 바뀌어도 재분해 없이 대입 두 번으로 푼다."></div>
+</section>
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="정리">
   <div class="eyebrow">6-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

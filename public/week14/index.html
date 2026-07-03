@@ -155,6 +155,11 @@
     <div class="pitfall"><h4>⚠ 차원의 저주</h4><p>2D·3D 격자는 미지수가 $N^2,N^3$ 로 폭증 → 반복법·희소행렬 필수.</p></div>
   </div>
 </section>
+<section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="그림">
+  <div class="eyebrow">14-1 · 그림 · 유한차분 격자</div>
+  <h1 class="stage-h">미분 → 이웃의 차이</h1>
+  <div class="nafig" data-fig="stencil" data-cap="편미분방정식을 격자로 옮기면 각 점의 값은 상·하·좌·우 네 이웃으로 결정된다 — 미분이 이웃 격자점의 차이(스텐실)로 바뀐다."></div>
+</section>
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="정리">
   <div class="eyebrow">14-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -243,6 +248,11 @@ for n = 1:steps
     end
 end
 <span class="out">% 봉우리가 시간에 따라 매끄럽게 퍼진다</span></code></pre></div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="그림">
+  <div class="eyebrow">14-2 · 그림 · 열 확산</div>
+  <h1 class="stage-h">뜨거움이 퍼진다</h1>
+  <div class="nafig" data-fig="heatmap" data-cap="열전도 — 뜨거운 곳(빨강)이 차가운 이웃(파랑)으로 퍼진다. FTCS 는 매 시간스텝 각 점을 이웃과의 평균 쪽으로 조금씩 이동."></div>
 </section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="정리">
   <div class="eyebrow">14-2 · 정리 · Summary</div>
@@ -395,6 +405,11 @@ end
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \Delta t\le\frac{\Delta x}{c}=\frac{0.2}{4}=0.05 $$</div><b>정답:</b> $\Delta t>0.05$ 면 수치 파동이 물리 파동을 못 따라가 발산. 확산($\lambda\le\tfrac12$)보다 완만한 $\Delta t\propto\Delta x$ 제약.</div></div>
   </div>
+</section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="그림">
+  <div class="eyebrow">14-4 · 그림 · 파동 이동</div>
+  <h1 class="stage-h">모양 유지한 채 진행</h1>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"sin(pi*x)","label":"t=0"},{"fn":"sin(pi*(x-0.4))","label":"t=1"},{"fn":"sin(pi*(x-0.8))","label":"t=2"}]' data-xmin="0" data-xmax="3" data-cap="파동은 감쇠 없이 모양을 유지한 채 오른쪽으로 이동. Δt 가 CFL 조건(cΔt≤Δx)을 넘으면 수치 파동이 폭발한다."></div>
 </section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="정리">
   <div class="eyebrow">14-4 · 정리 · Summary</div>

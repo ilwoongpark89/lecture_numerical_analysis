@@ -192,6 +192,9 @@
   .stp-body{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
   .stp-viz{ min-width:0; } .stp-side{ min-width:0; }
   .stp-tblwrap{ overflow:auto; max-height:300px; border:1px solid var(--hair); border-radius:10px; }
+.nafig{ margin:16px auto; text-align:center; max-width:540px; }
+.nafig svg{ background:#fff; border:1px solid var(--hair); border-radius:12px; padding:6px; }
+.nafig-cap{ font-size:13px; color:var(--muted,#64748b); margin-top:7px; line-height:1.5; }
   .stp-tbl{ width:100%; border-collapse:collapse; font-family:ui-monospace,Menlo,monospace; font-size:12px; }
   .stp-tbl th{ position:sticky; top:0; background:#fff; text-align:right; color:var(--gray2); font-weight:700; padding:6px 8px; border-bottom:1px solid var(--hair); white-space:nowrap; }
   .stp-tbl td{ text-align:right; padding:5px 8px; border-bottom:1px solid var(--hair2); color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap; }

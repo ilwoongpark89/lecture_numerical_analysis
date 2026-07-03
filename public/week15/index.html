@@ -151,6 +151,11 @@
     <div class="pitfall"><h4>⚠ 그래서 반복법</h4><p>거듭제곱·역·QR 처럼 <b>행렬을 직접 굴리는</b> 반복법으로 고유값을 얻는다.</p></div>
   </div>
 </section>
+<section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="그림">
+  <div class="eyebrow">15-1 · 그림 · 고유벡터</div>
+  <h1 class="stage-h">안 휘는 방향</h1>
+  <div class="nafig" data-fig="vectors" data-matrix="[[2,0.6],[0.6,2]]" data-vecs="[[1,0.15],[0.15,1]]" data-cap="행렬을 곱하면 대부분 벡터는 방향이 휜다(회색→주황). 그러나 고유방향(파랑)만은 방향을 지키고 길이만 λ배 — 그 λ가 고유값."></div>
+</section>
 <section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="정리">
   <div class="eyebrow">15-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 정리</h1>
@@ -317,6 +322,11 @@ A = [4 1; 1 3];
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ A^{-1}\text{의 최대 고유값}=1/\lambda_{\min}(A)\Rightarrow \lambda_{\min}=2.382 $$</div><b>정답:</b> 역 거듭제곱은 최소 고유값 $2.382$ 로 수렴.</div></div>
   </div>
 </section>
+<section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="그림">
+  <div class="eyebrow">15-3 · 그림 · shift 가속</div>
+  <h1 class="stage-h">겨냥하면 빨라진다</h1>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"거듭제곱"},{"r":0.12,"label":"shift 가속"}]' data-cap="거듭제곱법의 수렴 속도는 |λ₂/λ₁|. shift (A−μI) 로 원하는 고유값을 겨냥하면 이 비가 작아져 훨씬 빨리 수렴."></div>
+</section>
 <section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="정리">
   <div class="eyebrow">15-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 정리</h1>
@@ -390,6 +400,11 @@ A = [4 1; 1 3];
       </ul>
     </div>
   </div>
+</section>
+<section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="그림">
+  <div class="eyebrow">15-4 · 그림 · QR 수렴</div>
+  <h1 class="stage-h">대각에 고유값이 뜬다</h1>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[4,1,0],[0,3,0],[0,0,2]]" data-hi="[[0,0],[1,1],[2,2]]" data-cap="QR 반복을 거듭하면 A 가 상삼각으로 수렴 — 대각선(주황)에 모든 고유값 4,3,2 가 한꺼번에 드러난다."></div>
 </section>
 <section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="정리">
   <div class="eyebrow">15-4 · 정리 · Summary</div>
