@@ -193,8 +193,8 @@
       var cur = rows[Math.min(step, rows.length) - 1];
       if (cur && step > 0) {
         P.svg.push('<rect x="' + P.mx(cur.a) + '" y="14" width="' + (P.mx(cur.b) - P.mx(cur.a)) + '" height="' + (P.H - 44) + '" fill="#1e40af" fill-opacity="0.08" stroke="#1e40af" stroke-dasharray="5 3" stroke-width="1.3"/>');
-        P.svg.push('<line x1="' + P.mx(cur.c) + '" y1="14" x2="' + P.mx(cur.c) + '" y2="' + (P.H - 30) + '" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>');
-        P.svg.push('<circle cx="' + P.mx(cur.c) + '" cy="' + P.my(cur.fc) + '" r="4.5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>');
+        P.svg.push('<line x1="' + P.mx(cur.c) + '" y1="14" x2="' + P.mx(cur.c) + '" y2="' + (P.H - 30) + '" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>');
+        P.svg.push('<circle cx="' + P.mx(cur.c) + '" cy="' + P.my(cur.fc) + '" r="4.5" fill="#d97706" stroke="#fff" stroke-width="1.5"/>');
       }
       if (cfg.root != null) P.svg.push('<line x1="' + P.mx(cfg.root) + '" y1="14" x2="' + P.mx(cfg.root) + '" y2="' + (P.H - 30) + '" stroke="#16a34a" stroke-width="1" stroke-dasharray="2 4"/>');
       return P.close();
@@ -207,10 +207,10 @@
           var ty = function (t) { return R.fx + R.dfx * (t - R.xn); };
           P.svg.push('<line x1="' + P.mx(xL2) + '" y1="' + P.my(ty(xL2)) + '" x2="' + P.mx(xR2) + '" y2="' + P.my(ty(xR2)) + '" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="5 3" opacity="' + op + '"/>');
           P.svg.push('<circle cx="' + P.mx(R.xn) + '" cy="' + P.my(R.fx) + '" r="4" fill="#1e40af" opacity="' + op + '"/>');
-          P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#f59e0b" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#d97706" opacity="' + op + '"/>');
         } else {
           P.svg.push('<circle cx="' + P.mx(R.x1) + '" cy="' + P.my(R.f1) + '" r="4" fill="#1e40af" opacity="' + op + '"/>');
-          P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#f59e0b" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#d97706" opacity="' + op + '"/>');
         }
       }
       if (cfg.root != null) P.svg.push('<line x1="' + P.mx(cfg.root) + '" y1="14" x2="' + P.mx(cfg.root) + '" y2="' + (P.H - 30) + '" stroke="#16a34a" stroke-width="1" stroke-dasharray="2 4"/>');
