@@ -356,6 +356,45 @@ end
   <div class="callout warn" style="margin-top:12px"><div class="ct">직접 해보기</div><code>dt</code> 를 $2\to1\to0.5\to0.1$ 로 바꿔 실행하면, 수치해 열이 해석해 열에 점점 가까워지는 것을 눈으로 확인할 수 있다.</div>
 </section>
 
+<!-- ════════ 1-2 / 연습 ════════ -->
+<section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">Euler 반복 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 작은 스텝의 첫 반복</div>
+    <p class="prob-statement">같은 번지점퍼 $\dfrac{dv}{dt}=g-\dfrac{c_d}{m}v^2$ 를 이번엔 $\Delta t=1$ 로 푼다. $g=9.81$, $v_0=0$ 일 때 Euler 공식 $v_1=v_0+\left.\frac{dv}{dt}\right|_0\Delta t$ 로 <strong>$v_1$</strong> 을 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$\left.\frac{dv}{dt}\right|_0 = 9.81-0 = 9.81$</span><span class="chip">$\Delta t=1$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="9.81" data-tol="0.49"/><span class="ans-unit">m/s</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ v_1 = 0 + 9.81 \times 1 = 9.81 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ v_1 = 9.81\ \text{m/s} $$</div><b>정답:</b> $\Delta t=2$ 였을 땐 $v_1=19.62$ 였다 — 스텝을 절반으로 줄이면 한 스텝에 나아가는 거리도 절반이 된다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 둘째 반복</div>
+    <p class="prob-statement">위 문제에 이어 $v_1=9.81$, $\dfrac{c_d}{m}=\dfrac{0.25}{68.1}=0.003671$, $\Delta t=1$. Euler로 <strong>$v_2$</strong> ($t=2$s)를 구하시오. (소수 2자리)</p>
+    <div class="given"><span class="chip">$\left.\frac{dv}{dt}\right|_1 = 9.81-0.003671\,(9.81)^2$</span><span class="chip">$v_2=v_1+\frac{dv_1}{dt}\Delta t$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="19.27" data-tol="0.96"/><span class="ans-unit">m/s</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 기울기</div>$$ \frac{dv_1}{dt} = 9.81 - 0.003671\,(9.81)^2 = 9.81 - 0.353 = 9.457 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 대입</div>$$ v_2 = 9.81 + 9.457 \times 1 = 19.27 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ v_2 \approx 19.27\ \text{m/s} $$</div><b>정답:</b> 속도가 커지자 항력 항이 $0.353$ 만큼 기울기를 깎았다 — 종단속도로 향하는 첫 신호.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 3 · 속도에 따른 가속도</div>
+    <p class="prob-statement">번지점퍼의 순간 속도가 $v=30\ \text{m/s}$ 일 때 가속도 $\dfrac{dv}{dt}=9.81-\dfrac{0.25}{68.1}v^2$ 는 얼마인가? (소수 2자리)</p>
+    <div class="given"><span class="chip">$\frac{0.25}{68.1}=0.003671$</span><span class="chip">$v^2=900$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="6.51" data-tol="0.33"/><span class="ans-unit">m/s²</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ \frac{dv}{dt} = 9.81 - 0.003671\times900 = 9.81 - 3.304 = 6.51 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \frac{dv}{dt} \approx 6.51\ \text{m/s}^2 $$</div><b>정답:</b> 정지($v=0$)에선 $9.81$, 종단속도($v\approx51.7$)에선 $0$ — 속도가 커질수록 가속이 줄어드는 것을 한 값으로 확인.</div>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="정리">
   <div class="eyebrow">1-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -560,6 +599,18 @@ end
         <li>정밀도를 무한히 높이면 좋을 것 같지만, $\Delta t$ 를 너무 줄이면 <strong>반올림오차</strong>가 절단오차 감소를 잡아먹는 걸 배웠다. 그래서 "더 잘게"가 정답이 아니라 "적당한 곳에서 멈추는" 판단이 필요하고, 이건 내비가 알려주는 도착 시각을 초 단위까지 믿지는 않는 일상 감각과 닿아 있다.</li>
       </ul>
     </div>
+  </div>
+</section>
+
+<!-- ════════ 1-4 / 함정 ════════ -->
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="함정">
+  <div class="eyebrow">1-4 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">5단계에서 발을 헛디디는 곳</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 모델의 가정을 잊는다</h4><p>2단계 Model은 $c_d$ 상수·공기밀도 일정·1D 낙하 같은 <b>가정 위에</b> 세워진다. 가정을 잊고 결과를 절대적으로 믿으면 현실과 어긋난다.</p></div>
+    <div class="pitfall"><h4>⚠ 근사 스텝을 너무 크게</h4><p>3·4단계에서 $\Delta t$ 를 크게 잡으면 곡선을 직선으로 오해해 <b>절단오차</b>가 급증한다 — $\Delta t=2$ 는 이미 $t=4$s 에서 약 $10\%$ 오차.</p></div>
+    <div class="pitfall"><h4>⚠ Verify 단계를 건너뛴다</h4><p>5단계 검증 없이 숫자를 신뢰하면 위험하다. 해석해가 없으면 $\Delta t$ 를 줄여 <b>수렴</b>을 보거나 종단속도 같은 <b>물리 타당성</b>으로 점검하라.</p></div>
+    <div class="pitfall"><h4>⚠ 단위·초기조건 실수</h4><p>4단계 Compute에서 $\Delta t$ 단위나 초기조건 $v(0)=0$ 을 빠뜨리면, 알고리즘이 옳아도 <b>답 전체가 틀어진다</b>.</p></div>
   </div>
 </section>
 

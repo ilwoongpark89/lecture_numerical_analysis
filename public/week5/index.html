@@ -818,6 +818,55 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
     </div>
   </div>
 </section>
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="원리">
+  <div class="eyebrow">5-4 · 원리 · Fixed-Point Theory</div>
+  <h1 class="stage-h">고정점 반복은 왜·언제 수렴하는가 — 심화</h1>
+  <p class="assume"><b>아이디어:</b> $f(x)=0$ 을 $x=g(x)$ 꼴로 바꾸고 $x_{n+1}=g(x_n)$ 을 반복한다. 관건은 <b>$g$ 선택</b> — 같은 방정식도 $g$ 형태에 따라 수렴과 발산이 갈린다.</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 형태 변형</h4><div class="sub">$f=0 \to x=g(x)$</div><div class="eq">$ x^3-x-2=0 \Rightarrow x=\sqrt[3]{x+2} $</div><p>근은 $g$ 의 <strong>고정점</strong>($x^*=g(x^*)$). 옮기는 방법은 여럿이다.</p></div>
+    <div class="dcard"><h4>② 수축 조건</h4><div class="sub">언제 수렴?</div><div class="eq">$ |g'(x^*)| < 1 $</div><p>고정점 근처에서 $g$ 가 거리를 <strong>줄이면</strong>(수축) 반복이 한 점으로 모인다.</p></div>
+    <div class="dcard"><h4>③ 수렴 속도</h4><div class="sub">선형</div><div class="eq">$ e_{n+1}\approx g'(x^*)\,e_n $</div><p>오차가 매 반복 $|g'|$ 배 — <strong>선형</strong> 수렴. $|g'|$ 이 작을수록 빠르다.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">같은 식, 다른 $g$ — 운명이 갈린다</div>$x^3-x-2=0$ 을 $x=g_1(x)=\sqrt[3]{x+2}$ 로 풀면 $g_1'(x^*)\approx0.14$ ($<1$) 이라 <strong>수렴</strong>하지만, $x=g_2(x)=x^3-2$ 로 풀면 $g_2'(x^*)=3x^{*2}\approx6.9$ ($>1$) 이라 <strong>발산</strong>한다. 반드시 $|g'(x^*)|<1$ 인 형태를 골라야 한다 — 아래 연습에서 직접 확인한다.</div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">고정점 반복 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 3 · 고정점 1회 반복</div>
+    <p class="prob-statement">$f(x)=x^3-x-2=0$ 을 $x=g(x)=\sqrt[3]{x+2}$ 로 바꿔 $x_{n+1}=g(x_n)$ 을 반복한다. 근에서 한참 떨어진 $x_0=6$ 에서 <strong>$x_1$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$x_1=\sqrt[3]{x_0+2}$</span><span class="chip">$x_0=6$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_1 = \sqrt[3]{6+2} = \sqrt[3]{8} = 2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_1 = 2 $$</div><b>정답:</b> 초기값이 근($1.5214$)에서 멀어도, 수축하는 $g$ 가 <strong>단번에 $2$ 로 끌어당긴다</strong> — $|g'|<1$ 의 힘.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 4 · 고정점 2회 반복</div>
+    <p class="prob-statement">위에서 이어서 $x_1=2$ 일 때, 같은 $g(x)=\sqrt[3]{x+2}$ 로 <strong>$x_2$</strong> 를 구하시오. (소수 4자리)</p>
+    <div class="given"><span class="chip">$x_2=\sqrt[3]{x_1+2}$</span><span class="chip">$x_1=2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.5874" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ x_2 = \sqrt[3]{2+2} = \sqrt[3]{4} = 1.5874 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ x_2 \approx 1.5874 $$</div><b>정답:</b> 수열 $6\to2\to1.5874\to\cdots$ 가 근 $x^*\approx1.5214$ 로 <strong>선형 수렴</strong>한다(매 반복 오차 약 $0.14$ 배).</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 5 · 발산하는 $g$ 판정</div>
+    <p class="prob-statement">같은 방정식을 $x=g_2(x)=x^3-2$ 로 바꾸면 $g_2'(x)=3x^2$ 이다. 근 $x^*\approx1.52$ 에서 <strong>$g_2'(x^*)=3(1.52)^2$</strong> 의 값을 구하고, 이 $g_2$ 가 수렴하는지 판정하시오.</p>
+    <div class="given"><span class="chip">$g_2'(x)=3x^2$</span><span class="chip">$x^*\approx1.52$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="6.93" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ g_2'(x^*) = 3(1.52)^2 = 3(2.3104) = 6.93 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ |g_2'(x^*)| \approx 6.93 > 1 $$</div><b>정답:</b> $|g'|>1$ 이므로 <strong>발산</strong>. 같은 방정식도 $g$ 를 잘못 고르면($x^3-2$) 반복이 튕겨 나간다 — $\sqrt[3]{x+2}$ 형태여야 수렴한다.</div>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="정리">
   <div class="eyebrow">5-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

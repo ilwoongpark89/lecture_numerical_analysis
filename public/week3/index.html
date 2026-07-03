@@ -247,6 +247,44 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
   </div>
 </section>
 
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">비트 복원·표현 간격 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 3 · 비트열 → 십진</div>
+    <p class="prob-statement">8비트 미니플롯(bias $7$)에서 비트열 $S{=}0,\ E{=}1000_2,\ M{=}010$ 이 나타내는 <strong>십진수</strong>를 구하시오. ($E$ 는 부호 없는 정수, 실제 지수 $=E-7$)</p>
+    <div class="given"><span class="chip">$E=1000_2=8$</span><span class="chip">$1.010_2=1.25$</span><span class="chip">$2^{8-7}=2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.5" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 실제 지수</div>$$ E=1000_2=8 \;\Rightarrow\; \text{지수}=8-7=1 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 조립</div>$$ (-1)^0\times 1.010_2\times 2^{1} = 1.25\times 2 = 2.5 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ = 2.5 $$</div><b>정답:</b> $2.5$ — 인코딩(3-1 원리)의 역과정. 세 필드를 다시 조립하면 원래 값이 복원된다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 4 · 표현 간격(ULP)</div>
+    <p class="prob-statement">8비트 미니플롯에서 값 $v=20$ 근처의 표현 간격(ULP)을 구하시오. 간격 $=2^{\lfloor \log_2 v\rfloor - 3}$ 이다.</p>
+    <div class="given"><span class="chip">$16\le 20<32$</span><span class="chip">$\lfloor\log_2 20\rfloor = 4$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2" data-tol="0.05"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 2^{\lfloor\log_2 20\rfloor - 3} = 2^{4-3} = 2^{1} = 2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \text{ULP} = 2 $$</div><b>정답:</b> $2$ — $16\sim32$ 구간의 수는 $2$ 간격으로만 놓인다. 그래서 $21$ 은 저장 불가($20$ 또는 $22$ 로 밀린다).</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 5 · 한 구간의 수 개수</div>
+    <p class="prob-statement">8비트 미니플롯(가수 $3$ 비트)에서 $1\le v<2$ 구간에 표현 가능한 서로 다른 수는 <strong>몇 개</strong>인가?</p>
+    <div class="given"><span class="chip">가수 $3$ 비트</span><span class="chip">$2^{t}$ 개</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="8" data-tol="0.05"/><span class="ans-unit">개</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ 2^{3} = 8\quad(1.000_2,\,1.001_2,\,\dots,\,1.111_2) $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ = 8\ \text{개} $$</div><b>정답:</b> $8$ 개. 모든 $2$ 배 구간 $[2^k,2^{k+1})$ 마다 <strong>같은 개수</strong>($2^t$)가 놓이므로, 값이 클수록 간격이 벌어진다.</div>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="정리">
   <div class="eyebrow">3-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -415,6 +453,18 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <div class="revealable solution">
       <div class="ans-final"><div class="ans-eq">$$ 1\;\text{자리} $$</div><b>정답:</b> 앞 4자리가 상쇄되어 $9$ 한 자리만 남는다. 이래서 "비슷한 수의 뺄셈" 을 피하도록 식을 재구성한다.</div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="함정">
+  <div class="eyebrow">3-2 · 함정 · More pitfalls</div>
+  <h1 class="stage-h">반올림이 조용히 갉아먹는 방식 — 덧셈의 함정</h1>
+  <p class="lede">상쇄(뺄셈)만 위험한 게 아니다. <strong>덧셈</strong>에서도 반올림은 조용히 정보를 삼킨다 — 크기가 크게 다른 수를 더하거나, 많은 수를 순서 없이 더할 때 특히 그렇다.</p>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ 흡수(swamping)</h4><p>$1.0 + 10^{-20} = 1.0$. 상대 크기가 $\varepsilon_{\text{mach}}$ 보다 작으면 <b>더해도 흔적조차 없다</b> — 작은 항이 큰 수에 흡수된다.</p></div>
+    <div class="pitfall"><h4>⚠ 결합법칙이 깨진다</h4><p>부동소수점 덧셈은 $(a{+}b){+}c \neq a{+}(b{+}c)$. <b>더하는 순서</b>가 결과를 바꾼다 — 작은 항부터 더해야 손실이 준다.</p></div>
+    <div class="pitfall"><h4>⚠ 긴 합의 오차 누적</h4><p>$N$ 개를 순진하게 더하면 반올림 오차가 최악 $\sim N\varepsilon_{\text{mach}}$ 로 쌓인다. <b>Kahan 합산</b>이 이를 보상한다.</p></div>
+    <div class="pitfall"><h4>⚠ 반올림은 항상 '올림'이 아니다</h4><p>IEEE 기본은 <b>round-half-to-even</b>(짝수 반올림) — $0.5$ 를 늘 올리지 않아 한 방향 편향(bias) 누적을 막는다.</p></div>
   </div>
 </section>
 
