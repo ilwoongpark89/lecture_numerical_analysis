@@ -698,6 +698,24 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
   </div>
 </section>
 
+<section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="생각">
+  <div class="longform" data-qid="reflect-10-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 점 사이를 채운 값을 어디까지 믿을까</span>
+    <div class="lf-q">보간은 점 사이를 곡선으로 잇지만 그 곡선을 얼마나 믿어도 될까? 다 배운 지금 되돌아보자 — <strong>점이 많을수록 좋다</strong>는 직관이 배신하는 곳(고차 다항의 끝단 출렁임 = Runge 현상, 관측 범위 밖 외삽), 스플라인이 왜 안전한지, 그리고 이 감각을 사진 확대·센서 보정·그래프 읽기에 어떻게 옮길지 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 데이터 범위 <b>안</b>(내삽)은 비교적 믿되, 범위 <b>밖</b>(외삽)이나 고차 다항의 양 끝은 크게 의심하고 스플라인·저차로 낮춰서…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 보간은 점을 정확히 지나지만, 점 <strong>사이·밖</strong>의 값은 "가정"이다 — 차수를 높일수록 그 가정이 위험해진다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>차수를 무작정 올리기보다 구간마다 낮은 차수(스플라인)로 이어야 끝단 출렁임(Runge)을 피한다.</li>
+        <li>관측 범위 밖(외삽)의 값은 근거가 약하므로, 신뢰구간을 좁게 보거나 아예 쓰지 않는다.</li>
+        <li>사진을 크게 확대할 때 없던 물결·번짐이 생기는 것과 같은 함정 — 보간도 과하면 허상을 만든다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="정리">
   <div class="eyebrow">10-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

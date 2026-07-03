@@ -203,7 +203,28 @@
   // ════════ 렌더 (kind 별 plot + table) ════════
   function renderPlot(cfg, rows, step) {
     var k = cfg.kind;
-    if (k === "matrix-iter" || k === "power" || k === "diff" || k === "series" || k === "gauss") return "";
+    if (k === "matrix-iter" || k === "diff" || k === "series" || k === "gauss") return "";
+    if (k === "power") {
+      var lamv = [];
+      for (var qp = 1; qp < rows.length; qp++) if (rows[qp].lam != null) lamv.push(rows[qp].lam);
+      if (cfg.trueLam != null) lamv.push(cfg.trueLam);
+      if (!lamv.length) return "";
+      var plo = Math.min.apply(null, lamv), phi = Math.max.apply(null, lamv);
+      if (plo === phi) { plo -= 1; phi += 1; }
+      var pmg = (phi - plo) * 0.2 || 1, maxK = rows.length - 1;
+      var W2 = 520, H2 = 210, pL = 46, pR = 14, pT = 16, pB = 28, pw2 = W2 - pL - pR, ph2 = H2 - pT - pB;
+      var mx2 = function (kk) { return pL + (kk / Math.max(maxK, 1)) * pw2; };
+      var my2 = function (v) { return pT + ph2 - ((v - (plo - pmg)) / ((phi + pmg) - (plo - pmg))) * ph2; };
+      var sv = ['<svg viewBox="0 0 ' + W2 + ' ' + H2 + '" width="100%" style="max-width:560px;display:block;margin:0 auto">'];
+      sv.push('<line x1="' + pL + '" y1="' + pT + '" x2="' + pL + '" y2="' + (pT + ph2) + '" stroke="#94a3b8" stroke-width="1"/>');
+      if (cfg.trueLam != null) sv.push('<line x1="' + pL + '" y1="' + my2(cfg.trueLam).toFixed(1) + '" x2="' + (W2 - pR) + '" y2="' + my2(cfg.trueLam).toFixed(1) + '" stroke="#16a34a" stroke-width="1.4" stroke-dasharray="5 3"/>');
+      var dp = "";
+      for (var sp = 1; sp < step && sp < rows.length; sp++) { if (rows[sp].lam == null) continue; dp += (dp ? "L" : "M") + mx2(sp).toFixed(1) + "," + my2(rows[sp].lam).toFixed(1) + " "; }
+      if (dp) sv.push('<path d="' + dp + '" fill="none" stroke="#1e40af" stroke-width="2.4"/>');
+      for (var s2 = 1; s2 < step && s2 < rows.length; s2++) { if (rows[s2].lam == null) continue; sv.push('<circle cx="' + mx2(s2).toFixed(1) + '" cy="' + my2(rows[s2].lam).toFixed(1) + '" r="3.5" fill="#1e40af"/>'); }
+      sv.push('</svg>');
+      return sv.join("");
+    }
     if (k === "interp") {
       var ip = cfg.pts, ixs = ip.map(function (p) { return p[0]; }), iys = ip.map(function (p) { return p[1]; });
       var ixmin = Math.min.apply(null, ixs.concat([cfg.xq])), ixmax = Math.max.apply(null, ixs.concat([cfg.xq]));

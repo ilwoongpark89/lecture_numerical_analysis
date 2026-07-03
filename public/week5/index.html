@@ -800,6 +800,24 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
   </div>
 </section>
 
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="생각">
+  <div class="longform" data-qid="reflect-5-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 빠른 방법을 언제 믿고 언제 의심할까</span>
+    <div class="lf-q">할선법·Newton은 초선형·이차로 빠르지만 항상 빠른 게 좋을까? 다 배운 지금 되돌아보자 — 이 빠른 방법이 오히려 실패하거나 느려지는 곳($f'\approx0$, 나쁜 초기값, 두 시작점이 근을 못 감싸는 경우)은 어디일지, 그리고 <strong>느려도 안전한 이분법 vs 빠르지만 위험한 할선·Newton</strong> 을 실무에서 언제 골라 쓸지 적어보자. 경사하강(기계학습)도 같은 고민이다.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 수렴이 갑자기 튀거나 두 근사가 오락가락하면, 속도를 포기하고 이분법으로 한 번 감싸 안전지대를 확보한 뒤 다시 빠른 방법으로…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 수렴 속도(얼마나 빨리)와 안정성(수렴이 보장되나)은 <strong>별개</strong> — 빠른 방법일수록 안전장치가 필요하다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>Newton이 발산 조짐(값이 튀거나 $f'$ 이 0에 가까움)을 보이면 그 스텝을 버리고 이분법 한 번으로 구간을 좁힌 뒤 재개한다.</li>
+        <li>시작 전에 부호가 다른 두 점으로 근을 감싸(브래킷) 두면, 빠른 방법이 벗어나도 되돌아올 안전지대가 남는다.</li>
+        <li>경사하강의 학습률도 같은 트레이드오프 — 크게 잡으면 빠르지만 발산, 작게 잡으면 안전하지만 느리다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="정리">
   <div class="eyebrow">5-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

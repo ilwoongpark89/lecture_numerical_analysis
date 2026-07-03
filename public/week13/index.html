@@ -503,6 +503,26 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
   <div class="callout key" style="margin-top:12px"><div class="ct">확장</div>$n$차 ODE → 상태 $n$개, 연립 $m$개 방정식 → 상태 $m$개. RK4/ode45는 벡터 $\mathbf{Y}$ 에 그대로 적용된다.</div>
 </section>
 
+<!-- ════════ 생각 (소비형 · 되돌아봄) ════════ -->
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="생각">
+  <div class="longform" data-qid="reflect-13-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 이 전진법을 언제 믿고 언제 의심할까</span>
+    <div class="lf-q">이제 Euler(단순·1차), Heun(예측·수정·2차), RK4(네 기울기·4차)를 <strong>손으로 직접 전진</strong>시켜 봤고, 고차·연립도 상태 벡터로 묶어 <strong>같은 공식으로</strong> 굴려 봤다. 만약 네가 실제 공학 문제 — 로켓 궤도, 식어가는 장치, 회로, 전염병 확산 — 에서 $y'=f(x,y)$ 를 풀어야 한다면, 어떤 방법을 <em>먼저</em> 꺼내고 그 수치해를 <em>언제 의심</em>하겠는가? 정확해가 없어 답을 대조할 수 없을 때(대부분!) "이 곡선을 믿어도 되나"를 어떻게 스스로 점검할까? 그리고 이 방법들이 배신할 법한 상황 — $h$ 를 크게 줘 <strong>발산</strong>할 때, 빠르고 느린 성분이 섞인 <strong>강성(stiff)</strong> 문제, 아주 긴 구간을 적분해 오차가 누적될 때 — 을 하나 떠올려 어떻게 대비할지 적어보자. 마지막으로 "지금 기울기로 한 걸음 찍고 또 찍기"나 "여러 지점 기울기를 평균 내 보정하기"라는 이 아이디어를 미분방정식 <strong>바깥</strong>(예측·제어·일상 판단)에서 써먹을 곳이 있을지도 상상해 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 곡선이 얌전하면 RK4를 기본값으로 큰 $h$ 로 빠르게 풀지만, 답이 튀거나 $h$ 를 반으로 줄였을 때 값이 크게 바뀌면 그 결과를 믿지 말아야 한다는 신호… $y'=-15y$ 처럼 $h\lvert\lambda\rvert$ 가 커지면 아무리 고차 방법이라도 안정조건에 묶인다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 정확해가 없을 때 믿음의 근거는 "$h$ 를 반으로 줄여도 답이 거의 안 변하는가"($h$-절반 대조) — 정확도(차수)와 안정성(발산 여부)은 서로 <strong>다른 축</strong>이고, 실무는 비용과 정밀도를 맞바꿔 RK4를 기본값으로, 강성 문제엔 음함수법을 쓴다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>곡선이 매끄럽고 계산 비용에 여유가 있으면 RK4를 기본으로 꺼내지만, 정확해가 없어 대조할 수 없으니 <strong>$h$ 를 반으로 줄여 다시 풀어</strong> 두 답이 거의 같으면 신뢰하고 크게 다르면 의심하는 습관이 생겼다. 함정 단계에서 $y'=-15y$ 가 폭발하는 걸 보고, <strong>정확도가 높은 방법이라도 $h$ 가 안정 한계를 넘으면 발산</strong>한다는 것 — 즉 차수(정확도)와 안정성은 다른 축임을 몸으로 알게 됐다.</li>
+        <li>문제를 풀기 전에 "여기 <strong>빠른 성분과 느린 성분이 같이 있나</strong>(강성)"를 먼저 점검하게 됐다 — 강성이면 명시적 Euler·RK4는 안정조건이 $h$ 를 극단적으로 조여 비효율적이라, 걸음을 무작정 잘게 쪼개기보다 <strong>음함수법(implicit)</strong> 으로 갈아타야 함을 안다.</li>
+        <li>"지금 기울기로 한 걸음 찍고, 새 자리에서 또 찍기"는 내비의 도착 예측을 $1$분마다 다시 계산하거나 재고를 보고 발주량을 갱신하는 것처럼 <strong>변하는 상태를 따라가는 예측</strong> 어디에나 옮겨 쓸 수 있고, "예측한 뒤 중간을 다시 재 평균으로 보정"하는 Heun·RK4의 아이디어는 사실상 <strong>피드백 제어·반복 보정</strong> 과 한 가족임을 알게 됐다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
   <div class="eyebrow">13-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

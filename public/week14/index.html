@@ -349,6 +349,24 @@ end
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \Delta t\le\frac{\Delta x}{c}=\frac{0.1}{2}=0.05 $$</div><b>정답:</b> $\Delta t>0.05$ 면 발산. 파동 안정조건은 확산보다 완만($\Delta t\propto\Delta x$).</div></div>
   </div>
 </section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="생각">
+  <div class="longform" data-qid="reflect-14-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 이 시뮬레이션을 어디까지 믿을까</span>
+    <div class="lf-q">열·평형·파동을 격자로 풀었다. 그 결과를 얼마나 믿을까? 다 배운 지금 되돌아보자 — 안정조건($\lambda\le\tfrac12$, CFL $\le1$)을 어기면 왜 폭발하는지, 격자를 촘촘히 할수록 계산비용이 어떻게 폭증하는지, 그리고 이 감각을 일기예보·유체·구조 시뮬레이션에 어떻게 옮길지 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 결과가 물리적으로 불가능(음수 온도·폭발)하면 알고리즘보다 먼저 $\Delta t/\Delta x$ 안정조건을 의심하고, 격자를 반으로 줄여 결과가 바뀌는지…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 시뮬레이션의 신뢰는 <strong>"격자를 바꿔도 결과가 안 바뀜"</strong>(수렴 검증)에서 나온다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>결과가 폭발·진동하면 알고리즘 버그보다 먼저 $\lambda\le\tfrac12$·CFL 안정조건 위반을 점검한다.</li>
+        <li>격자를 반으로 줄여도 답이 거의 같아야(격자 수렴) 그 시뮬레이션을 믿을 수 있다.</li>
+        <li>일기예보·유체 시뮬레이션도 해상도를 높이면 비용이 $N^2,N^3$ 로 폭증 — 정확도와 비용의 균형을 잡는다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="정리">
   <div class="eyebrow">14-4 · 정리 · Summary</div>
   <h1 class="stage-h">세 유형 총정리</h1>
