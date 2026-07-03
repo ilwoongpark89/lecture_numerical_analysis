@@ -456,6 +456,25 @@ f = @(x,y) x - y;
   </div>
 </section>
 
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">전진·안정 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · Euler 한 스텝</div>
+    <p class="prob-statement">$y'=2y$, $y(0)=1$, $h=0.1$. Euler 공식으로 <strong>$y_1$</strong> 을 구하시오.</p>
+    <div class="given"><span class="chip">$y_1=y_0+h\,f(x_0,y_0)$</span><span class="chip">$f=2y$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.2" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ y_1=1+0.1\times(2\times1)=1.2 $$</div><b>정답:</b> 정확값 $e^{0.2}=1.2214$ — Euler는 접선 직진이라 조금 아래(1차 오차).</div></div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · Euler 안정 스텝</div>
+    <p class="prob-statement">$y'=-10y$ 에 Euler를 <strong>안정하게</strong> 쓰려면 스텝 $h$ 의 상한은? ($|1+h\lambda|<1$, $\lambda=-10$)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="예: 0.2" data-answer="0.2" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ |1-10h|<1 \Rightarrow 0<10h<2 \Rightarrow 0<h<0.2 $$</div><b>정답:</b> $h<0.2$. 넘으면 부호가 튀며 발산 — 감쇠해가 폭발한다.</div></div>
+  </div>
+</section>
+
 <!-- ════════════════════ 13-4 연립·고차 ════════════════════ -->
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="문제">
   <div class="eyebrow">13-4 · 문제 · Motivation</div>
