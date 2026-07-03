@@ -136,6 +136,27 @@
         ox = ox + oh; oy = oyn;
         rows.push({ i: oi + 1, x: ox, y: oy, err: cfg.trueFn ? Math.abs(oy - cfg.trueFn(ox)) : null });
       }
+    } else if (k === "power") {
+      var Ap = cfg.A, np = Ap.length, xp = cfg.x0.slice();
+      rows.push({ i: 0, lam: null, x: xp.slice(), err: null });
+      for (var ip = 1; ip <= steps; ip++) {
+        var yp = [];
+        for (var rp = 0; rp < np; rp++) { var sp = 0; for (var cp = 0; cp < np; cp++) sp += Ap[rp][cp] * xp[cp]; yp.push(sp); }
+        var mxv = yp[0];
+        for (var tp = 1; tp < np; tp++) if (Math.abs(yp[tp]) > Math.abs(mxv)) mxv = yp[tp];
+        var xnp = yp.map(function (v) { return v / mxv; });
+        var epw = cfg.trueLam != null ? Math.abs(mxv - cfg.trueLam) : null;
+        rows.push({ i: ip, lam: mxv, x: xnp.slice(), err: epw });
+        xp = xnp;
+        if (epw != null && epw < 1e-12) break;
+      }
+    } else if (k === "diff") {
+      var fdd = cfg.f, xd = cfg.x0, hd = cfg.h0, cen = cfg.mode === "central";
+      for (var qd = 0; qd < steps; qd++) {
+        var estd = cen ? (fdd(xd + hd) - fdd(xd - hd)) / (2 * hd) : (fdd(xd + hd) - fdd(xd)) / hd;
+        rows.push({ i: qd, h: hd, est: estd, err: cfg.trueD != null ? Math.abs(estd - cfg.trueD) : null });
+        hd /= 2;
+      }
     }
     return rows;
   }
@@ -145,7 +166,7 @@
   // ════════ 렌더 (kind 별 plot + table) ════════
   function renderPlot(cfg, rows, step) {
     var k = cfg.kind;
-    if (k === "matrix-iter") return "";
+    if (k === "matrix-iter" || k === "power" || k === "diff") return "";
     if (k === "integration") {
       var P0 = plotBase(cfg.f, cfg.a, cfg.b, {}); var r0 = rows[Math.max(0, step - 1)]; var n = r0 ? r0.n : cfg.n0;
       var h = (cfg.b - cfg.a) / n;
@@ -244,6 +265,13 @@
     } else if (k === "ode") {
       head = cfg.trueFn ? ["n", "xₙ", "yₙ (근사)", "정확해", "오차"] : ["n", "xₙ", "yₙ"];
       shown.forEach(function (r) { var c = [r.i, fmt(r.x, 4), fmt(r.y, 6)]; if (cfg.trueFn) { c.push(fmt(cfg.trueFn(r.x), 6)); c.push(r.err != null ? r.err.toExponential(2) : "—"); } body += tr(c); });
+    } else if (k === "power") {
+      var npw = cfg.x0.length, chp = ["k", "λ (최대성분)"]; for (var zc = 0; zc < npw; zc++) chp.push("x" + (zc + 1)); if (cfg.trueLam != null) chp.push("오차");
+      head = chp;
+      shown.forEach(function (r) { var cells = [r.i, r.lam == null ? "—" : fmt(r.lam, 5)]; for (var z = 0; z < npw; z++) cells.push(fmt(r.x[z], 4)); if (cfg.trueLam != null) cells.push(r.err == null ? "—" : r.err.toExponential(2)); body += tr(cells); });
+    } else if (k === "diff") {
+      head = ["단계", "h", "근사 f′", cfg.trueD != null ? "오차" : "Δ"];
+      shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].est : null; body += tr([r.i + 1, fmt(r.h, 5), fmt(r.est, 8), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.est - last).toExponential(2) : "—")]); });
     }
     var ths = head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("");
     return '<div class="stp-tblwrap"><table class="stp-tbl"><thead><tr>' + ths + "</tr></thead><tbody>" + (body || '<tr><td colspan="' + head.length + '" class="stp-empty">"다음 반복" 을 눌러 시작하세요</td></tr>') + "</tbody></table></div>";
@@ -254,6 +282,8 @@
     if (step === 0) return "";
     var r = rows[Math.min(step, rows.length) - 1];
     if (cfg.kind === "ode") return "x=" + fmt(r.x, 3) + ", y≈" + fmt(r.y, 5) + (r.err != null ? " · 오차 " + r.err.toExponential(2) : "");
+    if (cfg.kind === "power") return r.lam == null ? "" : ((r.err != null && r.err < 1e-4) ? "✓ 수렴 — 지배 고유값 λ ≈ " + fmt(r.lam, 6) : "λ ≈ " + fmt(r.lam, 6) + (r.err != null ? " · 오차 " + r.err.toExponential(2) : ""));
+    if (cfg.kind === "diff") return "h=" + fmt(r.h, 5) + " · 근사 f′ ≈ " + fmt(r.est, 6) + (r.err != null ? ((r.err < 1e-6 ? " · ✓ 오차 " : " · 오차 ") + r.err.toExponential(2)) : "");
     if (cfg.kind === "matrix-iter") return r.err == null ? "" : (r.err < 1e-4 ? "✓ 수렴 — 정확한 해에 도달" : "max error = " + r.err.toExponential(2) + " · 정답에 접근 중");
     if (cfg.kind === "integration") return r.err != null ? (r.err < 1e-6 ? "✓ 충분히 수렴 (오차 " + r.err.toExponential(2) + ")" : "오차 " + r.err.toExponential(2) + " · n 을 2배로 세분하면 오차 급감") : "n=" + r.n + " · 근사 " + fmt(r.est, 8);
     var approx = cfg.kind === "root-bracket" ? r.c : (cfg.kind === "fixed-point" ? r.gxn : r.xn1);
@@ -282,6 +312,12 @@
       var xend = el.getAttribute("data-xend");
       cfg.steps = xend != null ? Math.max(1, Math.round((num(xend, 1) - cfg.x0) / cfg.h)) : parseInt(el.getAttribute("data-steps") || "10", 10);
       var otf = el.getAttribute("data-true"); cfg.trueFn = otf ? compileFn(otf, ["x"]) : null;
+    } else if (kind === "power") {
+      try { cfg.A = JSON.parse(el.getAttribute("data-a")); cfg.x0 = JSON.parse(el.getAttribute("data-x0") || "null") || cfg.A.map(function () { return 1; }); } catch (e) { cfg.A = [[1]]; cfg.x0 = [1]; }
+      var tl = el.getAttribute("data-true"); cfg.trueLam = tl != null ? num(tl, null) : null; cfg.steps = cfg.steps || 10;
+    } else if (kind === "diff") {
+      cfg.f = compileFn(el.getAttribute("data-fn")); cfg.x0 = num(el.getAttribute("data-x0"), 1); cfg.h0 = num(el.getAttribute("data-h0"), 0.5);
+      cfg.mode = el.getAttribute("data-mode") || "central"; var td = el.getAttribute("data-true"); cfg.trueD = td != null ? num(td, null) : null; cfg.steps = cfg.steps || 8;
     } else {
       cfg.f = compileFn(el.getAttribute("data-fn"));
       cfg.xmin = num(el.getAttribute("data-xmin"), 0); cfg.xmax = num(el.getAttribute("data-xmax"), 2);
