@@ -238,6 +238,25 @@ A = [4 1; 1 3];
   </div>
 </section>
 
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">고유값·거듭제곱 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 삼각행렬 고유값</div>
+    <p class="prob-statement">상삼각행렬 $A=\begin{bmatrix}3&1\\0&2\end{bmatrix}$ 의 <strong>최대(지배) 고유값</strong>은? (삼각행렬의 고유값 = 대각원소)</p>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="3" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \det(A-\lambda I)=(3-\lambda)(2-\lambda)=0\ \Rightarrow\ \lambda=3,\,2 $$</div><b>정답:</b> 삼각행렬은 대각원소가 그대로 고유값 — 최대 $\lambda=3$. 거듭제곱법이 수렴하는 값이다.</div></div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 거듭제곱 1회</div>
+    <p class="prob-statement">$A=\begin{bmatrix}2&0\\0&5\end{bmatrix}$, $\mathbf{x}_0=(1,1)$. $A\mathbf{x}_0$ 의 <strong>최대성분(=$\lambda$ 첫 근사)</strong>은?</p>
+    <div class="given"><span class="chip">$A\mathbf{x}_0=(2\cdot1,\ 5\cdot1)$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="5" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ A\mathbf{x}_0=(2,\,5)\ \Rightarrow\ \lambda\approx 5,\quad \mathbf{x}_1=(0.4,\,1) $$</div><b>정답:</b> 최대성분 $5$ 가 지배 고유값. 이미 대각행렬이라 한 번에 정확한 $\lambda=5$ 에 닿는다.</div></div>
+  </div>
+</section>
+
 <section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="문제">
   <div class="eyebrow">15-3 · 문제 · Motivation</div>
   <h1 class="stage-h">최소·특정 고유값 겨냥 <span class="en">· Inverse / Shifted</span></h1>
