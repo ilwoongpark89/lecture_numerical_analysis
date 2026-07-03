@@ -319,7 +319,7 @@ I = trapezoid(f, 0, 1);
       <div class="vcap">정확 차수와 오차</div>
       <div class="keqbox">
         <div class="keqrow"><span class="keqcap">단일 오차</span><span class="keqline">$ E=-\dfrac{h^5}{90}f^{(4)}(\xi) $</span></div>
-        <div class="keqrow"><span class="keqcap">복합 오차</span><span class="keqline">$ E=-\dfrac{(b-a)}{180}h^4 f^{(4)}=O(h^4) $</span></div>
+        <div class="keqrow"><span class="keqcap">복합 오차</span><span class="keqline">$ E=-\dfrac{b-a}{180}h^4 f^{(4)}=O(h^4) $</span></div>
       </div>
       <div class="callout key"><div class="ct">4차 수렴</div>복합 Simpson 은 $n$ 을 2배 하면 오차가 <strong>$1/16$</strong>. 같은 점 수로 사다리꼴($1/4$)보다 압도적으로 빠르다.</div>
     </div>
@@ -341,7 +341,7 @@ I = trapezoid(f, 0, 1);
   <div class="pitfalls">
     <div class="pitfall"><h4>⚠ 짝수 조각 필수</h4><p>복합 Simpson 1/3 은 소구간 수 $n$ 이 <b>짝수</b>여야 한다(2개씩 묶음). 홀수면 마지막을 3/8 로 보정.</p></div>
     <div class="pitfall"><h4>⚠ $f^{(4)}$ 가 크다</h4><p>급진동 함수는 4계 도함수가 폭발 → 고차 공식이 오히려 크게 틀린다. 잘게 쪼개야.</p></div>
-    <div class="pitfall"><h4>⚠ 고차 Newton-Cotes</h4><p>차수를 무작정 올리면(≥8점) 가중치에 <b>음수</b>가 생겨 수치 불안정(Runge 현상). 그래서 고차 대신 복합.</p></div>
+    <div class="pitfall"><h4>⚠ 고차 Newton-Cotes</h4><p>차수를 무작정 올리면($\ge 8$점) 가중치에 <b>음수</b>가 생겨 수치 불안정(Runge 현상). 그래서 고차 대신 복합.</p></div>
     <div class="pitfall"><h4>⚠ 특이점·불연속</h4><p>매끄럽지 않으면 $f^{(4)}$ 가정이 깨져 4차 수렴이 사라진다.</p></div>
   </div>
 </section>
@@ -418,7 +418,7 @@ I = simpson13(f, 0, 1);
         <div class="keq-label">이번 절의 뼈대</div>
         <div class="keqrow"><span class="keqcap">분할</span><span class="keqline">$ h=\dfrac{b-a}{n},\ \ x_i=a+ih $</span></div>
         <div class="keqrow"><span class="keqcap">복합 사다리꼴</span><span class="keqline">$ \dfrac{h}{2}\Bigl[f_0+2\!\sum_{i=1}^{n-1}\!f_i+f_n\Bigr] $</span></div>
-        <div class="keqrow"><span class="keqcap">복합 Simpson</span><span class="keqline">$ \dfrac{h}{3}\Bigl[f_0+4\!\sum_{\text{홀}}\!f_i+2\!\sum_{\text{짝}}\!f_i+f_n\Bigr] $</span></div>
+        <div class="keqrow"><span class="keqcap">복합 Simpson</span><span class="keqline">$ \dfrac{h}{3}\Bigl[f_0+4(f_1{+}f_3{+}\cdots)+2(f_2{+}f_4{+}\cdots)+f_n\Bigr] $</span></div>
       </div>
     </div>
     <div class="col2">
