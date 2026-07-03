@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
 
 :root {
   /* 액티브 제품(랜딩·enter·admin·라이트 강의)이 화이트 → body 기본 화이트.
@@ -14,15 +15,18 @@
   --font-sans: var(--font-plus-jakarta);
   --font-mono: var(--font-geist-mono);
   /* 단일 액센트(블루) — text-accent / bg-accent / border-accent / *-accent-soft 생성 */
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-soft: #eff6ff;
+  --color-accent: #1e40af;
+  --color-accent-hover: #1e3a8a;
+  --color-accent-soft: #eef2fb;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+  font-family: var(--font-sans), "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+  letter-spacing: -.003em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
@@ -44,7 +48,7 @@ html {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.2); /* --accent #2563eb */
+  background: rgba(30, 64, 175, 0.16); /* --accent #1e40af */
   color: inherit;
 }
 

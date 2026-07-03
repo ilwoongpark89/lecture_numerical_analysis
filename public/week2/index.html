@@ -217,7 +217,7 @@ fprintf('반지름 %d → 넓이 %.2f\n', r, area);  <span class="cm">% 서식 �
 
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="정리">
   <div class="eyebrow">2-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>MATLAB = 행렬 기본 자료형 · IDE 4구획(Editor/Command/Workspace/Folder).</li>
@@ -228,10 +228,6 @@ fprintf('반지름 %d → 넓이 %.2f\n', r, area);  <span class="cm">% 서식 �
       <li><code>=</code>(대입) 과 <code>==</code>(비교) 혼동.</li>
       <li>삼각함수에 각도(°) 입력 — 라디안이 기본.</li>
       <li>우선순위를 왼→오 순으로 착각.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 식의 <strong>우선순위·괄호</strong>로 최종 출력값 계산.</li>
-      <li><code>mod/rem</code>·특수값의 결과 예측.</li>
     </ul></div>
   </div>
 </section>
@@ -380,7 +376,7 @@ det(A)                 <span class="cm">% 2*1 - 3*4 = -10</span></code></pre></d
 
 <section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="정리">
   <div class="eyebrow">2-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>생성 <code>: linspace zeros eye diag</code>, 인덱싱 <strong>1-based</strong> + <code>: end</code>.</li>
@@ -391,10 +387,6 @@ det(A)                 <span class="cm">% 2*1 - 3*4 = -10</span></code></pre></d
       <li><code>*</code> 와 <code>.*</code> 혼동 → 차원 오류/오답.</li>
       <li>0-based 로 착각한 인덱싱.</li>
       <li><code>reshape</code> 의 열 우선 채움 간과.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>행렬곱/원소별곱의 <strong>특정 성분</strong> 손 계산.</li>
-      <li>인덱스식 <code>A(i,:)·A(:,j)·A(end,:)</code> 이 고르는 부분 행렬.</li>
     </ul></div>
   </div>
 </section>
@@ -555,7 +547,7 @@ root = fzero(f, -2);        <span class="cm">% 익명 함수를 fzero 에 전달
 
 <section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="정리">
   <div class="eyebrow">2-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li><code>for</code> = 횟수 고정, <code>while</code> = 수렴까지(수치해석의 심장).</li>
@@ -566,10 +558,6 @@ root = fzero(f, -2);        <span class="cm">% 익명 함수를 fzero 에 전달
       <li>안전장치 없는 <code>while</code> → 무한 루프.</li>
       <li>함수명과 파일명 불일치.</li>
       <li>익명 함수에 <code>.^ .*</code> 안 써서 벡터 입력 실패.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 <code>for/while</code> 반복 후 <strong>변수 최종값</strong> 추적.</li>
-      <li>익명·사용자 함수의 <strong>출력 예측</strong>(벡터 입력 포함).</li>
     </ul></div>
   </div>
 </section>
@@ -723,7 +711,7 @@ grid on;</code></pre></div>
 
 <section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="정리">
   <div class="eyebrow">2-4 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li><code>plot(x,y,'스타일')</code> + <code>hold on</code> + <code>xlabel/legend/grid</code>.</li>
@@ -734,10 +722,6 @@ grid on;</code></pre></div>
       <li><code>hold on</code> 없이 곡선 덮어쓰기.</li>
       <li>성긴 $x$ 축으로 각진 곡선.</li>
       <li><code>legend</code> 순서와 plot 순서 불일치.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>오차-스텝 표에서 <strong>수렴 차수 $p$ 판정</strong>($h$ 절반 → 오차 비율).</li>
-      <li>수치해 vs 해석해 그래프에서 <strong>오차의 의미</strong> 서술.</li>
     </ul></div>
   </div>
 </section>

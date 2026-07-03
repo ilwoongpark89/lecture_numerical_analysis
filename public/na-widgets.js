@@ -64,7 +64,7 @@
       if (!isFinite(yy)) { started = false; continue; }
       d += (started ? "L" : "M") + mx(xx).toFixed(1) + "," + my(yy).toFixed(1) + " "; started = true;
     }
-    if (opts.curve !== false) svg.push('<path d="' + d + '" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linejoin="round"/>');
+    if (opts.curve !== false) svg.push('<path d="' + d + '" fill="none" stroke="#1e40af" stroke-width="2.4" stroke-linejoin="round"/>');
     return { W: W, H: H, mx: mx, my: my, yMin: yMin, yMax: yMax, svg: svg, close: function () { svg.push("</svg>"); return svg.join(""); } };
   }
 
@@ -151,7 +151,7 @@
       var h = (cfg.b - cfg.a) / n;
       for (var i = 0; i < n && i < 400; i++) {
         var xL = cfg.a + i * h, xR = xL + h;
-        P0.svg.push('<path d="M' + P0.mx(xL) + ',' + P0.my(0) + ' L' + P0.mx(xL) + ',' + P0.my(cfg.f(xL)) + ' L' + P0.mx(xR) + ',' + P0.my(cfg.f(xR)) + ' L' + P0.mx(xR) + ',' + P0.my(0) + ' Z" fill="#2563eb" fill-opacity="0.10" stroke="#2563eb" stroke-width="0.8"/>');
+        P0.svg.push('<path d="M' + P0.mx(xL) + ',' + P0.my(0) + ' L' + P0.mx(xL) + ',' + P0.my(cfg.f(xL)) + ' L' + P0.mx(xR) + ',' + P0.my(cfg.f(xR)) + ' L' + P0.mx(xR) + ',' + P0.my(0) + ' Z" fill="#1e40af" fill-opacity="0.10" stroke="#1e40af" stroke-width="0.8"/>');
       }
       return P0.close();
     }
@@ -167,8 +167,8 @@
       if (cfg.trueFn) { var td = ""; for (var t2 = 0; t2 <= 120; t2++) { var xx2 = ox0 + (t2 / 120) * (oxN - ox0); var yv2 = cfg.trueFn(xx2); if (isFinite(yv2)) td += (td ? "L" : "M") + PO.mx(xx2).toFixed(1) + "," + PO.my(yv2).toFixed(1) + " "; } PO.svg.push('<path d="' + td + '" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 3"/>'); }
       var nd = "";
       for (var s2 = 0; s2 < step && s2 < rows.length; s2++) nd += (s2 ? "L" : "M") + PO.mx(rows[s2].x).toFixed(1) + "," + PO.my(rows[s2].y).toFixed(1) + " ";
-      if (nd) PO.svg.push('<path d="' + nd + '" fill="none" stroke="#2563eb" stroke-width="2.4"/>');
-      for (var s3 = 0; s3 < step && s3 < rows.length; s3++) PO.svg.push('<circle cx="' + PO.mx(rows[s3].x).toFixed(1) + '" cy="' + PO.my(rows[s3].y).toFixed(1) + '" r="3.5" fill="#2563eb"/>');
+      if (nd) PO.svg.push('<path d="' + nd + '" fill="none" stroke="#1e40af" stroke-width="2.4"/>');
+      for (var s3 = 0; s3 < step && s3 < rows.length; s3++) PO.svg.push('<circle cx="' + PO.mx(rows[s3].x).toFixed(1) + '" cy="' + PO.my(rows[s3].y).toFixed(1) + '" r="3.5" fill="#1e40af"/>');
       return PO.close();
     }
     // root/fixed-point plots
@@ -179,7 +179,7 @@
       var d1 = "", d2 = "";
       for (var t = 0; t <= 200; t++) { var xx = cfg.xmin + (t / 200) * (cfg.xmax - cfg.xmin); d1 += (t ? "L" : "M") + P.mx(xx) + "," + P.my(xx) + " "; var gy = cfg.g(xx); if (isFinite(gy)) d2 += (t ? "L" : "M") + P.mx(xx) + "," + P.my(gy) + " "; }
       P.svg.push('<path d="' + d1 + '" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4 3"/>');
-      P.svg.push('<path d="' + d2 + '" fill="none" stroke="#2563eb" stroke-width="2.4"/>');
+      P.svg.push('<path d="' + d2 + '" fill="none" stroke="#1e40af" stroke-width="2.4"/>');
       var cx = cfg.x0;
       for (var c = 0; c < step && c < rows.length; c++) {
         var g1 = rows[c].gxn;
@@ -192,7 +192,7 @@
     if (k === "root-bracket") {
       var cur = rows[Math.min(step, rows.length) - 1];
       if (cur && step > 0) {
-        P.svg.push('<rect x="' + P.mx(cur.a) + '" y="14" width="' + (P.mx(cur.b) - P.mx(cur.a)) + '" height="' + (P.H - 44) + '" fill="#2563eb" fill-opacity="0.08" stroke="#2563eb" stroke-dasharray="5 3" stroke-width="1.3"/>');
+        P.svg.push('<rect x="' + P.mx(cur.a) + '" y="14" width="' + (P.mx(cur.b) - P.mx(cur.a)) + '" height="' + (P.H - 44) + '" fill="#1e40af" fill-opacity="0.08" stroke="#1e40af" stroke-dasharray="5 3" stroke-width="1.3"/>');
         P.svg.push('<line x1="' + P.mx(cur.c) + '" y1="14" x2="' + P.mx(cur.c) + '" y2="' + (P.H - 30) + '" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>');
         P.svg.push('<circle cx="' + P.mx(cur.c) + '" cy="' + P.my(cur.fc) + '" r="4.5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>');
       }
@@ -206,10 +206,10 @@
           var xL2 = R.xn - (cfg.xmax - cfg.xmin) * 0.28, xR2 = R.xn + (cfg.xmax - cfg.xmin) * 0.16;
           var ty = function (t) { return R.fx + R.dfx * (t - R.xn); };
           P.svg.push('<line x1="' + P.mx(xL2) + '" y1="' + P.my(ty(xL2)) + '" x2="' + P.mx(xR2) + '" y2="' + P.my(ty(xR2)) + '" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="5 3" opacity="' + op + '"/>');
-          P.svg.push('<circle cx="' + P.mx(R.xn) + '" cy="' + P.my(R.fx) + '" r="4" fill="#2563eb" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.xn) + '" cy="' + P.my(R.fx) + '" r="4" fill="#1e40af" opacity="' + op + '"/>');
           P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#f59e0b" opacity="' + op + '"/>');
         } else {
-          P.svg.push('<circle cx="' + P.mx(R.x1) + '" cy="' + P.my(R.f1) + '" r="4" fill="#2563eb" opacity="' + op + '"/>');
+          P.svg.push('<circle cx="' + P.mx(R.x1) + '" cy="' + P.my(R.f1) + '" r="4" fill="#1e40af" opacity="' + op + '"/>');
           P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#f59e0b" opacity="' + op + '"/>');
         }
       }

@@ -124,7 +124,7 @@
 
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="정리">
   <div class="eyebrow">4-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>연속 $f$ 에서 $f(a)f(b)<0$ → $(a,b)$ 에 <strong>근 존재</strong>(IVT).</li>
@@ -133,10 +133,6 @@
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>중근·불연속에도 IVT 적용.</li>
       <li>부호 변화 없음 = 근 없음으로 단정(짝수 중근 가능).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 함수의 <strong>정수점 부호</strong>로 브래킷 구간 찾기.</li>
-      <li>IVT의 <strong>가정(연속)·한계(존재만)</strong> 서술.</li>
     </ul></div>
   </div>
 </section>
@@ -300,7 +296,7 @@ f = @(x) x.^3 - x - 2;
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="정리">
   <div class="eyebrow">4-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$f(a)f(b)<0$ → 중점 $c=(a+b)/2$ 로 <strong>구간 절반</strong> 축소.</li>
@@ -311,11 +307,6 @@ f = @(x) x.^3 - x - 2;
       <li>부호 판정을 $f(c)$ 단독으로 — 반드시 <strong>$f(a)f(c)$</strong> 곱의 부호.</li>
       <li>구간 갱신에서 어느 끝을 $c$ 로 바꿀지 혼동.</li>
       <li>중근($(x-1)^2$)에 적용 시도 — 부호 안 바뀜.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$n\ge\log_2((b-a)/\text{tol})$ 로 <strong>반복 횟수 계산</strong>.</li>
-      <li>주어진 초기 반복 2~3회 <strong>손으로 브래킷 추적</strong>.</li>
-      <li>이분법 vs Newton 장단점 비교(보장 vs 속도).</li>
     </ul></div>
   </div>
 </section>
@@ -481,7 +472,7 @@ df = @(x) 3*x.^2 - 1;
 
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="정리">
   <div class="eyebrow">4-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$x_{n+1}=x_n-f(x_n)/f'(x_n)$ — 접선의 $x$절편으로 도약.</li>
@@ -492,11 +483,6 @@ df = @(x) 3*x.^2 - 1;
       <li>$f'(x_n)=0$ 처리 누락(0으로 나눔).</li>
       <li>중근에 이차 수렴 가정 — 실제론 선형.</li>
       <li>부호·도함수 계산 실수 → 엉뚱한 근/발산.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>점화식으로 <strong>1~2회 손 계산</strong>($x_1, x_2$).</li>
-      <li>이분법 대비 <strong>수렴 차수·반복 수</strong> 비교.</li>
-      <li>실패 조건 3종(도함수 0 · 순환 · 나쁜 초기값) 서술.</li>
     </ul></div>
   </div>
 </section>
@@ -566,10 +552,6 @@ df = @(x) 3*x.^2 - 1;
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>"빠른 방법이 항상 좋다" — 발산 위험 무시.</li>
       <li>수렴 차수 $p$ 와 반복 수를 혼동.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 오차 수열로 <strong>수렴 차수 $p$ 판정</strong>.</li>
-      <li>세 방법(이분·할선·Newton) <strong>장단점·보장·도함수</strong> 비교표.</li>
     </ul></div>
   </div>
 </section>

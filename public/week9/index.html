@@ -106,8 +106,8 @@
         <text x="240" y="278" text-anchor="middle" fill="#71717a" font-size="11">x →</text>
         <text x="22" y="140" text-anchor="middle" fill="#71717a" font-size="11" transform="rotate(-90,22,140)">y</text>
         <!-- fitted line y = 0.29 + 1.91 x  (x:0.5→5.5) -->
-        <line x1="81.7" y1="225.1" x2="398.3" y2="34.1" stroke="#2563eb" stroke-width="2.4"/>
-        <text x="330" y="60" fill="#2563eb" font-size="10.5" font-weight="bold">y = 0.29 + 1.91x</text>
+        <line x1="81.7" y1="225.1" x2="398.3" y2="34.1" stroke="#1e40af" stroke-width="2.4"/>
+        <text x="330" y="60" fill="#1e40af" font-size="10.5" font-weight="bold">y = 0.29 + 1.91x</text>
         <!-- residual segments (point → line) -->
         <line x1="113.3" y1="208" x2="113.3" y2="206" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
         <line x1="176.7" y1="172" x2="176.7" y2="167.8" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2.5"/>
@@ -165,7 +165,7 @@
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="정리">
   <div class="eyebrow">9-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>"가장 잘" $=$ 잔차 제곱합 $S=\sum(y_i-f(x_i))^2$ 최소.</li>
@@ -175,10 +175,6 @@
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>잔차 합 $\sum e_i$ 로 적합도 판정(항상 $\approx0$).</li>
       <li>절대값 합을 최소화한다고 서술(표준은 제곱).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>정규방정식 <strong>유도</strong>($\partial S/\partial a_0,\ \partial S/\partial a_1$).</li>
-      <li>주어진 직선의 <strong>잔차·제곱합</strong> 계산.</li>
     </ul></div>
   </div>
 </section>
@@ -332,7 +328,7 @@ p = polyfit(x, y, 1);
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="정리">
   <div class="eyebrow">9-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>직선·다항 모두 <strong>$(X^TX)a=X^Ty$</strong> 한 틀로 해결.</li>
@@ -343,10 +339,6 @@ p = polyfit(x, y, 1);
       <li>$\sum x_i^2$ 와 $(\sum x_i)^2$ 혼동(정규행렬 vs 분모).</li>
       <li>차수를 무작정 올려 과적합·악조건 초래.</li>
       <li>polyfit 계수 순서(높은 차수부터) 착오.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>단계표로 <strong>합 → 2×2/3×3 정규방정식</strong> 조립·풀이.</li>
-      <li>직선이 다항 회귀의 <strong>$m=1$ 특수 경우</strong> 임을 설명.</li>
     </ul></div>
   </div>
 </section>
@@ -471,7 +463,7 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
 
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="정리">
   <div class="eyebrow">9-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>비선형 $\to$ <strong>변환 · 회귀 · 복원</strong> 3단계로 선형 회귀 재사용.</li>
@@ -482,10 +474,6 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       <li>거듭제곱에서 $X=x$ 로 둠(실제 $X=\ln x$).</li>
       <li>$A_1$ 을 그대로 $a$ 로 착각(복원 공식 누락).</li>
       <li>$\log10$ 을 $\ln$ 대신 사용.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 모델의 <strong>선형화식·회귀변수·복원</strong> 서술.</li>
-      <li>변환표 채워 $A_0,A_1$ 구하고 $a,b$ 로 <strong>복원</strong>.</li>
     </ul></div>
   </div>
 </section>
@@ -535,7 +523,7 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       <div class="vcap">$SS_{\text{tot}}=SS_{\text{reg}}+SS_{\text{res}}$ (막대 분해)</div>
       <svg viewBox="0 0 460 210" width="100%" style="max-width:520px;display:block;margin:0 auto">
         <text x="12" y="42" fill="#71717a" font-size="12">tot</text>
-        <rect x="70" y="26" width="360" height="30" rx="5" fill="#2563eb"/>
+        <rect x="70" y="26" width="360" height="30" rx="5" fill="#1e40af"/>
         <text x="250" y="46" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">100%</text>
         <text x="222" y="92" text-anchor="middle" fill="#71717a" font-size="12">= 분해 =</text>
         <text x="12" y="132" fill="#71717a" font-size="12">reg</text>
@@ -669,7 +657,7 @@ fprintf('R^2_adj = %.4f\n', R2adj);
 
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="정리">
   <div class="eyebrow">9-4 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$R^2=1-SS_{\text{res}}/SS_{\text{tot}}$, 변동 설명 비율 $[0,1]$.</li>
@@ -680,10 +668,6 @@ fprintf('R^2_adj = %.4f\n', R2adj);
       <li>$\bar y$ 대신 다른 기준으로 $SS_{\text{tot}}$ 계산.</li>
       <li>높은 $R^2$ 만 보고 과적합 간과.</li>
       <li>변환 공간과 원공간 $R^2$ 를 혼용 비교.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>잔차·총편차 표로 $R^2$ <strong>계산</strong>.</li>
-      <li>차수↑ 시 $R^2$ 단조 증가와 <strong>수정 $R^2$ 의 역할</strong> 서술.</li>
     </ul></div>
   </div>
 </section>

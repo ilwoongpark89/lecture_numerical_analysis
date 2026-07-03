@@ -223,7 +223,7 @@ f = @(x) x.^3 - x - 2;
 
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="정리">
   <div class="eyebrow">5-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$x_{n+1}=x_n-f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})}$ — 할선의 $x$절편.</li>
@@ -234,11 +234,6 @@ f = @(x) x.^3 - x - 2;
       <li>$f(x_n)=f(x_{n-1})$(분모 0) 처리 누락.</li>
       <li>점 이동 $x_{n-1}\leftarrow x_n$ 갱신 순서 혼동.</li>
       <li>수렴 보장이 있다고 오해(이분법과 혼동).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>점화식으로 <strong>$x_2$ 손 계산</strong> (첫 스텝 $=4/3$).</li>
-      <li>이분법·할선·Newton <strong>수렴 차수·도함수·초기값</strong> 비교표.</li>
-      <li>할선 vs False Position 차이(구간 유지 여부).</li>
     </ul></div>
   </div>
 </section>
@@ -409,7 +404,7 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
 
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="정리">
   <div class="eyebrow">5-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>중복도 $m\ge2$ → 표준 Newton <strong>선형 퇴화</strong>(오차 $\times(1-1/m)$).</li>
@@ -420,11 +415,6 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
       <li>중근에 표준 Newton 쓰고 이차 수렴 기대.</li>
       <li>$u(x)$ 기법에서 $f''$ 누락.</li>
       <li>순환·발산을 알고리즘 오류로 오해(초기값 문제).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>중복도 판정($f,f',f''$ 의 0 여부).</li>
-      <li>Modified Newton <strong>1~2회 손 계산</strong>.</li>
-      <li>표준 vs 수정 <strong>수렴 차수 비교</strong> 서술.</li>
     </ul></div>
   </div>
 </section>
@@ -449,14 +439,14 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
       <svg viewBox="0 0 280 280" width="100%" style="max-width:340px;display:block;margin:0 auto">
         <line x1="15" y1="140" x2="265" y2="140" stroke="#94a3b8" stroke-width="1"/>
         <line x1="140" y1="15" x2="140" y2="265" stroke="#94a3b8" stroke-width="1"/>
-        <circle cx="140" cy="140" r="100" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+        <circle cx="140" cy="140" r="100" fill="none" stroke="#1e40af" stroke-width="2.2"/>
         <path d="M162.5,28.9 L167.5,49.1 L175,68.6 L185,84.4 L200,98.3 L220,108.8 L245,116.2 L265,120" fill="none" stroke="#7c3aed" stroke-width="2.2"/>
         <path d="M117.5,251.1 L112.5,230.9 L105,211.4 L95,195.6 L80,181.7 L60,171.2 L35,163.8 L15,160" fill="none" stroke="#7c3aed" stroke-width="2.2"/>
         <circle cx="236.6" cy="114.1" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
         <circle cx="165.9" cy="43.4" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
         <circle cx="43.4" cy="165.9" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
         <circle cx="114.1" cy="236.6" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.2"/>
-        <text x="248" y="135" fill="#2563eb" font-size="11" font-family="monospace">x²+y²=4</text>
+        <text x="248" y="135" fill="#1e40af" font-size="11" font-family="monospace">x²+y²=4</text>
         <text x="196" y="80" fill="#7c3aed" font-size="11" font-family="monospace">xy=1</text>
       </svg>
     </div>
@@ -620,7 +610,7 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
 
 <section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="정리">
   <div class="eyebrow">5-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$\mathbf F(\mathbf x)=\mathbf 0$ → $J\,\Delta\mathbf x=-\mathbf F$ 풀고 $\mathbf x_{n+1}=\mathbf x_n+\Delta\mathbf x$.</li>
@@ -631,11 +621,6 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
       <li>$J^{-1}$ 을 직접 계산($O(n^3)$·불안정) — backslash 사용.</li>
       <li>특이 $J$(예 $\mathbf x_0=(1,1)$) 미확인.</li>
       <li>편미분 배열 순서 $\partial F_i/\partial x_j$ 혼동.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$\mathbf F,\,J$ 세우고 $\det J$ 계산.</li>
-      <li>1회 반복 $\mathbf x_1$ 손 계산(2×2 선형계).</li>
-      <li>fsolve vs 직접 구현, Broyden(quasi-Newton) 개념.</li>
     </ul></div>
   </div>
 </section>
@@ -768,7 +753,7 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
 
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="정리">
   <div class="eyebrow">5-4 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>두 축: <strong>가둠(안전)</strong> ⊥ <strong>도함수(속도)</strong>. 실전은 하이브리드.</li>
@@ -779,11 +764,6 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
       <li>가둠 없이 Newton 써서 발산.</li>
       <li>중근에 표준 Newton(선형 퇴화).</li>
       <li>고정점 $g$ 를 아무렇게나 골라 발산.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 상황에 <strong>적합한 방법 선택</strong> + 근거 서술.</li>
-      <li>이분법 필요 반복 $n\ge\log_2((b-a)/\text{tol})$ 계산.</li>
-      <li>여섯 방법 <strong>수렴 차수·도함수·보장</strong> 비교표 복원.</li>
     </ul></div>
   </div>
 </section>

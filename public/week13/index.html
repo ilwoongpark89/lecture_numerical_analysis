@@ -204,7 +204,7 @@ f = @(x, y) x - y;
 
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="정리">
   <div class="eyebrow">13-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$y_{n+1}=y_n+h f(x_n,y_n)$ — 접선으로 한 걸음.</li>
@@ -214,10 +214,6 @@ f = @(x, y) x - y;
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>$x$ 갱신 순서 혼동(기울기는 <strong>옛 점</strong>에서).</li>
       <li>국소·전역 오차 차수 혼동(2 vs 1).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>1~2스텝 <strong>손 전진</strong>($y_1,y_2$).</li>
-      <li>안정 조건으로 <strong>$h$ 상한</strong> 계산.</li>
     </ul></div>
   </div>
 </section>
@@ -293,7 +289,7 @@ f = @(x, y) x - y;
 
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="정리">
   <div class="eyebrow">13-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>예측 $\tilde y=y_n+hk_1$ → 수정 $y_{n+1}=y_n+\tfrac h2(k_1+k_2)$.</li>
@@ -302,10 +298,6 @@ f = @(x, y) x - y;
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>$k_2$ 를 <strong>예측점 $\tilde y$</strong> 가 아닌 $y_n$ 에서 계산.</li>
       <li>$\tfrac h2$ 누락(단순 평균 아님).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>predictor–corrector <strong>1스텝 손계산</strong>.</li>
-      <li>Euler vs Heun <strong>수렴 차수·오차</strong> 비교.</li>
     </ul></div>
   </div>
 </section>
@@ -402,7 +394,7 @@ f = @(x,y) x - y;
 
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="정리">
   <div class="eyebrow">13-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>네 기울기 가중평균 $\tfrac16(k_1+2k_2+2k_3+k_4)$.</li>
@@ -411,10 +403,6 @@ f = @(x,y) x - y;
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>$k_2,k_3$ 를 <strong>이전 $k$</strong> 로 갱신하는 순서 실수.</li>
       <li>가중치 $1,2,2,1$ 와 $\tfrac h6$ 혼동.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$k_1\!\sim\!k_4$ 및 <strong>1스텝 손계산</strong>.</li>
-      <li>Euler·Heun·RK4 <strong>차수·오차·비용</strong> 표.</li>
     </ul></div>
   </div>
 </section>
@@ -468,7 +456,7 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
 
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
   <div class="eyebrow">13-4 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>고차 → 보조변수로 <strong>1차 시스템</strong>.</li>
@@ -477,10 +465,6 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>초기조건 $y(0),y'(0)$ 을 <strong>모두</strong> 상태로 넣지 않음.</li>
       <li>성분별 갱신 순서·짝 맞추기 실수.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$y''=g$ 를 <strong>1차 시스템으로 변환</strong>.</li>
-      <li>벡터 Euler <strong>1스텝</strong>($y_1,v_1$).</li>
     </ul></div>
   </div>
 </section>

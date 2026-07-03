@@ -222,7 +222,7 @@ x = naive_gauss(A, b);
 
 <section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="정리">
   <div class="eyebrow">6-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$[A|\mathbf{b}]$ 에 행 연산 → <strong>상삼각 $U$</strong>(전진 소거) → <strong>후진 대입</strong>.</li>
@@ -233,11 +233,6 @@ x = naive_gauss(A, b);
       <li>배수 부호 실수 → $R_i - \text{factor}\,R_k$ 의 부호 주의.</li>
       <li>후진 대입을 위 행부터 시작.</li>
       <li>피벗 $0$ 을 무시하고 그대로 나눔.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 $3\times3$ 를 <strong>손으로 소거 + 후진 대입</strong>.</li>
-      <li>특정 단계의 <strong>배수·소거 후 원소</strong> 계산.</li>
-      <li>전진 소거 $n^3/3$ 로 <strong>계산량 비교</strong>.</li>
     </ul></div>
   </div>
 </section>
@@ -368,7 +363,7 @@ end
 
 <section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="정리">
   <div class="eyebrow">6-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>각 단계에서 $p=\arg\max_{i\ge k}|a_{ik}|$ 행을 <strong>피벗으로 교환</strong>.</li>
@@ -379,11 +374,6 @@ end
       <li>행 교환 시 우변 $\mathbf{b}$ 누락.</li>
       <li>피벗팅 = 조건수 개선으로 오해(별개 개념).</li>
       <li>인덱스 오프셋($p=p+k-1$) 실수.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 단계에서 <strong>교환할 행 찾기</strong>.</li>
-      <li>피벗팅 <strong>필요성 서술</strong>(0·작은 피벗).</li>
-      <li>naive vs partial <strong>결과 차이</strong> 비교.</li>
     </ul></div>
   </div>
 </section>
@@ -511,7 +501,7 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
 
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="정리">
   <div class="eyebrow">6-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$A=LU$: $L$=소거 배수(대각 $1$), $U$=소거 결과 상삼각.</li>
@@ -522,11 +512,6 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <li>$L$ 대각을 배수로 채움(대각은 항상 $1$).</li>
       <li>$L\mathbf{y}=\mathbf{b}$ 를 후진으로 풂(하삼각은 전진).</li>
       <li>피벗팅 시 $P$ 를 우변에 안 곱함.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$A$ 를 손으로 <strong>$L,U$ 로 분해 + 검산</strong>.</li>
-      <li>$L\mathbf{y}=\mathbf{b}$, $U\mathbf{x}=\mathbf{y}$ <strong>두 대입 수행</strong>.</li>
-      <li>소거법 대비 <strong>다중 우변 계산량</strong> 비교.</li>
     </ul></div>
   </div>
 </section>
@@ -629,7 +614,7 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
 
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="정리">
   <div class="eyebrow">6-4 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$\kappa(A)=\|A\|\|A^{-1}\|\ge1$ — <strong>문제의 민감도</strong>.</li>
@@ -640,11 +625,6 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <li>조건수를 <strong>알고리즘 오류</strong>로 오해.</li>
       <li>작은 잔차를 정확한 해로 단정.</li>
       <li>피벗팅이 조건수를 고친다고 착각.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$\kappa$ 로 <strong>자릿수 손실 계산</strong>.</li>
-      <li>well vs ill-conditioned <strong>판별·서술</strong>.</li>
-      <li>조건수 ⊥ 알고리즘 안정성 <strong>구분</strong>.</li>
     </ul></div>
   </div>
 </section>

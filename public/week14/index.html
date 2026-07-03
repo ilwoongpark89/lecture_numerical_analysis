@@ -108,7 +108,7 @@
 </section>
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="정리">
   <div class="eyebrow">14-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>격자 + Taylor 차분 → PDE를 <strong>대수 방정식</strong>으로.</li>
@@ -117,10 +117,6 @@
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>$\Delta x^2$ 분모 누락.</li>
       <li>경계점을 미지수로 착각.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 격자값으로 <strong>1·2계 차분 계산</strong>.</li>
-      <li>PDE 3유형 판별.</li>
     </ul></div>
   </div>
 </section>
@@ -191,7 +187,7 @@ end
 </section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="정리">
   <div class="eyebrow">14-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>FTCS $T_i^{n+1}=T_i^n+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n)$.</li>
@@ -200,10 +196,6 @@ end
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>$\lambda$ 계산 시 $\Delta x^2$ 누락.</li>
       <li>갱신 시 <strong>옛 값 $T^n$</strong> 사용(제자리 갱신 금지).</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>$\lambda$ 계산·안정 여부.</li>
-      <li>FTCS <strong>1스텝 손계산</strong>.</li>
     </ul></div>
   </div>
 </section>
@@ -267,7 +259,7 @@ end
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="정리">
   <div class="eyebrow">14-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$\nabla^2u=0$ → 5점: 각 점 = <strong>이웃 4 평균</strong>.</li>
@@ -276,10 +268,6 @@ end
     <div class="sumcard"><h4>⚠ 자주 하는 실수</h4><ul>
       <li>시간항이 없는데 "전진" 시도(반복 수렴이 맞다).</li>
       <li>경계값을 갱신 대상에 포함.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>격자 라플라스를 <strong>연립방정식으로</strong>.</li>
-      <li>이웃 평균 <strong>1~2 반복</strong> 손계산.</li>
     </ul></div>
   </div>
 </section>
@@ -324,7 +312,7 @@ end
       </tbody></table>
     </div>
     <div>
-      <div class="sumcard key"><h4>시험 포인트</h4><ul>
+      <div class="sumcard key"><h4>한눈에 정리</h4><ul>
         <li>PDE 유형 판별 → 방법·안정조건 매칭.</li>
         <li>$\lambda\le\tfrac12$ · $C\le1$ 로 <strong>$\Delta t$ 상한</strong>.</li>
         <li>라플라스를 연립으로 세워 <strong>반복 1스텝</strong>.</li>

@@ -262,7 +262,7 @@ b = np.array([7,-21,15], float)
 
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="정리">
   <div class="eyebrow">7-1 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$A=D+L+U$ → $\mathbf{x}^{(k+1)}=D^{-1}(\mathbf{b}-(L+U)\mathbf{x}^{(k)})$.</li>
@@ -273,11 +273,6 @@ b = np.array([7,-21,15], float)
       <li>같은 라운드의 새 $x_1$ 을 $x_2$ 계산에 써버림(그건 Gauss-Seidel).</li>
       <li>대각 원소 부호·나눗셈 실수.</li>
       <li>$a_{ii}=0$ 인데 pivoting 안 함.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 초기값에서 <strong>1~2회 손 반복</strong>($\mathbf{x}^{(1)},\mathbf{x}^{(2)}$).</li>
-      <li>$T_J=-D^{-1}(L+U)$ 유도.</li>
-      <li>Jacobi vs Gauss-Seidel 갱신 시점 차이 서술.</li>
     </ul></div>
   </div>
 </section>
@@ -428,7 +423,7 @@ end
 
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="정리">
   <div class="eyebrow">7-2 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$x_i^{(k+1)}$ 계산에 <strong>이미 구한 새 값 $x_{j \lt i}^{(k+1)}$</strong> 을 즉시 사용.</li>
@@ -439,11 +434,6 @@ end
       <li>$x_2$ 에 옛 $x_1$ 을 씀(그건 Jacobi).</li>
       <li>"항상 2배·항상 수렴"으로 오해.</li>
       <li>병렬화 시 순차 의존 무시.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>같은 시스템 <strong>Jacobi vs GS 1~2회</strong> 손 반복 후 비교.</li>
-      <li>$T_{GS}=-(D+L)^{-1}U$ 유도.</li>
-      <li>메모리·병렬성 장단점 서술.</li>
     </ul></div>
   </div>
 </section>
@@ -563,7 +553,7 @@ end
 
 <section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="정리">
   <div class="eyebrow">7-3 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>수렴 $\Leftrightarrow$ <strong>$\rho(T)<1$</strong> (필요·충분).</li>
@@ -574,11 +564,6 @@ end
       <li>대각 우세를 <strong>필요 조건</strong>으로 오해(충분일 뿐).</li>
       <li>절댓값 안 씌우고 부호로 비교.</li>
       <li>대각 원소가 작은데 반복법 강행 → 발산.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>주어진 $A$ 의 <strong>대각 우세 판별</strong>(행별 검사).</li>
-      <li>반복 행렬 $T_J,T_{GS}$ 유도.</li>
-      <li>"충분 vs 필요·충분" 조건 구분 서술.</li>
     </ul></div>
   </div>
 </section>
@@ -759,7 +744,7 @@ for w in [0.8, 1.0, 1.2, 1.5]:
 
 <section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="정리">
   <div class="eyebrow">7-4 · 정리 · Summary</div>
-  <h1 class="stage-h">핵심 · 실수 · 시험 포인트</h1>
+  <h1 class="stage-h">핵심 · 실수</h1>
   <div class="sumgrid">
     <div class="sumcard key"><h4>핵심 정리</h4><ul>
       <li>$x_i^{(k+1)}=(1-\omega)x_i^{(k)}+\omega\,x_i^{GS}$ — GS 걸음의 $\omega$ 배.</li>
@@ -770,11 +755,6 @@ for w in [0.8, 1.0, 1.2, 1.5]:
       <li>$\omega\ge2$ 로 발산.</li>
       <li>over-relax 가 <strong>항상</strong> 빠르다고 가정(잘 조건화된 계엔 역효과).</li>
       <li>$(1-\omega)$ 항 누락.</li>
-    </ul></div>
-    <div class="sumcard exam full"><h4>시험 포인트</h4><ul>
-      <li>완화식으로 <strong>SOR 1회 손 계산</strong>.</li>
-      <li>$\omega_{opt}$ 공식 대입 계산.</li>
-      <li>Jacobi→GS→SOR <strong>가속 계보</strong> 서술 + 응용(FEM·CFD·열전달).</li>
     </ul></div>
   </div>
 </section>
