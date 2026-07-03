@@ -164,6 +164,36 @@
         sm += term;
         rows.push({ i: qs, n: nn2, term: term, sum: sm, err: cfg.trueVal != null ? Math.abs(sm - cfg.trueVal) : null });
       }
+    } else if (k === "interp") {
+      var pts = cfg.pts, xq = cfg.xq, m = pts.length, xs = [], cc = [];
+      for (var pi = 0; pi < m; pi++) { xs.push(pts[pi][0]); cc.push(pts[pi][1]); }
+      for (var jj = 1; jj < m; jj++) for (var ii = m - 1; ii >= jj; ii--) cc[ii] = (cc[ii] - cc[ii - 1]) / (xs[ii] - xs[ii - jj]);
+      for (var kk = 0; kk < m; kk++) {
+        var pk = 0, prod = 1;
+        for (var t2 = 0; t2 <= kk; t2++) { pk += cc[t2] * prod; prod *= (xq - xs[t2]); }
+        rows.push({ i: kk, ndd: cc[kk], est: pk, err: cfg.trueVal != null ? Math.abs(pk - cfg.trueVal) : null });
+      }
+    } else if (k === "lsq") {
+      var ptsl = cfg.pts, sx = 0, sy = 0, sxy = 0, sxx = 0;
+      for (var li = 0; li < ptsl.length; li++) {
+        sx += ptsl[li][0]; sy += ptsl[li][1]; sxy += ptsl[li][0] * ptsl[li][1]; sxx += ptsl[li][0] * ptsl[li][0];
+        var nl = li + 1, den = nl * sxx - sx * sx, a1l = null, a0l = null;
+        if (nl >= 2 && Math.abs(den) > 1e-12) { a1l = (nl * sxy - sx * sy) / den; a0l = (sy - a1l * sx) / nl; }
+        rows.push({ i: li, n: nl, sx: sx, sy: sy, a1: a1l, a0: a0l });
+      }
+    } else if (k === "gauss") {
+      var Ag = cfg.A, bg = cfg.b, ng = bg.length;
+      var aug = Ag.map(function (row, i) { return row.concat([bg[i]]); });
+      rows.push({ i: 0, mat: aug.map(function (r) { return r.slice(); }), op: "초기 augmented [A | b]" });
+      var gstep = 1;
+      for (var gc = 0; gc < ng; gc++) {
+        for (var gr = gc + 1; gr < ng; gr++) {
+          var fac = aug[gr][gc] / aug[gc][gc];
+          for (var gc2 = gc; gc2 <= ng; gc2++) aug[gr][gc2] -= fac * aug[gc][gc2];
+          rows.push({ i: gstep, mat: aug.map(function (r) { return r.slice(); }), op: "R" + (gr + 1) + " ← R" + (gr + 1) + " − (" + fmt(fac, 3) + ")·R" + (gc + 1) + "  (열 " + (gc + 1) + " 소거)" });
+          gstep++;
+        }
+      }
     }
     return rows;
   }
@@ -173,7 +203,7 @@
   // ════════ 렌더 (kind 별 plot + table) ════════
   function renderPlot(cfg, rows, step) {
     var k = cfg.kind;
-    if (k === "matrix-iter" || k === "power" || k === "diff" || k === "series") return "";
+    if (k === "matrix-iter" || k === "power" || k === "diff" || k === "series" || k === "interp" || k === "lsq" || k === "gauss") return "";
     if (k === "integration") {
       var P0 = plotBase(cfg.f, cfg.a, cfg.b, {}); var r0 = rows[Math.max(0, step - 1)]; var n = r0 ? r0.n : cfg.n0;
       var h = (cfg.b - cfg.a) / n;
@@ -250,6 +280,12 @@
   function renderTable(cfg, rows, step) {
     var k = cfg.kind, head, body = "";
     var shown = rows.slice(0, step);
+    if (k === "gauss") {
+      var gcur = rows[Math.max(0, Math.min(step, rows.length) - 1)] || rows[0];
+      var gm = gcur.mat, gn = gm.length;
+      var grh = gm.map(function (mr) { return "<tr>" + mr.map(function (v, ci) { return '<td' + (ci === gn ? ' class="stp-k"' : "") + ">" + fmt(v, 3) + "</td>"; }).join("") + "</tr>"; }).join("");
+      return '<div class="stp-note" style="margin:0 0 10px">' + esc(gcur.op) + '</div><div class="stp-tblwrap"><table class="stp-tbl"><tbody>' + grh + "</tbody></table></div>";
+    }
     if (k === "root-bracket") {
       head = ["k", "a", "b", "c=(a+b)/2", "f(c)", "|b−a|"];
       shown.forEach(function (r) { body += tr([r.i, fmt(r.a, 5), fmt(r.b, 5), fmt(r.c, 6), fmt(r.fc, 3), fmt(r.w, 3)]); });
@@ -282,6 +318,12 @@
     } else if (k === "series") {
       head = ["n", "항", "부분합", cfg.trueVal != null ? "오차(잘린 꼬리)" : "Δ"];
       shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].sum : null; body += tr([r.n, fmt(r.term, 6), fmt(r.sum, 8), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.sum - last).toExponential(2) : "—")]); });
+    } else if (k === "interp") {
+      head = ["점 수", "새 분할차분", "P(x_q)", cfg.trueVal != null ? "오차" : "Δ"];
+      shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].est : null; body += tr([r.i + 1, fmt(r.ndd, 5), fmt(r.est, 6), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.est - last).toExponential(2) : "—")]); });
+    } else if (k === "lsq") {
+      head = ["점 수", "Σx", "Σy", "기울기 a₁", "절편 a₀"];
+      shown.forEach(function (r) { body += tr([r.n, fmt(r.sx, 3), fmt(r.sy, 3), r.a1 == null ? "—" : fmt(r.a1, 4), r.a0 == null ? "—" : fmt(r.a0, 4)]); });
     }
     var ths = head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("");
     return '<div class="stp-tblwrap"><table class="stp-tbl"><thead><tr>' + ths + "</tr></thead><tbody>" + (body || '<tr><td colspan="' + head.length + '" class="stp-empty">"다음 반복" 을 눌러 시작하세요</td></tr>') + "</tbody></table></div>";
@@ -295,6 +337,9 @@
     if (cfg.kind === "power") return r.lam == null ? "" : ((r.err != null && r.err < 1e-4) ? "✓ 수렴 — 지배 고유값 λ ≈ " + fmt(r.lam, 6) : "λ ≈ " + fmt(r.lam, 6) + (r.err != null ? " · 오차 " + r.err.toExponential(2) : ""));
     if (cfg.kind === "diff") return "h=" + fmt(r.h, 5) + " · 근사 f′ ≈ " + fmt(r.est, 6) + (r.err != null ? ((r.err < 1e-6 ? " · ✓ 오차 " : " · 오차 ") + r.err.toExponential(2)) : "");
     if (cfg.kind === "series") return "부분합 ≈ " + fmt(r.sum, 8) + (r.err != null ? ((r.err < 1e-6 ? " · ✓ 오차 " : " · 오차 ") + r.err.toExponential(2)) : "");
+    if (cfg.kind === "interp") return "점 " + (r.i + 1) + "개 · P(" + fmt(cfg.xq, 3) + ") ≈ " + fmt(r.est, 6) + (r.err != null ? ((r.err < 1e-9 ? " · ✓ 정확 오차 " : " · 오차 ") + r.err.toExponential(2)) : "");
+    if (cfg.kind === "lsq") return r.a1 == null ? "점 " + r.n + "개 · 직선 미정(≥2점 필요)" : "점 " + r.n + "개 · 적합 직선 y = " + fmt(r.a0, 4) + " + " + fmt(r.a1, 4) + "x";
+    if (cfg.kind === "gauss") return step >= rows.length - 1 ? "✓ 상삼각 완성 — 이제 후진대입으로 해를 얻는다" : "전진 소거 중 (" + step + " / " + (rows.length - 1) + ")";
     if (cfg.kind === "matrix-iter") return r.err == null ? "" : (r.err < 1e-4 ? "✓ 수렴 — 정확한 해에 도달" : "max error = " + r.err.toExponential(2) + " · 정답에 접근 중");
     if (cfg.kind === "integration") return r.err != null ? (r.err < 1e-6 ? "✓ 충분히 수렴 (오차 " + r.err.toExponential(2) + ")" : "오차 " + r.err.toExponential(2) + " · n 을 2배로 세분하면 오차 급감") : "n=" + r.n + " · 근사 " + fmt(r.est, 8);
     var approx = cfg.kind === "root-bracket" ? r.c : (cfg.kind === "fixed-point" ? r.gxn : r.xn1);
@@ -332,6 +377,15 @@
     } else if (kind === "series") {
       cfg.term = compileFn(el.getAttribute("data-term"), ["n"]); cfg.n0 = parseInt(el.getAttribute("data-n0") || "0", 10);
       var tv2 = el.getAttribute("data-true"); cfg.trueVal = tv2 != null ? num(tv2, null) : null; cfg.steps = cfg.steps || 10;
+    } else if (kind === "interp") {
+      try { cfg.pts = JSON.parse(el.getAttribute("data-pts")); } catch (e) { cfg.pts = [[0, 0], [1, 1]]; }
+      cfg.xq = num(el.getAttribute("data-xq"), 0); var tv3 = el.getAttribute("data-true"); cfg.trueVal = tv3 != null ? num(tv3, null) : null; cfg.steps = cfg.pts.length;
+    } else if (kind === "lsq") {
+      try { cfg.pts = JSON.parse(el.getAttribute("data-pts")); } catch (e) { cfg.pts = [[0, 0], [1, 1]]; }
+      cfg.steps = cfg.pts.length;
+    } else if (kind === "gauss") {
+      try { cfg.A = JSON.parse(el.getAttribute("data-a")); cfg.b = JSON.parse(el.getAttribute("data-b")); } catch (e) { cfg.A = [[1]]; cfg.b = [0]; }
+      cfg.steps = cfg.b.length * (cfg.b.length - 1) / 2;
     } else {
       cfg.f = compileFn(el.getAttribute("data-fn"));
       cfg.xmin = num(el.getAttribute("data-xmin"), 0); cfg.xmax = num(el.getAttribute("data-xmax"), 2);

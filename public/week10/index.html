@@ -318,6 +318,14 @@ yq = lagrange_interp(x, y, 2.5);
     </div>
   </div>
 </section>
+<section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="시연">
+  <div class="eyebrow">10-2 · 시연 · 점을 하나씩</div>
+  <h1 class="stage-h">점을 더할수록 곡선이 값에 닿는다 — 직접 돌려보기</h1>
+  <p class="lede">$f(x)=x^2$ 의 점 $(1,1),(2,4),(3,9),(4,16)$ 로 $P(2.5)$ 를 Newton 보간한다. "다음 반복" 마다 점을 하나씩 추가 — 분할차분이 하나 늘고 $P(2.5)$ 가 참값 $6.25$ 에 <strong>한 줄씩</strong> 다가간다(2차라 3점에서 정확).</p>
+  <div class="stepper" data-kind="interp" data-pts="[[1,1],[2,4],[3,9],[4,16]]" data-xq="2.5" data-true="6.25"
+    data-title="Newton 보간 — f=x², P(2.5) (참 6.25)"
+    data-note="점 3개(2차)에서 이미 정확 — 4번째 점을 넣어도 값이 변하지 않는다(분할차분 0). 이것이 보간의 by-construction 정확성."></div>
+</section>
 
 <section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">분할 차분 손계산 · 자동 채점</span></div>

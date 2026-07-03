@@ -184,6 +184,14 @@
   </tbody></table>
   <div class="keqnote">해 $\mathbf{x}=(2,\,3,\,-1)^T$. 소거는 순서가 정해진 <b>유한 절차</b> — "몇 번 반복하면 수렴하나?"라는 물음 자체가 없다.</div>
 </section>
+<section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="시연">
+  <div class="eyebrow">6-1 · 시연 · 한 소거씩</div>
+  <h1 class="stage-h">증대행렬이 상삼각으로 — 한 소거씩 돌려보기</h1>
+  <p class="lede">$\begin{bmatrix}2&1&-1\\-3&-1&2\\-2&1&2\end{bmatrix}\mathbf{x}=\begin{bmatrix}8\\-11\\-3\end{bmatrix}$ (해 $\mathbf{x}=(2,3,-1)$). "다음 반복" 마다 행 연산 하나 — 피벗 아래를 $0$ 으로 만들며 <strong>상삼각</strong>이 완성되는 걸 본다.</p>
+  <div class="stepper" data-kind="gauss" data-a="[[2,1,-1],[-3,-1,2],[-2,1,2]]" data-b="[8,-11,-3]"
+    data-title="가우스 전진 소거 — 한 행 연산씩"
+    data-note="1열 아래 두 원소를 0으로 → 2열 아래를 0으로 → 상삼각 U 완성. 이후 후진대입으로 (2,3,-1)."></div>
+</section>
 
 <section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 소거 단계를 손으로 · 자동 채점</span></div>
