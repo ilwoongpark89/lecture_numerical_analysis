@@ -188,6 +188,16 @@
     </div>
   </div>
 </section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="원리">
+  <div class="eyebrow">14-2 · 원리 · From PDE to update</div>
+  <h1 class="stage-h">시간 전방 + 공간 중앙 = FTCS</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① 시간 전방차분</h4><div class="sub">$\partial T/\partial t$</div><div class="eq">$ \dfrac{T_i^{n+1}-T_i^{n}}{\Delta t} $</div><p>다음 시각을 현재로.</p></div>
+    <div class="dcard"><h4>② 공간 2계 중앙</h4><div class="sub">$\partial^2 T/\partial x^2$</div><div class="eq">$ \dfrac{T_{i+1}^{n}-2T_i^{n}+T_{i-1}^{n}}{\Delta x^2} $</div><p>이웃과의 곡률.</p></div>
+    <div class="dcard"><h4>③ 정리</h4><div class="sub">$\lambda=\alpha\Delta t/\Delta x^2$</div><div class="eq">$ T_i^{n+1}=T_i^{n}+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n) $</div><p>명시적 전진식.</p></div>
+  </div>
+  <div class="callout key"><div class="ct">핵심</div>새 온도 = 옛 온도 + $\lambda\times$(이웃과의 곡률). 곡률이 양수(아래로 볼록)면 데워지고, 음수면 식는다 — 뾰족한 곳이 가장 빨리 깎인다.</div>
+</section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">FTCS 한 시간스텝 · 자동 채점</span></div>
   <div class="prob">
