@@ -483,7 +483,7 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
     <div class="prob-num">연습 1 · 4점 $O(h^4)$ 1계</div>
     <p class="prob-statement">$f(x)=x^3$ 의 $x=2$ 에서 <strong>4점 중앙차분</strong>($O(h^4)$)으로 $f'(2)$ 를 근사하시오. $h=1$ 이라 표본은 $f(4)=64,\ f(3)=27,\ f(1)=1,\ f(0)=0$. (참값 $f'(2)=12$)</p>
     <div class="given"><span class="chip">$f(4)=64,\ f(3)=27$</span><span class="chip">$f(1)=1,\ f(0)=0$</span><span class="chip">$f'\approx\dfrac{-f_{+2}+8f_{+1}-8f_{-1}+f_{-2}}{12h}$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="12" data-tol="0.6"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="12" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">Step 1 · 분자</div>$$ -64+8(27)-8(1)+0=-64+216-8=144 $$</div>
@@ -507,7 +507,7 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
     <div class="prob-num">연습 3 · 편측 $O(h^2)$ (경계)</div>
     <p class="prob-statement">격자 왼쪽 <strong>경계</strong>라 오른쪽 데이터만 있다. $f(x)=x^2$ 의 $x=1$ 에서 <strong>편측(전방) $O(h^2)$</strong> 공식으로 $f'(1)$ 을 근사하시오. $h=0.1$ 로 $f(1)=1,\ f(1.1)=1.21,\ f(1.2)=1.44$. (참값 $f'(1)=2$)</p>
     <div class="given"><span class="chip">$f(1)=1,\ f(1.1)=1.21,\ f(1.2)=1.44$</span><span class="chip">$f'\approx\dfrac{-3f(x)+4f(x{+}h)-f(x{+}2h)}{2h}$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2" data-tol="0.1"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">Step 1 · 분자</div>$$ -3(1)+4(1.21)-1.44=-3+4.84-1.44=0.40 $$</div>

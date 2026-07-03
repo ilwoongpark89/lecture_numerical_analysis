@@ -220,6 +220,44 @@
   </div>
 </section>
 
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">작은 데이터 손회귀 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 기울기 $a_1$</div>
+    <p class="prob-statement">작은 데이터 $(1,3.2),(2,4.9),(3,7.2)$ 에 직선을 적합한다. 합은 $n=3,\ \sum x_i=6,\ \sum x_i^2=14,\ \sum y_i=15.3,\ \sum x_iy_i=34.6$. <strong>기울기 $a_1$</strong> 을 구하시오. (소수 1자리)</p>
+    <div class="given"><span class="chip">$a_1=\dfrac{n\sum x_iy_i-\sum x_i\sum y_i}{n\sum x_i^2-(\sum x_i)^2}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.0" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ a_1=\frac{3(34.6)-6(15.3)}{3(14)-6^2}=\frac{103.8-91.8}{42-36}=\frac{12.0}{6}=2.0 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a_1 = 2.0 $$</div><b>정답:</b> 세 점을 대표하는 기울기. 절편은 다음 문제에서 이어 구한다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 절편 $a_0$</div>
+    <p class="prob-statement">같은 데이터에서 기울기 $a_1=2.0$ 을 구했다. $a_0=\dfrac{\sum y_i-a_1\sum x_i}{n}$ 로 <strong>절편 $a_0$</strong> 를 구하시오. (소수 1자리)</p>
+    <div class="given"><span class="chip">$a_0=\dfrac{15.3-2.0\times6}{3}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.1" data-tol="0.06"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ a_0=\frac{15.3-2.0\times6}{3}=\frac{15.3-12.0}{3}=\frac{3.3}{3}=1.1 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a_0 = 1.1 $$</div><b>정답:</b> 최적 직선 $y=1.1+2.0x$ 완성.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 3 · 잔차 $e$</div>
+    <p class="prob-statement">적합 직선 $y=1.1+2.0x$ 에 대해 $x=2$ 데이터 $(2,\,4.9)$ 의 <strong>잔차 $e=y-f(x)$</strong> 를 구하시오. (부호 포함, 소수 1자리)</p>
+    <div class="given"><span class="chip">$f(2)=1.1+2.0\times2$</span><span class="chip">$e=y-f$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="-0.2" data-tol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">Step 1 · 예측값</div>$$ f(2)=1.1+2.0\times2=1.1+4.0=5.1 $$</div>
+      <div class="dstep2"><div class="step-label">Step 2 · 잔차</div>$$ e=y-f(2)=4.9-5.1=-0.2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ e = -0.2 $$</div><b>정답:</b> 데이터가 직선보다 $0.2$ 아래. 제곱($0.04$)해 다른 점과 합치면 $S=\sum e_i^2$.</div>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="정리">
   <div class="eyebrow">9-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

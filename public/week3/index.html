@@ -227,7 +227,7 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
     <div class="prob-num">연습 1 · 최대 유한수</div>
     <p class="prob-statement">8비트 미니플롯의 최대 유한수는 $1.111_2\times 2^{7}$ 이다. 이 값을 <strong>십진수</strong>로 구하시오. ($1.111_2=1.875$)</p>
     <div class="given"><span class="chip">$1.111_2 = 1.875$</span><span class="chip">$2^{7}=128$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="240" data-tol="0.5"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="240" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">계산</div>$$ 1.875\times 128 = 240 $$</div>
@@ -438,7 +438,7 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <div class="prob-num">연습 1 · 상쇄 뺄셈</div>
     <p class="prob-statement">유효숫자 5자리 산술에서 $1.23456\times10^{5} - 1.23447\times10^{5}$ 를 계산하시오. 결과를 <strong>보통 십진수</strong>로 쓰라.</p>
     <div class="given"><span class="chip">$0.00009\times10^{5}$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="9" data-tol="0.1"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="9" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">계산</div>$$ (1.23456-1.23447)\times10^{5} = 0.00009\times10^{5} = 9 $$</div>
@@ -809,7 +809,7 @@ fprintf('기울기 ≈ %.2f\n', slope(1));   <span class="out">% ≈ 1  (전진�
     <div class="prob-num">연습 1 · 오차 감소 배수</div>
     <p class="prob-statement">전진 차분($O(h)$)에서 $h$ 를 $\tfrac{1}{10}$ 로 줄이면 오차는 약 <strong>몇 분의 1</strong> 로 주는가? (분모 $N$ 만 입력)</p>
     <div class="given"><span class="chip">$\text{error}\propto h$</span><span class="chip">$h\to h/10$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="10" data-tol="0.5"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="10" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">계산</div>$$ \text{error}\propto h \;\Rightarrow\; \frac{h/10}{h}=\frac{1}{10} $$</div>

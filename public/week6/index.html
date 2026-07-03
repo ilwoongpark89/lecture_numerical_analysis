@@ -418,6 +418,43 @@ end
 <span class="out">% naive_gauss 대비 max/swap 두 줄만 추가되었다</span></code></pre></div>
 </section>
 
+<section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">피벗팅 손계산 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · 피벗 행 선택</div>
+    <p class="prob-statement">$A=\begin{bmatrix} 2 & 5 & 1 \\ 4 & 1 & 2 \\ 1 & 3 & 6 \end{bmatrix}$ 에 $1$열 부분 피벗팅을 적용한다. 후보 $|2|,\,|4|,\,|1|$ 중 절댓값이 최대인 원소, 즉 교환 후 $(1,1)$ 에 올라올 <strong>피벗값</strong>은?</p>
+    <div class="given"><span class="chip">$p=\arg\max_i|a_{i1}|$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="4" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">최대 절댓값</div>$$ \max(|2|,\,|4|,\,|1|)=4 \ \Rightarrow\ p=2 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ \text{피벗}=4 $$</div><b>정답:</b> 행 $1 \leftrightarrow$ 행 $2$ 를 교환해 피벗 $4$ 를 $(1,1)$ 에 놓는다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · 교환 후 배수 $f_{21}$</div>
+    <p class="prob-statement">행 $1\leftrightarrow2$ 를 교환하면 $\begin{bmatrix} 4 & 1 & 2 \\ 2 & 5 & 1 \\ 1 & 3 & 6 \end{bmatrix}$ 이 된다. 이제 $2$행을 소거할 배수 <strong>$f_{21}=a_{21}/a_{11}$</strong> 를 구하시오.</p>
+    <div class="given"><span class="chip">$a_{11}=4$</span><span class="chip">$a_{21}=2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.5" data-tol="0.025"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">계산</div>$$ f_{21}=\frac{2}{4}=0.5 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ f_{21}=0.5 \le 1 $$</div><b>정답:</b> 큰 피벗 덕에 $|f|\le1$ — 반올림 오차가 눌린다.</div>
+    </div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 3 · 소거 후 새 $a_{22}$</div>
+    <p class="prob-statement">위 교환된 행렬에서 $R_2\leftarrow R_2 - f_{21}R_1$ ($f_{21}=0.5$) 을 수행할 때, 소거 후 <strong>새 $a_{22}$</strong> 값은? ($a_{22}^{\text{new}}=a_{22}-f_{21}a_{12}$)</p>
+    <div class="given"><span class="chip">$a_{22}=5$</span><span class="chip">$a_{12}=1$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="4.5" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution">
+      <div class="dstep2"><div class="step-label">대입</div>$$ a_{22}^{\text{new}} = 5 - 0.5(1) = 4.5 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a_{22}^{\text{new}} = 4.5 $$</div><b>정답:</b> 같은 행의 $a_{21}=2-0.5(4)=0$ 으로 소거된다.</div>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="정리">
   <div class="eyebrow">6-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -554,6 +591,18 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ \text{분해 } 1\text{번} + \text{대입 } 5\text{쌍} $$</div><b>정답:</b> 분해는 $A$ 에만 의존 → 딱 한 번. 우변마다 값싼 대입 두 번($L\mathbf{y},\,U\mathbf{x}$)만 반복.</div>
     </div>
   </div>
+</section>
+
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="함정">
+  <div class="eyebrow">6-3 · 함정 · Pitfalls</div>
+  <h1 class="stage-h">$LU$ 분해에서 헛디디는 곳</h1>
+  <div class="pitfalls">
+    <div class="pitfall"><h4>⚠ $L$ 대각을 배수로 채움</h4><p>$L$ 의 대각은 <b>항상 $1$</b>(Doolittle). 배수 $l_{ik}$ 는 <b>대각 아래</b>에만 들어간다 — 대각에 factor 를 쓰면 $LU\ne A$.</p></div>
+    <div class="pitfall"><h4>⚠ $L\mathbf{y}=\mathbf{b}$ 를 후진으로</h4><p>$L$ 은 <b>하삼각</b> → 반드시 <b>전진 대입</b>($y_1$ 부터 위→아래). 후진으로 풀면 아직 모르는 $y$ 가 남는다.</p></div>
+    <div class="pitfall"><h4>⚠ 피벗팅 때 $P$ 누락</h4><p>행을 교환하면 $A=LU$ 가 아니라 <b>$PA=LU$</b>. 풀 때 우변에도 $P$ 를 곱해 $L\mathbf{y}=P\mathbf{b}$ 로 시작해야 한다.</p></div>
+    <div class="pitfall"><h4>⚠ $0$ 피벗이면 분해 실패</h4><p>피벗 $a_{kk}=0$ 이면 배수 $l_{ik}=a_{ik}/a_{kk}$ 가 <b>0으로 나눔</b> → 순수 $LU$ 불가. 6-2 <b>부분 피벗팅</b>으로 행 교환 후 분해한다.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">핵심 구분</div>$L,U$ 는 $A$ 만으로 결정된다 — <strong>우변 $\mathbf{b}$ 가 바뀌어도 재분해 없이</strong> 대입 두 번(전진 $L\mathbf{y}=\mathbf{b}$ → 후진 $U\mathbf{x}=\mathbf{y}$)만 반복한다.</div>
 </section>
 
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="정리">
