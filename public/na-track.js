@@ -45,6 +45,48 @@
   }
   function chOf(el) { return el && el.getAttribute ? el.getAttribute("data-ch") : null; }
   function stageOf(el) { return el && el.getAttribute ? el.getAttribute("data-stage") : null; }
+  function textOf(el) { return el ? (el.textContent || "").replace(/\s+/g, " ").trim() : ""; }
+  var IS_STUDENT = !IS_PROF;
+
+  // ── 정답·풀이·답변예시 봉인: 학생 화면엔 숨기고 교수(__prof__)만 본다 ──
+  (function seal() {
+    var css = IS_STUDENT
+      ? "body.na-student .reveal-btn,body.na-student .revealable.solution,body.na-student .prof-example{display:none !important;}"
+      : "";
+    var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
+    function tag() { if (document.body) document.body.classList.add(IS_STUDENT ? "na-student" : "na-prof"); }
+    if (document.body) tag(); else document.addEventListener("DOMContentLoaded", tag);
+  })();
+
+  // ── 학생 제출 가로채기: 연습 '확인' = 제출(정오 비공개) + 서버 저장. '풀이 보기' 봉인. ──
+  //    엔진(bubble)보다 먼저 capture 로 가로채 정오·풀이 공개를 차단, 답만 서버에 남긴다(교수 열람).
+  if (IS_STUDENT && !REVEAL) {
+    document.addEventListener("click", function (e) {
+      var t = e.target; if (!t || !t.closest) return;
+      var rb = t.closest(".reveal-btn");
+      if (rb) { e.stopPropagation(); e.preventDefault(); return; }
+      var chk = t.closest(".pr-check");
+      if (!chk) return;
+      e.stopPropagation();
+      var pb = chk.closest(".prob") || chk.closest(".screen");
+      var scr = pb ? pb.closest(".screen") : null;
+      var input = pb ? pb.querySelector(".ans-input") : null;
+      var pf = pb ? (pb.querySelector(".pr-fb") || pb.querySelector(".check-fb")) : null;
+      var raw = input ? (input.value || "").trim() : "";
+      if (!raw) { if (pf) { pf.textContent = "먼저 답을 입력하세요"; pf.className = "check-fb pr-fb"; pf.style.color = "var(--gray2)"; } return; }
+      var target = input ? parseFloat(input.getAttribute("data-answer")) : NaN;
+      var tol = input ? parseFloat(input.getAttribute("data-tol") || "0.02") : 0.02;
+      var v = parseFloat(raw.replace(/[,\s]/g, ""));
+      var ok = !isNaN(v) && !isNaN(target) && Math.abs(v - target) <= Math.abs(target) * tol;
+      post({
+        kind: "answer", chapter: chOf(scr), section: stageOf(scr),
+        question: (textOf(pb.querySelector(".prob-num")) || "연습").slice(0, 120),
+        prompt: (textOf(pb.querySelector(".prob-statement")) || "").slice(0, 500),
+        answer: raw.slice(0, 200), isCorrect: isNaN(target) ? null : ok
+      });
+      if (pf) { pf.textContent = "제출됨 ✓ · 교수 열람 · 언제든 수정"; pf.className = "check-fb pr-fb ok"; pf.style.color = "var(--accent)"; }
+    }, true);
+  }
 
   // ── 접속: 탭 세션당 1회 (reload 마다 inflate 방지) ────────────
   try {
