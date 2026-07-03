@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
   // durable 스로틀 (키 = IP+학번 → 무차별만 조임, 피해자 잠금 0).
   const ip = ipFromRequest(req);
-  const { data: over, error: thrErr } = await db.rpc("auth_throttle_hit", {
+  const { data: over, error: thrErr } = await db.rpc("na_auth_throttle_hit", {
     p_token: TOKEN,
     p_ip: ip + ":" + sid,
     p_max: THROTTLE_MAX,
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   // 1) 등록 여부 조회 (UI 가 등록/로그인 분기)
   if (action === "status") {
-    const { data, error } = await db.rpc("student_is_claimed", { p_token: TOKEN, p_id: sid });
+    const { data, error } = await db.rpc("na_student_is_claimed", { p_token: TOKEN, p_id: sid });
     if (error) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
     return NextResponse.json({ ok: true, claimed: data === true });
   }
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     }
     const salt = newSalt();
     const full = buildHash(pw, salt);
-    const { data, error } = await db.rpc("student_register", { p_token: TOKEN, p_id: sid, p_hash: full });
+    const { data, error } = await db.rpc("na_student_register", { p_token: TOKEN, p_id: sid, p_hash: full });
     if (error) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
     if (data !== true) return NextResponse.json({ ok: false, error: "already" }, { status: 409 });
     await setSession(sid);
@@ -81,11 +81,11 @@ export async function POST(req: NextRequest) {
 
   // 3) 로그인 (본인 비번 검증)
   if (action === "login") {
-    const { data: salt, error: e1 } = await db.rpc("student_get_salt", { p_token: TOKEN, p_id: sid });
+    const { data: salt, error: e1 } = await db.rpc("na_student_get_salt", { p_token: TOKEN, p_id: sid });
     if (e1) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
     if (!salt) return NextResponse.json({ ok: false, error: "not_registered" }, { status: 404 });
     const full = buildHash(pw, String(salt));
-    const { data: res, error: e2 } = await db.rpc("student_verify", { p_token: TOKEN, p_id: sid, p_full: full });
+    const { data: res, error: e2 } = await db.rpc("na_student_verify", { p_token: TOKEN, p_id: sid, p_full: full });
     if (e2) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
     if (res !== "ok") return NextResponse.json({ ok: false, error: "bad_login" }, { status: 401 });
     await setSession(sid);

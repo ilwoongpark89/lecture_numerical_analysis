@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
 
   const db = supabase();
   const [d, n] = await Promise.all([
-    db.rpc("admin_student_detail", { p_token: TOKEN, p_id: sid }),
-    db.rpc("admin_student_notes", { p_token: TOKEN, p_id: sid }),
+    db.rpc("na_admin_student_detail", { p_token: TOKEN, p_id: sid }),
+    db.rpc("na_admin_student_notes", { p_token: TOKEN, p_id: sid }),
   ]);
   if (d.error || n.error) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
   return NextResponse.json({ ok: true, steps: d.data ?? [], notes: n.data ?? [] });

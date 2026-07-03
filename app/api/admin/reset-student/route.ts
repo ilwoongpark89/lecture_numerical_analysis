@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   if (!SID_RE.test(sid)) {
     return NextResponse.json({ ok: false, error: "bad_id" }, { status: 400 });
   }
-  const { error } = await supabase().rpc("student_reset", { p_token: TOKEN, p_id: sid });
+  const { error } = await supabase().rpc("na_student_reset", { p_token: TOKEN, p_id: sid });
   if (error) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
   return NextResponse.json({ ok: true });
 }

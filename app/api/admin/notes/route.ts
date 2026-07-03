@@ -16,8 +16,8 @@ export async function GET(req: NextRequest) {
   if (!SID_RE.test(sid)) return NextResponse.json({ ok: false, error: "bad_id" }, { status: 400 });
 
   const db = supabase();
-  const { data, error } = await db.rpc("admin_student_notes", { p_token: TOKEN, p_id: sid });
+  const { data, error } = await db.rpc("na_admin_student_notes", { p_token: TOKEN, p_id: sid });
   if (error) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
-  await db.rpc("admin_mark_notes_read", { p_token: TOKEN, p_id: sid });
+  await db.rpc("na_admin_mark_notes_read", { p_token: TOKEN, p_id: sid });
   return NextResponse.json({ ok: true, notes: data ?? [] });
 }

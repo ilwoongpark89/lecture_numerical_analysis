@@ -18,8 +18,8 @@ export default async function AdminPage() {
   try {
     const db = supabase();
     const [r, n] = await Promise.all([
-      db.rpc("admin_roster", { p_token: TOKEN }),
-      db.rpc("admin_note_inbox", { p_token: TOKEN }),
+      db.rpc("na_admin_roster", { p_token: TOKEN }),
+      db.rpc("na_admin_note_inbox", { p_token: TOKEN }),
     ]);
     if (r.error) err = r.error.message;
     else roster = (r.data as RosterRow[]) ?? [];

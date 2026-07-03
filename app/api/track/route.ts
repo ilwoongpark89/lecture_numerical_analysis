@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "no_student" }, { status: 401 });
   }
   // 서명이 유효해도 현재 등록 상태 아니면 거부 → 교수 리셋이 즉시 유효 + 미등록 학번 위조 차단.
-  const { data: claimed, error: cErr } = await db.rpc("student_is_claimed", { p_token: TOKEN, p_id: sid });
+  const { data: claimed, error: cErr } = await db.rpc("na_student_is_claimed", { p_token: TOKEN, p_id: sid });
   if (cErr) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
   if (claimed !== true) {
     return NextResponse.json({ ok: false, error: "no_student" }, { status: 401 });
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
   if (kind === "dwell") {
     const ms = Number.isFinite(body.ms) ? Math.max(0, Math.floor(Number(body.ms))) : 0;
     if (ms <= 0) return NextResponse.json({ ok: true });
-    const { error } = await db.rpc("record_dwell", {
+    const { error } = await db.rpc("na_record_dwell", {
       p_token: TOKEN,
       p_id: sid,
       p_week: Number.isFinite(body.week) ? Number(body.week) : 0,
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
   if (kind === "note") {
     const noteText = clip(body.answer, 2000);
     if (!noteText || !noteText.trim()) return NextResponse.json({ ok: true });
-    const { error } = await db.rpc("record_note", {
+    const { error } = await db.rpc("na_record_note", {
       p_token: TOKEN,
       p_id: sid,
       p_week: Number.isFinite(body.week) ? Number(body.week) : 0,
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     user_agent: clip(req.headers.get("user-agent"), 300),
   };
 
-  const { error } = await db.from("lecture_events").insert(row);
+  const { error } = await db.from("na_lecture_events").insert(row);
   if (error) {
     console.error("[track] insert failed:", error.message);
     return NextResponse.json({ ok: false, error: "insert_failed" }, { status: 500 });
