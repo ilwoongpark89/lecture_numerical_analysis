@@ -476,15 +476,11 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
 <section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="시연">
   <div class="eyebrow">3-3 · 시연 · Try it</div>
   <h1 class="stage-h">항을 더할수록 오차가 준다 — 직접 재보기</h1>
-  <p class="lede">$e^{0.5}$ 을 Maclaurin 급수 $1+x+\tfrac{x^2}{2!}+\cdots$ 로 근사한다. 슬라이더로 항 수를 늘리며 근사값이 참값 $e^{0.5}=1.6487213$ 에 <strong>기하급수적으로</strong> 다가가는 것을 보라. 아래 표는 항수별 절단 오차다.</p>
-  <div class="calc"
-    data-title="e^0.5 근사 — 사용 항 수에 따른 근사값"
-    data-desc="k 항까지 더한 부분합의 오차 규모를 본다. 참값 e^0.5 ≈ 1.6487213."
-    data-vars='[{"sym":"k","label":"사용 항 수 k","min":1,"max":7,"step":1,"val":3}]'
-    data-expr="1.6487212707 - [1,1.5,1.625,1.6458333,1.6484375,1.6486979,1.6487196][k-1]"
-    data-out="절단 오차 |e^0.5 − 근사|"
-    data-note="k=1(상수만): 오차 0.649 · k=3: 0.024 · k=5: 2.8e-4 · k=7: 1.7e-6. 항 하나가 늘 때마다 오차가 한 자리 이상 급감한다.">
-  </div>
+  <p class="lede">$e^{0.5}$ 을 Maclaurin 급수 $1+x+\tfrac{x^2}{2!}+\cdots$ 로 근사한다. "다음 반복" 마다 항을 <strong>하나씩</strong> 더하며, 부분합이 참값 $e^{0.5}=1.6487213$ 에 다가가고 <strong>잘린 꼬리(절단오차)</strong>가 급감하는 걸 한 줄씩 관찰하라.</p>
+  <div class="stepper"
+    data-kind="series" data-term="0.5^n/fact(n)" data-n0="0" data-true="1.6487212707" data-steps="8"
+    data-title="e^0.5 = Σ (0.5)ⁿ/n! — 항을 하나씩 더한다"
+    data-note="항 하나 추가마다 절단오차가 한 자리 이상 급감(계승 n! 분모). Taylor 절단오차의 감각을 한 줄씩 확인."></div>
   <div class="vcap" style="margin-top:16px">항수별 절단 오차 표 ($x=0.5$)</div>
   <table class="ktab"><thead><tr><th>항 수</th><th>근사값</th><th>절단 오차</th></tr></thead><tbody>
     <tr><td>1 (상수)</td><td>$1.0000000$</td><td>$6.49\times10^{-1}$</td></tr>

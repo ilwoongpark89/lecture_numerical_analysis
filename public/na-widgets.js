@@ -13,7 +13,7 @@
       .replace(/\bln\b/g, "Math.log")
       .replace(/\bpi\b/gi, "Math.PI")
       .replace(/(^|[^a-zA-Z.])e\b/g, "$1Math.E");
-    try { return Function.apply(null, (vars || ["x"]).concat(["return (" + s + ");"])); }
+    try { return Function.apply(null, (vars || ["x"]).concat(["var fact=function(k){var r=1;for(var j=2;j<=k;j++)r*=j;return r;};return (" + s + ");"])); }
     catch (e) { return function () { return NaN; }; }
   }
   function num(v, d) { var x = parseFloat(v); return isFinite(x) ? x : d; }
@@ -157,6 +157,13 @@
         rows.push({ i: qd, h: hd, est: estd, err: cfg.trueD != null ? Math.abs(estd - cfg.trueD) : null });
         hd /= 2;
       }
+    } else if (k === "series") {
+      var ft = cfg.term, sm = 0;
+      for (var qs = 0; qs < steps; qs++) {
+        var nn2 = cfg.n0 + qs, term = ft(nn2);
+        sm += term;
+        rows.push({ i: qs, n: nn2, term: term, sum: sm, err: cfg.trueVal != null ? Math.abs(sm - cfg.trueVal) : null });
+      }
     }
     return rows;
   }
@@ -166,7 +173,7 @@
   // ════════ 렌더 (kind 별 plot + table) ════════
   function renderPlot(cfg, rows, step) {
     var k = cfg.kind;
-    if (k === "matrix-iter" || k === "power" || k === "diff") return "";
+    if (k === "matrix-iter" || k === "power" || k === "diff" || k === "series") return "";
     if (k === "integration") {
       var P0 = plotBase(cfg.f, cfg.a, cfg.b, {}); var r0 = rows[Math.max(0, step - 1)]; var n = r0 ? r0.n : cfg.n0;
       var h = (cfg.b - cfg.a) / n;
@@ -272,6 +279,9 @@
     } else if (k === "diff") {
       head = ["단계", "h", "근사 f′", cfg.trueD != null ? "오차" : "Δ"];
       shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].est : null; body += tr([r.i + 1, fmt(r.h, 5), fmt(r.est, 8), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.est - last).toExponential(2) : "—")]); });
+    } else if (k === "series") {
+      head = ["n", "항", "부분합", cfg.trueVal != null ? "오차(잘린 꼬리)" : "Δ"];
+      shown.forEach(function (r, idx) { var last = idx > 0 ? shown[idx - 1].sum : null; body += tr([r.n, fmt(r.term, 6), fmt(r.sum, 8), r.err != null ? r.err.toExponential(2) : (last != null ? Math.abs(r.sum - last).toExponential(2) : "—")]); });
     }
     var ths = head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("");
     return '<div class="stp-tblwrap"><table class="stp-tbl"><thead><tr>' + ths + "</tr></thead><tbody>" + (body || '<tr><td colspan="' + head.length + '" class="stp-empty">"다음 반복" 을 눌러 시작하세요</td></tr>') + "</tbody></table></div>";
@@ -284,6 +294,7 @@
     if (cfg.kind === "ode") return "x=" + fmt(r.x, 3) + ", y≈" + fmt(r.y, 5) + (r.err != null ? " · 오차 " + r.err.toExponential(2) : "");
     if (cfg.kind === "power") return r.lam == null ? "" : ((r.err != null && r.err < 1e-4) ? "✓ 수렴 — 지배 고유값 λ ≈ " + fmt(r.lam, 6) : "λ ≈ " + fmt(r.lam, 6) + (r.err != null ? " · 오차 " + r.err.toExponential(2) : ""));
     if (cfg.kind === "diff") return "h=" + fmt(r.h, 5) + " · 근사 f′ ≈ " + fmt(r.est, 6) + (r.err != null ? ((r.err < 1e-6 ? " · ✓ 오차 " : " · 오차 ") + r.err.toExponential(2)) : "");
+    if (cfg.kind === "series") return "부분합 ≈ " + fmt(r.sum, 8) + (r.err != null ? ((r.err < 1e-6 ? " · ✓ 오차 " : " · 오차 ") + r.err.toExponential(2)) : "");
     if (cfg.kind === "matrix-iter") return r.err == null ? "" : (r.err < 1e-4 ? "✓ 수렴 — 정확한 해에 도달" : "max error = " + r.err.toExponential(2) + " · 정답에 접근 중");
     if (cfg.kind === "integration") return r.err != null ? (r.err < 1e-6 ? "✓ 충분히 수렴 (오차 " + r.err.toExponential(2) + ")" : "오차 " + r.err.toExponential(2) + " · n 을 2배로 세분하면 오차 급감") : "n=" + r.n + " · 근사 " + fmt(r.est, 8);
     var approx = cfg.kind === "root-bracket" ? r.c : (cfg.kind === "fixed-point" ? r.gxn : r.xn1);
@@ -318,6 +329,9 @@
     } else if (kind === "diff") {
       cfg.f = compileFn(el.getAttribute("data-fn")); cfg.x0 = num(el.getAttribute("data-x0"), 1); cfg.h0 = num(el.getAttribute("data-h0"), 0.5);
       cfg.mode = el.getAttribute("data-mode") || "central"; var td = el.getAttribute("data-true"); cfg.trueD = td != null ? num(td, null) : null; cfg.steps = cfg.steps || 8;
+    } else if (kind === "series") {
+      cfg.term = compileFn(el.getAttribute("data-term"), ["n"]); cfg.n0 = parseInt(el.getAttribute("data-n0") || "0", 10);
+      var tv2 = el.getAttribute("data-true"); cfg.trueVal = tv2 != null ? num(tv2, null) : null; cfg.steps = cfg.steps || 10;
     } else {
       cfg.f = compileFn(el.getAttribute("data-fn"));
       cfg.xmin = num(el.getAttribute("data-xmin"), 0); cfg.xmax = num(el.getAttribute("data-xmax"), 2);
