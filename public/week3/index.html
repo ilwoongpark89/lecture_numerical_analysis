@@ -71,6 +71,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 "가장 가까운 눈금으로 민다 → 밀어낸 거리가 곧 오차 → 믿을 수 있는 자리가 유효숫자" — 이 리듬이 이번 주 반올림·유효숫자의 심장이다. 컴퓨터의 눈금 간격은 $\varepsilon_{\text{mach}}=2^{-52}$ 다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>계량컵으로 물 $250\,\text{mL}$ 를 맞추는데 눈금선 위에 딱 못 세우고 살짝 위아래로 걸친다. "약 $250$" 이라 부르지만 실제론 $245$~$255$ 어딘가 — <strong>밀어낼 수 있는 최대 거리가 눈금 간격의 절반</strong>이라는 걸 자연히 관찰하면 좋다.</li>
+        <li>디지털 체중계가 $62.3\,\text{kg}$ 을 띄워도 진짜 값은 $62.25$~$62.35$ 사이다. 표시된 마지막 자리는 진짜 값이 아니라 <strong>반올림된 대표값</strong>이고, 눈금이 촘촘해질수록($0.1\to0.01$) 못 믿는 폭이 줄어 유효숫자가 늘어난다는 연결.</li>
+        <li>아날로그 자에서 눈금 사이를 눈대중으로 "$3.75$쯤" 더 쪼개 읽어도, 그 마지막 추정 자리는 사람마다 달라진다 — <strong>확실히 믿는 자리와 추정으로 덧붙인 자리 사이에 경계가 있다</strong>는 관찰.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="생각">
@@ -81,6 +89,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 앞자리가 상쇄되고 미덥지 못한 뒷자리만 살아남는 이것이 <strong>자리 잃음(유효숫자 상쇄)</strong> — 이번 주가 가장 조심하라 가르치는 오차다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>영수증에서 "결제 전 잔액 $-$ 결제 후 잔액" 으로 커피값을 뽑는데, 두 잔액은 만원 단위 근처지만 차이는 $4{,}500$원. 잔액이 몇 백원씩 흔들리면 큰 값에선 무시할 만한 오차가 <strong>작은 차이에선 비율이 확 커진다</strong>는 관찰.</li>
+        <li>등산에서 두 봉우리 고도차 — GPS가 각 봉우리를 $\pm5\,\text{m}$ 로 재는데 차이가 $20\,\text{m}$ 라면, 각각의 $\pm5$ 가 그대로 실려 $\pm10\,\text{m}$ 까지 벌어진다. <strong>절대 오차는 그대로인데 상대 오차만 폭증</strong>한다는 각도.</li>
+        <li>스톱워치로 찍은 두 시각의 간격(랩타임)에는 손가락 반응 지연이 <em>양쪽 모두</em> 실린다. 간격이 짧을수록($0.3$초 랩) 그 지연이 결과를 지배 — <strong>공통된 앞부분이 지워지고 못 믿을 뒷자리만 남는다</strong>는 관찰.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="읽을거리">

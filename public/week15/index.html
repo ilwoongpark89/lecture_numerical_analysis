@@ -61,6 +61,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 변형해도 방향을 지키는 그 선이 이번 주 <strong>고유벡터</strong>, 그때 길이에 곱해진 배율이 <strong>고유값 $\lambda$</strong> 다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>반죽을 방망이로 <strong>한쪽으로만</strong> 밀 때, 미는 방향과 나란한 선은 방향 그대로 길어지고($2$배) 직각인 선은 그대로($1$배)인데 비스듬한 격자무늬만 미는 쪽으로 눕더라 → "안 눕는 방향"이 딱 두 개 있고 각각 <strong>늘어난 배율이 다르다</strong>는 관찰.</li>
+        <li>늘리기를 <strong>한 번 더, 또 한 번 더</strong> 반복할수록 크게 늘어나는 방향이 화면 모양을 점점 지배하고 조금 늘어나는 방향은 납작해지더라 → 방향은 둘 다 지켜도 "배율이 큰 쪽"이 결국 눈에 더 크게 남는다는 관찰.</li>
+        <li>비스듬한 선이 <em>정확히 몇 도</em> 눕는지보다 "끝까지 방향을 안 바꾼 선이 무엇이고 길이가 몇 배가 됐나"만 좇으면, 그 변형의 성질이 방향 두 개와 배율 두 개($\lambda$)로 깔끔히 요약되더라는 관찰.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="생각">
@@ -71,6 +79,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 관찰을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 행렬을 벡터에 거듭 곱하면(=반복 성장) 가장 센 고유값 방향만 살아남고, 매번 최대성분으로 나누는 <strong>정규화</strong>가 곧 "비율로 다시 보기" — 그게 <strong>거듭제곱법</strong>이다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>소문·유행이 퍼질 때 초기엔 여러 흐름이 섞여도 가장 전파력 센 하나가 결국 판을 지배 — 거듭 곱하면 최대 고유값 방향만 살아남음.</li>
+        <li>여러 자산 중 수익률이 가장 높은 것이 장기엔 비중을 압도(복리) — 반복 성장에서 최대 배율의 지배.</li>
+        <li>핵심 — 임의 벡터에 행렬을 거듭 곱하며 매번 최대성분으로 나누면 지배 고유벡터로 수렴하는 것을, $\lambda_{\max}^{k}$ 가 다른 항을 압도한다로 설명해 보면 좋다.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="읽을거리">

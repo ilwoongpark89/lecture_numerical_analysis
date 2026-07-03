@@ -71,6 +71,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 "각 점이 이웃의 평균 쪽으로 조금씩" — 이 반복이 이번 주 Jacobi·Gauss-Seidel 이 $A\mathbf{x}=\mathbf{b}$ 를 푸는 심장이다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>뜨거운 국을 식힐 때, <strong>가장 뜨거운 한가운데</strong>가 제일 빨리 식고 이미 미지근한 가장자리는 거의 안 변한다 → 이웃과 차이가 큰 곳일수록 크게 움직이고 이미 비슷한 곳은 가만히 있다. 각 점의 보정량이 "이웃과의 어긋난 정도"에 비례한다는 관찰.</li>
+        <li>휘저은 욕조 물은 <strong>한 번에 평평해지지 않고</strong> 몇 번씩 출렁이며 조금씩 낮아진다 → 한 방에 정답에 닿는 게 아니라 "이웃의 평균 쪽으로" 같은 규칙을 여러 번 되풀이해야 잔잔해진다는 것($x_i \leftarrow \tfrac{1}{a_{ii}}(b_i-\sum_{j\ne i}a_{ij}x_j)$ 를 반복하는 이유).</li>
+        <li>다 잔잔해진 뒤엔 <strong>어느 점도 더는 움직이지 않는다</strong> → 모든 점이 이미 이웃의 평균과 같아진 "정지 상태"가 곧 우리가 찾던 해 $\mathbf{x}$. 더 고칠 게 없어질 때 멈춘다는 수렴의 의미로 이어진다.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="생각">
@@ -81,6 +89,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 A = Jacobi(모두 이전 값으로 동시에), B = Gauss-Seidel(새 값을 즉시 재사용) — 그래서 보통 Gauss-Seidel 이 약 2배 빠르다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>소파를 여럿이 벽에 붙일 때, <strong>앞사람이 딱 붙고 나면</strong> 뒷사람은 그 "이미 붙은 새 위치"를 보고 한 번에 맞춘다 → 갱신된 정보를 곧바로 다음 사람에게 흘려보내니(B) 어긋남이 덜 쌓인다.</li>
+        <li>돌림노래·합창에서 앞 파트의 <strong>방금 낸 음</strong>을 듣고 맞추면 금방 화음이 잡히지만, 각자 옛 기억(지난 값)에만 의존해 동시에 내면(A) 계속 어긋나 다시 고쳐야 한다는 관찰.</li>
+        <li>정보가 한 사람 건너 즉시 퍼지는 B는 <strong>한 바퀴 안에 이미 여러 명분 갱신</strong>이 반영되니, 같은 반복 횟수라면 A보다 앞서간다 → 대략 절반의 반복이면 비슷하게 정렬(약 $2$배). 다만 B는 "한쪽 끝부터"라는 순서에 묶여 동시에 못 움직인다는 점도 관찰할 만하다.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="읽을거리">

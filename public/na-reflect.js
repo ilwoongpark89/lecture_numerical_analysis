@@ -8,6 +8,7 @@
   if (typeof document === "undefined") return;
   var WEEK = window.NA_WEEK || 0;
   function key(qid) { return "na_reflect_" + WEEK + "_" + qid; }
+  function isProf() { try { return /(?:^|; )na_sid=__prof__(?:;|$)/.test(document.cookie); } catch (e) { return false; } }
 
   function markSaved(lf, msg) {
     var b = lf.querySelector(".lf-save"), fb = lf.querySelector(".lf-fb");
@@ -32,6 +33,7 @@
     if (!b) return;
     var lf = b.closest(".longform"); if (!lf) return;
     var input = lf.querySelector(".lf-input"), fb = lf.querySelector(".lf-fb");
+    if (isProf()) { if (fb) { fb.textContent = "교수 미리보기 — 저장 안 함"; fb.style.color = "var(--gray2)"; } return; }
     var v = input ? (input.value || "").trim() : "";
     if (!v) { if (fb) { fb.textContent = "내용을 입력하세요"; fb.style.color = "var(--gray2)"; } return; }
     var qid = lf.getAttribute("data-qid") || "reflect";

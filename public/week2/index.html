@@ -69,6 +69,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 컴퓨터는 세상에서 가장 고지식한 상대다 — 적힌 명령을 글자 그대로만 따른다. MATLAB 문법이 까다로워 보이는 건, 오해가 $0$ 이 되도록 "정확히" 적으라는 요구일 뿐이다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>라면 봉지를 "물 $550$mL, 강불 $4$분 $30$초"로 적었더니 친구가 똑같은 맛을 냈다 — "적당히"를 <strong>수치와 단위</strong>로 바꾼 만큼 결과가 재현됐다는 관찰. MATLAB이 값 하나까지 정확히 요구하는 이유로 자연히 이어진다.</li>
+        <li>집 오는 길을 "큰 건물에서 좌회전"이라 적었다가 친구가 다른 건물에서 꺾어 헤맸다 — 기준점이 여러 개로 해석될 여지가 있었다. "$3$번 출구 $50$m 직진 후 좌회전"처럼 <strong>기준을 하나로 못 박아야</strong> 오해가 사라진다는 관찰.</li>
+        <li>조립 설명서에서 순서 한 줄("나사 먼저"→"판 먼저")만 어긋나도 결과가 무너진 경험 — 사람은 눈치로 메우지만 컴퓨터는 못 메운다. 그래서 세미콜론·괄호 하나까지 적어야 한다는 통찰로 연결.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="생각">
@@ -79,6 +87,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 MATLAB 이 "행렬 실험실(Matrix Laboratory)" 인 이유 — 수 하나가 아니라 수천 개를 담은 벡터·행렬을 한 명령으로 통째 계산한다. <code>score = score + 5</code> 한 줄이 만 명을 올린다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>엑셀 한 칸에 수식을 쓰고 아래로 주욱 끌었더니 $1000$칸이 한 번에 채워진 경험 — 사람은 <strong>한 번</strong> 쓰고 기계는 <strong>천 번</strong> 계산했다는 관찰. 벡터 전체에 같은 연산을 거는 <code>score = score + 5</code>와 정확히 같은 발상으로 이어진다.</li>
+        <li>사진 $200$장을 하나씩 안 만지고 '전체 밝기 $+10$' 슬라이더 한 번으로 보정한 경험 — 같은 연산이 <strong>모든 원소에 동시에</strong> 걸린다는 원소별(element-wise) 계산의 직관.</li>
+        <li>재고나 점수를 하나씩 손으로 세다 지치고 실수도 났던 장면 — 반복이 길수록 사람은 피로·오류가 쌓이지만 기계는 그대로다. 이 불편이 곧 반복문(<code>for</code>)·벡터화가 왜 필요한지를 몸으로 설명한다는 통찰.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="읽을거리">

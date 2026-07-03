@@ -40,6 +40,7 @@ export default async function AdminPage() {
             <div className="text-xs font-bold tracking-widest text-accent">수치해석 · ADMIN</div>
             <h1 className="text-2xl font-bold">학습 분석 — 교수 열람</h1>
             <p className="text-sm text-[#71717a]">학생별 섹션 커버리지(체류시간 기반) · 답안 정오 · 챕터 대화 · 구술 시험 추천</p>
+            <p className="mt-1 text-xs text-[#a1a1aa]">이 상태(로그인)로 <a href="/week1" className="text-accent underline underline-offset-2">강의</a>를 열면 정답·풀이·생각 답변 예시가 <strong className="text-[#52525b]">교수 모드</strong>로 표시됩니다 (학생 화면엔 숨김).</p>
           </div>
           <div className="flex items-center gap-2">
             <a href="/" className="rounded-lg border border-[#e4e4e7] bg-white px-3 py-1.5 text-sm text-[#52525b] hover:bg-[#f4f4f5]">강의 홈</a>

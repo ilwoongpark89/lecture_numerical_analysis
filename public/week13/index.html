@@ -63,6 +63,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 "지금의 기울기(속도)로 바로 다음 위치를 찍고, 거기서 또 찍는다" — 이 리듬이 이번 주 Euler 법의 한 걸음이다. 기울기가 도중에 변하면 그만큼 오차가 쌓인다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>휴대폰 충전 "$20$분 남음"을 $30\%$일 때 봤는데, 지금의 충전 속도로 남은 시간을 찍은 것이라 $80\%$ 근처에서 충전이 느려지자 예측이 자꾸 뒤로 밀렸다 — <strong>지금 순간의 변화율 하나로 앞을 통째로 찍었는데 그 변화율이 도중에 바뀐 것</strong>이 어긋남의 원인이었다.</li>
+        <li>걸어서 신호등까지 "이 걸음 속도면 $30$초"라고 어림했다가, 중간에 오르막이 나와 느려지니 실제로는 더 걸렸다. 출발 순간의 상태 하나로 전체를 예측한 셈이라, 상태가 변한 만큼 오차가 쌓였다.</li>
+        <li>내비 "$3$분 남음"을 한 번 보고 통째로 믿기보다, $1$분마다 다시 확인해 찍을 때 더 잘 맞았다 — 걸음 $h$를 작게 쪼개 자주 다시 찍을수록 기울기 변화로 생기는 어긋남이 줄어드는 것을 몸으로 느낀 경험.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="생각">
@@ -73,6 +81,14 @@
     <textarea class="lf-input" maxlength="4000" placeholder="네 전략을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 기울기를 한 곳에서만 재지 않고 여러 곳에서 재 평균 내면 훨씬 정확하다 — 개선 Euler(Heun)는 두 기울기의 평균, RK4는 네 기울기의 평균이다. 걸음을 잘게 쪼갤수록(작은 $h$) 어긋남도 준다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>커브 진입 순간 핸들만 보지 않고 커브 중간·출구까지 내다보며 조향을 평균적으로 잡는다 — 여러 지점 기울기의 평균.</li>
+        <li>요리에서 "지금 간" 과 "졸인 뒤 예상 간" 을 함께 고려해 소금을 정하는 예측–보정 — Heun 의 예측+수정.</li>
+        <li>핵심 — 한 점 기울기(Euler)보다 두 점 평균(Heun), 네 점 평균(RK4)이 왜 급격히 정확해지는지 생각해 보면 좋다.</li>
+      </ul>
+    </div>
   </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="읽을거리">
