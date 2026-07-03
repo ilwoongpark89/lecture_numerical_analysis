@@ -367,6 +367,25 @@ end
     </div>
   </div>
 </section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="연습">
+  <div class="panel-head"><span class="tag">연습문제</span><span class="panel-title">안정조건 · 자동 채점</span></div>
+  <div class="prob">
+    <div class="prob-num">연습 1 · FTCS 안정 λ</div>
+    <p class="prob-statement">열전도 $\alpha=0.5$, $\Delta x=0.1$, $\Delta t=0.005$ 로 FTCS 를 쓴다. <strong>$\lambda=\alpha\,\Delta t/\Delta x^2$</strong> 를 구하시오 (안정 조건 $\lambda\le\tfrac12$).</p>
+    <div class="given"><span class="chip">$\lambda=\alpha\Delta t/\Delta x^2$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.25" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \lambda=\frac{0.5\times 0.005}{0.1^2}=\frac{0.0025}{0.01}=0.25 $$</div><b>정답:</b> $\lambda=0.25\le\tfrac12$ → <strong>안정</strong>. $\Delta t$ 를 2배로 키우면 $\lambda=0.5$ 로 경계, 더 키우면 발산.</div></div>
+  </div>
+  <div class="prob">
+    <div class="prob-num">연습 2 · CFL 최대 Δt</div>
+    <p class="prob-statement">파동 속도 $c=4$, 격자 $\Delta x=0.2$. CFL 조건 $C=c\,\Delta t/\Delta x\le 1$ 을 만족하는 <strong>최대 $\Delta t$</strong> 는?</p>
+    <div class="given"><span class="chip">$\Delta t\le\Delta x/c$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.05" data-tol="0.005"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
+    <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \Delta t\le\frac{\Delta x}{c}=\frac{0.2}{4}=0.05 $$</div><b>정답:</b> $\Delta t>0.05$ 면 수치 파동이 물리 파동을 못 따라가 발산. 확산($\lambda\le\tfrac12$)보다 완만한 $\Delta t\propto\Delta x$ 제약.</div></div>
+  </div>
+</section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="정리">
   <div class="eyebrow">14-4 · 정리 · Summary</div>
   <h1 class="stage-h">세 유형 총정리</h1>
