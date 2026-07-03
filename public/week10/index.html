@@ -565,7 +565,7 @@ end
 <section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="그림">
   <div class="eyebrow">10-3 · 그림 · 보간 다항식</div>
   <h1 class="stage-h">모든 점을 지난다</h1>
-  <div class="nafig" data-fig="funcplot" data-fn="1 + 0.8*x - 0.15*x^2" data-xmin="0.5" data-xmax="5.5" data-points="[[1,1.65],[3,2.05],[5,1.25]]" data-cap="보간 다항식(파랑)은 주어진 점(주황)을 모두 정확히 통과한다 — 그 사이를 이어 값을 예측."></div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"1/(1+25*x^2)","label":"참 함수"},{"fn":"1/(1+25*x^2)+0.6*x^8*cos(8*x)","label":"고차 보간"}]' data-xmin="-1" data-xmax="1" data-cap="등간격 점으로 고차 다항 보간하면 양 끝에서 크게 출렁인다(Runge 현상) — 차수를 높일수록 심해져, 스플라인·저차가 안전하다."></div>
 </section>
 <section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="정리">
   <div class="eyebrow">10-3 · 정리 · Summary</div>
