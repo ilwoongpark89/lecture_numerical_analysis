@@ -203,7 +203,35 @@
   // ════════ 렌더 (kind 별 plot + table) ════════
   function renderPlot(cfg, rows, step) {
     var k = cfg.kind;
-    if (k === "matrix-iter" || k === "power" || k === "diff" || k === "series" || k === "interp" || k === "lsq" || k === "gauss") return "";
+    if (k === "matrix-iter" || k === "power" || k === "diff" || k === "series" || k === "gauss") return "";
+    if (k === "interp") {
+      var ip = cfg.pts, ixs = ip.map(function (p) { return p[0]; }), iys = ip.map(function (p) { return p[1]; });
+      var ixmin = Math.min.apply(null, ixs.concat([cfg.xq])), ixmax = Math.max.apply(null, ixs.concat([cfg.xq]));
+      var iymin = Math.min.apply(null, iys), iymax = Math.max.apply(null, iys), ipadx = (ixmax - ixmin) * 0.08 || 1, ipady = (iymax - iymin) * 0.2 || 1;
+      var PI = plotBase(function () { return NaN; }, ixmin - ipadx, ixmax + ipadx, { yMin: iymin - ipady, yMax: iymax + ipady, curve: false });
+      var kU = Math.max(1, Math.min(step, ip.length)), xs2 = ixs.slice(0, kU), cc2 = iys.slice(0, kU);
+      for (var jj2 = 1; jj2 < kU; jj2++) for (var ii2 = kU - 1; ii2 >= jj2; ii2--) cc2[ii2] = (cc2[ii2] - cc2[ii2 - 1]) / (xs2[ii2] - xs2[ii2 - jj2]);
+      var Pev = function (xx) { var pk2 = 0, pr2 = 1; for (var t3 = 0; t3 < kU; t3++) { pk2 += cc2[t3] * pr2; pr2 *= (xx - xs2[t3]); } return pk2; };
+      var dd = "";
+      for (var s4 = 0; s4 <= 120; s4++) { var xx3 = (ixmin - ipadx) + (s4 / 120) * ((ixmax + ipadx) - (ixmin - ipadx)), yy3 = Pev(xx3); if (isFinite(yy3)) dd += (dd ? "L" : "M") + PI.mx(xx3).toFixed(1) + "," + PI.my(yy3).toFixed(1) + " "; }
+      if (dd) PI.svg.push('<path d="' + dd + '" fill="none" stroke="#1e40af" stroke-width="2.4"/>');
+      if (cfg.xq != null) PI.svg.push('<line x1="' + PI.mx(cfg.xq) + '" y1="14" x2="' + PI.mx(cfg.xq) + '" y2="' + (PI.H - 30) + '" stroke="#16a34a" stroke-width="1" stroke-dasharray="3 3"/>');
+      for (var ipp = 0; ipp < kU; ipp++) PI.svg.push('<circle cx="' + PI.mx(ip[ipp][0]) + '" cy="' + PI.my(ip[ipp][1]) + '" r="4.5" fill="#d97706" stroke="#fff" stroke-width="1.5"/>');
+      return PI.close();
+    }
+    if (k === "lsq") {
+      var lp = cfg.pts, lxs = lp.map(function (p) { return p[0]; }), lys = lp.map(function (p) { return p[1]; });
+      var lxmin = Math.min.apply(null, lxs), lxmax = Math.max.apply(null, lxs), lymin = Math.min.apply(null, lys), lymax = Math.max.apply(null, lys);
+      var lpadx = (lxmax - lxmin) * 0.08 || 1, lpady = (lymax - lymin) * 0.15 || 1;
+      var PL = plotBase(function () { return NaN; }, lxmin - lpadx, lxmax + lpadx, { yMin: lymin - lpady, yMax: lymax + lpady, curve: false });
+      var lcur = rows[Math.max(0, Math.min(step, rows.length) - 1)];
+      if (lcur && lcur.a1 != null) {
+        var ly1 = lcur.a0 + lcur.a1 * lxmin, ly2 = lcur.a0 + lcur.a1 * lxmax;
+        PL.svg.push('<line x1="' + PL.mx(lxmin) + '" y1="' + PL.my(ly1) + '" x2="' + PL.mx(lxmax) + '" y2="' + PL.my(ly2) + '" stroke="#1e40af" stroke-width="2.4"/>');
+      }
+      for (var lpp = 0; lpp < step && lpp < lp.length; lpp++) PL.svg.push('<circle cx="' + PL.mx(lp[lpp][0]) + '" cy="' + PL.my(lp[lpp][1]) + '" r="4.5" fill="#d97706" stroke="#fff" stroke-width="1.5"/>');
+      return PL.close();
+    }
     if (k === "integration") {
       var P0 = plotBase(cfg.f, cfg.a, cfg.b, {}); var r0 = rows[Math.max(0, step - 1)]; var n = r0 ? r0.n : cfg.n0;
       var h = (cfg.b - cfg.a) / n;

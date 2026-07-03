@@ -543,6 +543,26 @@ end
   <div class="callout key" style="margin-top:12px"><div class="ct">Verify의 핵심</div>해석해가 있으면 오차로 검증하고, <strong>해석해가 없으면</strong> $\Delta t$ 를 줄여 수렴을 보거나 물리적 타당성(종단속도·에너지)으로 판단한다.</div>
 </section>
 
+<!-- ════════ 1-4 / 생각 (소비형 성찰) ════════ -->
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="생각">
+  <div class="longform" data-qid="reflect-1-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 이 숫자를 믿어도 될까</span>
+    <div class="lf-q">이번 주 너는 손으로 못 푸는 문제를 컴퓨터가 <em>근사</em>로 푸는 전 과정을 익혔다 — Euler로 속도를 반복 계산하고($v_{i+1}=v_i+\frac{dv_i}{dt}\Delta t$), 참·근사오차를 재고, <strong>문제 → 모델 → 근사 → 계산 → 검증</strong> 5단계로 마무리했다. 이제 한 걸음 물러서서 비판적으로 되돌아보자. 누군가 "시뮬레이션 돌렸더니 이 값이 나왔다"며 숫자 하나를 들고 온다면 — <strong>참값도 없는데 너는 그 답을 언제 믿고, 어떤 신호가 보이면 "이건 못 믿겠다"고 의심</strong>하겠는가? 이번 주 방법이 실패하거나 한계를 드러내는 곳은 어디였나($\Delta t$ 를 너무 키우거나 너무 줄일 때, 나쁜 초기값, 부호 소거…)? 그리고 이렇게 익힌 근사·오차·검증의 감각을, 수치해석과 무관해 보이는 네 전공이나 일상 판단(여론조사 지지율, 내비 도착 예정 시각, 건강검진 수치…)에 <em>어떻게 옮겨</em> 쓸 수 있을지 함께 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — $\Delta t$ 를 절반으로 줄여 다시 돌렸는데 답이 거의 그대로면 믿을 만하고, 값이 크게 출렁이면 의심한다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 수치해의 가치는 "정확해서"가 아니라 <strong>"얼마나 틀렸는지까지 함께 말해줄 수 있어서"</strong>다 — 오차를 모르는 답은 숫자가 아니라 소문에 가깝다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>참값이 없을 땐 세 가지로 의심한다 — (1) $\Delta t$ 를 절반으로 줄여 재계산했을 때 답이 거의 안 변하면(<strong>수렴</strong>) 믿고, 크게 흔들리면 스텝이 너무 컸다고 본다, (2) 종단속도가 음수라거나 온도가 절대영도 아래로 내려가는 등 <strong>물리적으로 말이 안 되면</strong> 모델·코드를 의심한다, (3) 가능하면 다른 방법으로도 풀어 같은 값이 나오는지 교차 확인한다. 이것이 "Verify 없이는 숫자를 믿지 않는다"의 실전 감각이다.</li>
+        <li>여론조사 "지지율 $43\%$" 를 볼 때 예전엔 숫자만 봤는데, 이제는 "$\pm3\%$p, 표본 $1000$명" 이라는 <strong>오차 범위</strong>를 함께 본다. 오차를 안 알려주는 답은 계량컵 마지막 한 자리를 눈대중으로 읽고 확신하는 것과 같다 — <strong>답과 오차는 항상 한 쌍</strong>이라는 이번 주 핵심이 그대로 옮겨진다.</li>
+        <li>정밀도를 무한히 높이면 좋을 것 같지만, $\Delta t$ 를 너무 줄이면 <strong>반올림오차</strong>가 절단오차 감소를 잡아먹는 걸 배웠다. 그래서 "더 잘게"가 정답이 아니라 "적당한 곳에서 멈추는" 판단이 필요하고, 이건 내비가 알려주는 도착 시각을 초 단위까지 믿지는 않는 일상 감각과 닿아 있다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="정리">
   <div class="eyebrow">1-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 이번 학기 지도</h1>

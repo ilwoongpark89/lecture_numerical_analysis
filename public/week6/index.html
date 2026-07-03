@@ -669,6 +669,25 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
   </div>
 </section>
 
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="생각">
+  <div class="longform" data-qid="reflect-6-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 가우스 소거, 언제 믿고 언제 의심할까</span>
+    <div class="lf-q">이번 주 내내 우리는 연립방정식 $A\mathbf{x}=\mathbf{b}$ 를 가우스 소거로 <strong>유한한 단계 만에 정확히</strong> 풀 수 있다고 배웠다. 그런데 곧바로 부분 피벗팅이 필요했고(작은 피벗이 오차를 증폭했다), 마지막엔 조건수 $\kappa(A)$ 가 크면 그 '정확한' 답조차 믿을 수 없다는 것도 봤다. 이제 이 주의 방법을 다 배운 지금 되돌아보자 — 앞으로 어떤 연립방정식을 만났을 때 가우스 소거의 답을 <strong>믿고</strong>, 어떤 신호가 보일 때 <strong>의심</strong>하겠는가? 만약 이 방법이 실패한다면 그 징후는 어디서 가장 먼저 드러날까? 그리고 이 '믿음/의심'의 감각을 방정식 풀이 밖의 다른 상황(측정·예측·데이터 맞추기 등)으로는 어떻게 옮겨 볼 수 있을까?</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 소거 도중 피벗이 유난히 작아지거나 두 방정식이 거의 평행해 보이면, 답의 앞 몇 자리만 믿고 뒷자리는 의심한다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 가우스 소거는 '푸는 절차'는 늘 끝내주지만, 그 답을 얼마나 믿을지는 <b>피벗의 크기</b>와 <b>조건수 $\kappa$</b> 가 결정한다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>알고리즘의 정확성과 문제의 민감도를 분리해서 본다 — 계수가 고르게 큰 잘 스케일된 행렬이면 소거 결과를 그대로 믿지만, 소거 도중 피벗이 다른 원소보다 몇 자릿수씩 작아지면 그 뒤 자리는 반올림 오차에 오염됐다고 보고 부분 피벗팅으로 다시 확인한다.</li>
+        <li>실패의 첫 징후는 보통 <strong>잔차의 함정</strong>에서 온다 — $A\mathbf{x}-\mathbf{b}$ 가 거의 $0$ 인데도 입력 $\mathbf{b}$ 를 살짝 흔들면 해가 크게 요동치면, 알고리즘이 아니라 문제 자체($\kappa$ 가 큼)가 병들었다는 신호로 읽는다.</li>
+        <li>다른 상황으로 전이 — 여러 센서로 위치를 추정하거나 데이터에 직선을 맞출 때도 "측정 방향들이 거의 겹치면(거의 평행) 답이 흔들린다"는 같은 구조가 나타난다. 그래서 실무에선 먼저 조건수·스케일을 점검하고, 필요하면 방정식을 다시 세우거나 정규화한 뒤 푼다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="정리">
   <div class="eyebrow">6-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

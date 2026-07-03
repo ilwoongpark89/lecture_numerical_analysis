@@ -589,6 +589,26 @@ df = @(x) 3*x.^2 - 1;
   </div>
 </section>
 
+<!-- ════════ 생각 (소비형 · 되돌아봄) ════════ -->
+<section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="생각">
+  <div class="longform" data-qid="reflect-4-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 이 도구를 언제 믿고 언제 의심할까</span>
+    <div class="lf-q">이제 이분법(느리지만 안전)과 Newton(빠르지만 예민)을 <strong>둘 다 손으로 돌려봤다.</strong> 만약 네가 실제 공학 문제에서 $f(x)=0$ 의 근을 하나 구해야 한다면 — 어떤 방법을 <em>먼저</em> 꺼내고, 언제 그 결과를 <em>의심</em>하겠는가? 두 방법이 배신할 법한 상황(초기값을 전혀 모를 때, $f'$ 가 지저분하거나 $0$ 근처일 때, 근이 축에 접해 부호가 안 바뀔 때…)을 하나 떠올려 어떻게 대비할지 적어보자. 그리고 "반씩 좁히기"나 "기울기로 도약하기"라는 이 아이디어를 방정식 풀이 <strong>바깥</strong>(탐색·최적화·일상 판단)에서 써먹을 곳이 있을지도 상상해 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 초기값을 모를 땐 이분법으로 근처까지 안전하게 간 뒤 Newton으로 마무리하는 <em>하이브리드</em>가 떠오르고, 값이 $0\to1\to0$ 처럼 튀기 시작하면 이차 수렴을 믿지 말아야 한다는 신호…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 "빠른 방법이 항상 좋은 건 아니다" — 보장(이분법)과 속도(Newton)는 맞바꾸는 관계이고, 실무(Brent 등)는 둘을 <strong>섞어</strong> 쓴다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>도함수를 손으로 구하기 쉽고 근이 대략 어디인지 감이 오면 Newton을 먼저 쓰지만, 몇 번 돌려도 값이 튀거나 $f'(x_n)$ 이 $0$ 근처로 가면 <strong>즉시 의심</strong>하고 이분법으로 후퇴한다. 이차 수렴은 "좋은 초기값"이라는 전제 위에서만 위력을 낸다는 걸 함정 단계에서 몸으로 봤다.</li>
+        <li>풀기 전에 근이 접해 있진 않은지($(x-1)^2$ 같은 <strong>중근</strong>)를 먼저 점검하는 습관이 생겼다 — 중근은 부호가 안 바뀌어 이분법이 아예 못 잡고, Newton도 이차가 아니라 선형으로 느려지기 때문이다.</li>
+        <li>"반씩 좁히기"는 정렬된 목록에서 값 찾기(이진 탐색)나 "조건을 만족하는 최소 설정 찾기"처럼 <strong>단조로운 판정</strong> 문제 어디에나 옮겨 쓸 수 있고, "기울기로 도약하기"는 오차를 줄이는 방향으로 파라미터를 조정하는 <strong>최적화(경사하강)</strong> 와 사실상 한 가족임을 알게 됐다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="정리">
   <div class="eyebrow">4-4 · 정리 · Choose</div>
   <h1 class="stage-h">언제 무엇을 — 방법 선택</h1>

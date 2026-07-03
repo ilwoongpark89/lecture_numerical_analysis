@@ -778,6 +778,24 @@ fprintf('기울기 ≈ %.2f\n', slope(1));   <span class="out">% ≈ 1  (전진�
   </div>
 </section>
 
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="생각">
+  <div class="longform" data-qid="reflect-3-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 이 결과, 어디까지 믿을까</span>
+    <div class="lf-q">이번 주 내내 배운 한 문장은 <strong>"모든 수치 계산에는 오차가 있다"</strong> 였다. 이제 방향을 뒤집어 스스로에게 물어보자 — 앞으로 어떤 프로그램이나 계산기가 숫자를 뱉어냈을 때, 너는 그 결과의 <strong>어느 자리까지 믿고 어디서부터 의심</strong>하겠는가? 이번 주에 만난 경고 신호들 — 거의 같은 두 수를 뺐는가(상쇄), 스텝 $h$ 를 $\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8}$ 아래로 무작정 줄였는가, 문제 자체의 조건수가 큰가($\text{cond}\gg1$), $==$ 로 부동소수점을 비교했는가 — 중에서 네가 실제로 계산·측정·코딩을 하다가 <em>가장 먼저 발을 헛디딜</em> 곳은 어디일 것 같은가? 그리고 이 "믿을 자리를 스스로 판정하는" 감각을 실험 리포트나 나중의 실무(재무 반올림, 센서 데이터, 시뮬레이션)에 어떻게 옮겨 쓸지 하나만 구체적으로 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 예전엔 "값이 클수록 정확하다"고 막연히 믿었는데, 이제 $10^{16}$ 근처에선 이웃한 정수조차 못 담긴다는 걸 안다 → 큰 수를 다룰 땐 마지막 자리부터 의심해야겠다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 오차는 <strong>없앨</strong> 수 없다 — 대신 <strong>어디서·얼마나</strong> 생기는지 알고 <strong>통제</strong>한다. "믿을 수 있는 자리"를 스스로 판정하는 눈, 그것이 이번 주의 전부다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>뺄셈 경보가 가장 먼저 켜질 것 같다 — 두 값이 비슷한데 그 <strong>차이</strong>가 최종 결과라면 앞자리가 서로 지워져 못 믿을 뒷자리만 남는다. 이제 근의 공식이나 $f(x{+}h)-f(x)$ 같은 식을 볼 때마다 "여기서 상쇄가 나나?"를 먼저 확인하고, 가능하면 상쇄가 없는 꼴로 식을 다시 쓰겠다.</li>
+        <li>수치미분·시뮬레이션에서 "더 잘게 쪼개면 더 정확하다"는 직관이 <strong>절반만 참</strong>임을 배웠다. $h_{\text{opt}}\approx\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8}$ 아래로 내려가면 반올림 오차가 지배해 오히려 나빠지니, 무조건 세밀화하기 전에 U자 곡선의 바닥을 먼저 떠올리겠다.</li>
+        <li>결과가 이상하면 예전엔 코드 버그부터 의심했는데, 이제는 "문제 자체가 조건수가 큰(ill-conditioned) 건 아닌가"를 먼저 나눠 생각한다. $\text{cond}\gg1$ 인 문제는 알고리즘을 아무리 바꿔도 정밀도를 회복할 수 없다는 걸 알았으니, 원인을 <strong>문제 탓 / 알고리즘 탓 / 반올림 탓</strong>으로 갈라 진단하겠다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="정리">
   <div class="eyebrow">3-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

@@ -711,6 +711,25 @@ fprintf('R^2_adj = %.4f\n', R2adj);
   </div>
 </section>
 
+<!-- ════════ 생각 3 · 소비형(배운 뒤 되돌아보기) ════════ -->
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="생각">
+  <div class="longform" data-qid="reflect-9-3" data-kind="reflect">
+    <span class="lf-tag think">생각 3 · 잘 맞은 곡선을 어디까지 믿을까</span>
+    <div class="lf-q">이번 주 내내 우리는 데이터에 곡선을 앉히고($S=\sum e_i^2$ 최소), 정규방정식으로 계수를 뽑고, $R^2$ 로 "얼마나 잘 맞았나" 를 재는 법을 배웠다. 이제 한 걸음 물러서서 스스로에게 물어보자 — 어떤 적합 결과를 손에 쥐었을 때 너는 그것을 <strong>어디까지 믿고 어디서부터 의심</strong>하겠는가? $R^2=0.99$ 라는 말만 들으면 무조건 안심해도 될까? 만약 이 방법이 너를 배신한다면 그 사고는 <strong>어디서</strong> 터질 것 같은가 — 튄 점 하나(이상치)? 데이터 범위 <strong>바깥</strong>을 예측하는 순간(외삽)? 차수를 욕심껏 올린 순간(과적합)? 로그로 펴서 회귀한 뒤 되돌린 계수? 그리고 언젠가 실험실이나 회사에서 '추세선' 버튼을 누르게 될 때, 오늘 배운 것 중 <strong>무엇을 반드시 함께 확인</strong>하겠는지 — 네가 상상하는 구체적 장면 하나를 골라 자유롭게 적어보자. 정답을 맞히려 하지 말고 <em>네 판단 기준</em>을 생생하게 펼쳐 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 나라면 $R^2$ 숫자만 보지 않고, 잔차 $e_i$ 를 $x$ 순서로 늘어놓아 한쪽으로 쏠리진 않았는지 눈으로 훑고, 예측하려는 $x$ 가 데이터가 실제로 깔린 범위 <em>안</em>인지부터 확인하겠다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 최소자승은 '주어진 모델 안에서 최적'일 뿐 — 믿음의 크기는 $R^2$ 한 숫자가 아니라 이상치·외삽·과적합을 함께 점검한 뒤에 정해진다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>센서 보정 곡선을 만들 때 $R^2=0.999$ 만 보고 안심했다가, 측정해 둔 범위 <strong>밖</strong>의 값을 그 식에 넣어 예측하면 크게 어긋날 수 있음을 떠올렸다 — 그래서 '믿는 구간' 은 데이터가 실제로 깔린 $x$ 범위 안으로만 한정하고, 그 밖은 "추정일 뿐" 이라고 못 박겠다.</li>
+        <li>잔차를 그냥 더하면 부호가 상쇄돼 늘 $\sum e_i\approx0$ 이라 아무 말도 못 해 주므로, 곡선을 받아든 뒤엔 잔차를 $x$ 순서로 늘어놓고 <strong>한쪽으로 몰리거나 활처럼 휜 패턴</strong>이 보이면 "직선 모델 자체가 틀렸다(지수·2차가 맞을 수도)" 는 신호로 읽겠다 — 낮은 $R^2$ 뿐 아니라 잔차의 <em>모양</em>도 함께 본다.</li>
+        <li>점이 몇 개 안 되는데 차수를 자꾸 올리면 $R^2$ 는 무조건 $1$ 로 다가가지만 점 사이가 요동친다는 걸 겪었으니, 실무에선 원 $R^2$ 대신 <strong>수정 $R^2$</strong> 를 보거나 남겨 둔 새 데이터로 검증해 "변수를 늘릴 값어치가 정말 있었나" 를 되묻겠다 — 큰 $R^2$ 를 성공이 아니라 <em>과적합 경보</em>로 의심하는 습관.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="정리">
   <div class="eyebrow">9-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
