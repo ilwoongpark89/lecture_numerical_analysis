@@ -164,7 +164,13 @@
       </div>
     </div>
   </div>
-  <div class="callout warn" style="margin-top:14px"><div class="ct">계산량</div>전진 소거 $\approx n^3/3$, 후진 대입 $\approx n^2/2$ 회 연산. 큰 시스템 비용은 사실상 <strong>소거 단계가 지배</strong>한다 — $n$ 이 2배면 시간은 약 8배.</div>
+  <div class="deriv" style="margin-top:16px">
+    <div class="dcard"><h4>① 첨가행렬 $[A\,|\,\mathbf b]$</h4><div class="eq">$\left[\begin{array}{rrr|r}2&1&-1&8\\-3&-1&2&-11\\-2&1&2&-3\end{array}\right]$</div></div>
+    <div class="dcard"><h4>② 1열 소거</h4><div class="sub">$R_2{+}1.5R_1,\ R_3{+}R_1$</div><div class="eq">$\left[\begin{array}{rrr|r}2&1&-1&8\\0&0.5&0.5&1\\0&2&1&5\end{array}\right]$</div></div>
+    <div class="dcard"><h4>③ 2열 소거 → 상삼각 $U$</h4><div class="sub">$R_3{-}4R_2$</div><div class="eq">$\left[\begin{array}{rrr|r}2&1&-1&8\\0&0.5&0.5&1\\0&0&-1&1\end{array}\right]$</div></div>
+  </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">후진 대입</div>$x_3=\dfrac{1}{-1}=-1$ → $x_2=\dfrac{1-0.5(-1)}{0.5}=3$ → $x_1=\dfrac{8-1(3)-(-1)(-1)}{2}=2$. 해 $\mathbf x=(2,3,-1)$ — 아래 시연 스테퍼로 각 소거를 한 스텝씩 직접 돌려볼 수 있다.</div>
+  <div class="callout warn" style="margin-top:14px"><div class="ct">계산량</div>$k$ 번째 열 소거는 $(n{-}k)$ 행 각 $(n{-}k{+}1)$ 연산 → $\sum_{k=1}^{n-1}(n{-}k)(n{-}k{+}1)\approx n^3/3$, 후진 대입 $\approx n^2/2$. 큰 시스템 비용은 <strong>소거 단계가 지배</strong> — $n$ 이 2배면 시간은 약 8배.</div>
 </section>
 
 <section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="시연">

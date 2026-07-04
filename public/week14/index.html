@@ -287,6 +287,17 @@ end
     </div>
   </div>
 </section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="원리">
+  <div class="eyebrow">14-3 · 원리 · 5-point stencil</div>
+  <h1 class="stage-h">두 방향 2계 차분을 더하면 — 이웃의 평균</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① $x$ 방향 2계</h4><div class="eq">$ \dfrac{u_{i+1,j}-2u_{i,j}+u_{i-1,j}}{\Delta x^2} $</div></div>
+    <div class="dcard"><h4>② $y$ 방향 2계</h4><div class="eq">$ \dfrac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{\Delta y^2} $</div></div>
+    <div class="dcard"><h4>③ 합 $=0$ ($\Delta x{=}\Delta y$)</h4><div class="sub">$\nabla^2u=0$</div><div class="eq">$ u_{i,j}=\dfrac{u_{i+1,j}+u_{i-1,j}+u_{i,j+1}+u_{i,j-1}}{4} $</div></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">핵심</div>라플라스 해는 <strong>각 점이 네 이웃의 평균</strong>인 상태 — 뾰족함이 없다(최대·최소는 경계에서만). 이 관계를 모든 내부격자에 세우면 <strong>연립 선형계</strong>가 되고, 7주 Jacobi/Gauss–Seidel 로 "이웃 평균으로 갱신"을 반복해 푼다(아래 시연).</div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">한 스텝 예</div>내부점이 이웃 $100,0,0,0$ 에 둘러싸이면 Jacobi 첫 갱신 $u=\tfrac{100+0+0+0}{4}=25$.</div>
+</section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="시연">
   <div class="eyebrow">14-3 · 시연 · Step-through</div>
   <h1 class="stage-h">이웃 평균 반복 — 평형으로 수렴</h1>

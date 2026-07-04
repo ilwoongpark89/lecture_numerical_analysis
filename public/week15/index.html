@@ -187,6 +187,17 @@
     </div>
   </div>
 </section>
+<section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="원리">
+  <div class="eyebrow">15-2 · 원리 · Why it converges</div>
+  <h1 class="stage-h">고유기저로 펼치면 — 가장 센 방향만 살아남는다</h1>
+  <p class="assume"><b>가정</b> $A$ 의 고유벡터 $\mathbf v_1,\dots,\mathbf v_n$ 이 기저를 이루고 $|\lambda_1|>|\lambda_2|\ge\cdots$ (지배 고유값 유일).</p>
+  <div class="deriv">
+    <div class="dcard"><h4>① 초기벡터 전개</h4><div class="sub">고유기저로</div><div class="eq">$ \mathbf x^{(0)}=c_1\mathbf v_1+c_2\mathbf v_2+\cdots+c_n\mathbf v_n $</div></div>
+    <div class="dcard"><h4>② $A$ 를 $k$ 번 곱함</h4><div class="sub">$A\mathbf v_i=\lambda_i\mathbf v_i$</div><div class="eq">$ A^{k}\mathbf x^{(0)}=\sum_i c_i\lambda_i^{k}\mathbf v_i $</div></div>
+    <div class="dcard"><h4>③ $\lambda_1^{k}$ 로 묶기</h4><div class="sub">비율 뽑기</div><div class="eq">$ =\lambda_1^{k}\!\Big[c_1\mathbf v_1+\!\sum_{i\ge2}\!c_i\Big(\tfrac{\lambda_i}{\lambda_1}\Big)^{\!k}\mathbf v_i\Big] $</div></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">핵심</div>$|\lambda_i/\lambda_1|<1$ 이므로 $(\lambda_i/\lambda_1)^{k}\to0$ — 괄호 안이 $c_1\mathbf v_1$ 만 남는다. 그래서 $A^{k}\mathbf x^{(0)}$ 는 <strong>지배 고유벡터 $\mathbf v_1$ 방향</strong>으로 정렬되고, 매 스텝 최대성분으로 정규화하면 그 성분이 <strong>$\lambda_1$</strong> 로 수렴한다. 수렴 속도 $=|\lambda_2/\lambda_1|$ — 둘째로 센 고유값이 가까울수록 느리다(시연의 $\approx0.52$).</div>
+</section>
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="시연">
   <div class="eyebrow">15-2 · 시연 · Iterate</div>
   <h1 class="stage-h">반복이 고유값으로 수렴 — 직접 돌려보기</h1>
