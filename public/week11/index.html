@@ -496,6 +496,7 @@ I = simpson13(f, 0, 1);
       <li>모두 더해 $\tfrac{h}{2}$(사다리꼴) 또는 $\tfrac{h}{3}$(Simpson)를 곱한다.</li>
     </ol>
   </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">기본 $(1,4,1)$ 은 어디서? — 포물선 적분</div>한 조각의 세 점 $(x_0,f_0),(x_1,f_1),(x_2,f_2)$ 를 지나는 2차 Lagrange $P_2$ 를 $[x_0,x_2]$ 에서 적분하면 $\int L_0=\tfrac h3,\ \int L_1=\tfrac{4h}3,\ \int L_2=\tfrac h3$ → $\int P_2=\tfrac h3(f_0+4f_1+f_2)$. 중점 가중 $4$ 가 여기서 나온다.</div>
   <div class="two" style="margin-top:14px">
     <div class="col2"><div class="callout key"><div class="ct">복합 사다리꼴 오차</div>$E=-\dfrac{b-a}{12}h^2 f''(\xi)=O(h^2)$ — $n$ 2배 시 $\times\tfrac14$.</div></div>
     <div class="col2"><div class="callout key"><div class="ct">복합 Simpson 오차</div>$E=-\dfrac{b-a}{180}h^4 f^{(4)}(\xi)=O(h^4)$ — $n$ 2배 시 $\times\tfrac{1}{16}$.</div></div>

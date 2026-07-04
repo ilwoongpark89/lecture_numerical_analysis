@@ -512,6 +512,16 @@ f = @(x,y) x - y;
   </div>
 </section>
 
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="원리">
+  <div class="eyebrow">13-4 · 원리 · Reduction to first order</div>
+  <h1 class="stage-h">고차·연립을 1계 벡터 ODE 로</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① 새 변수 도입</h4><div class="sub">각 도함수 = 새 상태</div><div class="eq">$ u_1=y,\quad u_2=y' $</div></div>
+    <div class="dcard"><h4>② 1계 연립으로</h4><div class="sub">$y''=f(x,y,y')$</div><div class="eq">$ u_1'=u_2,\quad u_2'=f(x,u_1,u_2) $</div></div>
+    <div class="dcard"><h4>③ 벡터 형태</h4><div class="sub">$\mathbf u'=\mathbf F(x,\mathbf u)$</div><div class="eq">Euler·RK4 를 <b>벡터째</b> 전진</div></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">감쇠 진동 예</div>$mx''+cx'+kx=0$ 에서 $u_1=x,\ u_2=x'$ → $u_1'=u_2,\ u_2'=-\dfrac{c\,u_2+k\,u_1}{m}$. 이제 위치·속도 두 성분을 한꺼번에 Euler/RK4 로 전진 — 앞 절 스칼라 공식이 그대로 벡터에 적용된다.</div>
+</section>
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">차수 낮추기 · 자동 채점</span></div>
   <div class="prob">

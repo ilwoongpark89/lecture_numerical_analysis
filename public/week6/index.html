@@ -696,6 +696,14 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <div class="keqnote">MATLAB <code>cond(A)</code> / NumPy <code>np.linalg.cond(A)</code> 로 즉시 확인.</div>
     </div>
   </div>
+  <div class="keqbox" style="margin-top:16px">
+    <div class="keq-label">이 상한은 어디서? — 섭동 유도</div>
+    <div class="keqrow"><span class="keqcap">원계</span><span class="keqline">$ A\mathbf x=\mathbf b $</span></div>
+    <div class="keqrow"><span class="keqcap">우변 섭동</span><span class="keqline">$ A(\mathbf x+\delta\mathbf x)=\mathbf b+\delta\mathbf b\ \Rightarrow\ \delta\mathbf x=A^{-1}\delta\mathbf b $</span></div>
+    <div class="keqrow"><span class="keqcap">노름 부등식</span><span class="keqline">$ \|\delta\mathbf x\|\le\|A^{-1}\|\,\|\delta\mathbf b\|,\quad \|\mathbf b\|\le\|A\|\,\|\mathbf x\| $</span></div>
+    <div class="keqrow"><span class="keqcap">결합</span><span class="keqline">$ \dfrac{\|\delta\mathbf x\|}{\|\mathbf x\|}\le\underbrace{\|A\|\,\|A^{-1}\|}_{\kappa(A)}\dfrac{\|\delta\mathbf b\|}{\|\mathbf b\|} $</span></div>
+  </div>
+  <div class="callout key" style="margin-top:12px"><div class="ct">핵심</div>입력(우변) 상대오차가 $\kappa(A)$ <strong>배로 증폭</strong>되어 해에 나타난다 — 그래서 $\kappa=10^k$ 면 약 $k$ 자리를 잃는다.</div>
 </section>
 
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="시연">
