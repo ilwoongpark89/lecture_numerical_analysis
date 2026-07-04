@@ -370,6 +370,17 @@ end
     </div>
   </div>
 </section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="원리">
+  <div class="eyebrow">14-4 · 원리 · Leapfrog scheme</div>
+  <h1 class="stage-h">시간·공간 모두 2계 중앙차분</h1>
+  <div class="deriv">
+    <div class="dcard"><h4>① 시간 2계</h4><div class="eq">$ \dfrac{u_i^{n+1}-2u_i^n+u_i^{n-1}}{\Delta t^2} $</div></div>
+    <div class="dcard"><h4>② 공간 2계 $\times c^2$</h4><div class="eq">$ c^2\dfrac{u_{i+1}^n-2u_i^n+u_{i-1}^n}{\Delta x^2} $</div></div>
+    <div class="dcard"><h4>③ 갱신식 ($C=c\Delta t/\Delta x$)</h4><div class="sub">두 시간층 필요</div><div class="eq">$ u_i^{n+1}=2u_i^n-u_i^{n-1}+C^2(u_{i+1}^n-2u_i^n+u_{i-1}^n) $</div></div>
+  </div>
+  <div class="callout key" style="margin-top:14px"><div class="ct">첫 스텝 특수 처리</div>$n{=}1$ 에는 $u^{-1}$ 이 없다 → 초기속도 $g_i=u_t(x_i,0)$ 로: $u_i^1=u_i^0+\Delta t\,g_i+\tfrac12 C^2(u_{i+1}^0-2u_i^0+u_{i-1}^0)$.</div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">한 스텝 예</div>$C=1$, $u^0=(0,1,0)$(경계 $0$), $g=0$ → $u_{\text{center}}^1=1+\tfrac12(0-2+0)=0$. 봉우리가 즉시 양옆으로 갈라져 이동한다(감쇠 없이).</div>
+</section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">CFL 조건 · 자동 채점</span></div>
   <div class="prob">

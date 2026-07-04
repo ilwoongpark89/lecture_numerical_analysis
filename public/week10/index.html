@@ -299,6 +299,14 @@ yq = lagrange_interp(x, y, 2.5);
       <li><b>첫 행(대각선 시작)</b>의 값들이 Newton 다항식의 계수가 된다.</li>
     </ol>
   </div>
+  <div class="stp-tblwrap" style="max-width:440px;margin-top:14px"><table class="stp-tbl"><thead><tr><th>$x_i$</th><th>$f[x_i]$</th><th>1차</th><th>2차</th></tr></thead><tbody>
+    <tr><td>1</td><td><b>1</b></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td><b>3</b></td><td></td></tr>
+    <tr><td>2</td><td>4</td><td></td><td><b>1</b></td></tr>
+    <tr><td></td><td></td><td>5</td><td></td></tr>
+    <tr><td>3</td><td>9</td><td></td><td></td></tr>
+  </tbody></table></div>
+  <div class="callout key" style="margin-top:10px"><div class="ct">계수 = 대각선(굵게)</div>$f[x_0,x_1]=\dfrac{4-1}{2-1}=3$, $f[x_1,x_2]=\dfrac{9-4}{3-2}=5$, $f[x_0,x_1,x_2]=\dfrac{5-3}{3-1}=1$. 계수 $1,3,1$ → $P(x)=1+3(x-1)+1(x-1)(x-2)=x^2$ — 점 $(1,1),(2,4),(3,9)$ 를 정확히 지난다.</div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">왜 되는가</div>분할 차분은 <strong>차수 $k$ 항의 선도 계수</strong>와 같다. 그래서 각 항 $f[x_0,\dots,x_k]\prod(x-x_j)$ 를 더하면 정확히 보간 다항식이 된다.</div>
 </section>
 
