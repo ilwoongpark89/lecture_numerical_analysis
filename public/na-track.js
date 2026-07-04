@@ -61,6 +61,7 @@
   // ── 학생 제출 가로채기: 연습 '확인' = 제출(정오 비공개) + 서버 저장. '풀이 보기' 봉인. ──
   //    엔진(bubble)보다 먼저 capture 로 가로채 정오·풀이 공개를 차단, 답만 서버에 남긴다(교수 열람).
   if (IS_STUDENT && !REVEAL) {
+    var lastAns = {};   // 문항키 → 마지막 전송 답. 같은 답 재클릭은 중복 전송 안 함(수정 시에만 재기록)
     document.addEventListener("click", function (e) {
       var t = e.target; if (!t || !t.closest) return;
       var rb = t.closest(".reveal-btn");
@@ -78,12 +79,16 @@
       var tol = input ? parseFloat(input.getAttribute("data-tol") || "0.02") : 0.02;
       var v = parseFloat(raw.replace(/[,\s]/g, ""));
       var ok = !isNaN(v) && !isNaN(target) && Math.abs(v - target) <= Math.abs(target) * tol;
-      post({
-        kind: "answer", chapter: chOf(scr), section: stageOf(scr),
-        question: (textOf(pb.querySelector(".prob-num")) || "연습").slice(0, 120),
-        prompt: (textOf(pb.querySelector(".prob-statement")) || "").slice(0, 500),
-        answer: raw.slice(0, 200), isCorrect: isNaN(target) ? null : ok
-      });
+      var aKey = ansKey(scr, pb, stageOf(scr) || "연습", ".prob");
+      if (lastAns[aKey] !== raw) {
+        lastAns[aKey] = raw;
+        post({
+          kind: "answer", chapter: chOf(scr), section: stageOf(scr),
+          question: (textOf(pb.querySelector(".prob-num")) || "연습").slice(0, 120),
+          prompt: (textOf(pb.querySelector(".prob-statement")) || "").slice(0, 500),
+          answer: raw.slice(0, 200), isCorrect: isNaN(target) ? null : ok
+        });
+      }
       if (pf) { pf.textContent = "제출됨 ✓ · 교수 열람 · 언제든 수정"; pf.className = "check-fb pr-fb ok"; pf.style.color = "var(--accent)"; }
     }, true);
   }
