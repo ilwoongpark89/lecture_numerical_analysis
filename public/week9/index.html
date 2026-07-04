@@ -501,16 +501,16 @@ p = polyfit(x, y, 1);
         <tr><td>4</td><td>16.1</td><td>2.779</td></tr>
         <tr><td>5</td><td>25.0</td><td>3.219</td></tr>
       </tbody></table>
-      <div class="keqnote">$\sum Y_i=11.559,\ \sum x_iY_i=38.326$. 변환된 점들은 거의 <b>일직선</b>.</div>
+      <div class="keqnote">$\sum Y_i=11.559,\ \sum x_iY_i=39.25$. 변환된 점들은 거의 <b>일직선</b>.</div>
     </div>
     <div>
       <div class="vcap">Step 2~3 · 회귀 → 복원</div>
       <div class="keqbox">
-        <div class="keqrow"><span class="keqcap">$A_1$</span><span class="keqline">$ \dfrac{5(38.326)-15(11.559)}{5(55)-15^2}=0.4649 $</span></div>
-        <div class="keqrow"><span class="keqcap">$A_0$</span><span class="keqline">$ \dfrac{11.559-0.4649(15)}{5}=0.9168 $</span></div>
-        <div class="keqrow"><span class="keqcap">복원</span><span class="keqline">$ a=e^{0.9168}=2.502,\ \ b=0.4649 $</span></div>
+        <div class="keqrow"><span class="keqcap">$A_1$</span><span class="keqline">$ \dfrac{5(39.25)-15(11.559)}{5(55)-15^2}=0.4572 $</span></div>
+        <div class="keqrow"><span class="keqcap">$A_0$</span><span class="keqline">$ \dfrac{11.559-0.4572(15)}{5}=0.9400 $</span></div>
+        <div class="keqrow"><span class="keqcap">복원</span><span class="keqline">$ a=e^{0.9400}=2.560,\ \ b=0.4572 $</span></div>
       </div>
-      <div class="callout key"><div class="ct">결과</div>$$ y = 2.502\,e^{0.465\,x} $$</div>
+      <div class="callout key"><div class="ct">결과</div>$$ y = 2.560\,e^{0.457\,x} $$</div>
     </div>
   </div>
 </section>
@@ -519,13 +519,13 @@ p = polyfit(x, y, 1);
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">매개변수 복원 · 자동 채점</span></div>
   <div class="prob">
     <div class="prob-num">직접계산 · $a=e^{A_0}$</div>
-    <p class="prob-statement">지수 모델 선형화에서 절편 $A_0=0.9168$ 을 얻었다. 원래 계수 <strong>$a=e^{A_0}$</strong> 를 구하시오. (소수 2자리, $e\approx2.71828$)</p>
-    <div class="given"><span class="chip">$a=e^{0.9168}$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.50" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <p class="prob-statement">지수 모델 선형화에서 절편 $A_0=0.9400$ 을 얻었다. 원래 계수 <strong>$a=e^{A_0}$</strong> 를 구하시오. (소수 2자리, $e\approx2.71828$)</p>
+    <div class="given"><span class="chip">$a=e^{0.9400}$</span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="2.56" data-tol="0.03"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
-      <div class="dstep2"><div class="step-label">계산</div>$$ a=e^{0.9168}\approx 2.502 $$</div>
-      <div class="ans-final"><div class="ans-eq">$$ a \approx 2.50,\qquad b=A_1=0.465 $$</div><b>정답:</b> 지수는 절편을 $\ln$ 에서 되돌리므로 $e$ 지수, 기울기 $b$ 는 그대로 $A_1$.</div>
+      <div class="dstep2"><div class="step-label">계산</div>$$ a=e^{0.9400}\approx 2.560 $$</div>
+      <div class="ans-final"><div class="ans-eq">$$ a \approx 2.56,\qquad b=A_1=0.457 $$</div><b>정답:</b> 지수는 절편을 $\ln$ 에서 되돌리므로 $e$ 지수, 기울기 $b$ 는 그대로 $A_1$.</div>
     </div>
   </div>
 </section>
@@ -553,7 +553,7 @@ p = polyfit(x, Y, 1);       <span class="cm">% p = [A1  A0] = [b  ln a]</span>
 b = p(1);
 a = exp(p(2));              <span class="cm">% 복원: a = e^{A0}</span>
 fprintf('y = %.3f * exp(%.3f x)\n', a, b);
-<span class="out">% y = 2.502 * exp(0.465 x)</span>
+<span class="out">% y = 2.560 * exp(0.457 x)</span>
 
 <span class="cm">% 거듭제곱 y = a*x^b 는 X도 로그: polyfit(log(x), log(y), 1)</span>
 <span class="cm">% 포화 y = a*x/(b+x) 는 역수: polyfit(1./x, 1./y, 1)</span></code></pre></div>

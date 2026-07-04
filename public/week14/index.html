@@ -223,14 +223,15 @@
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="함정">
   <div class="eyebrow">14-2 · 함정 · Break it</div>
   <h1 class="stage-h">$\lambda>\tfrac12$ 이면 폭발</h1>
-  <p class="lede">$\lambda=0.6$ 로 FTCS를 돌리면 온도가 <strong>부호를 바꾸며 진동·폭발</strong>한다(물리적으로 불가능). 아래는 $T_i=100$ 봉우리($\lambda=0.6$, 이웃 0)의 진행 — 발산을 확인하라.</p>
-  <div class="stp-tblwrap" style="max-width:420px;margin-top:12px"><table class="stp-tbl"><thead><tr><th class="stp-k">스텝 n</th><th>중앙 $T_i$ ($\lambda=0.6$)</th></tr></thead><tbody>
+  <p class="lede">$\lambda=1.0$ 로 FTCS를 돌리면 온도가 <strong>부호를 바꾸며 폭발</strong>한다(물리적으로 불가능). 아래는 $T_i=100$ 봉우리($\lambda=1.0$, 이웃 0)의 중앙값 진행 — 발산을 확인하라.</p>
+  <div class="stp-tblwrap" style="max-width:420px;margin-top:12px"><table class="stp-tbl"><thead><tr><th class="stp-k">스텝 n</th><th>중앙 $T_i$ ($\lambda=1.0$)</th></tr></thead><tbody>
     <tr><td class="stp-k">0</td><td>100</td></tr>
-    <tr><td class="stp-k">1</td><td>−20</td></tr>
-    <tr><td class="stp-k">2</td><td>76</td></tr>
-    <tr><td class="stp-k">3</td><td>−135</td></tr>
-    <tr><td class="stp-k">4</td><td>320</td></tr>
+    <tr><td class="stp-k">1</td><td>−100</td></tr>
+    <tr><td class="stp-k">2</td><td>300</td></tr>
+    <tr><td class="stp-k">3</td><td>−700</td></tr>
+    <tr><td class="stp-k">4</td><td>1700</td></tr>
   </tbody></table></div>
+  <div style="margin-top:8px;font-size:0.92em;color:var(--muted,#64748b)">$T_i^{n+1}=T_i^n+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n)$, 경계 $0$ 고정. 매 스텝 부호가 뒤집히며 크기가 폭증 — 고주파 오차 증폭률 $|1-4\lambda|=3$.</div>
   <div class="pitfalls" style="margin-top:14px">
     <div class="pitfall"><h4>⚠ 조건 위반 = 발산</h4><p>$\lambda>\tfrac12$ 면 고주파 오차가 <b>증폭</b>. 격자를 세밀히 해도 폭발.</p></div>
     <div class="pitfall"><h4>⚠ 해결</h4><p>$\Delta t$ 를 줄이거나 <b>음함수법</b>(무조건 안정)으로 전환.</p></div>

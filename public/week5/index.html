@@ -742,13 +742,14 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
   <h1 class="stage-h">여섯 방법 한눈에 — 비교표</h1>
   <table class="ktab"><thead><tr><th>방법</th><th>수렴 차수</th><th>도함수</th><th>구간 보장</th><th>적합 상황</th></tr></thead><tbody>
     <tr><td>이분법 Bisection</td><td>선형 (1)</td><td>불필요</td><td>보장</td><td>안정성 최우선</td></tr>
-    <tr><td>False Position</td><td>초선형</td><td>불필요</td><td>보장</td><td>이분법보다 빠르게</td></tr>
+    <tr><td>False Position</td><td>선형 (1)*</td><td>불필요</td><td>보장</td><td>이분법보다 빠르게</td></tr>
     <tr><td>Newton–Raphson</td><td>이차 (2)</td><td>$f'$</td><td>없음</td><td>도함수 가능할 때</td></tr>
     <tr><td>Modified Newton</td><td>이차 (2)</td><td>$f',f''$</td><td>없음</td><td>중근 존재 시</td></tr>
     <tr><td>Secant 할선법</td><td>$\approx1.618$</td><td>불필요</td><td>없음</td><td>도함수 없을 때</td></tr>
     <tr><td>Brent (fzero)</td><td>초선형</td><td>불필요</td><td>보장</td><td>범용 (기본 추천)</td></tr>
     <tr><td>Fixed-Point</td><td>선형 (1)</td><td>불필요</td><td>조건부 $|g'|<1$</td><td>$x=g(x)$ 자연스러울 때</td></tr>
   </tbody></table>
+  <div style="margin-top:8px;font-size:0.9em;color:var(--muted,#64748b)">* False Position 은 한쪽 끝점이 고정(stagnation)되면 일반적으로 <b>선형</b> — Illinois·Pegasus 수정판에서 초선형으로 회복.</div>
   <div class="callout key" style="margin-top:14px"><div class="ct">한 줄 요약</div>안전이 중요하면 <strong>가둠 방법</strong>(이분법·False Position·Brent), 속도가 중요하고 $f'$ 가 있으면 <strong>Newton</strong>, $f'$ 가 없으면 <strong>할선법</strong>. 모르겠으면 <strong>Brent(fzero)</strong> — 안전과 속도를 함께 준다.</div>
 </section>
 
