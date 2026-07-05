@@ -356,6 +356,12 @@
           P.svg.push('<circle cx="' + P.mx(R.xn) + '" cy="' + P.my(R.fx) + '" r="4" fill="#1e40af" opacity="' + op + '"/>');
           P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#d97706" opacity="' + op + '"/>');
         } else {
+          var f0s; try { f0s = cfg.f(R.x0); } catch (e) { f0s = NaN; }
+          if (isFinite(f0s)) {
+            // 할선: (x0,f0)–(x1,f1) 을 지나 y=0 (=xn1) 까지 — 할선법의 정의 기하
+            P.svg.push('<line x1="' + P.mx(R.x0) + '" y1="' + P.my(f0s) + '" x2="' + P.mx(R.xn1) + '" y2="' + P.my(0) + '" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="5 3" opacity="' + op + '"/>');
+            P.svg.push('<circle cx="' + P.mx(R.x0) + '" cy="' + P.my(f0s) + '" r="3.4" fill="#94a3b8" opacity="' + op + '"/>');
+          }
           P.svg.push('<circle cx="' + P.mx(R.x1) + '" cy="' + P.my(R.f1) + '" r="4" fill="#1e40af" opacity="' + op + '"/>');
           P.svg.push('<circle cx="' + P.mx(R.xn1) + '" cy="' + P.my(0) + '" r="4" fill="#d97706" opacity="' + op + '"/>');
         }
@@ -607,10 +613,12 @@
     function arr(vx, vy, color, w) { var ex = cx + vx * sc, ey = cy - vy * sc; return '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + color + '" stroke-width="' + w + '"/><circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="3.5" fill="' + color + '"/>'; }
     // eigenvector (assume symmetric-ish dominant along [1,1]) — 일반 벡터 v 와 Av
     var vs = _j(el, 'data-vecs', [[1, 0.3], [0.3, 1]]);
-    vs.forEach(function (v) { var av = [A[0][0] * v[0] + A[0][1] * v[1], A[1][0] * v[0] + A[1][1] * v[1]]; s += arr(v[0], v[1], FG.gray, 2); s += arr(av[0] / 2, av[1] / 2, FG.or, 2.6); });
-    // dominant eigendirection [1,1]/√2
-    s += arr(2.6, 2.6, FG.blue, 2.6); s += _lab(cx + 2.6 * sc, cy - 2.6 * sc - 6, '고유방향', 'middle', FG.blue);
-    s += _lab(240, 244, '회색 v → 주황 Av (방향 휨) · 파랑 = 안 휘는 고유방향', 'middle', FG.ink);
+    vs.forEach(function (v) { var av = [A[0][0] * v[0] + A[0][1] * v[1], A[1][0] * v[0] + A[1][1] * v[1]]; s += arr(v[0], v[1], FG.gray, 2); s += arr(av[0], av[1], FG.or, 2.6); });
+    // dominant eigendirection [1,1]/√2 · λ₁ 배 실제 길이 (축척 왜곡 없이)
+    var lam1 = A[0][0] + A[0][1]; // 대칭 A, v=[1,1] 가정: Av = λ₁ v
+    var ex = Math.min(2.9, lam1 / Math.SQRT2), ey = ex;
+    s += arr(ex, ey, FG.blue, 2.6); s += _lab(cx + ex * sc, cy - ey * sc - 6, '고유방향 ×λ₁', 'middle', FG.blue);
+    s += _lab(240, 244, '회색 v → 주황 Av (방향 휨, 실제 길이) · 파랑 = 안 휘는 고유방향', 'middle', FG.ink);
     return _wrap(s);
   }
 
@@ -666,7 +674,36 @@
     return _wrap(s);
   }
 
-  var FIGS = { funcplot: figFunc, scatter: figScatter, heatmap: figHeat, stencil: figStencil, vectors: figVectors, convergence: figConverge, matrixgrid: figMatrix, nodes: figNodes, errorh: figErrorH };
+  function figSlopeField(el) {
+    // 방향장: 격자점마다 기울기 f(x,y) 짧은 선분 + 해 곡선 오버레이 (ODE canonical 도입 그림)
+    var f = compileFn(el.getAttribute('data-f') || 'x - y', ['x', 'y']);
+    var xmin = _n(el, 'data-xmin', 0), xmax = _n(el, 'data-xmax', 3), ymin = _n(el, 'data-ymin', -1), ymax = _n(el, 'data-ymax', 3);
+    var sols = _j(el, 'data-sols', null); // [{fn,label}] 해 곡선들
+    var pL = 42, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30;
+    var mx = function (x) { return pL + (x - xmin) / (xmax - xmin) * pw; }, my = function (y) { return pT + ph - (y - ymin) / (ymax - ymin) * ph; };
+    var s = _axes(pL, pT, pw, ph);
+    var NX = 14, NY = 9, seg = Math.min(pw / NX, ph / NY) * 0.38;
+    for (var gi = 0; gi <= NX; gi++) for (var gj = 0; gj <= NY; gj++) {
+      var gx = xmin + (xmax - xmin) * gi / NX, gy = ymin + (ymax - ymin) * gj / NY, sl;
+      try { sl = f(gx, gy); } catch (e) { sl = NaN; }
+      if (!isFinite(sl)) continue;
+      // 화면 기울기 보정 (y축 반전 + 축 스케일)
+      var sx = pw / (xmax - xmin), sy = ph / (ymax - ymin);
+      var th = Math.atan2(-sl * sy, sx), dx = Math.cos(th) * seg / 2, dy = Math.sin(th) * seg / 2;
+      var cx0 = mx(gx), cy0 = my(gy);
+      s += '<line x1="' + (cx0 - dx).toFixed(1) + '" y1="' + (cy0 - dy).toFixed(1) + '" x2="' + (cx0 + dx).toFixed(1) + '" y2="' + (cy0 + dy).toFixed(1) + '" stroke="#94a3b8" stroke-width="1.3"/>';
+    }
+    var pal = [FG.blue, FG.or, FG.gr];
+    if (sols) sols.forEach(function (c, ci) {
+      var sf = compileFn(c.fn, ['x']), d = '';
+      for (var q = 0; q <= 120; q++) { var xx = xmin + (xmax - xmin) * q / 120, yy; try { yy = sf(xx); } catch (e) { yy = NaN; } if (isFinite(yy) && yy >= ymin - 0.5 && yy <= ymax + 0.5) d += (d ? 'L' : 'M') + mx(xx).toFixed(1) + ',' + my(Math.max(ymin, Math.min(ymax, yy))).toFixed(1) + ' '; }
+      if (d) s += '<path d="' + d + '" fill="none" stroke="' + pal[ci % 3] + '" stroke-width="2.4"/>';
+      if (c.label) s += _lab(pL + pw - 4, pT + 16 + ci * 16, c.label, 'end', pal[ci % 3]);
+    });
+    return _wrap(s);
+  }
+
+  var FIGS = { funcplot: figFunc, scatter: figScatter, heatmap: figHeat, stencil: figStencil, vectors: figVectors, convergence: figConverge, matrixgrid: figMatrix, nodes: figNodes, errorh: figErrorH, slopefield: figSlopeField };
   function initFigs() {
     Array.prototype.forEach.call(document.querySelectorAll('.nafig:not([data-init])'), function (el) {
       el.setAttribute('data-init', '1');

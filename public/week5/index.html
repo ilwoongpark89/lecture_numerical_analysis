@@ -270,6 +270,11 @@ f = @(x) x.^3 - x - 2;
   </div>
 </section>
 
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="그림">
+  <div class="eyebrow">5-1 · 그림 · 가위치법 기하</div>
+  <h1 class="stage-h">끝점을 이어 x축을 겨눈다</h1>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x^3 - x - 2","label":"f(x)"},{"fn":"6*x - 8","label":"끝점 할선"}]' data-xmin="0.8" data-xmax="2.2" data-points="[[1,-2],[2,4]]" data-roots="1.5214" data-cap="가위치법(False Position) — 구간 끝점 (1,−2),(2,4) 를 잇는 직선이 x축을 자르는 곳 x=4/3 이 다음 근사. 부호 판정으로 구간을 갱신하니 근을 절대 놓치지 않는다."></div>
+</section>
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="정리">
   <div class="eyebrow">5-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -451,6 +456,11 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
   </div>
 </section>
 
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="그림">
+  <div class="eyebrow">5-2 · 그림 · 다중근의 접촉</div>
+  <h1 class="stage-h">x축을 뚫지 않고 스친다</h1>
+  <div class="nafig" data-fig="funcplot" data-fn="(x-1)^2" data-xmin="-0.2" data-xmax="2.2" data-roots="1" data-cap="다중근 (x−1)² — 곡선이 x축을 뚫지 않고 접하기만 한다. 부호 변화가 없어 이분법·가위치법은 아예 못 쓰고, Newton 은 f'(근)=0 이라 선형으로 감속."></div>
+</section>
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="정리">
   <div class="eyebrow">5-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -873,6 +883,12 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
   </div>
 </section>
 
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="시연">
+  <div class="eyebrow">5-4 · 시연 · 발산 cobweb</div>
+  <h1 class="stage-h">같은 방정식, 나쁜 g — 나선이 튕겨나간다</h1>
+  <p class="lede">$x^2-3x+2=0$ 을 $x=g(x)=\dfrac{x^2+2}{3}$ 로 반복한다. 고정점 $1$ ($|g'|=\tfrac23<1$ 흡인)과 $2$ ($|g'|=\tfrac43>1$ 반발). $x_0=2.1$ 에서 시작하면 — 반발점 근처라 <strong>나선이 밖으로 튕겨</strong> 발산한다.</p>
+  <div class="stepper" data-kind="fixed-point" data-gfn="(x*x+2)/3" data-x0="2.1" data-xmin="0.5" data-xmax="4" data-steps="7" data-title="발산 cobweb — g=(x²+2)/3, x₀=2.1 (반발 고정점 2 근처)" data-note="같은 g 라도 x₀=0.5 로 시작하면 흡인점 1 로 수렴한다 — 수렴은 알고리즘이 아니라 |g′| 이 결정."></div>
+</section>
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="정리">
   <div class="eyebrow">5-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

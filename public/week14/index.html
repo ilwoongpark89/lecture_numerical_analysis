@@ -255,6 +255,12 @@ end
   <h1 class="stage-h">뜨거움이 퍼진다</h1>
   <div class="nafig" data-fig="heatmap" data-cap="열전도 — 뜨거운 곳(빨강)이 차가운 이웃(파랑)으로 퍼진다. FTCS 는 매 시간스텝 각 점을 이웃과의 평균 쪽으로 조금씩 이동."></div>
 </section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="그림">
+  <div class="eyebrow">14-2 · 그림 · 확산의 시간</div>
+  <h1 class="stage-h">뾰족함이 퍼져 낮아진다</h1>
+  <div class="nafig" data-fig="heatmap" data-grid="[[0,0,0,0,0,0],[0,0,100,100,0,0],[0,0,100,100,0,0],[0,0,0,0,0,0]]" data-xlab="t = 0 — 중앙만 뜨거움" data-cap=""></div>
+  <div class="nafig" data-fig="heatmap" data-grid="[[0,0,0,0,0,0],[0,12,20,20,12,0],[0,12,20,20,12,0],[0,0,0,0,0,0]]" data-xlab="4 스텝 후 (FTCS λ=0.2 실계산) — 퍼지고 낮아짐" data-cap="확산 — 봉우리 100 이 이웃으로 번지며 12·20 으로 낮아진다(경계 0 고정). FTCS 한 스텝 = 이웃 평균 쪽으로 λ 만큼 이동."></div>
+</section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="정리">
   <div class="eyebrow">14-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -337,6 +343,11 @@ for it = 1:maxit
     if max(abs(U(:)-Uold(:))) &lt; tol, break; end   <span class="cm">% 수렴 판정</span>
 end
 <span class="out">% Gauss-Seidel(제자리 갱신)이면 ~2배 빨리 수렴</span></code></pre></div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="그림">
+  <div class="eyebrow">14-3 · 그림 · 경계와 미지수</div>
+  <h1 class="stage-h">가장자리는 알고, 속은 모른다</h1>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[["100","100","100","100"],["0","u_1","u_2","50"],["0","u_3","u_4","50"],["0","0","0","0"]]' data-hi="[[1,1],[1,2],[2,1],[2,2]]" data-cap2="경계 온도는 고정(Dirichlet), 내부 4점이 미지수" data-cap="판의 정상상태 — 각 내부점 u_i 는 상하좌우 평균이어야 하므로 미지수 4개짜리 연립이 생기고, 7주 Jacobi/GS 로 푼다."></div>
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="정리">
   <div class="eyebrow">14-3 · 정리 · Summary</div>
