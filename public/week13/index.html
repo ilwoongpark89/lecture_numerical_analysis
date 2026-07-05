@@ -550,6 +550,11 @@ f = @(x,y) x - y;
 <span class="out">% y(end) ≈ 1.27069  (정확값 1.27067)</span></code></pre></div>
 </section>
 
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="그림">
+  <div class="eyebrow">13-3 · 그림 · 차수의 값어치</div>
+  <h1 class="stage-h">같은 노력, 큰 정확도차</h1>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler 1차"},{"r":0.25,"label":"RK2 2차"},{"r":0.0625,"label":"RK4 4차"}]' data-cap="$h$ 를 반으로 줄일 때마다 — Euler 오차 $\times\tfrac12$, RK2 $\times\tfrac14$, RK4 $\times\tfrac1{16}$. 한 스텝에 기울기를 더 여러 번 재는 대신, 훨씬 큰 스텝으로도 정확 → 같은 계산량에 RK4 가 압도적."></div>
+</section>
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="정리">
   <div class="eyebrow">13-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -665,6 +670,11 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
   <div class="eyebrow">13-4 · 그림 · 연립 ODE</div>
   <h1 class="stage-h">상태변수가 함께 진화</h1>
   <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"exp(-0.3*x)*cos(x)"},{"fn":"exp(-0.3*x)*sin(x)"}]' data-xmin="0" data-xmax="12" data-cap="위치·속도처럼 여러 상태변수가 시간에 따라 함께 변한다(감쇠 진동). 각 변수마다 한 줄의 ODE, 한꺼번에 전진."></div>
+</section>
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="그림">
+  <div class="eyebrow">13-4 · 그림 · Shooting 법</div>
+  <h1 class="stage-h">경계값을 초기값 문제로</h1>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x^3-0.5*x","label":"기울기 작음(미달)"},{"fn":"x^3","label":"딱 맞음"},{"fn":"x^3+0.5*x","label":"기울기 큼(초과)"}]' data-xmin="0" data-xmax="1" data-points="[[1,1]]" data-cap="양끝 조건(경계값 문제)을 푸는 법 — 시작 <b>기울기를 바꿔가며 쏘아</b>(shooting) 반대편 목표(주황 (1,1))에 맞춘다. 미달·초과를 보고 기울기를 조정, 근찾기로 정확한 초기 기울기를 찾는다."></div>
 </section>
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
   <div class="eyebrow">13-4 · 정리 · Summary</div>

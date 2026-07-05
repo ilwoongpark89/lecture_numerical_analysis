@@ -660,6 +660,11 @@ end
   <div class="nafig" data-fig="nodes" data-fn="1 + 0.9*x - 0.22*x^2" data-xmin="0" data-xmax="3" data-nodes="[0,0.4,0.9,1.6,2.0,2.6,3.0]" data-cap="실험 데이터는 등간격이 아닐 때가 많다. 이때는 조각마다 폭 $h_i$ 가 <b>서로 달라</b>, 각 조각을 $\tfrac{h_i}{2}[f_{i-1}+f_i]$ 로 따로 계산해 더한다(주황 수직선 = 불균등한 절점)."></div>
 </section>
 
+<section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="그림">
+  <div class="eyebrow">11-3 · 그림 · 소구간 늘리면</div>
+  <h1 class="stage-h">오차가 급감한다</h1>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.25,"label":"사다리꼴 O(h²)"},{"r":0.0625,"label":"Simpson O(h⁴)"}]' data-cap="소구간 수 $n$ 을 2배로 늘릴 때마다 — 사다리꼴 오차 $\times\tfrac14$, Simpson $\times\tfrac1{16}$. 고차 공식이 훨씬 빨리 참값으로(가로축=2배 횟수)."></div>
+</section>
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="정리">
   <div class="eyebrow">11-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
