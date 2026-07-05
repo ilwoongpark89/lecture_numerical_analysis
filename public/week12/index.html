@@ -327,6 +327,11 @@ end
   </div>
 </section>
 
+<section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="그림">
+  <div class="eyebrow">12-1 · 그림 · 세 차분 공식</div>
+  <h1 class="stage-h">전방·후방·중앙 정확도</h1>
+  <div class="stp-tblwrap" style="max-width:520px;margin:0 auto"><table class="stp-tbl"><thead><tr><th>공식</th><th>근사</th><th>오차</th></tr></thead><tbody><tr><td>전방</td><td>$\dfrac{f(x{+}h)-f(x)}{h}$</td><td>$O(h)$</td></tr><tr><td>후방</td><td>$\dfrac{f(x)-f(x{-}h)}{h}$</td><td>$O(h)$</td></tr><tr><td>중앙</td><td>$\dfrac{f(x{+}h)-f(x{-}h)}{2h}$</td><td>$O(h^2)$</td></tr></tbody></table></div><div class="callout key" style="margin-top:10px"><div class="ct">중앙차분이 한 차수 더 정확</div>전방·후방은 한쪽만 봐 $O(h)$, 중앙은 양쪽 대칭이라 1차 오차항이 상쇄돼 $O(h^2)$ — 같은 $h$ 로 훨씬 정확.</div>
+</section>
 <section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="정리">
   <div class="eyebrow">12-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -673,6 +678,11 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
   <div class="eyebrow">12-3 · 그림 · Richardson</div>
   <h1 class="stage-h">두 h로 오차 상쇄</h1>
   <div class="nafig" data-fig="errorh" data-cap="h를 줄이면 절단오차(회색)↓ 반올림(주황)↑ → 총오차(파랑) V자. Richardson 은 h와 h/2 값을 조합해 절단오차 항을 상쇄, 최적 아래로 정확도를 끌어올린다."></div>
+</section>
+<section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="그림">
+  <div class="eyebrow">12-3 · 그림 · 잡음 증폭</div>
+  <h1 class="stage-h">미분은 잡음을 키운다</h1>
+  <div class="nafig" data-fig="funcplot" data-fn="cos(x)" data-xmin="0" data-xmax="6.3" data-points="[[0.5,1.15],[1.0,0.35],[1.5,-0.2],[2.0,-0.72],[2.5,-0.55],[3.0,-1.25],[3.5,-0.75],[4.0,-0.9],[4.5,0.05],[5.0,0.5],[5.5,0.55],[6.0,1.25]]" data-cap="파랑=참 도함수 $\cos x$. 주황=잡음 섞인 데이터를 수치미분한 값 — 작은 잡음이 $\div h$ 로 <b>크게 증폭</b>돼 튄다. 잡음 데이터는 먼저 회귀로 매끄럽게 한 뒤 미분."></div>
 </section>
 <section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="정리">
   <div class="eyebrow">12-3 · 정리 · Summary</div>

@@ -220,6 +220,11 @@
   </div>
 </section>
 
+<section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="그림">
+  <div class="eyebrow">1-1 · 그림 · 유한차분</div>
+  <h1 class="stage-h">기울기를 두 점의 차이로</h1>
+  <div class="nafig" data-fig="funcplot" data-fn="0.5*x^2" data-xmin="0" data-xmax="2.5" data-points="[[0.5,0.125],[1.5,1.125]]" data-cap="미분(접선 기울기)을 <b>두 점을 잇는 현의 기울기</b> $(f(x_{i+1})-f(x_i))/\Delta t$ 로 근사 — 이것이 모든 수치미분·수치해석의 출발. $\Delta t$ 가 작을수록 현이 접선에 가까워진다."></div>
+</section>
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="정리">
   <div class="eyebrow">1-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -629,6 +634,11 @@ end
   <div class="eyebrow">1-4 · 그림 · 근을 좁혀간다</div>
   <h1 class="stage-h">수치해 = 반복으로 x축 교점 찾기</h1>
   <div class="nafig" data-fig="funcplot" data-fn="x^3 - x - 2" data-xmin="0" data-xmax="2.2" data-roots="1.5214" data-cap="근(빨강) = 곡선이 x축을 가로지르는 곳. 수치해법은 이 점을 반복으로 좁혀 찾는다."></div>
+</section>
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="그림">
+  <div class="eyebrow">1-4 · 그림 · 비선형의 심화</div>
+  <h1 class="stage-h">차수가 오를수록 더 휜다</h1>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x","label":"m=1"},{"fn":"x^2","label":"m=2"},{"fn":"x^3","label":"m=3"},{"fn":"x^4","label":"m=4"}]' data-xmin="0" data-xmax="1.6" data-cap="$f(x)=x^m$ — $m$ 이 클수록 곡선이 더 심하게 휜다(비선형↑). 비선형이 강할수록 해석해가 드물어 수치해석이 필요해진다."></div>
 </section>
 <section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="정리">
   <div class="eyebrow">1-4 · 정리 · Summary</div>

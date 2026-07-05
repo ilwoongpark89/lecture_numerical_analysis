@@ -309,6 +309,11 @@ b = np.array([7,-21,15], float)
   </div>
 </section>
 
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="그림">
+  <div class="eyebrow">7-1 · 그림 · Jacobi vs Gauss–Seidel</div>
+  <h1 class="stage-h">갓 구한 값을 바로 쓰나</h1>
+  <div class="two"><div class="col2"><div class="callout key"><div class="ct">Jacobi</div>한 스윕 동안 <b>모두 이전 값</b> $x^{(k)}$ 만 사용 → 스윕 끝나야 갱신. 병렬화 쉬움, 수렴 느림.<br>$x_i^{(k+1)}=\dfrac{b_i-\sum_{j\ne i}a_{ij}x_j^{(k)}}{a_{ii}}$</div></div><div class="col2"><div class="callout key"><div class="ct">Gauss–Seidel</div>이미 구한 <b>새 값</b> $x_j^{(k+1)}$ 을 <b>즉시 재사용</b> → 대개 2배 빨리 수렴.<br>$x_i^{(k+1)}=\dfrac{b_i-\sum_{j<i}a_{ij}x_j^{(k+1)}-\sum_{j>i}a_{ij}x_j^{(k)}}{a_{ii}}$</div></div></div><div class="callout warn" style="margin-top:12px"><div class="ct">공통 수렴 조건</div>대각 우세 $|a_{ii}|>\sum_{j\ne i}|a_{ij}|$ 이면 초기값 무관 수렴. GS 는 갓 구한 값을 써 정보를 빨리 퍼뜨린다.</div>
+</section>
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="정리">
   <div class="eyebrow">7-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

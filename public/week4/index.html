@@ -176,6 +176,11 @@
   <h1 class="stage-h">f(x)=0 을 눈으로</h1>
   <div class="nafig" data-fig="funcplot" data-fn="x^3 - x - 2" data-xmin="0" data-xmax="2.2" data-roots="1.5214" data-cap="근(빨강) = f(x)=0 인 x. 이분법은 부호가 바뀌는 구간을 반씩 좁히고, Newton 은 접선으로 미끄러진다."></div>
 </section>
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="그림">
+  <div class="eyebrow">4-1 · 그림 · 먼저 그려라</div>
+  <h1 class="stage-h">숨은 근은 확대해야 보인다</h1>
+  <div class="nafig" data-fig="funcplot" data-fn="sin(10*x) + cos(3*x)" data-xmin="0" data-xmax="5" data-cap="$f(x)=\sin 10x+\cos 3x$ 는 $[0,5]$ 에 근이 <b>15개</b>. 성긴 간격으로 훑으면 두 근이 한 칸에 들어가 <b>놓친다</b> — 근찾기 전 <b>먼저 그려</b> 대략 위치·개수를 파악해야 한다."></div>
+</section>
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="정리">
   <div class="eyebrow">4-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -525,6 +530,11 @@ df = @(x) 3*x.^2 - 1;
   </div>
 </section>
 
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="그림">
+  <div class="eyebrow">4-3 · 그림 · 수렴 속도</div>
+  <h1 class="stage-h">가위치법이 이분법보다 빠르다</h1>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법(항상 반감)"},{"r":0.28,"label":"가위치법(대개 더 빠름)"}]' data-cap="이분법은 구간을 <b>매번 정확히 절반</b>으로(오차 ×0.5), 가위치법은 함수 모양을 이용해 대개 더 빨리 준다 — 단 한쪽 끝이 고정되면 느려질 수 있다(정체)."></div>
+</section>
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="정리">
   <div class="eyebrow">4-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

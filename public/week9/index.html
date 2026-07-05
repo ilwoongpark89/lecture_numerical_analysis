@@ -258,6 +258,11 @@
   </div>
 </section>
 
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="그림">
+  <div class="eyebrow">9-1 · 그림 · 2차 다항 적합</div>
+  <h1 class="stage-h">직선이 안 맞으면 포물선</h1>
+  <div class="nafig" data-fig="funcplot" data-fn="0.5*x^2 - x + 2" data-xmin="-0.3" data-xmax="4.3" data-points="[[0,2],[1,1.5],[2,2],[3,3.5],[4,6]]" data-cap="휜 데이터(주황)는 직선으로 못 잡는다 — 2차 다항 $y=a_0+a_1x+a_2x^2$ 을 최소제곱으로 적합(정규방정식이 $3\times3$ 로 커질 뿐 원리 동일)."></div>
+</section>
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="정리">
   <div class="eyebrow">9-1 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -425,6 +430,11 @@ p = polyfit(x, y, 1);
   <h1 class="stage-h">잔차 제곱합 최소</h1>
   <div class="nafig" data-fig="scatter" data-points="[[1,3],[2,4.9],[3,7.2]]" data-fit="[1.1,2.0]" data-cap="직선 y=1.1+2.0x. 빨간 점선 = 잔차(점−직선). 이 잔차들의 제곱합을 가장 작게 하는 직선이 최소제곱 해."></div>
 </section>
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="그림">
+  <div class="eyebrow">9-2 · 그림 · R² 의 뜻</div>
+  <h1 class="stage-h">평균 대비 얼마나 줄였나</h1>
+  <div class="two"><div class="col2"><div class="nafig" data-fig="scatter" data-points="[[1,2],[2,3.5],[3,3],[4,5],[5,4.5]]" data-fit="[3.6,0]" data-cap="평균선 기준 흩어짐 $S_t=\sum(y_i-\bar y)^2=5.70$"></div></div><div class="col2"><div class="nafig" data-fig="scatter" data-points="[[1,2],[2,3.5],[3,3],[4,5],[5,4.5]]" data-fit="[1.65,0.65]" data-cap="회귀선 기준 흩어짐 $S_r=\sum(y_i-\hat y)^2=1.48$"></div></div></div><div class="callout key" style="margin-top:8px"><div class="ct">$R^2=\dfrac{S_t-S_r}{S_t}=\dfrac{5.70-1.48}{5.70}=0.741$</div>직선이 평균보다 흩어짐을 <b>74%</b> 설명. $R^2$ 는 "평균만 쓸 때보다 오차를 얼마나 줄였나"의 비율.</div>
+</section>
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="정리">
   <div class="eyebrow">9-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -570,6 +580,11 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
   <h1 class="stage-h">곡선이 직선으로 펴진다</h1>
   <div class="nafig" data-fig="scatter" data-points="[[1,4],[2,6.5],[3,10],[4,16.1],[5,25]]" data-cap="원공간 — 지수 데이터는 휘어 있어 직선 회귀가 맞지 않는다."></div>
   <div class="nafig" data-fig="scatter" data-points="[[1,1.386],[2,1.872],[3,2.303],[4,2.779],[5,3.219]]" data-fit="[0.94,0.4572]" data-cap="ln 변환 후 — (x, ln y) 가 거의 일직선. 9-2 의 선형 회귀를 그대로 적용해 A₁=0.4572, A₀=0.9400 을 얻는다."></div>
+</section>
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="그림">
+  <div class="eyebrow">9-3 · 그림 · 변환 가능 3형</div>
+  <h1 class="stage-h">비선형을 직선으로 펴는 세 꼴</h1>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"exp(0.5*x)","label":"지수 ae^{bx}"},{"fn":"x^1.5","label":"거듭제곱 ax^b"},{"fn":"4*x/(1+x)","label":"포화 ax/(b+x)"}]' data-xmin="0" data-xmax="4" data-cap="계수에 비선형인 세 모델 — 지수는 $\ln y$, 거듭제곱은 $\ln x,\ln y$, 포화는 역수 $1/x,1/y$ 로 변환하면 <b>직선</b>이 되어 최소제곱 적용 가능."></div>
 </section>
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="정리">
   <div class="eyebrow">9-3 · 정리 · Summary</div>
