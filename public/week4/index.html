@@ -535,6 +535,11 @@ df = @(x) 3*x.^2 - 1;
   <h1 class="stage-h">가위치법이 이분법보다 빠르다</h1>
   <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법(항상 반감)"},{"r":0.28,"label":"가위치법(대개 더 빠름)"}]' data-cap="이분법은 구간을 <b>매번 정확히 절반</b>으로(오차 ×0.5), 가위치법은 함수 모양을 이용해 대개 더 빨리 준다 — 단 한쪽 끝이 고정되면 느려질 수 있다(정체)."></div>
 </section>
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="그림">
+  <div class="eyebrow">4-3 · 그림 · Newton 이 발산할 때</div>
+  <h1 class="stage-h">평평한 곳에서 튕겨 나간다</h1>
+  <div class="nafig" data-fig="funcplot" data-fn="atan(x)" data-xmin="-6" data-xmax="6" data-roots="0" data-cap="Newton 은 접선을 따라 미끄러지므로 $f'\approx0$(평평)한 곳에서 크게 튄다 — $\arctan x$ 를 $x_0=1.5$ 에서 시작하면 $1.5\to-1.69\to2.32\to-5.11\to$ <b>발산</b>. 좋은 초기값과 브래킷 안전장치가 필요하다."></div>
+</section>
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="정리">
   <div class="eyebrow">4-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
