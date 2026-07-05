@@ -261,6 +261,24 @@ end
   <div class="nafig" data-fig="heatmap" data-grid="[[0,0,0,0,0,0],[0,0,100,100,0,0],[0,0,100,100,0,0],[0,0,0,0,0,0]]" data-xlab="t = 0 — 중앙만 뜨거움" data-cap=""></div>
   <div class="nafig" data-fig="heatmap" data-grid="[[0,0,0,0,0,0],[0,12,20,20,12,0],[0,12,20,20,12,0],[0,0,0,0,0,0]]" data-xlab="4 스텝 후 (FTCS λ=0.2 실계산) — 퍼지고 낮아짐" data-cap="확산 — 봉우리 100 이 이웃으로 번지며 12·20 으로 낮아진다(경계 0 고정). FTCS 한 스텝 = 이웃 평균 쪽으로 λ 만큼 이동."></div>
 </section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="그림">
+  <div class="eyebrow">14-2 · 그림 · 공간–시간 격자</div>
+  <h1 class="stage-h">공간은 옆으로, 시간은 <span class="hl">위로</span></h1>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[["경계","?","?","?","경계"],["경계","?","?","?","경계"],["초기","초기","초기","초기","초기"]]' data-hi='[[0,1],[0,2],[0,3],[1,1],[1,2],[1,3]]' data-cap2="가로 = 공간 xᵢ · 세로 = 시간 tⁿ (아래→위 전진)" data-cap="포물형(열) 격자 — 맨 아래 행은 초기 온도(기지), 양옆 열은 경계(기지). 여기서 출발해 한 시간층씩 위로 올라가며 내부 점(주황)을 채운다. 시간 방향 전진이라 $\lambda=\alpha\Delta t/\Delta x^2\le\tfrac12$ 를 지켜야 안정."></div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="그림">
+  <div class="eyebrow">14-2 · 그림 · 계산 분자 (명시 vs 음함수)</div>
+  <h1 class="stage-h">새 값을 <span class="hl">누구로</span> 구하나</h1>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
+    <div class="nafig" data-fig="matrixgrid" data-mat='[["","i",""],["i−1","i","i+1"]]' data-hi='[[0,1]]' data-cap2="위 n+1 (미지 1) · 아래 n (기지 3)" data-cap="명시적(FTCS) — 새 시각 한 점을 이전 시각 세 이웃으로 곧바로 계산. $T_i^{n+1}=T_i^n+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n)$. 조건부 안정 $\lambda\le\tfrac12$."></div>
+    <div class="nafig" data-fig="matrixgrid" data-mat='[["i−1","i","i+1"],["","i",""]]' data-hi='[[0,0],[0,1],[0,2]]' data-cap2="위 n+1 (미지 3) · 아래 n (기지 1)" data-cap="음함수(BTCS) — 새 시각 세 점이 서로 얽혀 매 스텝 연립방정식을 푼다. 대가는 크지만 <b>무조건 안정</b> — $\Delta t$ 를 마음껏 키운다."></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="그림">
+  <div class="eyebrow">14-2 · 그림 · Crank–Nicolson 분자</div>
+  <h1 class="stage-h">명시와 음함수의 <span class="hl">평균</span></h1>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[["i−1","i","i+1"],["i−1","i","i+1"]]' data-hi='[[0,0],[0,1],[0,2]]' data-cap2="위 3 (미지, n+1) + 아래 3 (기지, n) = 6점" data-cap="Crank–Nicolson — 명시적과 음함수의 <b>평균</b>. 두 시각 6점을 함께 써서 무조건 안정이면서 시간 정확도 $O(\Delta t^2)$. 오늘날 확산 문제 계산의 표준."></div>
+</section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="정리">
   <div class="eyebrow">14-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -345,9 +363,25 @@ end
 <span class="out">% Gauss-Seidel(제자리 갱신)이면 ~2배 빨리 수렴</span></code></pre></div>
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="그림">
+  <div class="eyebrow">14-3 · 그림 · 온도차가 열을 민다</div>
+  <h1 class="stage-h">열은 <span class="hl">비탈을 따라</span> 흐른다</h1>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
+    <div class="nafig" data-fig="funcplot" data-fn="100-25*x" data-xmin="0" data-xmax="4" data-points="[[0,100],[1,75],[2,50],[3,25],[4,0]]" data-cap="정상상태 1차원 온도는 직선으로 떨어진다 — 열은 늘 뜨거운 쪽(왼쪽 100°)에서 찬 쪽(오른쪽 0°)으로 비탈을 따라 흐른다. 흐름의 세기는 기울기에 비례: 푸리에 법칙 $q=-k\,\dfrac{dT}{dx}$ (기울기가 가파를수록 열이 세게 흐른다)."></div>
+    <div class="nafig" data-fig="matrixgrid" data-mat='[["(1,3)","(2,3)","(3,3)"],["(1,2)","(2,2)","(3,2)"],["(1,1)","(2,1)","(3,1)"]]' data-hi='[[1,1]]' data-cap2="i = 가로(x) · j = 세로(y)" data-cap="타원형 격자 — 2차원 영역을 $(i,j)$ 격자로 나눈다. 내부 각 점 $u_{i,j}$ 가 이웃 4점과 한 개의 식으로 묶여, 미지수 = 내부 격자점 수인 <b>거대한 연립방정식</b>이 된다(가운데 점 강조)."></div>
+  </div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="그림">
   <div class="eyebrow">14-3 · 그림 · 경계와 미지수</div>
   <h1 class="stage-h">가장자리는 알고, 속은 모른다</h1>
   <div class="nafig" data-fig="matrixgrid" data-mat='[["100","100","100","100"],["0","u_1","u_2","50"],["0","u_3","u_4","50"],["0","0","0","0"]]' data-hi="[[1,1],[1,2],[2,1],[2,2]]" data-cap2="경계 온도는 고정(Dirichlet), 내부 4점이 미지수" data-cap="판의 정상상태 — 각 내부점 u_i 는 상하좌우 평균이어야 하므로 미지수 4개짜리 연립이 생기고, 7주 Jacobi/GS 로 푼다."></div>
+</section>
+<section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="그림">
+  <div class="eyebrow">14-3 · 그림 · 평형 온도장과 열 흐름</div>
+  <h1 class="stage-h">풀고 나면 — <span class="hl">매끄러운 장, 뻗는 흐름</span></h1>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
+    <div class="nafig" data-fig="heatmap" data-grid="[[100,100,100,100],[0,37.5,37.5,0],[0,12.5,12.5,0],[0,0,0,0]]" data-xlab="윗변 100° · 나머지 0° (빨강 뜨거움 ↔ 파랑 차가움)" data-cap="라플라스를 풀어 얻은 <b>평형 온도장</b> — 앞 시연에서 수렴한 내부값 $37.5,\ 37.5,\ 12.5,\ 12.5$ 를 색으로 본 것. 뜨거운 윗변에서 멀어질수록 매끄럽게 식는다(뾰족한 봉우리·골 없음)."></div>
+    <div class="nafig" data-fig="matrixgrid" data-mat='[["100°","100°","100°","100°"],["0°","↙","↘","0°"],["0°","↙","↘","0°"],["0°","0°","0°","0°"]]' data-hi='[[1,1],[1,2],[2,1],[2,2]]' data-cap2="화살표 = 열 흐름 방향 (등온선에 수직)" data-cap="온도장을 구한 뒤 <b>열유속</b> $q=-k\nabla T$ 를 계산 — 화살표는 뜨거운 윗변에서 차가운 세 변으로, 온도가 가장 빨리 떨어지는 쪽을 향한다(윗변 근처일수록 세다)."></div>
+  </div>
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="정리">
   <div class="eyebrow">14-3 · 정리 · Summary</div>

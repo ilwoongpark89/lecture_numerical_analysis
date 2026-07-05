@@ -110,6 +110,26 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 그림 (선형 보간 · 차수) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="보간 시작" data-stage="그림">
+  <div class="eyebrow">보간 시작 · 그림 · 선형 보간</div>
+  <h1 class="stage-h">두 점을 곧은 직선으로 잇는다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"sqrt(x)","label":"실제 곡선 f"},{"fn":"1+0.25*(x-1)","label":"선형 보간선"}]'
+    data-xmin="0.4" data-xmax="9.6"
+    data-points="[[1,1],[4,1.75],[9,3]]"
+    data-cap="두 점 (1,1)·(9,3) 을 직선으로 이어 그 사이 값을 읽는 것이 선형 보간. 닮은 삼각형 비례로 기울기 (f(x₁)−f(x₀))/(x₁−x₀) 를 얻어 f₁(x)=f(x₀)+기울기·(x−x₀). x=4 에서 직선값 1.75(가운데 점)는 참값 √4=2 보다 조금 작다 — 곡선이 완만히 휘어 직선(현)이 아래로 지나기 때문."></div>
+</section>
+<section class="screen" data-ch="시작" data-chtitle="보간 시작" data-stage="그림">
+  <div class="eyebrow">보간 시작 · 그림 · 차수와 점 개수</div>
+  <h1 class="stage-h">점이 하나 늘 때마다 차수도 하나 오른다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"1+x","label":"1차 · 2점"},{"fn":"1+1.5*x-0.5*x^2","label":"2차 · 3점"},{"fn":"1+1.5*x-0.5*x^2+0.5*x*(x-1)*(x-2)","label":"3차 · 4점"}]'
+    data-xmin="-0.25" data-xmax="3.25"
+    data-points="[[0,1],[1,2],[2,2],[3,4]]"
+    data-cap="같은 데이터에서 점을 2·3·4개 쓰면 각각 1·2·3차 다항식이 유일하게 정해진다. 1차(직선)는 두 점, 2차(포물선)는 세 점, 3차는 네 점을 모두 지난다 — n+1 개의 점이 차수 n 이하 다항식 하나를 결정한다."></div>
+</section>
+
 <!-- ════════════════════ 10-1 Lagrange 보간 ════════════════════ -->
 <section class="screen" data-ch="10-1" data-chtitle="Lagrange 보간" data-stage="문제">
   <div class="eyebrow">10-1 · 문제 · Motivation</div>
@@ -409,6 +429,24 @@ x = [1 2 3];  y = [1 4 9];
   </div>
 </section>
 
+<section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="그림">
+  <div class="eyebrow">10-2 · 그림 · 선형 보간과 구간 폭</div>
+  <h1 class="stage-h">구간이 좁을수록 선형 추정이 정확하다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"ln(x)","label":"참값 ln x"},{"fn":"0.358352*(x-1)","label":"큰 구간 [1,6]"},{"fn":"0.462098*(x-1)","label":"작은 구간 [1,4]"}]'
+    data-xmin="0.85" data-xmax="6.15"
+    data-points="[[1,0],[4,1.386294],[6,1.791759]]"
+    data-cap="ln 2 를 선형 보간으로 추정. x=2 에서 큰 구간 [1,6] 은 0.358, 작은 구간 [1,4] 는 0.462 를 준다 — 참값 ln 2=0.693 에 더 가까운 쪽은 좁은 구간이다. 두 점 간격이 좁을수록 직선이 곡선을 더 잘 흉내 낸다."></div>
+</section>
+<section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="그림">
+  <div class="eyebrow">10-2 · 그림 · 2차 보간의 향상</div>
+  <h1 class="stage-h">점을 하나 더 쓰면 곡선이 참값에 다가간다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"ln(x)","label":"참값 ln x"},{"fn":"0.462098*(x-1)","label":"1차 (2점)"},{"fn":"0.462098*(x-1)-0.05187311*(x-1)*(x-4)","label":"2차 (3점)"}]'
+    data-xmin="0.85" data-xmax="6.15"
+    data-points="[[1,0],[4,1.386294],[6,1.791759]]"
+    data-cap="세 점 (1,0)·(4,1.386)·(6,1.792) 를 지나는 2차 곡선은 ln x 를 직선보다 훨씬 잘 따른다. x=2 에서 2차 추정 0.566 은 1차 0.462 보다 참값 ln 2=0.693 에 가깝다 — Newton 분할차분으로 항을 하나 더 얹은 결과."></div>
+</section>
 <section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="정리">
   <div class="eyebrow">10-2 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -583,6 +621,15 @@ end
     data-title="등간격 Runge 보간 — P(0.9) (참값 0.047)"
     data-note="점을 늘릴수록 P(0.9)가 0.25→7.8→9.9→−60→53… 로 폭주 — 등간격 고차 보간의 발산(Runge 현상). 스플라인·Chebyshev 노드가 해법."></div>
 </section>
+<section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="그림">
+  <div class="eyebrow">10-3 · 그림 · 외삽의 위험</div>
+  <h1 class="stage-h">데이터 구간을 벗어나면 급격히 갈라진다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"1/(1+x)","label":"참 함수"},{"fn":"1-0.5*x+0.166667*x*(x-1)-0.0416667*x*(x-1)*(x-2)","label":"보간 다항식 (3차)"}]'
+    data-xmin="-0.2" data-xmax="5.2"
+    data-points="[[0,1],[1,0.5],[2,0.333333],[3,0.25]]"
+    data-cap="네 점(x=0~3)을 지나는 3차 보간식은 구간 안에서는 참 함수와 거의 겹치지만, 구간 밖(x>3, 외삽)에서는 참값과 빠르게 멀어져 음수로 내리꽂힌다 — 보간은 점 사이(내삽)에서만 믿을 수 있고 점 밖(외삽)은 위험하다."></div>
+</section>
 <section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="정리">
   <div class="eyebrow">10-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -746,6 +793,24 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
   <div class="eyebrow">10-4 · 그림 · 3차 스플라인</div>
   <h1 class="stage-h">구간마다 매끄럽게</h1>
   <div class="nafig" data-fig="funcplot" data-fn="1.6 + 0.5*sin(1.3*x)" data-xmin="0.5" data-xmax="5.5" data-points="[[1,2.08],[2,1.86],[3,1.26],[4,1.16],[5,1.71]]" data-cap="스플라인은 구간마다 낮은 차수(3차) 곡선을 이어 붙여, 고차 다항의 끝단 출렁임 없이 매끄럽게 점(주황)을 모두 지난다."></div>
+</section>
+<section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="그림">
+  <div class="eyebrow">10-4 · 그림 · 스플라인이 더 안전한 이유</div>
+  <h1 class="stage-h">고차 단일식은 출렁이고, 구간별 저차는 얌전하다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"1-1.25*x^2+0.25*x^4","label":"고차 단일 다항식"},{"fn":"max(0,1-x^2)","label":"구간별 저차 조각"}]'
+    data-xmin="-2.3" data-xmax="2.3"
+    data-points="[[-2,0],[-1,0],[0,1],[1,0],[2,0]]"
+    data-cap="가운데만 솟은 다섯 점. 하나의 고차 다항식(4차)으로 꿰면 평평해야 할 x≈±1.5 에서 −0.55 까지 처지며 출렁인다. 구간마다 낮은 차수 조각으로 이으면 0~1 범위를 벗어나지 않고 국소적으로 얌전하다 — 스플라인이 고차 단일식보다 안전한 까닭."></div>
+</section>
+<section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="그림">
+  <div class="eyebrow">10-4 · 그림 · 1·2·3차 스플라인 비교</div>
+  <h1 class="stage-h">차수가 오를수록 이음매가 매끄럽다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x&lt;1 ? 2*x : (x&lt;2 ? 3-x : 2*x-3)","label":"1차 스플라인"},{"fn":"x&lt;1 ? 2*x : (x&lt;2 ? 2+2*(x-1)-3*(x-1)^2 : 1-4*(x-2)+6*(x-2)^2)","label":"2차 스플라인"},{"fn":"x&lt;1 ? 3*x-x^3 : (x&lt;2 ? (x-1)^3-(2-x)^3+3*(2-x) : (3-x)^3+3*(x-2))","label":"3차 스플라인"}]'
+    data-xmin="0" data-xmax="3"
+    data-points="[[0,0],[1,2],[2,1],[3,3]]"
+    data-cap="같은 네 점을 1·2·3차 스플라인으로 이었다. 1차는 곧은 선분을 이어 매듭에서 기울기가 꺾이고, 2차는 기울기가 연속, 3차는 곡률까지 연속(C²)이라 이음매가 가장 매끄럽다. 각 구간이 낮은 차수라 고차 단일식의 출렁임이 없다."></div>
 </section>
 <section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="정리">
   <div class="eyebrow">10-4 · 정리 · Summary</div>

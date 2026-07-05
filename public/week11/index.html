@@ -40,6 +40,29 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 그림: 적분 = 넓이 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 적분 시작" data-stage="그림">
+  <div class="eyebrow">시작 · 그림 · 적분이란</div>
+  <h1 class="stage-h">적분은 <span class="hl">곡선 아래 넓이</span></h1>
+  <div class="nafig" data-fig="nodes" data-fn="1 + 0.7*x - 0.13*x^2" data-xmin="0" data-xmax="4" data-nodes="[0,4]" data-cap="정적분 $\int_a^b f(x)\,dx$ 는 곡선 $f$ 아래, 구간 $[a,b]$ 사이의 넓이(파란 영역)다. 주황 수직선이 적분의 두 한계 $a,b$ — 이번 주 모든 공식은 이 넓이를 함수값 몇 개의 가중합으로 근사한다."></div>
+</section>
+
+<!-- ════════ 시작 / 그림: 닫힌형 vs 열린형 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 적분 시작" data-stage="그림">
+  <div class="eyebrow">시작 · 그림 · 두 갈래</div>
+  <h1 class="stage-h">끝점을 <span class="hl">쓰느냐 마느냐</span> — 닫힌형 · 열린형</h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">닫힌형 (closed)</div>
+      <div class="nafig" data-fig="nodes" data-fn="1.6 + 0.4*x - 0.1*x^2" data-xmin="0" data-xmax="4" data-nodes="[0,2,4]" data-cap="적분 구간의 <b>양 끝점 $a,b$ 를 포함</b>해 함수값을 쓴다. 사다리꼴·Simpson 이 여기 속한다."></div>
+    </div>
+    <div>
+      <div class="vcap">열린형 (open)</div>
+      <div class="nafig" data-fig="nodes" data-fn="1.6 + 0.4*x - 0.1*x^2" data-xmin="0" data-xmax="4" data-nodes="[1,2,3]" data-cap="양 끝점을 쓰지 않고 <b>내부 점만</b> 쓴다. 중점법·Gauss 구적이 여기 속한다(적분 한계가 데이터 바깥까지)."></div>
+    </div>
+  </div>
+</section>
+
 <!-- ════════ 시작 / 학습법 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="수치 적분 시작" data-stage="정리">
   <div class="intro">
@@ -256,6 +279,22 @@ I = trapezoid(f, 0, 1);
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">계산</div>$$ E = -\frac{1^3}{12}\cdot 2 = -\frac{1}{6} \approx -0.1667 $$</div>
       <div class="ans-final"><b>정답:</b> $-0.1667$. 근사값 $0.5$ − 참값 $0.3333$ = $+0.1667$ 로 부호까지 정확히 맞는다(과대평가).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 11-1 그림: 1차 이하 무오차 ════════ -->
+<section class="screen" data-ch="11-1" data-chtitle="사다리꼴 공식" data-stage="그림">
+  <div class="eyebrow">11-1 · 그림 · 무오차 조건</div>
+  <h1 class="stage-h">상수·직선은 <span class="hl">사다리꼴로 정확</span></h1>
+  <div class="vizgrid">
+    <div>
+      <div class="vcap">상수함수 $f=c$</div>
+      <div class="nafig" data-fig="nodes" data-fn="2" data-xmin="0" data-xmax="3" data-nodes="[0,3]" data-cap="양 끝을 잇는 직선(사다리꼴 윗변)이 함수와 <b>완전히 겹쳐</b> 넓이가 정확 — 오차 $\propto f''=0$."></div>
+    </div>
+    <div>
+      <div class="vcap">1차함수 $f=mx+b$</div>
+      <div class="nafig" data-fig="nodes" data-fn="0.6 + 0.6*x" data-xmin="0" data-xmax="3" data-nodes="[0,3]" data-cap="두 끝점을 잇는 직선이 곧 함수 자신 — 사다리꼴 넓이 = 참 넓이. 그래서 <b>1차 이하 다항식엔 무오차</b>."></div>
     </div>
   </div>
 </section>
@@ -614,6 +653,13 @@ end
   <h1 class="stage-h">포물선으로 넓이</h1>
   <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"exp(x)","label":"f = e^x"},{"fn":"0.5*(x-1)*(x-2) - 2.71828*x*(x-2) + 3.69453*x*(x-1)","label":"Simpson 포물선"}]' data-xmin="0" data-xmax="2" data-cap="사다리꼴이 직선이라면 Simpson 은 세 점 $(0,1),(1,e),(2,e^2)$ 를 지나는 포물선(주황)으로 $e^x$(파랑) 아래 넓이를 근사 — 두 곡선 사이 gap 이 Simpson 오차."></div>
 </section>
+<!-- ════════ 11-3 그림: 불균등 간격 데이터 ════════ -->
+<section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="그림">
+  <div class="eyebrow">11-3 · 그림 · 불균등 간격</div>
+  <h1 class="stage-h">간격이 <span class="hl">제각각인 데이터</span></h1>
+  <div class="nafig" data-fig="nodes" data-fn="1 + 0.9*x - 0.22*x^2" data-xmin="0" data-xmax="3" data-nodes="[0,0.4,0.9,1.6,2.0,2.6,3.0]" data-cap="실험 데이터는 등간격이 아닐 때가 많다. 이때는 조각마다 폭 $h_i$ 가 <b>서로 달라</b>, 각 조각을 $\tfrac{h_i}{2}[f_{i-1}+f_i]$ 로 따로 계산해 더한다(주황 수직선 = 불균등한 절점)."></div>
+</section>
+
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="정리">
   <div class="eyebrow">11-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
@@ -814,6 +860,13 @@ I = gauss_quad(f, 1, 3, 2);
     </div>
   </div>
 </section>
+<!-- ════════ 11-4 그림: 절점 균형 ════════ -->
+<section class="screen" data-ch="11-4" data-chtitle="Gauss 구적법" data-stage="그림">
+  <div class="eyebrow">11-4 · 그림 · 왜 그 점인가</div>
+  <h1 class="stage-h">넓이가 <span class="hl">균형되는 두 점</span></h1>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"1+0.6*x+0.8*x^2","label":"f(x)"},{"fn":"1.2667+0.6*x","label":"Gauss 직선"}]' data-xmin="-1" data-xmax="1" data-points="[[-0.5774,0.9203],[0.5774,1.6131]]" data-cap="2점 Gauss는 절점 $x_0,x_1=\pm\tfrac{1}{\sqrt3}$ 을 <b>넓이가 균형되도록</b> 고른다 — 두 점(주황)을 지나는 직선 아래 넓이가 곡선의 참 적분과 정확히 같아진다(직선이 곡선 위로 넘친 부분 = 아래로 모자란 부분). 그래서 2점으로 3차까지 무오차."></div>
+</section>
+
 <section class="screen" data-ch="11-4" data-chtitle="Gauss 구적법" data-stage="그림">
   <div class="eyebrow">11-4 · 그림 · Gauss 구적</div>
   <h1 class="stage-h">특별한 점만 쓴다</h1>

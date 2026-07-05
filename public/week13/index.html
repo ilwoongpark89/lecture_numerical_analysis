@@ -131,6 +131,16 @@
   </div>
 </section>
 
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="그림">
+  <div class="eyebrow">13-1 · 그림 · 한 걸음의 뼈대</div>
+  <h1 class="stage-h">새 값 = 옛 값 + 기울기 × 걸음</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"해 곡선 y(x)"},{"fn":"1 - 0.6*x","label":"기울기 φ 로 한 걸음"}]'
+    data-xmin="0" data-xmax="0.5"
+    data-points="[[0,1],[0.5,0.7]]"
+    data-cap="모든 한 단계(one-step) 법의 공통 골격 — 다음값 = 현재값 + (기울기 추정 $\varphi$) × (스텝 $h$). 현재 점(왼쪽 주황)에서 기울기 $\varphi$ 로 $h$ 만큼 직진해 다음 점(오른쪽 주황)을 얻는다. $\varphi$ 를 무엇으로 잡느냐가 Euler·Heun·RK4 를 가른다."></div>
+</section>
+
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="원리">
   <div class="eyebrow">13-1 · 원리 · Derivation</div>
   <h1 class="stage-h">Taylor 1차 절단 — 알고리즘</h1>
@@ -148,6 +158,16 @@
       <li>$x$ 가 끝점에 도달할 때까지 2를 반복.</li>
     </ol>
   </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="그림">
+  <div class="eyebrow">13-1 · 그림 · Euler 접선 걸음</div>
+  <h1 class="stage-h">접선으로 한 걸음, 그리고 오차</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해 y(x)"},{"fn":"1 - x","label":"접선(시작 기울기)"}]'
+    data-xmin="0" data-xmax="0.28"
+    data-points="[[0,1],[0.2,0.8],[0.2,0.837462]]"
+    data-cap="Euler 한 걸음의 기하 — 시작점 $(x_0,y_0)$ 에서 접선(기울기 $f(x_0,y_0)=-1$)을 따라 $h=0.2$ 직진하면 아래쪽 점 $y_1=0.8$. 정확해는 위로 휘어 $y(0.2)=0.8375$ 이므로, 두 점의 세로 간격이 이 한 스텝의 국소오차다."></div>
 </section>
 
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="시연">
@@ -202,6 +222,25 @@
   </div>
 </section>
 
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="그림">
+  <div class="eyebrow">13-1 · 그림 · 스텝 크기 효과</div>
+  <h1 class="stage-h">걸음을 반으로 줄이면</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해"},{"fn":"1 - 1*x + 1*max(0, x-0.5) + 0.5*max(0, x-1) + 0.25*max(0, x-1.5)","label":"Euler h=0.5"},{"fn":"1 - 1*x + 0.5*max(0, x-0.25) + 0.375*max(0, x-0.5) + 0.28125*max(0, x-0.75) + 0.210938*max(0, x-1) + 0.158203*max(0, x-1.25) + 0.118652*max(0, x-1.5) + 0.088989*max(0, x-1.75)","label":"Euler h=0.25"}]'
+    data-xmin="0" data-xmax="2"
+    data-cap="스텝을 반으로 — 굵은 걸음($h=0.5$)은 정확해 아래로 크게 처져 $y(2)$ 오차 0.146, 절반 걸음($h=0.25$)은 훨씬 밀착해 오차 0.070. 오차가 대략 반으로 줄어드는 것이 1차 수렴의 지문이다."></div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="그림">
+  <div class="eyebrow">13-1 · 그림 · 차수와 오차</div>
+  <h1 class="stage-h">log–log 기울기 = 수렴 차수</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x - 0.5534","label":"기울기 1 = 1차"}]'
+    data-xmin="-1.45" data-xmax="-0.25"
+    data-points="[[-0.3979,-0.9387],[-0.699,-1.2524],[-1.0,-1.5604],[-1.301,-1.865]]"
+    data-cap="가로축 $\log_{10} h$, 세로축 $\log_{10}$(전역오차). Euler 오차 점들($h=0.4,0.2,0.1,0.05$)이 기울기 $\approx 1$ 의 직선 위에 놓인다 — 오차 $\propto h^1$, 곧 1차 수렴. 방법의 차수는 이 log–log 기울기로 읽는다(2차면 기울기 2)."></div>
+</section>
+
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="함정">
   <div class="eyebrow">13-1 · 함정 · Break it</div>
   <h1 class="stage-h">$h$ 가 크면 발산한다 — 직접 깨뜨려 보기</h1>
@@ -215,6 +254,15 @@
     <div class="pitfall"><h4>⚠ 안정 한계</h4><p>$y'=\lambda y$ 에서 <b>$|1+h\lambda|>1$</b> 이면 발산. Euler 안정영역이 좁다.</p></div>
     <div class="pitfall"><h4>⚠ 강성(stiff)</h4><p>빠른·느린 성분이 섞이면 안정조건이 $h$ 를 극단적으로 조인다 → 음함수법 필요.</p></div>
   </div>
+</section>
+
+<section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="그림">
+  <div class="eyebrow">13-1 · 그림 · 강성과 안정성</div>
+  <h1 class="stage-h">명시적은 터지고, 음함수는 버틴다</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"exp(-8.0814*x)","label":"음함수 Euler (안정)"},{"fn":"1 - 15*x + 31.5*max(0, x-0.14) - 34.65*max(0, x-0.28) + 38.115*max(0, x-0.42) - 41.9265*max(0, x-0.56) + 46.119143*max(0, x-0.7) - 50.731071*max(0, x-0.84)","label":"명시적 Euler (발산)"},{"fn":"exp(-15*x)","label":"정확해"}]'
+    data-xmin="0" data-xmax="0.98"
+    data-cap="강성(stiff) 문제 $y'=-15y$ 를 같은 $h=0.14$ 로 — 명시적 Euler(주황)는 부호가 튀며 발산하고, 음함수(후진) Euler(파랑)는 얌전히 0으로 감쇠한다. 강성에선 명시적법의 안정조건이 $h$ 를 극단적으로 조이므로 음함수법으로 갈아탄다."></div>
 </section>
 
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="코드">
@@ -307,6 +355,16 @@ f = @(x, y) x - y;
   <div class="callout key" style="margin-top:14px"><div class="ct">왜 정확한가</div>구간의 <strong>양 끝 기울기를 평균</strong>하는 것은 적분을 <strong>사다리꼴</strong>로 근사하는 것과 같다 → 곡률의 1차 효과를 잡아 $O(h^2)$.</div>
 </section>
 
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="그림">
+  <div class="eyebrow">13-2 · 그림 · 예측·수정</div>
+  <h1 class="stage-h">예측한 뒤 두 기울기를 평균</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해"},{"fn":"1 - x","label":"예측: 시작 기울기 k₁"},{"fn":"1 - 0.8*x","label":"수정: 두 기울기 평균"}]'
+    data-xmin="0" data-xmax="0.3"
+    data-points="[[0,1],[0.2,0.8],[0.2,0.84]]"
+    data-cap="예측–수정 한 걸음 — 시작 기울기 $k_1=-1$ 로 예측점 $\tilde y=0.8$(아래 점)을 먼저 찍고, 거기서 잰 기울기 $k_2=-0.6$ 과 평균한 $-0.8$ 로 다시 걸으면 $y_1=0.84$(위 점). 정확해 0.8375 에 바짝 붙는다."></div>
+</section>
+
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="시연">
   <div class="eyebrow">13-2 · 시연 · Step-through</div>
   <h1 class="stage-h">같은 문제, 더 붙는 곡선</h1>
@@ -339,6 +397,25 @@ f = @(x, y) x - y;
   <h1 class="stage-h">2차 수렴 — $h$ 절반이면 오차 1/4</h1>
   <div class="callout key"><div class="ct">$O(h^2)$</div>$h$ 를 $\tfrac12$ 로 줄이면 오차는 대략 <strong>$\tfrac14$</strong>. Euler(반씩) 대비 훨씬 빠르게 정확해진다 — 기울기 2회 평가의 값어치.</div>
   <div class="keqnote" style="margin-top:14px">$y(2)$ 오차: Euler $h{=}0.2$ 는 $0.056$, Heun $h{=}0.2$ 는 $\approx 0.0042$ — 같은 계산량 근처에서 <b style="color:var(--ink)">십수 배</b> 정확.</div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="그림">
+  <div class="eyebrow">13-2 · 그림 · 세 방법 겹쳐 보기</div>
+  <h1 class="stage-h">같은 걸음, 다른 정확도</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해"},{"fn":"1 - 1*x + 1*max(0, x-0.5) + 0.5*max(0, x-1) + 0.25*max(0, x-1.5)","label":"Euler (1차)"},{"fn":"1 - 0.5*x + 0.5625*max(0, x-0.5) + 0.351563*max(0, x-1) + 0.219727*max(0, x-1.5)","label":"Heun (2차)"}]'
+    data-xmin="0" data-xmax="2"
+    data-cap="같은 $h=0.5$ 로 세 곡선 — Euler(아래로 처짐, $y(2)$ 오차 0.146)보다 Heun(정확해에 밀착, 오차 0.034)이 한 자릿수 이상 정확하다. 시작·도착 두 기울기를 평균한 값어치다."></div>
+</section>
+
+<section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="그림">
+  <div class="eyebrow">13-2 · 그림 · 중점법</div>
+  <h1 class="stage-h">중점에서 잰 기울기로 걷기</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해"},{"fn":"1 - x","label":"중점까지 시험 걸음"},{"fn":"1 - 0.6*x","label":"중점 기울기로 전체 걸음"}]'
+    data-xmin="0" data-xmax="0.5"
+    data-points="[[0,1],[0.2,0.8],[0.4,0.76]]"
+    data-cap="중점법 — 먼저 반걸음으로 중점 $(0.2,\,0.8)$(가운데 점)을 어림하고, 거기서 잰 기울기 $-0.6$ 으로 처음부터 전체 걸음을 내디뎌 $y_1=0.76$(오른쪽 점). 정확해 0.7406 에 근접 — Euler(0.6)보다 훨씬 낫다. Heun과 같은 2차 방법이다."></div>
 </section>
 
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="정리">
@@ -396,6 +473,16 @@ f = @(x, y) x - y;
     <div class="col2"><div class="callout warn"><div class="ct">일반 RK 계열</div>Heun=2단, RK4=4단 — 같은 "여러 기울기의 가중 평균" 틀. 표의 $c$(왼쪽 노드)·$A$(가운데 계수)·$b$(아래 가중)만 바꾸면 다른 RK 공식이 된다.</div></div>
   </div>
 </section>
+<section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="그림">
+  <div class="eyebrow">13-3 · 그림 · 네 기울기</div>
+  <h1 class="stage-h">한 걸음 안 네 번의 기울기</h1>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해"},{"fn":"1 - 0.572917*x","label":"RK4 한 걸음(가중평균)"}]'
+    data-xmin="-0.02" data-xmax="0.55"
+    data-points="[[0,1],[0.25,0.75],[0.25,0.875],[0.5,0.6875]]"
+    data-cap="RK4는 한 걸음($h=0.5$) 안에서 기울기를 네 곳에서 잰다 — 시작 $k_1$, 중점 두 번 $k_2,k_3$(같은 $x$, 다른 높이), 끝 $k_4$(주황 점 네 개). 이들을 $1{:}2{:}2{:}1$ 로 가중평균해 한 걸음(주황 선)을 내디디면 $y_1=0.7135$, 정확해 0.7131 과 거의 겹친다."></div>
+</section>
+
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="시연">
   <div class="eyebrow">13-3 · 시연 · Step-through</div>
   <h1 class="stage-h">네 기울기의 위력 — 거의 겹친다</h1>
