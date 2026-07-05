@@ -605,7 +605,36 @@
     return _wrap(s);
   }
 
+  // 유클리드 노름 = 벡터 길이 (직각삼각형 빗변). vectors 종류의 data-mode="norm" 분기.
+  function figVectorNorm(el) {
+    var v = _j(el, 'data-vec', [3, 4]);
+    var a1 = v[0], a2 = v[1], len = Math.sqrt(a1 * a1 + a2 * a2);
+    var lenTxt = (Math.round(len * 1e6) / 1e6).toString();
+    var cx = 150, cy = 214, sc = 36;
+    var fx = cx + a1 * sc, fy = cy, ex = fx, ey = cy - a2 * sc;
+    var s = '';
+    for (var gx = 0; gx <= 8; gx++) { var X = cx + gx * sc; s += '<line x1="' + X + '" y1="' + (cy - 5 * sc) + '" x2="' + X + '" y2="' + cy + '" stroke="' + FG.hair + '"/>'; }
+    for (var gy = 0; gy <= 5; gy++) { var Y = cy - gy * sc; s += '<line x1="' + cx + '" y1="' + Y + '" x2="' + (cx + 8 * sc) + '" y2="' + Y + '" stroke="' + FG.hair + '"/>'; }
+    s += '<line x1="' + (cx - 12) + '" y1="' + cy + '" x2="' + (cx + 8 * sc + 6) + '" y2="' + cy + '" stroke="' + FG.gray + '"/>';
+    s += '<line x1="' + cx + '" y1="' + (cy - 5 * sc - 6) + '" x2="' + cx + '" y2="' + (cy + 6) + '" stroke="' + FG.gray + '"/>';
+    // 성분 다리 (주황 점선) + 직각 표시
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + fx + '" y2="' + fy + '" stroke="' + FG.or + '" stroke-width="1.8" stroke-dasharray="5 3"/>';
+    s += '<line x1="' + fx + '" y1="' + fy + '" x2="' + ex + '" y2="' + ey + '" stroke="' + FG.or + '" stroke-width="1.8" stroke-dasharray="5 3"/>';
+    s += '<path d="M' + (fx - 11) + ',' + fy + ' L' + (fx - 11) + ',' + (fy - 11) + ' L' + fx + ',' + (fy - 11) + '" fill="none" stroke="' + FG.gray + '" stroke-width="1"/>';
+    // 벡터 화살표 (파랑) = 빗변 = 노름
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + FG.blue + '" stroke-width="2.8"/>';
+    var ang = Math.atan2(ey - cy, ex - cx), ah = 10;
+    s += '<polygon points="' + ex.toFixed(1) + ',' + ey.toFixed(1) + ' ' + (ex - ah * Math.cos(ang - 0.42)).toFixed(1) + ',' + (ey - ah * Math.sin(ang - 0.42)).toFixed(1) + ' ' + (ex - ah * Math.cos(ang + 0.42)).toFixed(1) + ',' + (ey - ah * Math.sin(ang + 0.42)).toFixed(1) + '" fill="' + FG.blue + '"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="3" fill="' + FG.ink + '"/>';
+    s += _lab((cx + fx) / 2, fy + 18, 'a₁ = ' + a1, 'middle', FG.or);
+    s += _lab(fx + 12, (fy + ey) / 2 + 4, 'a₂ = ' + a2, 'start', FG.or);
+    s += _lab((cx + ex) / 2 - 16, (cy + ey) / 2 - 6, '‖x‖ = ' + lenTxt, 'end', FG.blue);
+    s += _lab(cx - 9, cy + 16, 'O', 'end', FG.ink);
+    return _wrap(s);
+  }
+
   function figVectors(el) {
+    if (el.getAttribute('data-mode') === 'norm') return figVectorNorm(el);
     var A = _j(el, 'data-matrix', [[2, 0.6], [0.6, 2]]);
     var cx = 240, cy = 128, sc = 42, s = '';
     for (var gx = -4; gx <= 4; gx++) s += '<line x1="' + (cx + gx * sc) + '" y1="' + (cy - 4 * sc) + '" x2="' + (cx + gx * sc) + '" y2="' + (cy + 4 * sc) + '" stroke="' + FG.hair + '"/><line x1="' + (cx - 4 * sc) + '" y1="' + (cy + gx * sc) + '" x2="' + (cx + 4 * sc) + '" y2="' + (cy + gx * sc) + '" stroke="' + FG.hair + '"/>';

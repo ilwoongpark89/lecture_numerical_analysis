@@ -711,6 +711,13 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
   <div class="callout key" style="margin-top:12px"><div class="ct">핵심</div>입력(우변) 상대오차가 $\kappa(A)$ <strong>배로 증폭</strong>되어 해에 나타난다 — 그래서 $\kappa=10^k$ 면 약 $k$ 자리를 잃는다.</div>
 </section>
 
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="그림">
+  <div class="eyebrow">6-4 · 그림 · 벡터의 크기</div>
+  <h1 class="stage-h">조건수가 재는 '크기' — 벡터의 노름</h1>
+  <p class="lede">조건수 $\kappa(A)=\|A\|\,\|A^{-1}\|$ 안의 $\|\cdot\|$ 는 벡터·행렬의 <strong>크기</strong>를 재는 자다. 벡터의 노름은 유클리드 공간에서 <strong>원점에서 화살표 끝까지의 길이</strong> — 성분들의 제곱합에 제곱근을 씌운 값이다. 오차 $\delta\mathbf{x}$·$\delta\mathbf{b}$ 의 크기를 바로 이 길이로 재기에, 노름을 알아야 조건수를 읽을 수 있다.</p>
+  <div class="nafig" data-fig="vectors" data-mode="norm" data-vec="[3,4]" data-cap="벡터의 크기(노름)는 원점에서 화살표 끝까지의 직선 거리 — 두 성분을 직각 두 변으로 하는 삼각형의 빗변이다. 성분이 (3, 4) 이면 ‖x‖ = √(3² + 4²) = √25 = 5. 성분이 n개로 늘어도 ‖x‖ = √(a₁² + a₂² + ⋯ + aₙ²) 로 같은 규칙이 이어진다."></div>
+</section>
+
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="시연">
   <div class="eyebrow">6-4 · 시연 · Try it</div>
   <h1 class="stage-h">조건수가 오차를 증폭하는 걸 직접 재보기</h1>
@@ -750,6 +757,18 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
     <div class="pitfall"><h4>⚠ $\det$ 크기로 판단</h4><p>행렬을 스케일하면 $\det$ 는 변해도 $\kappa$ 는 그대로 — <b>특이 여부는 $\kappa$ 로</b> 본다.</p></div>
     <div class="pitfall"><h4>⚠ 거의 평행한 방정식</h4><p>두 직선이 거의 겹치면 교점이 요동친다 → $\kappa$ 폭증. 모델링 단계에서 피해야 한다.</p></div>
   </div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="그림">
+  <div class="eyebrow">6-4 · 그림 · 연립방정식이 무너지는 세 모습</div>
+  <h1 class="stage-h">해가 없거나 · 무한하거나 · 아슬아슬하거나</h1>
+  <p class="lede">각 방정식은 하나의 직선이고, 해는 두 직선의 <strong>교점</strong>이다. 그런데 교점이 아예 <strong>없거나</strong>(평행), 온 직선이 포개져 <strong>무한히 많거나</strong>(일치), 거의 평행해 교점 위치가 <strong>흐릿한</strong> 경우가 있다. 앞의 둘은 특이(singular) 행렬, 마지막은 ill-conditioned 시스템이다.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;align-items:start;margin-top:8px">
+    <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"1 - x","label":"x+y=1"},{"fn":"3 - x","label":"x+y=3"}]' data-xmin="-1" data-xmax="4" data-cap="해 없음 — 기울기가 같고 절편만 다르면 두 직선은 나란히 달려 결코 만나지 않는다. 교점이 없다(특이)."></div>
+    <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"2 - x","label":"x+y=2"},{"fn":"2 - x","label":"2x+2y=4"}]' data-xmin="-1" data-xmax="4" data-cap="무한히 많은 해 — 한 식이 다른 식의 배수라 두 직선이 완전히 포개진다. 직선 위 모든 점이 해다(특이)."></div>
+    <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"5 - 0.5*x","label":"x+2y=10"},{"fn":"5.2 - 0.55*x","label":"1.1x+2y=10.4"}]' data-xmin="0" data-xmax="8" data-points="[[4,3]]" data-cap="ill-conditioned — 두 직선이 거의 평행해 교점 (4, 3)(주황) 부근에서 오래 붙어 간다. 우변을 조금만 흔들어도 교점이 크게 미끄러진다."></div>
+  </div>
+  <div class="keqnote" style="margin-top:14px">앞의 두 경우는 $\det A = 0$ 인 <b>특이 행렬</b> — 유일해가 없다. 마지막은 $\det A \approx 0$ 이라 해는 하나지만 입력 오차에 극도로 민감하다 — 조건수 $\kappa(A)$ 가 폭증한다.</div>
 </section>
 
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="생각">
