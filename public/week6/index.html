@@ -224,6 +224,7 @@
       <div class="ans-final"><div class="ans-eq">$$ a_{22}^{\text{new}} = 0.5 $$</div><b>정답:</b> 같은 행의 $a_{21}$ 은 $-3-(-1.5)(2)=0$ 으로 소거된다 — 이렇게 한 행씩 아래를 비운다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[2,1,-1,8],[-3,-1,2,-11],[-2,1,2,-3]]" data-hi="[[0,0],[0,1],[1,0],[1,1]]" data-cap2="1열 소거 — 피벗 a₁₁=2로 R₂의 a₂₁=−3 지우기" data-cap="증대행렬 [A|b]. 주황 = 이번 계산에 쓰는 칸 — 피벗 a₁₁=2·a₁₂=1과 갱신 대상 a₂₁,a₂₂. 배수 f₂₁=−3/2=−1.5로 R₂←R₂−f₂₁R₁ 하면 a₂₁→0, a₂₂: −1 → 0.5 (지금 구하는 값)."></div>
 </section>
 
 <section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="함정">
@@ -302,6 +303,7 @@ x = naive_gauss(A, b);
       <div class="ans-final"><div class="ans-eq">$$ \mathbf{x}=(-2,\,5,\,3)^T $$</div><b>정답:</b> 검산 $2(-2)+3(5)+3=14$ ✓.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"5 - 2*x","label":"2x + y = 5"},{"fn":"x - 1","label":"x − y = 1"}]' data-xmin="-1" data-xmax="4" data-points="[[2,1]]" data-cap="연습 1의 두 방정식 = 두 직선. 해 (2,1)(주황)은 교점. 가우스 소거는 아래 식에서 위 식의 f=0.5배를 빼 y만 남겨(−1.5y=−1.5 → y=1) 이 교점을 대수로 찾는다."></div>
 </section>
 
 <section class="screen" data-ch="6-1" data-chtitle="가우스 소거법" data-stage="그림">
@@ -409,6 +411,7 @@ x = naive_gauss(A, b);
       <div class="ans-final"><div class="ans-eq">$$ \text{피벗} = 3 $$</div><b>정답:</b> 행 1 ↔ 행 2 를 교환해 피벗 $3$ 을 확보. 이후 $f_{31}=1/3$ 등으로 안전하게 소거.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[0,2,1],[3,1,1],[1,1,3]]" data-hi="[[1,0]]" data-cap2="1열 후보 |0|,|3|,|1| → 최대 |3| = 행 2" data-cap="부분 피벗팅 — 1열에서 절댓값이 가장 큰 3(주황)을 골라 (1,1) 자리로 올린다. a₁₁=0이면 0으로 나눠 계산 불가라 행 교환이 필수 — 지금 고르는 피벗값이 이 3이다."></div>
 </section>
 
 <section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="함정">
@@ -500,6 +503,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ a_{22}^{\text{new}} = 4.5 $$</div><b>정답:</b> 같은 행의 $a_{21}=2-0.5(4)=0$ 으로 소거된다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[4,1,2],[2,5,1],[1,3,6]]" data-hi="[[0,0],[1,0],[1,1]]" data-cap2="행1↔2 교환 후 — 피벗 4, f₂₁=2/4=0.5" data-cap="1열 최대 |4|를 (1,1)로 올린 교환 행렬. 주황 = 계산에 쓰는 칸 — 피벗 4로 a₂₁=2를 지우면 f₂₁=0.5≤1(오차 억제), 새 a₂₂ = 5 − 0.5·1 = 4.5 (연습 3의 답)."></div>
 </section>
 
 <section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="그림">
@@ -606,6 +610,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ y_2 = 1 $$</div><b>정답:</b> 이어서 $y_3=-3+8-4=1$ → $\mathbf{y}=(8,1,1)^T$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[1,0,0],[-1.5,1,0],[-1,4,1]]" data-hi="[[1,0],[1,1]]" data-cap2="전진 대입 2행 — −1.5·y₁ + y₂ = −11" data-cap="하삼각 L을 위→아래로 푸는 전진 대입. y₁=8을 이미 얻었고, 2행(주황)에 넣으면 −1.5(8)+y₂=−11 → y₂=1 (지금 구하는 값). 이어 3행이 y₃를 준다."></div>
 </section>
 
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="코드">
@@ -653,6 +658,7 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ \text{분해 } 1\text{번} + \text{대입 } 5\text{쌍} $$</div><b>정답:</b> 분해는 $A$ 에만 의존 → 딱 한 번. 우변마다 값싼 대입 두 번($L\mathbf{y},\,U\mathbf{x}$)만 반복.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"333.333*x","label":"매번 소거 = m·n³/3"},{"fn":"333.333 + 100*x","label":"LU 재사용 = n³/3 + m·n²"}]' data-xmin="1" data-xmax="10" data-points="[[5,833.333]]" data-cap="가로축 = 우변 개수 m (n=10). 매번 소거(파랑)는 m배로 치솟지만, LU(주황)는 분해 1번 뒤 값싼 대입만 더해 완만하다. m=5에서 LU는 833으로 소거 1667의 절반 — 분해는 딱 1번."></div>
 </section>
 
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="함정">
@@ -829,6 +835,7 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ 16 - 8 = 8\ \text{자리} $$</div><b>정답:</b> $\kappa$ 가 $10^{16}$ 에 이르면 신뢰 자릿수가 $0$ — 수치적으로 특이해진다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="16 - x" data-label="16 − log₁₀κ" data-xmin="0" data-xmax="16" data-points="[[8,8]]" data-roots="16" data-cap="가로축 = log₁₀κ, 세로축 = 신뢰 유효 자릿수. 직선 16−log₁₀κ 위에서 log₁₀κ=8(즉 κ=10⁸)이면 8자리(주황)만 믿을 수 있다. log₁₀κ=16(빨강)에서 0자리 — 수치적으로 특이해진다."></div>
 </section>
 
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="함정">
@@ -891,6 +898,7 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 방법 선택 하나가 대규모 반복 풀이의 실행시간을 수십 배 가르고, 피벗팅과 조건수 판단이 답의 신뢰 자릿수를 좌우한다 — 실무에서 '무엇을 왜 고르는가'는 공식을 아는 것만큼 중요하다.</div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"333333*x","label":"매번 소거 = m·n³/3"},{"fn":"333333 + 10000*x","label":"LU 재사용 = n³/3 + m·n²"}]' data-xmin="1" data-xmax="2000" data-points="[[1000,10333333]]" data-cap="설계 판단 ⑴ — 회로 시뮬레이터는 A 고정, 우변 b만 수천 번(n=100). 매번 가우스 소거(파랑)는 우변 수에 비례해 폭증하지만, LU 재사용(주황)은 분해 1번 뒤 대입만 더해 거의 바닥에 붙는다. m=1000에서 LU는 소거의 약 1/32 — A가 고정이면 LU가 압도적."></div>
 </section>
 
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="정리">

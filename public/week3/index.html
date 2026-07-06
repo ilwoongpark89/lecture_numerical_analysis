@@ -197,6 +197,7 @@
       <div class="ans-final"><div class="ans-eq">$$ E = 9 $$</div><b>정답:</b> 전체 비트열은 $\;0\;1001\;011\;$ ($S{=}0$, $E{=}1001$, $M{=}011$). bias 를 쓰는 이유는 음의 지수도 부호 없는 정수 하나로 저장하기 위해서다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[[0,1,0,0,1,0,1,1]]' data-hi='[[0,1],[0,2],[0,3],[0,4]]' data-cap2="부호1 · 지수4(주황) · 가수3" data-cap="8비트 비트열 = 부호1·지수4·가수3. 5.5 = 1.011₂×2² 이므로 지수 2 + bias 7 = 9 = 1001₂ (주황 = 지수 필드 E). 세 조각을 다시 조립하면 5.5 가 복원된다."></div>
 </section>
 
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="함정">
@@ -271,6 +272,7 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
       <div class="ans-final"><b>정답:</b> $0.09375$ — 원래 $0.1$ 과 $0.00625$ 차이(6.25% 오차!). 64비트에선 오차가 $\sim10^{-17}$ 로 작지만 <strong>0 은 아니다.</strong></div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="0*x" data-xmin="0.055" data-xmax="0.13" data-points="[[0.0625,0],[0.0703125,0],[0.078125,0],[0.0859375,0],[0.09375,0],[0.1015625,0],[0.109375,0],[0.1171875,0],[0.125,0]]" data-cap="0.1 근처 8비트 격자(주황) — 간격 2⁻⁷≈0.0078, 한 구간에 8칸뿐. 0.1 은 0.09375 와 0.1015625 사이에 걸쳐 어느 칸에도 안 맞아 → 절단하면 0.09375 로 밀린다. 유한 십진수도 이진 격자엔 딱 안 떨어진다."></div>
 </section>
 
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="연습">
@@ -309,6 +311,7 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ = 8\ \text{개} $$</div><b>정답:</b> $8$ 개. 모든 $2$ 배 구간 $[2^k,2^{k+1})$ 마다 <strong>같은 개수</strong>($2^t$)가 놓이므로, 값이 클수록 간격이 벌어진다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="0*x" data-xmin="15" data-xmax="33" data-points="[[16,0],[18,0],[20,0],[22,0],[24,0],[26,0],[28,0],[30,0]]" data-cap="16~32 구간의 표현 가능한 수(주황) — 간격(ULP)=2, 가수 3비트라 8칸뿐. 20 은 격자 위에 있지만 21 은 표현 불가(20 또는 22 로 밀린다). 값이 커질수록 이웃 간격이 벌어진다."></div>
 </section>
 
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="그림">
@@ -430,6 +433,7 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ \varepsilon_{\text{mach}} = 0.125 $$</div><b>정답:</b> $1\sim2$ 구간 간격($0.125$)과 정확히 같다. 상대 오차 상한은 그 절반 $0.0625$ 이다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="2^(-1*x)" data-xmin="1" data-xmax="8" data-points="[[3,0.125]]" data-cap="머신 엡실론 ε=2⁻ᵗ 는 가수 비트 t 로만 정해진다. 8비트 미니(t=3, 주황점)는 ε=0.125 — 비트가 1 늘 때마다 간격이 정확히 절반. 이 값이 1.0 에 더해 구별되는 최소 간격이다."></div>
 </section>
 
 <section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="함정">
@@ -497,6 +501,7 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
       <div class="ans-final"><div class="ans-eq">$$ 1\;\text{자리} $$</div><b>정답:</b> 앞 4자리가 상쇄되어 $9$ 한 자리만 남는다. 이래서 "비슷한 수의 뺄셈" 을 피하도록 식을 재구성한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[[1.23456],[1.23447],[0.00009]]' data-hi='[[2,0]]' data-cap2="위 − 가운데 = 아래 (주황)" data-cap="유효숫자 5자리 뺄셈(×10⁵): 1.23456 − 1.23447 = 0.00009(주황). 입력은 6자리씩인데 앞 4자리가 통째로 상쇄돼, 결과는 믿을 자리가 9 하나뿐 — 유효숫자가 1자리로 붕괴한다(상쇄 오차)."></div>
 </section>
 
 <section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="함정">
@@ -617,6 +622,7 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
       <div class="ans-final"><div class="ans-eq">$$ = 1.625 $$</div><b>정답:</b> 참값 $1.64872$ 대비 절단 오차 $\approx0.0237$. 다음 항($\tfrac{x^3}{6}\approx0.0208$)을 더하면 오차가 다시 급감한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"exp(x)","label":"e^x 참값"},{"fn":"1+x+x^2/2","label":"3항 근사"}]' data-xmin="-1.5" data-xmax="1.5" data-points="[[0.5,1.625]]" data-cap="e^x(파랑)를 3항 포물선 1+x+x²/2(주황)로 근사. x=0.5 에서 근사값 1.625(주황점), 참값 e^0.5=1.649 — 두 곡선의 세로 간격이 절단오차 ≈0.024. 전개점 0 에서 멀어질수록 간격이 벌어진다."></div>
 </section>
 
 <section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="수렴">
@@ -713,6 +719,7 @@ end
       <div class="ans-final"><b>정답:</b> $0.25$ — 오차가 $\tfrac14$ 로 준다. 전진 차분($O(h)$)이면 $\tfrac12$ 이었을 것.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"exp(x)","label":"e^x 참값"},{"fn":"1+x","label":"2항 = 접선"}]' data-xmin="-1.5" data-xmax="1.5" data-points="[[0.5,1.5]]" data-cap="e^x(파랑)를 2항 1+x(주황 직선=접선)로 근사. x=0.5 에서 근사값 1.5(주황점), 참값 e^0.5=1.649 — 세로 간격 0.149 가 절단오차. 항이 적을수록(직선) 곡선과의 간격이 크다."></div>
 </section>
 
 <section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="그림">
@@ -836,6 +843,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \text{cond}=3 $$</div><b>정답:</b> $3$. 입력 상대오차가 출력에서 $3$ 배로 증폭. 일반적으로 $f=x^n$ 의 조건수는 $n$ 이다(잘 정의된 문제).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x^3","label":"f = x³"},{"fn":"3*x-2","label":"x=1 접선 (기울기 3)"}]' data-xmin="-2" data-xmax="2" data-points="[[1,1]]" data-cap="f=x³(파랑)와 x=1 에서의 접선(주황, 기울기 f′(1)=3). 조건수 cond=|x·f′/f|=|x·3x²/x³|=3 은 x 에 무관한 상수 — 입력 상대오차가 출력에서 3배로 증폭된다."></div>
 </section>
 
 <section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="수렴">
@@ -932,6 +940,7 @@ fprintf('기울기 ≈ %.2f\n', slope(1));   <span class="out">% ≈ 1  (전진�
       <div class="ans-final"><div class="ans-eq">$$ n=2 $$</div><b>정답:</b> $2$차 방법(예: 중심 차분). 기울기가 곧 차수다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.1,"label":"1차 O(h): 기울기 1"},{"r":0.01,"label":"2차 O(h²): 기울기 2"}]' data-cap="h 를 10배씩 줄일 때(가로축 한 칸) 오차의 log-log 감소 — 1차 O(h) 는 매 단계 ÷10(주황, 기울기 1), 2차 O(h²) 는 ÷100(파랑, 기울기 2). 직선의 기울기가 곧 수렴 차수다."></div>
 </section>
 
 <!-- ════════ 3-4 / 설계형 연습 (판단) ════════ -->
@@ -946,6 +955,7 @@ fprintf('기울기 ≈ %.2f\n', slope(1));   <span class="out">% ≈ 1  (전진�
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무의 방법 선택은 '가장 정확한 것' 이 아니라 '주어진 제약 안에서 가장 나은 것' 이다 — 정확도·계산 비용·수치 안정성을 함께 저울질하는 이 판단이 공식 암기보다 오래 남는다.</div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="sin(x)" data-xmin="0.2" data-xmax="1.4" data-points="[[0.485,0.4662],[0.785,0.7068],[1.085,0.8843]]" data-cap="두 미분법이 f 를 재는 점(주황) — 전진차분은 x 와 x+h(가진 f(x) 재사용 → 새 평가 1회, O(h)), 중심차분은 x−h 와 x+h(새 평가 2회, O(h²)). 정확도↑ 는 평가비용↑ 와 맞바꾼다. h 는 √ε≈10⁻⁸ 근처가 최적."></div>
 </section>
 
 <section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="생각">

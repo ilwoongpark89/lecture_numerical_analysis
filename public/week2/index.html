@@ -220,6 +220,7 @@
       <div class="ans-final"><div class="ans-eq">$$ \texttt{2 + 3 * 4\^2} = 50 $$</div><b>정답:</b> 왼쪽부터 순서대로($2+3=5$, $5\times16=80$)로 읽으면 틀린다 — 우선순위가 지배한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="2+3*x^2" data-xmin="0" data-xmax="5" data-points="[[4,50]]" data-cap="이 식은 f(x)=2+3x² 의 x=4 값 — 거듭제곱→곱→덧셈 순서를 지키면 주황 점 f(4)=50. 왼쪽부터 읽으면 80(곡선 밖)."></div>
 </section>
 
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="함정">
@@ -283,6 +284,7 @@ fprintf('반지름 %d → 넓이 %.2f\n', r, area);  <span class="cm">% 서식 �
       <div class="ans-final"><div class="ans-eq">$$ (2+3)^2 = 5^2 = 25 $$</div><b>정답:</b> 괄호가 없으면 <code>2 + 3^2 = 11</code> — 괄호 하나로 결과가 바뀐다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2" data-xmin="0" data-xmax="6" data-points="[[5,25]]" data-cap="괄호가 먼저면 (2+3)²=5² — 포물선 위 x=5 의 주황 점 25. 괄호 없이 2+3²는 2+9=11 로 달라진다."></div>
 </section>
 
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="정리">
@@ -394,6 +396,7 @@ D = diag([2 5 8]);     <span class="cm">% 대각행렬</span></code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ C(2,1) = 15 + 28 = 43 $$</div><b>정답:</b> 참고로 원소별곱 <code>A.*B</code> 였다면 $C(2,1)=3\times7=21$ 로 완전히 다르다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[19,22],[43,50]]" data-hi="[[1,0]]" data-cap2="C = A·B,  C(2,1) = 43" data-cap="행렬곱 결과 C=A·B. 주황 칸 C(2,1)=3·5+4·7=43 — 2행과 1열의 내적. 원소별곱이면 3·7=21 로 달라진다."></div>
 </section>
 
 <section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="함정">
@@ -458,6 +461,7 @@ det(A)                 <span class="cm">% 2*1 - 3*4 = -10</span></code></pre></d
       <div class="ans-final"><div class="ans-eq">$$ \det A = 1\cdot4 - 2\cdot3 = -2 $$</div><b>정답:</b> $\det\neq0$ 이므로 역행렬이 존재 → $A\backslash b$ 로 유일해.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat="[[1,2],[3,4]]" data-hi="[[0,0],[1,1]]" data-cap2="det = 1·4 − 2·3 = −2" data-cap="연습2 행렬 A. 주황 대각(1·4)에서 반대각(2·3)을 뺀다 → det=4−6=−2. det≠0 이라 A\b 로 유일해."></div>
 </section>
 
 <!-- ════════ 2-2 추가 · 코드 출력 예측 연습 ════════ -->
@@ -500,6 +504,7 @@ A(2,2)</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ A(2,2) = 4 $$</div><b>정답:</b> 행 우선(가로)으로 착각하면 $\begin{bmatrix}1&amp;2&amp;3\\4&amp;5&amp;6\end{bmatrix}$ 라 $A(2,2)=5$ 로 틀린다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="8" data-xmin="0" data-xmax="6" data-points="[[1,5],[2,12],[3,3],[4,20],[5,8]]" data-cap="주황 = v=[5 12 3 20 8]의 다섯 원소, 파란 선 = 기준 8. 선 위·선상(8 이상)인 12·20·8 세 개 → sum(v≥8)=3 (연습3)."></div>
 </section>
 
 <section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="그림">
@@ -620,6 +625,7 @@ end</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ n = 10 $$</div><b>정답:</b> 조건 <code>2^n &lt;= 1000</code> 이 거짓이 되는 순간 <code>n=10</code> 에서 반복이 멈춘다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="2^x" data-xmin="0" data-xmax="11" data-points="[[9,512],[10,1024]]" data-cap="파란 2ⁿ 곡선 위 주황 두 점 — n=9는 512(1000 이하, 계속), n=10은 1024(1000 초과, while 종료). 두 점 사이에서 1000을 넘는다."></div>
 </section>
 
 <section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="함정">
@@ -695,6 +701,7 @@ root = fzero(f, -2);        <span class="cm">% 익명 함수를 fzero 에 전달
       <div class="ans-final"><div class="ans-eq">$$ \sqrt{9+16} = \sqrt{25} = 5 $$</div><b>정답:</b> 유클리드 노름(벡터 크기).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2+2*x+1" data-xmin="-4" data-xmax="4" data-points="[[3,16]]" data-cap="익명 함수 f(x)=x²+2x+1=(x+1)². 주황 점 = f(3)=16. (연습2 노름 √(3²+4²)=5 는 직각삼각형의 빗변.)"></div>
 </section>
 
 <section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="정리">
@@ -807,6 +814,7 @@ grid on;   axis([0 2*pi -1.2 1.2]);       <span class="cm">% 격자 · 축 범�
       <div class="ans-final"><div class="ans-eq">$$ p = 2 $$</div><b>정답:</b> 2차 수렴 $O(h^2)$. 오차가 $1/2$ 로 줄면 $p=1$(1차), $1/8$ 로 줄면 $p=3$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="3.2*x^2" data-xmin="0" data-xmax="0.11" data-points="[[0.1,0.032],[0.05,0.008],[0.025,0.002],[0.0125,0.0005]]" data-cap="오차 err = 3.2·h² 곡선 위 네 측정점 — h를 절반으로 줄일 때마다 err는 ¼. loglog 로 그리면 이 관계가 기울기 p=2 직선이 된다."></div>
 </section>
 
 <section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="함정">
@@ -877,6 +885,7 @@ grid on;</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ s(4) = 0.75 $$</div><b>정답:</b> 간격 $1/4=0.25$, 1-based 이므로 4번째 = $0.75$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x" data-xmin="0" data-xmax="1" data-roots="0,0.25,0.5,0.75,1" data-points="[[0.75,0.75]]" data-cap="빨강 = linspace(0,1,5)의 다섯 등간격 점(간격 0.25), 대각선 y=x. 네 번째 s(4)=0.75 를 주황으로 — 1-based 라 4번째가 0.75."></div>
 </section>
 
 <!-- ════════ 2-4 설계형 · 판단 (정답 없음) ════════ -->

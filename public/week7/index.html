@@ -211,6 +211,7 @@
       <div class="ans-final"><div class="ans-eq">$$ x_1^{(2)}=1.65625 $$</div><b>정답:</b> Jacobi 는 우변에 <strong>같은 라운드의 새 값을 절대 쓰지 않는다</strong> — $x_2,x_3$ 모두 $\mathbf{x}^{(1)}$ 의 값이다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.38,"label":"Jacobi"}]' data-cap="지금 계산은 이 곡선 위 한 점 — Jacobi 반복마다 최대오차가 약 $0.38$배로 줄어 해 $(2,4,3)$ 로 수렴한다(오차 $4.0\to1.38\to0.34\cdots$). 지금 2회째 $x_1^{(2)}$ 를 구하는 중."></div>
 </section>
 
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="수렴">
@@ -334,6 +335,7 @@ b = np.array([7,-21,15], float)
       <div class="ans-final"><b>정답:</b> 직접법 $\tfrac13n^3\approx3\times10^{17}$ 과 비교하면 <strong>반복 1회는 압도적으로 싸다</strong> — 성긴 구조가 유지되기 때문.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"3*x - 5","label":"3x₁−x₂=5"},{"fn":"0.25*x + 1.75","label":"−x₁+4x₂=7"}]' data-xmin="0" data-xmax="4" data-points="[[2.4545,2.3636],[1.6667,1.75]]" data-cap="연습 1의 $2\times2$ 계 = 두 직선(가로축 $x_1$, 세로축 $x_2$). 교점 $(2.45,\,2.36)$ 이 정확한 해. Jacobi 는 $(0,0)$ 에서 시작해 첫 반복 $(1.67,\,1.75)$ — 교점을 향해 다가가는 첫 걸음."></div>
 </section>
 
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="그림">
@@ -434,6 +436,7 @@ b = np.array([7,-21,15], float)
       <div class="ans-final"><div class="ans-eq">$$ x_2^{(1)}=3.5 $$</div><b>정답:</b> Jacobi 라면 옛 $x_1=0$ 을 써서 $x_2=2.625$ 였다. 새 값을 즉시 쓴 덕에 이미 참값 $4$ 에 더 가깝다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.38,"label":"Jacobi"},{"r":0.16,"label":"Gauss-Seidel"}]' data-cap="같은 예제 계의 오차 감소 — GS(파랑)는 방금 구한 새 $x_1=1.75$ 를 즉시 재사용해 Jacobi(주황)보다 가파르게 떨어진다(약 절반 반복). 지금 그 $x_2^{(1)}=3.5$ 를 계산 중."></div>
 </section>
 
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="함정">
@@ -521,6 +524,7 @@ end
       <div class="ans-final"><b>정답:</b> GS 는 벡터 하나(in-place)만 유지 → 벡터 1개분(8 MB) 절약. 대규모에서 무시 못 할 차이.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"3*x - 5","label":"3x₁−x₂=5"},{"fn":"0.25*x + 1.75","label":"−x₁+4x₂=7"}]' data-xmin="0" data-xmax="4" data-points="[[2.4545,2.3636],[1.6667,2.1667]]" data-cap="같은 두 직선의 교점 $(2.45,\,2.36)$ 이 해. GS 는 새 $x_1$ 을 즉시 써서 첫 반복이 $(1.67,\,2.17)$ — Jacobi 의 $x_2=1.75$ 보다 교점(위 직선)에 더 바짝 붙었다."></div>
 </section>
 
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="정리">
@@ -612,6 +616,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \text{여유}=3 $$</div><b>정답:</b> 세 행 모두(Row1: $5-3=2$, Row2: $6-3=3$, Row3: $7-4=3$) 양수 → 엄격 대각 우세, 두 방법 모두 수렴 보장.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[[5,-2,1],[1,6,-2],[3,-1,7]]' data-hi='[[0,0],[1,1],[2,2]]' data-cap="이 문제의 행렬 $A$ — 주황 대각 $|5|,|6|,|7|$ 이 각 행의 나머지 절댓값 합보다 큼(대각 우세). 지금 3행을 확인 중: $|7|$ 대 $|3|+|-1|=4$ → 여유 $=3\gt0$."></div>
 </section>
 
 <section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="함정">
@@ -658,6 +663,7 @@ end
       <div class="ans-final"><b>정답:</b> $\rho$ 가 더 작을수록 빠르다. $0.25<0.5$ 라 GS 가 약 절반 반복으로 수렴.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Jacobi ρ=0.5"},{"r":0.25,"label":"GS ρ=0.25"}]' data-cap="연습 2의 상황 — $\rho_J=0.5$(주황)일 때 $\rho_{GS}\approx\rho_J^2=0.25$(파랑). GS 곡선이 약 2배 가팔라 같은 정밀도를 절반 반복에 도달한다."></div>
 </section>
 
 <section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="그림">
@@ -756,6 +762,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ x_1^{(1)}=2.1 $$</div><b>정답:</b> GS 제안값 1.75 를 <strong>지나쳐</strong> 2.1 로 갔다(over-relax). 방향이 맞으면 가속되지만, 이 잘 조건화된 시스템에선 과하게 튀어 오히려 반복이 늘어난다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"1.75*x","label":"SOR 갱신값"},{"fn":"1.75","label":"GS 제안 1.75"}]' data-xmin="0.2" data-xmax="1.9" data-points="[[1.2,2.1],[1.0,1.75]]" data-cap="가로축 $\omega$ — SOR 갱신값 $=\omega\times1.75$. $\omega=1$ 이면 GS 제안 $1.75$(두 선 교차), 지금 $\omega=1.2$ 면 주황점 $2.1$ 로 GS 를 지나침(over-relax)."></div>
 </section>
 
 <section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="수렴">
@@ -876,6 +883,7 @@ for w in [0.8, 1.0, 1.2, 1.5]:
       <div class="ans-final"><div class="ans-eq">$$ \omega_{opt}=1.25 $$</div><b>정답:</b> $\rho(T_J)$ 가 1에 가까울수록 $\omega_{opt}$ 가 2에 근접 — over-relaxation 이 크게 이득.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x < 1.25 ? 0.25*(0.8*x + sqrt(max(0, 0.64*x*x - 4*x + 4)))^2 : x - 1" data-xmin="1" data-xmax="1.9" data-points="[[1.25,0.25],[1.0,0.64]]" data-cap="수렴인자 $\rho(\omega)$ ($\rho_J=0.8$ 모델). $\omega=1$(GS)에서 $0.64$, 연습 2의 최적 $\omega_{opt}=1.25$ 에서 최소 $0.25$(주황점), 그 뒤엔 $\omega-1$ 로 다시 커진다 — 과대완화도 손해."></div>
 </section>
 
 <!-- ════════ 설계형 · 방법 선택 판단 ════════ -->

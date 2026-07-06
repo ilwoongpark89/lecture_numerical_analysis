@@ -192,6 +192,7 @@
       <div class="ans-final"><div class="ans-eq">$$ x_2 = \tfrac{4}{3}\approx 1.3333 $$</div><b>정답:</b> 도함수를 전혀 쓰지 않았다. 다음 스텝은 $x_3\approx1.4627$ 로 근 $1.52138$ 을 향해 초선형으로 접근한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x^3 - x - 2","label":"f(x)"},{"fn":"6*x - 8","label":"할선 x₀x₁"}]' data-xmin="0.7" data-xmax="2.2" data-points="[[1,-2],[2,4],[1.3333,0]]" data-roots="1.5214" data-cap="직접계산 대상 — 두 초기점 (1,−2)·(2,4) 를 이은 할선(주황 직선)이 x축을 자르는 곳이 x₂=4/3≈1.333(주황 점). 실제 근은 1.5214(빨강). 도함수 없이 두 점의 기울기만으로 근을 겨눈다."></div>
 </section>
 
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="수렴">
@@ -294,6 +295,7 @@ f = @(x) x.^3 - x - 2;
       <div class="ans-final"><b>정답:</b> 약 $1.3333$ — 두 끝점이 같으므로 <strong>첫 스텝은 할선법과 동일</strong>하다. 이후 False Position은 구간을 유지하며 한쪽에서 접근한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법 (선형)"},{"r":0.13,"label":"할선 p≈1.618"}]' data-cap="연습 대상 — 수렴 차수 p=(1+√5)/2≈1.618(할선·초선형)이 이분법(선형)보다 훨씬 가파르게 오차를 0으로 끌어내린다. 연습2 False Position 첫 스텝은 할선과 같은 c₁=4/3≈1.333."></div>
 </section>
 
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="그림">
@@ -394,6 +396,7 @@ f = @(x) x.^3 - x - 2;
       <div class="ans-final"><div class="ans-eq">$$ x_1 = 1.0 $$</div><b>정답:</b> <strong>단 1회</strong>에 정확한 근에 도달! 표준 Newton이면 $x_1=0.5-0.25/(-1)=0.75$ 로 절반만 왔을 것($\times m$ 의 위력).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="(x-1)^2" data-xmin="-0.2" data-xmax="2.2" data-points="[[0.5,0.25]]" data-roots="1" data-cap="직접계산 대상 — 이중근 (x−1)². x₀=0.5(주황, f=0.25)에서 Modified Newton(×m=2)이 근 x=1(빨강)로 단 1스텝에 도달. x축에 뚫지 않고 접하기만 해 f′(근)=0."></div>
 </section>
 
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="수렴">
@@ -494,6 +497,7 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
       <div class="ans-final"><b>정답:</b> 약 $0.6667$ — 매 반복 오차의 $\tfrac23$ 만 남으니 이중근($\tfrac12$)보다도 느리다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="(x-1)^2" data-xmin="0.3" data-xmax="1.8" data-points="[[0.5,0.25],[0.75,0.0625]]" data-roots="1" data-cap="연습 대상 — 표준 Newton(수정 없이): x₀=0.5→x₁=0.75(주황), 근 x=1(빨강)까지 오차가 절반만 준다. 이중근이라 선형 crawl — 삼중근이면 매 반복 ×2/3 로 더 느리다."></div>
 </section>
 
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="그림">
@@ -627,6 +631,7 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
       <div class="ans-final"><div class="ans-eq">$$ \det J = 7.5 $$</div><b>정답:</b> $\det\neq0$ 이므로 $J$ 는 <strong>가역</strong> — 선형계 $J\Delta\mathbf x=-\mathbf F$ 를 풀 수 있다. (참고: $\mathbf x_0=(1,1)$ 이면 $\det=0$ 특이!)</div>
     </div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[[4,1],[0.5,2]]' data-hi='[[0,0],[1,1]]' data-cap="직접계산 대상 — J(2,0.5)=[[4,1],[0.5,2]]. 주황 대각의 곱 4·2 에서 반대각 1·0.5 를 빼면 det=7.5≠0 → 가역, 선형계 J·Δx=−F 를 풀 수 있다. (x₀=(1,1)이면 det=0 특이)"></div>
 </section>
 
 <section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="수렴">
@@ -718,6 +723,7 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
       <div class="ans-final"><b>정답:</b> 약 $1.9333$ — 한 스텝 만에 해 $1.93185$ 에 소수 2자리까지 근접(이차 수렴).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"sqrt(4 - x^2)","label":"원(상반)"},{"fn":"1/x","label":"쌍곡선 xy=1"}]' data-xmin="0.45" data-xmax="2" data-points="[[2,0.5],[1.9319,0.5176]]" data-cap="연습 대상 — 초기값 (2,0.5)(주황)에서 원∩쌍곡선 교점 (1.932,0.518)로 한 스텝에 근접. F₁(2,0.5)=2²+0.5²−4=0.25 는 원 방정식 잔차, 갱신 x₁ 첫 성분 =2−0.0667=1.9333."></div>
 </section>
 
 <section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="그림">
@@ -885,6 +891,7 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
       <div class="ans-final"><b>정답:</b> 약 $0.8776$. 이후 $0.6390,\,0.8027,\dots$ 로 진동하며 $x^*\approx0.7391$ 로 수렴($|g'|<1$).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"cos(x)","label":"g=cos x"},{"fn":"x","label":"y=x"}]' data-xmin="0" data-xmax="1.4" data-points="[[0.739085,0.739085],[0.5,0.877583]]" data-cap="연습 대상 — 고정점 x=cos x: g=cos x 와 y=x 의 교점 x*≈0.7391(주황). x₀=0.5→x₁=cos(0.5)=0.8776. 연습1의 이분법은 같은 정밀도(10⁻¹⁰)까지 34회가 필요하다."></div>
 </section>
 
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="생각">
@@ -952,6 +959,7 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
       <div class="ans-final"><div class="ans-eq">$$ |g_2'(x^*)| \approx 6.93 > 1 $$</div><b>정답:</b> $|g'|>1$ 이므로 <strong>발산</strong>. 같은 방정식도 $g$ 를 잘못 고르면($x^3-2$) 반복이 튕겨 나간다 — $\sqrt[3]{x+2}$ 형태여야 수렴한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"cbrt(x+2)","label":"g=∛(x+2)"},{"fn":"x","label":"y=x"}]' data-xmin="1" data-xmax="6.5" data-points="[[6,2],[2,1.5874],[1.5214,1.5214]]" data-cap="연습 대상 — 수축하는 g=∛(x+2): 먼 x₀=6→x₁=∛8=2→x₂=∛4=1.5874 가 교점 x*≈1.5214(주황)로 선형 수렴(|g′|≈0.14). 반면 g₂=x³−2 는 |g₂′(x*)|≈6.93 이라 밖으로 튕겨 발산."></div>
 </section>
 
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="시연">

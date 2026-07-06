@@ -205,6 +205,11 @@
       <div class="ans-final"><div class="ans-eq">$$ y_1 = 0.8 $$</div><b>정답:</b> 정확값 $y(0.2)=0.8375$ — Euler는 이미 $0.037$ 아래로 벗어났다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해 y(x)"},{"fn":"1 - x","label":"Euler 접선(기울기 −1)"}]'
+    data-xmin="0" data-xmax="0.3"
+    data-points="[[0,1],[0.2,0.8],[0.2,0.837462]]"
+    data-cap="이 문제가 계산하는 지점 — $y'=x-y$ 의 해곡선(파랑) 위에서, 시작 $(0,1)$의 기울기 $f(0,1)=-1$ 로 $h=0.2$ 직진하면 $y_1=0.8$(아래 주황). 정확해는 위로 휘어 $y(0.2)=0.8375$(위 주황) — 두 주황점의 세로 간격이 이 한 스텝의 오차다."></div>
 </section>
 
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="수렴">
@@ -307,6 +312,11 @@ f = @(x, y) x - y;
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ |1-20h|<1 \Rightarrow 0<h<\tfrac{2}{20}=0.1 $$</div><b>정답:</b> $h<0.1$. 넘으면 발산.</div></div>
   </div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"exp(x)","label":"정확해 y=eˣ"},{"fn":"1 + x","label":"Euler 접선(기울기 1)"}]'
+    data-xmin="0" data-xmax="0.6"
+    data-points="[[0,1],[0.1,1.1],[0.1,1.105171]]"
+    data-cap="연습 1이 계산하는 지점 — 지수 성장 $y'=y$(정확해 $e^x$ 파랑)에서 시작 $(0,1)$의 기울기 $1$ 로 $h=0.1$ 직진하면 $y_1=1.1$(아래 주황). 정확해 $e^{0.1}=1.1052$(위 주황)보다 접선이 곡선 아래로 조금 처진다 — 1차 오차."></div>
 </section>
 
 <section class="screen" data-ch="13-1" data-chtitle="Euler 방법" data-stage="그림">
@@ -411,6 +421,11 @@ f = @(x, y) x - y;
       <div class="ans-final"><div class="ans-eq">$$ y_1=0.84 $$</div><b>정답:</b> 정확값 $0.8375$ — Euler의 $0.8$ 보다 훨씬 가깝다(오차 $0.0025$).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해 y(x)"},{"fn":"1 - x","label":"예측: 시작 기울기 k₁=−1"},{"fn":"1 - 0.8*x","label":"수정: 두 기울기 평균 −0.8"}]'
+    data-xmin="0" data-xmax="0.3"
+    data-points="[[0,1],[0.2,0.8],[0.2,0.84]]"
+    data-cap="이 문제가 계산하는 지점 — 시작 $(0,1)$에서 Euler 예측점 $\tilde y=0.8$(아래 주황)을 먼저 찍고, 거기서 잰 $k_2=-0.6$ 을 $k_1=-1$ 과 평균한 $-0.8$ 로 다시 걸으면 $y_1=0.84$(위 주황). 정확해 $0.8375$ 에 거의 겹친다 — Euler의 $0.8$ 보다 훨씬 가깝다."></div>
 </section>
 
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="수렴">
@@ -536,6 +551,11 @@ f = @(x, y) x - y;
       <div class="ans-final"><div class="ans-eq">$$ y_1\approx 0.8375 $$</div><b>정답:</b> 정확값 $0.83746$ 과 소수 4자리 일치 — 단 한 스텝에!</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"x-1+2*exp(-x)","label":"정확해 y(x)"},{"fn":"1 - 0.8126667*x","label":"RK4 한 걸음(가중평균 −0.813)"}]'
+    data-xmin="-0.02" data-xmax="0.24"
+    data-points="[[0,1],[0.1,0.9],[0.1,0.92],[0.2,0.837467]]"
+    data-cap="이 문제가 계산하는 지점 — 한 걸음 안에서 기울기를 네 곳에서 잰다: 시작 $k_1$, 중점 두 번 $k_2,k_3$($x{=}0.1$의 두 주황점), 끝 $k_4$. 이를 $1{:}2{:}2{:}1$ 로 가중평균한 $-0.813$ 으로 걸으면 $y_1=0.8375$(오른쪽 주황)로 정확해 곡선 위에 사실상 얹힌다."></div>
 </section>
 
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="수렴">
@@ -624,6 +644,11 @@ f = @(x,y) x - y;
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ |1-10h|<1 \Rightarrow 0<10h<2 \Rightarrow 0<h<0.2 $$</div><b>정답:</b> $h<0.2$. 넘으면 부호가 튀며 발산 — 감쇠해가 폭발한다.</div></div>
   </div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"exp(2*x)","label":"정확해 y=e²ˣ"},{"fn":"1 + 2*x","label":"Euler 접선(기울기 2)"}]'
+    data-xmin="0" data-xmax="0.4"
+    data-points="[[0,1],[0.1,1.2],[0.1,1.221403]]"
+    data-cap="연습 1이 계산하는 지점 — $y'=2y$(정확해 $e^{2x}$ 파랑)에서 시작 기울기 $2$ 로 $h=0.1$ 직진하면 $y_1=1.2$(아래 주황). 정확해 $e^{0.2}=1.2214$(위 주황) 아래로 처진 세로 간격이 이 한 스텝의 오차다."></div>
 </section>
 
 <!-- ════════════════════ 13-4 연립·고차 ════════════════════ -->
@@ -669,6 +694,11 @@ f = @(x,y) x - y;
       <div class="ans-final"><div class="ans-eq">$$ y_1=1.0,\quad v_1=-0.1 $$</div><b>정답:</b> $y$ 는 아직 $1$, 속도 $v$ 가 음으로 생겨 다음 스텝부터 내려간다(진동 시작).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"cos(x)","label":"위치 y=cos x"},{"fn":"-1*sin(x)","label":"속도 v=−sin x"}]'
+    data-xmin="0" data-xmax="6.5"
+    data-points="[[0,1],[0.1,1],[0.1,-0.1]]"
+    data-cap="이 문제의 대상 = 진동 $y''=-y$ (정확해 위치 $y=\cos x$ 파랑, 속도 $v=-\sin x$ 주황). 꼭대기 $(0,1)$에서 Euler 한 걸음($h=0.1$): 위치는 아직 $y_1=1.0$(위 주황), 속도가 $v_1=-0.1$(아래 주황)로 음이 되어 다음 걸음부터 곡선을 따라 내려가기 시작한다."></div>
 </section>
 
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="코드">
@@ -724,6 +754,7 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무에서 "어느 방법"은 정확도만이 아니라 <b>비용(기울기 평가 횟수)·안정영역·강성 여부·요구 정밀도</b>의 맞교환으로 정해진다 — 정확도(차수)와 안정성은 서로 다른 축이고, 정확해가 없을 때 신뢰의 근거는 "$h$ 를 반으로 줄여도 답이 거의 안 변하는가"($h$-절반 대조)다.</div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler O(h)"},{"r":0.25,"label":"Heun O(h²)"},{"r":0.0625,"label":"RK4 O(h⁴)"}]' data-cap="이 판단의 저울 — $h$ 를 절반으로 줄일 때 오차가 Euler $\times\tfrac12$, Heun $\times\tfrac14$, RK4 $\times\tfrac1{16}$ 로 준다. 높은 차수는 큰 $h$ 로도 정확하지만 스텝당 기울기 평가(비용)가 늘고, 강성 문제에선 차수와 무관하게 안정조건이 $h$ 를 조인다 — 비용·정확도·안정성의 맞교환이 방법 선택을 가른다."></div>
 </section>
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
   <div class="eyebrow">13-4 · 정리 · Summary</div>

@@ -218,6 +218,7 @@
       <div class="ans-final"><div class="ans-eq">$$ e = +0.18 $$</div><b>정답:</b> 데이터가 직선보다 $0.18$ 위에 있다. 이 값을 제곱($0.0324$)해 다른 점들과 합치면 $S=\sum e_i^2$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-fit="[0.29,1.91]" data-cap="공통 데이터에 적합된 직선 $y=0.29+1.91x$ — 빨간 점선이 각 점의 세로 잔차다. 이 문제의 $x{=}3$ 점 $(3,6.2)$은 직선값 $f(3){=}6.02$보다 위에 있어 잔차 $e=+0.18$."></div>
 </section>
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="함정">
@@ -271,6 +272,7 @@
       <div class="ans-final"><div class="ans-eq">$$ e = -0.2 $$</div><b>정답:</b> 데이터가 직선보다 $0.2$ 아래. 제곱($0.04$)해 다른 점과 합치면 $S=\sum e_i^2$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,3.2],[2,4.9],[3,7.2]]" data-fit="[1.1,2.0]" data-cap="연습 데이터 세 점에 적합된 직선 $y=1.1+2.0x$. 빨간 점선이 각 점의 잔차 — 연습 3의 $x{=}2$ 점 $(2,4.9)$는 직선값 $5.1$보다 아래라 $e=-0.2$."></div>
 </section>
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="그림">
@@ -394,6 +396,7 @@
       <div class="ans-final"><div class="ans-eq">$$ a_0 = 0.29 $$</div><b>정답:</b> 최적 직선 $y=0.29+1.91x$ 완성.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="0.29+1.91*x" data-xmin="-0.3" data-xmax="5.6" data-points="[[0,0.29],[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-cap="정규방정식을 푼 직선 $y=0.29+1.91x$. 맨 왼쪽 점 $(0,\,0.29)$ — 직선이 $x{=}0$에서 갖는 높이가 바로 이 문제에서 구한 절편 $a_0=0.29$."></div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="함정">
@@ -458,6 +461,7 @@ p = polyfit(x, y, 1);
       <div class="ans-final"><div class="ans-eq">$$ \sum x_i^4 = 979 $$</div><b>정답:</b> $X^TX$ 의 마지막 대각 원소. 2차 다항식 정규행렬 $\begin{bmatrix}6&15&55\\15&55&225\\55&225&979\end{bmatrix}$ 의 우하단.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="scatter" data-points="[[0,2.5],[1,3.5],[2,4.8],[3,5.9],[4,7.2],[5,8.3]]" data-fit="[2.424,1.177]" data-cap="연습 1의 6점 데이터에 적합된 직선 $y=2.424+1.177x$ — 기울기 $a_1=1.177$. 빨간 점선(잔차)이 모두 짧아 직선이 데이터를 잘 대표한다."></div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="그림">
@@ -579,6 +583,7 @@ p = polyfit(x, y, 1);
       <div class="ans-final"><div class="ans-eq">$$ a \approx 2.56,\qquad b=A_1=0.457 $$</div><b>정답:</b> 지수는 절편을 $\ln$ 에서 되돌리므로 $e$ 지수, 기울기 $b$ 는 그대로 $A_1$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="2.560*exp(0.4572*x)" data-xmin="0" data-xmax="5.4" data-points="[[1,4],[2,6.5],[3,10],[4,16.1],[5,25]]" data-cap="복원한 지수곡선 $y=2.560\,e^{0.457x}$ — 여기서 $a=e^{A_0}=e^{0.94}=2.56$. 원 데이터(주황)가 곡선에 얹혀, 선형화·회귀 뒤 되돌린 계수가 원공간에서 맞음을 확인한다."></div>
 </section>
 
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="함정">
@@ -756,6 +761,7 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       <div class="ans-final"><div class="ans-eq">$$ R^2 \approx 0.9957 $$</div><b>정답:</b> 잔차변동이 총변동의 $0.43\%$ 에 불과 → 설명력 $99.6\%$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-fit="[0.29,1.91]" data-cap="잔차(빨강)의 제곱합 $SS_{res}=0.171$이, 평균 둘레로 흩어진 총변동 $SS_{tot}=39.708$에 비해 극히 작다 → $R^2=1-0.171/39.708=0.9957$."></div>
 </section>
 
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="수렴">
@@ -837,6 +843,7 @@ fprintf('R^2_adj = %.4f\n', R2adj);
       <div class="ans-final"><div class="ans-eq">$$ R^2_{\text{adj}}\approx 0.9983 $$</div><b>정답:</b> 원 $R^2(0.999)$ 보다 소폭 하락 — 변수 수 벌점이 반영됨.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="0.18*x^2 + 0.18*x + 1.2" data-xmin="-0.3" data-xmax="5.3" data-points="[[0,1.28],[1,1.5],[2,2.34],[3,3.3],[4,4.87],[5,6.55]]" data-cap="완만히 위로 휜 데이터에 2차 다항곡선을 적합 — 점들이 곡선에 거의 붙어 잔차²합이 총변동의 $0.2\%$뿐. 연습 1의 $SS_{res}{=}0.045,\ SS_{tot}{=}22.5$로 $R^2=0.998$."></div>
 </section>
 
 <!-- ════════ 설계형 연습 · 방법 선택 판단 ════════ -->

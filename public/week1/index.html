@@ -204,6 +204,7 @@
       <div class="ans-final"><div class="ans-eq">$$ \frac{dv}{dt}\Big|_{0} \approx 9.365 $$</div><b>정답:</b> 참 기울기(접선)는 $g=9.81$. 할선은 그 근사값 — $\Delta t$ 를 줄이면 $9.81$ 에 가까워진다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"51.69*tanh(0.18977*x)","label":"참 v(t)"},{"fn":"9.365*x","label":"할선"}]' data-xmin="0" data-xmax="2.5" data-points="[[0,0],[2,18.73]]" data-cap="번지점퍼 속도곡선 $v(t)$(파랑) 위 두 주황점 $(0,0)$·$(2,18.73)$ 를 잇는 <b>할선</b>의 기울기 $\dfrac{\Delta v}{\Delta t}=\dfrac{18.73-0}{2}=9.365$ 를 계산 중 — 이 할선이 순간 기울기(접선 $g=9.81$)를 근사한다."></div>
 </section>
 
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="함정">
@@ -244,6 +245,7 @@
       <div class="ans-final"><div class="ans-eq">$$ v_{\text{term}} \approx 51.69\ \text{m/s} \;(\approx 186\ \text{km/h}) $$</div><b>정답:</b> 이 값은 해석해 $\tanh(\infty)=1$ 로도 확인된다 — 중력과 공기저항이 평형인 순간.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="9.81 - 0.003671*x^2" data-label="a(v)" data-xmin="0" data-xmax="55" data-points="[[0,9.81]]" data-roots="51.69" data-cap="가속도 $\dfrac{dv}{dt}=g-\dfrac{c_d}{m}v^2=9.81-0.003671\,v^2$ 를 <b>속도의 함수</b>로(가로축 = $v$) — $v=0$ 이면 $a=9.81$(주황), 곡선이 $0$ 을 가로지르는 점(빨강)이 <b>종단속도</b> $v_{\text{term}}=\sqrt{gm/c_d}=51.69$. 가속이 멈춰 속도가 더 안 커지는 순간."></div>
 </section>
 
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="그림">
@@ -345,6 +347,7 @@
       <div class="ans-final"><div class="ans-eq">$$ v_1 = 19.62\ \text{m/s} $$</div><b>정답:</b> 해석해는 $v(2)=18.73$. 큰 $\Delta t=2$ 라 약 $0.89$ 만큼 과대추정 — 오차의 시작.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"51.69*tanh(0.18977*x)","label":"참 v(t)"},{"fn":"9.81*x","label":"Euler 접선"}]' data-xmin="0" data-xmax="2.5" data-points="[[2,19.62]]" data-cap="Euler 첫 스텝 — $(0,0)$ 에서 기울기 $9.81$ 인 접선(주황)을 $\Delta t=2$ 만큼 따라가 $v_1=0+9.81\times2=19.62$(주황점). 참 곡선(파랑)의 $v(2)=18.73$ 보다 $0.89$ 높다 — 큰 스텝이 곡선을 직선으로 오해한 <b>과대추정</b>."></div>
 </section>
 
 <section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="수렴">
@@ -433,6 +436,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \frac{dv}{dt} \approx 6.51\ \text{m/s}^2 $$</div><b>정답:</b> 정지($v=0$)에선 $9.81$, 종단속도($v\approx51.7$)에선 $0$ — 속도가 커질수록 가속이 줄어드는 것을 한 값으로 확인.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="9.81 - 0.003671*x^2" data-label="a(v)" data-xmin="0" data-xmax="55" data-points="[[0,9.81],[9.81,9.46],[30,6.51]]" data-roots="51.69" data-cap="세 연습을 한 그림에 — 가속도 $a(v)=9.81-0.003671\,v^2$(가로축 = $v$). $v=0$ 이면 $a=9.81$(연습1의 첫 기울기), $v=9.81$ 이면 $9.46$(연습2에서 항력이 기울기를 깎음), $v=30$ 이면 $6.51$(연습3, 주황), $v\approx51.7$(빨강)에서 $0$=종단속도. Euler 각 스텝의 기울기가 곧 이 곡선 값이다."></div>
 </section>
 
 <section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="시연">
@@ -524,6 +528,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \varepsilon_t \approx 4.76\% $$</div><b>정답:</b> $\Delta t$ 를 $0.1$ 로 줄이면 이 오차는 $0.1\%$ 대로 떨어진다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="51.69*tanh(0.18977*x)" data-label="참 v(t)" data-xmin="0" data-xmax="2.5" data-points="[[2,18.73],[2,19.62]]" data-cap="$t=2$ 에서 두 값의 간격 — 곡선 위 <b>참값 18.73</b> 과 그 위 <b>수치해 19.62</b> 의 차 $E_t=0.89$ 가 참오차. 이를 참값으로 나눈 $\varepsilon_t=\dfrac{0.89}{18.73}\times100\approx4.76\%$ 를 계산 중."></div>
 </section>
 
 <section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="함정">
@@ -563,6 +568,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \varepsilon_t \approx 1.94\% $$</div><b>정답:</b> $t=2$ 의 $4.76\%$ 보다 작다 — 후반에는 속도가 종단속도에 가까워 곡률이 작아 Euler가 잘 맞는다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="51.69*tanh(0.18977*x)" data-label="참 v(t)" data-xmin="0" data-xmax="12" data-points="[[12,50.62],[12,51.60]]" data-cap="$t=12$ 에서 — 곡선 위 <b>참값 50.62</b> 와 <b>수치해 51.60</b> 의 간격은 겨우 $0.98$. 상대오차 $\varepsilon_t=\dfrac{0.98}{50.62}\times100\approx1.94\%$ — $t=2$ 의 $4.76\%$ 보다 작다. 종단속도 근처라 곡선이 평평해 Euler가 잘 맞는다."></div>
 </section>
 
 <section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="그림">
@@ -639,6 +645,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ v_2 \approx 36.41\ \text{m/s} $$</div><b>정답:</b> 속도가 커질수록 항력 $\frac{c_d}{m}v^2$ 이 커져 기울기(가속)가 줄어든다 — 종단속도로 향하는 과정.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"51.69*tanh(0.18977*x)","label":"참 v(t)"},{"fn":"19.62+8.397*(x-2)","label":"기울기 8.397"}]' data-xmin="0" data-xmax="5" data-points="[[2,19.62],[4,36.41]]" data-cap="Compute 둘째 스텝 — $t=2$ 의 $v_1=19.62$(주황)에서 기울기 $9.81-0.003670(19.62)^2=8.397$ 인 접선을 $\Delta t=2$ 따라가 $v_2=36.41$(주황, $t=4$). 참 곡선의 $v(4)=33.11$ 보다 위 — 큰 스텝의 <b>절단오차</b>가 누적된다."></div>
 </section>
 
 <section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="코드">
@@ -735,6 +742,7 @@ end
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무에서 "정답 방법"이 미리 정해진 문제는 드물다 — 해석해가 있으면 <b>검증의 잣대</b>로 쓰고, 없으면 수치해로 가되 $\Delta t$ 를 절반으로 줄여 답이 거의 안 변하는지(수렴)로 신뢰를 쌓는 이 <b>판단</b>이 엔지니어의 실력이다.</div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="51.69*tanh(0.18977*x)" data-label="참 v(t) · (A)" data-xmin="0" data-xmax="6" data-points="[[1,9.81],[2,19.27],[3,27.71],[4,34.70],[5,40.09],[6,44.00]]" data-cap="<b>(A)</b> $c_d$ 상수 번지점퍼 — 참 곡선(파랑)을 <b>공식</b>으로 안다. 그런데도 Euler 근사점(주황, $h{=}1$)을 함께 돌려 내 계산이 곡선을 재현하는지 <b>검증</b>한다. <b>(B)</b> $c_d$ 가 속도에 따라 변하면 이 공식 곡선이 사라져 <b>주황 계단만</b> 남는다 — 그래서 수치해가 유일한 길."></div>
 </section>
 
 <!-- ════════ 1-4 / 정리 ════════ -->

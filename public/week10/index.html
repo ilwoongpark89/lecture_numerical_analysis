@@ -217,6 +217,7 @@
       <div class="ans-final"><div class="ans-eq">$$ L_1(2.5)=0.75 $$</div><b>정답:</b> 가중합 $P(2.5)=1(-0.125)+4(0.75)+9(0.375)=6.25=2.5^2$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="-1*(x-1)*(x-3)" data-xmin="0.5" data-xmax="3.5" data-points="[[2.5,0.75]]" data-cap="지금 구하는 것 — Lagrange 기저 $L_1(x)=-(x-1)(x-3)$ 의 높이. 곡선은 자기 노드 $x{=}2$ 에서 1, 남의 노드 $x{=}1,3$ 에서 0이 된다. 답 $L_1(2.5)=0.75$ 는 $x{=}2.5$ 에서의 곡선 높이(주황 점)."></div>
 </section>
 
 <section class="screen" data-ch="10-1" data-chtitle="Lagrange 보간" data-stage="코드">
@@ -266,6 +267,7 @@ yq = lagrange_interp(x, y, 2.5);
       <div class="ans-final"><div class="ans-eq">$$ \sum_{i} L_i(x)=1 $$</div><b>정답:</b> $y_i\equiv 1$ 이면 $P(x)=\sum_i 1\cdot L_i(x)$. 상수 1 은 유일 보간이 자기 자신이므로 합은 항상 1.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2+x+1" data-xmin="-0.3" data-xmax="2.3" data-points="[[0,1],[1,3],[2,7],[1.5,4.75]]" data-cap="연습 1의 상황 — 세 점 $(0,1),(1,3),(2,7)$ 을 지나는 보간 다항식 $P_2(x)=x^2+x+1$. 구하는 값 $P_2(1.5)=4.75$ 는 $x{=}1.5$ 에서의 곡선 높이(주황). 곡선이 세 점을 정확히 지나는 것은 기저값의 합이 1이기 때문(연습 2)."></div>
 </section>
 
 <section class="screen" data-ch="10-1" data-chtitle="Lagrange 보간" data-stage="그림">
@@ -395,6 +397,7 @@ yq = lagrange_interp(x, y, 2.5);
       <div class="ans-final"><div class="ans-eq">$$ f[x_0,x_1,x_2]=1 $$</div><b>정답:</b> Newton 다항식 $P(x)=1+3(x-1)+1\cdot(x-1)(x-2)=x^2$.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2" data-xmin="0.5" data-xmax="3.5" data-points="[[1,1],[2,4],[3,9]]" data-cap="지금 구하는 것 — 세 점 $(1,1),(2,4),(3,9)$(주황)을 지나는 Newton 보간 곡선 $P(x)=x^2$ 의 <b>최고차(2차) 계수</b>. 답 $f[x_0,x_1,x_2]=1$ 은 곡선이 얼마나 휘는지(2차 계수)를 뜻한다 — 데이터가 $x^2$ 위에 있어 정확히 1."></div>
 </section>
 
 <section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="코드">
@@ -444,6 +447,7 @@ x = [1 2 3];  y = [1 4 9];
       <div class="ans-final"><div class="ans-eq">$$ P(2)=2^2+1=5 $$</div><b>정답:</b> 데이터 점 $(3,10),(4,17)$ 도 $x^2+1$ 위에 있음을 확인($10=9+1,\;17=16+1$).</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2+1" data-xmin="-0.3" data-xmax="4.3" data-points="[[0,1],[1,2],[3,10],[4,17],[2,5]]" data-cap="연습의 상황 — 네 점 $(0,1),(1,2),(3,10),(4,17)$ 은 모두 $P(x)=x^2+1$ 위에 있다. 3차 분할차분이 $0$ 이라 곡선은 2차에 머문다(3차 항 없음). 연습 2의 $P(2)=5$ 는 $x{=}2$ 에서의 곡선 높이(주황)."></div>
 </section>
 
 <section class="screen" data-ch="10-2" data-chtitle="Newton 차분 보간" data-stage="그림">
@@ -589,6 +593,7 @@ x = [1 2 3];  y = [1 4 9];
       <div class="ans-final"><div class="ans-eq">$$ \omega(0.5)=0.375 $$</div><b>정답:</b> 이 곱이 클수록(특히 노드 밖·양 끝) 보간 오차가 커진다. Chebyshev는 이 곱의 최댓값을 최소화한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x*(x-1)*(x-2)" data-xmin="-0.3" data-xmax="2.3" data-roots="0,1,2" data-points="[[0.5,0.375]]" data-cap="지금 구하는 것 — 오차 공식의 노드 곱 $\omega(x)=(x{-}0)(x{-}1)(x{-}2)$ 의 높이. 세 노드 $0,1,2$(빨강)에서 0이 되고 그 사이에서 부풀어 오른다. 답 $\omega(0.5)=0.375$(주황 점). 이 곱이 클수록 보간 오차가 커진다."></div>
 </section>
 
 <section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="코드">
@@ -634,6 +639,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \max_{[-1,1]}|f-P_n|\to\infty $$</div><b>정답:</b> (2) 발산. 등간격 고차 보간은 수렴을 보장하지 않는다 — Chebyshev 노드 또는 스플라인으로 전환해야 한다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="sqrt(1-x^2)" data-xmin="-1.15" data-xmax="1.15" data-roots="0.866,0,-0.866" data-points="[[0.866,0.5],[0,1],[-0.866,0.5]]" data-cap="연습 1의 상황 — Chebyshev 노드는 반원 위 <b>같은 각도</b> 점들을 $x$축에 내린 그림자. $n{=}2$ 는 $30°$ 간격이라 $x_0=\cos 30°=0.866,\ x_1=0,\ x_2=-0.866$(빨강). 그림자가 <b>양 끝에 더 촘촘</b>해 끝점 진동을 억제한다(연습 2의 발산 처방)."></div>
 </section>
 
 <section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="그림">
@@ -761,6 +767,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ M_1=-4,\quad M_2=4 $$</div><b>정답:</b> $M=(0,-4,4,0)$. 이 곡률로 각 구간 계수 $a_i,b_i,c_i,d_i$ 가 정해진다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x&lt;1 ? 1.66667*x-0.66667*x^3 : (x&lt;2 ? 1-0.33333*(x-1)-2*(x-1)^2+1.33333*(x-1)^3 : -0.33333*(x-2)+2*(x-2)^2-0.66667*(x-2)^3)" data-xmin="0" data-xmax="3" data-points="[[0,0],[1,1],[2,0],[3,1]]" data-cap="지금 푸는 것 — 네 점 $(0,0),(1,1),(2,0),(3,1)$(주황)을 지나는 이 Natural cubic spline 의 이음매 곡률. 답 $M_1=S''(1)=-4$ 는 <b>봉우리 $x{=}1$ 의 곡률</b>(아래로 볼록), $M_2=S''(2)=4$ 는 골 $x{=}2$ 의 곡률(위로 볼록). 양 끝은 $S''=0$(natural)."></div>
 </section>
 
 <section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="코드">
@@ -805,6 +812,7 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
       <div class="ans-final"><div class="ans-eq">$$ S''(x_0)=0,\quad S''(x_n)=0 $$</div><b>정답:</b> "natural"은 양 끝에서 곡률 0 = 직선처럼 뻗음. clamped(기울기 지정)·not-a-knot 은 다른 경계 조건.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="1.4 + 0.6*sin(0.9*x)" data-xmin="0.6" data-xmax="5.4" data-points="[[1,1.87],[2,1.98],[3,1.66],[4,1.13],[5,0.81]]" data-cap="연습 1의 상황 — 데이터 점 <b>5개</b>(주황) → 구간 <b>4개</b>. 각 구간마다 3차 조각 $S_i=a_i+b_i(x{-}x_i)+c_i(\cdot)^2+d_i(\cdot)^3$ 계수 4개 → 전체 $4\times4=16$ 개 미지수. 매듭점에서 값·기울기·곡률($C^2$)이 매끄럽게 이어진다."></div>
 </section>
 
 <!-- ════════ 10-4 / 설계형 연습 (방법 선택·판단) ════════ -->
@@ -823,6 +831,7 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무에서 보간 선택은 "가장 정확한 것"이 아니라 <b>안정성·재사용·계산량</b>의 트레이드오프다 — 등간격 고차를 고르면 점을 더할수록(Runge) 결과가 오히려 나빠진다.</div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"1/(1+25*x^2)","label":"참 함수 f"},{"fn":"1-13.203*x^2+61.3672*x^4-102.815*x^6+53.6893*x^8","label":"등간격 8차 보간"}]' data-xmin="-1" data-xmax="1" data-points="[[-1,0.038],[-0.75,0.066],[-0.5,0.138],[-0.25,0.39],[0,1],[0.25,0.39],[0.5,0.138],[0.75,0.066],[1,0.038]]" data-cap="시나리오 (가)의 근거 — 등간격 9점(주황)을 <b>하나의 8차 다항식</b>으로 다 꿰면(주황 곡선) 양 끝에서 크게 출렁여 $-1$ 까지 처진다(참함수는 항상 $0{\sim}1$). 점이 많다고 차수를 높이면 오히려 나빠진다 — 그래서 (가)는 구간별 저차 <b>스플라인</b>이 답."></div>
 </section>
 
 <section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="생각">

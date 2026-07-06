@@ -170,6 +170,7 @@
       <div class="ans-final"><div class="ans-eq">$$ f(1)f(2) = (-2)(4) = -8 < 0 $$</div><b>정답:</b> 부호가 다르므로 $[1,2]$ 안에 근이 존재 — 이분법 시작 구간으로 적합.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^3 - x - 2" data-xmin="0.5" data-xmax="2.3" data-points="[[1,-2],[2,4]]" data-roots="1.5214" data-cap="지금 계산 중 — 정수점 부호로 근을 가둔다. $f(1){=}{-}2$ (아래·$-$), $f(2){=}4$ (위·$+$) 로 부호가 갈리므로 두 점 사이 $[1,2]$ 에 근(빨강 $\approx1.5214$)이 있다. 주황 두 점이 방금 대입한 자리."></div>
 </section>
 
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="함정">
@@ -304,6 +305,7 @@
       <div class="ans-final"><div class="ans-eq">$$ c_2 = 1.75 $$</div><b>정답:</b> $f(1.75)=1.61>0$ 이므로 다음엔 $[1.5,\,1.75]$ 로 좁혀진다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^3 - x - 2" data-xmin="1.2" data-xmax="2.1" data-points="[[1.5,-0.125],[1.75,1.6094]]" data-roots="1.5214" data-cap="지금 계산 중 — 1회째로 구간이 $[1.5,\,2]$ 로 좁혀졌고, 그 한가운데 $c_2{=}1.75$(오른쪽 주황)를 찍는다. 왼쪽 주황은 직전 중점 $c_1{=}1.5$. 근(빨강 $\approx1.5214$)을 향해 폭을 절반씩 조인다."></div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="수렴">
@@ -391,6 +393,7 @@ f = @(x) x.^3 - x - 2;
       <div class="ans-final"><b>정답:</b> 약 $0.00195$. 매 반복 절반이므로 $2^{10}\approx10^3$ 배 줄었다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법 (폭 ×½)"}]' data-cap="지금 다루는 대상 — 이분법 오차는 매 반복 <b>정확히 절반</b>($\times\tfrac12$, 선형). 폭 $2$ 에서 $10$회면 $2/2^{10}{\approx}0.00195$, $10^{-6}$ 까지는 $n{\ge}\log_2 10^6{\approx}20$회. 곧게 내려가는 로그 기울기가 '반씩 줄임'의 표시."></div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="그림">
@@ -491,6 +494,7 @@ f = @(x) x.^3 - x - 2;
       <div class="ans-final"><div class="ans-eq">$$ x_1 \approx 1.521739 $$</div><b>정답:</b> 단 1회로 이미 근($1.52138$)과 소수 3자리까지 일치 — 이차 수렴의 위력.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^3 - x - 2" data-xmin="1.25" data-xmax="1.8" data-points="[[1.5,-0.125],[1.521739,0.00214]]" data-roots="1.5214" data-cap="지금 계산 중 — $x_0{=}1.5$(왼쪽 주황, $f{=}{-}0.125$)에서 접선을 그으면 $x$축과 $x_1{\approx}1.5217$(오른쪽 주황, 거의 축 위)에서 만난다. 단 한 번에 근(빨강 $1.5214$) 코앞 — 이차 수렴의 힘."></div>
 </section>
 
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="수렴">
@@ -578,6 +582,7 @@ df = @(x) 3*x.^2 - 1;
       <div class="ans-final"><div class="ans-eq">$$ (10^{-8})^2 = 10^{-16} $$</div><b>정답:</b> 이차 수렴 = 지수가 매 반복 두 배 → 기계 정밀도에 즉시 도달.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2 - 2" data-xmin="0.6" data-xmax="1.7" data-points="[[1,-1],[1.5,0.25]]" data-roots="1.41421356" data-cap="지금 다루는 대상 — $\sqrt2$ 는 $f(x){=}x^2{-}2$ 의 근(빨강 $1.4142$). $x_0{=}1$(왼쪽 주황, $f{=}{-}1$)에서 Newton이 $x_1{=}1.5$(오른쪽 주황)로 도약하고 곧 근에 수렴. 오차는 $10^{-8}{\to}10^{-16}$ 처럼 <b>제곱</b>으로 급락(이차)."></div>
 </section>
 
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="그림">

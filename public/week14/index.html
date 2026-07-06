@@ -153,6 +153,7 @@
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \frac{50-2(20)+10}{1^2}=\frac{20}{1}=20 $$</div><b>정답:</b> 양수 → 아래로 볼록(곡률 &gt; 0).</div></div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="10*x^2+20*x+20" data-xmin="-1.4" data-xmax="1.4" data-points="[[-1,10],[0,20],[1,50]]" data-cap="세 격자값 $u_{i-1}{=}10,\ u_i{=}20,\ u_{i+1}{=}50$ 을 지나는 곡선(주황 점) — 그 휘어짐(곡률)이 곧 2계 중심차분 $=20$. 양수라 아래로 볼록(가운데 20 이 이웃 평균 30 보다 아래)."></div>
 </section>
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="함정">
   <div class="eyebrow">14-1 · 함정 · Pitfalls</div>
@@ -248,6 +249,7 @@
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ 100+0.4(0-200+0)=100-80=20 $$</div><b>정답:</b> 뜨거운 점이 이웃으로 열을 나눠 급락 — 확산이 봉우리를 깎는다.</div></div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="100-100*abs(x)" data-xmin="-1" data-xmax="1" data-points="[[0,20]]" data-cap="봉우리 $T_i{=}100$ (이웃 $0$) 프로파일(파랑). FTCS 한 스텝 뒤 가운데 = 주황 점 $T_i^{n+1}=100+0.4(0-200+0)=20$ 로 급락 — 확산이 뾰족한 봉우리를 이웃 쪽으로 깎아 낮춘다."></div>
 </section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="수렴">
   <div class="eyebrow">14-2 · 수렴 · Stability</div>
@@ -393,6 +395,7 @@ end
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ u=\tfrac14(100+0+0+50)=\tfrac{150}{4}=37.5 $$</div><b>정답:</b> 모든 내부점이 이런 관계를 <b>동시에</b> 만족할 때까지 반복.</div></div>
   </div>
+  <div class="nafig" data-fig="matrixgrid" data-mat='[["","100",""],["0","37.5","50"],["","0",""]]' data-hi="[[1,1]]" data-cap2="네 이웃(상 100 · 좌 0 · 우 50 · 하 0) → 가운데 = 평균" data-cap="내부 한 점의 네 이웃 $=100,\,0,\,50,\,0$. Jacobi 갱신값 = 네 이웃의 평균 $=\tfrac14(100+0+50+0)=37.5$ (가운데 강조). 모든 내부점이 이 관계를 동시에 만족할 때까지 반복한다."></div>
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="코드">
   <div class="eyebrow">14-3 · 코드 · MATLAB</div>
@@ -492,6 +495,7 @@ end
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \Delta t\le\frac{\Delta x}{c}=\frac{0.1}{2}=0.05 $$</div><b>정답:</b> $\Delta t>0.05$ 면 발산. 파동 안정조건은 확산보다 완만($\Delta t\propto\Delta x$).</div></div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"20*x","label":"C = 20·Δt"},{"fn":"1","label":"안정 한계 C=1"}]' data-xmin="0" data-xmax="0.1" data-points="[[0.05,1]]" data-cap="Courant 수 $C=c\Delta t/\Delta x=20\,\Delta t$ (파랑)가 안정 한계 $C{=}1$ (주황선)에 닿는 지점 = 최대 $\Delta t=\Delta x/c=0.1/2=0.05$ (주황 점). $\Delta t\gt0.05$ 면 $C\gt1$ 이 되어 발산."></div>
 </section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="생각">
   <div class="longform" data-qid="reflect-14-3" data-kind="reflect">
@@ -529,6 +533,7 @@ end
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution"><div class="ans-final"><div class="ans-eq">$$ \Delta t\le\frac{\Delta x}{c}=\frac{0.2}{4}=0.05 $$</div><b>정답:</b> $\Delta t>0.05$ 면 수치 파동이 물리 파동을 못 따라가 발산. 확산($\lambda\le\tfrac12$)보다 완만한 $\Delta t\propto\Delta x$ 제약.</div></div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"50*x","label":"λ = αΔt/Δx²"},{"fn":"0.5","label":"안정 한계 λ=½"}]' data-xmin="0" data-xmax="0.012" data-points="[[0.005,0.25]]" data-cap="연습 ①: $\lambda=\alpha\Delta t/\Delta x^2=0.5\cdot\Delta t/0.1^2=50\,\Delta t$ (파랑). $\Delta t=0.005$ 일 때 $\lambda=0.25$ (주황 점) — 안정 한계 $\lambda=\tfrac12$ (주황선) 아래라 안정. 연습 ②의 파동 CFL $C\le1$ 도 똑같이 '$\Delta t$ 상한' 을 정하는 조건."></div>
 </section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="그림">
   <div class="eyebrow">14-4 · 그림 · 파동 이동</div>
@@ -546,6 +551,7 @@ end
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무의 방법 선택은 "어느 것이 절대적으로 옳은가"가 아니라 "이 조건에서 <strong>안정성과 스텝당 비용의 트레이드오프</strong>가 어느 쪽 총비용을 작게 만드는가"다 — 이 저울질이 수치해석 엔지니어의 핵심 판단이다.</div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x^2","label":"명시적 FTCS ∝ N²"},{"fn":"x","label":"음함수 ∝ N"}]' data-xmin="1" data-xmax="10" data-cap="가로 = 격자 촘촘함 $N=1/\Delta x$, 세로 = 목표 시각까지 필요한 시간 스텝 수. 명시적 FTCS는 $\Delta t\propto\Delta x^2$ 라 $\propto N^2$ 로 폭증(파랑), 음함수는 $\Delta t\propto\Delta x$ 라 $\propto N$ (주황). 스텝당 연립 풀이 비용을 감안해도, 격자가 아주 촘촘하면 음함수 총비용이 작아지는 지점이 생긴다 — 이 저울질이 판단의 핵심."></div>
 </section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="정리">
   <div class="eyebrow">14-4 · 정리 · Summary</div>

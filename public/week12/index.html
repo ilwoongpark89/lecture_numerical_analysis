@@ -230,6 +230,7 @@
       <div class="ans-final"><div class="ans-eq">$$ f'(2)\approx 12.01 $$</div><b>정답:</b> 참값 $12$ 와 오차 $0.01$ — $O(h^2)$ 답게 $h^2=0.01$ 규모. 전진차분이면 $12.61$(오차 $0.61$)로 훨씬 부정확하다.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^3" data-xmin="1.6" data-xmax="2.4" data-points="[[1.9,6.859],[2.1,9.261]]" data-cap="$f(x)=x^3$ 곡선 위 두 주황점 $(1.9,\,6.859)$·$(2.1,\,9.261)$ 를 잇는 <b>할선</b>의 기울기가 곧 중앙차분 $\dfrac{9.261-6.859}{2(0.1)}=12.01$ — 중심 $x{=}2$ 자체는 안 쓰고 좌우 이웃만으로 접선(참값 $f'(2)=12$)을 근사한다."></div>
 </section>
 
 <section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="수렴">
@@ -325,6 +326,7 @@ end
       <div class="dstep2"><div class="step-label">계산</div>$$ \frac{0.095310-0}{0.1}=0.95310 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ f'(1)\approx0.9531 $$</div><b>정답:</b> 오차 $\approx0.047$ — $O(h)$ 라 $h=0.1$ 규모. 중앙차분이면 $0.9967$ 로 훨씬 정확했을 것.</div>
     </div>
+    <div class="nafig" data-fig="funcplot" data-fn="ln(x)" data-xmin="0.6" data-xmax="1.5" data-points="[[1,0],[1.1,0.09531]]" data-cap="$f(x)=\ln x$ 곡선 위 두 주황점 $(1,\,0)$·$(1.1,\,0.09531)$ 를 잇는 <b>전진</b> 할선의 기울기 $\dfrac{0.09531-0}{0.1}=0.9531$ — 한쪽 점만 써서 $x{=}1$ 접선(참값 $1$)을 근사($O(h)$)."></div>
   </div>
   <div class="prob">
     <div class="prob-num">연습 2 · 중앙차분</div>
@@ -336,6 +338,7 @@ end
       <div class="dstep2"><div class="step-label">계산</div>$$ \frac{0.099833-(-0.099833)}{2(0.1)}=\frac{0.199666}{0.2}=0.99833 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ f'(0)\approx0.99833 $$</div><b>정답:</b> 오차 $1.7\times10^{-3}\approx h^2/6$ — 중앙차분의 $O(h^2)$ 확인.</div>
     </div>
+    <div class="nafig" data-fig="funcplot" data-fn="sin(x)" data-xmin="-0.8" data-xmax="0.8" data-points="[[-0.1,-0.099833],[0.1,0.099833]]" data-cap="$f(x)=\sin x$ 곡선 위 <b>대칭</b> 두 주황점 $(-0.1,\,-0.0998)$·$(0.1,\,0.0998)$ 를 잇는 <b>중앙</b> 할선의 기울기 $\dfrac{0.199666}{2(0.1)}=0.99833$ — 대칭 배치라 $x{=}0$ 접선(참값 $\cos 0=1$)에 아주 가깝다($O(h^2)$)."></div>
   </div>
 </section>
 
@@ -452,6 +455,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ f''(1)\approx12.02 $$</div><b>정답:</b> 참값 $12$, 오차 $0.02$ — $O(h^2)$($=\tfrac{h^2}{12}f''''$ 규모). 분모가 $h^2$ 임을 놓치지 말 것.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^4" data-xmin="0.7" data-xmax="1.3" data-points="[[0.9,0.6561],[1,1],[1.1,1.4641]]" data-cap="$f(x)=x^4$ 곡선 위 세 주황점 $(0.9,\,0.6561)$·$(1,\,1)$·$(1.1,\,1.4641)$. 2계 중앙차분은 이 세 점이 이루는 <b>휘어짐(곡률)</b>을 잰다 $\dfrac{1.4641-2(1)+0.6561}{0.1^2}=12.02$ — 참값 $f''(1)=12$."></div>
 </section>
 
 <section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="수렴">
@@ -514,6 +518,7 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
       <div class="dstep2"><div class="step-label">Step 2 · $12h=12$ 로 나눔</div>$$ \frac{144}{12}=12 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ f'(2)\approx 12 $$</div><b>정답:</b> 참값 $12$ 와 <strong>정확히</strong> 일치. $O(h^4)$ 공식의 오차항은 $\tfrac{h^4}{30}f^{(5)}$ 인데 3차 다항식은 $f^{(5)}=0$ 이라, $h=1$ 처럼 큰 스텝에도 오차가 없다 — 4차 이하 다항식을 정확히 미분한다.</div>
     </div>
+    <div class="nafig" data-fig="funcplot" data-fn="x^3" data-xmin="-0.3" data-xmax="4.3" data-points="[[0,0],[1,1],[3,27],[4,64]]" data-cap="$f(x)=x^3$ 곡선 위 네 주황점 $f(0),f(1),f(3),f(4)$ — 중심 $x{=}2$ 는 <b>안 쓰고</b> 좌우 두 겹 이웃만 가중조합 $\dfrac{-64+8(27)-8(1)+0}{12(1)}=12$ 하면 $f'(2)=12$ 와 정확히 일치."></div>
   </div>
   <div class="prob">
     <div class="prob-num">연습 2 · 2계 중앙차분</div>
@@ -526,6 +531,7 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
       <div class="dstep2"><div class="step-label">Step 2 · $h^2=0.01$ 로 나눔</div>$$ \frac{0.010008}{0.01}=1.0008 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ f''(0)\approx 1.0008 $$</div><b>정답:</b> 참값 $1$, 오차 $\approx8\times10^{-4}$ — $\tfrac{h^2}{12}f''''=\tfrac{0.01}{12}\approx8.3\times10^{-4}$ 규모의 $O(h^2)$. 분모가 $h^2$ 임을 놓치지 말 것.</div>
     </div>
+    <div class="nafig" data-fig="funcplot" data-fn="exp(x)" data-xmin="-0.3" data-xmax="0.3" data-points="[[-0.1,0.904837],[0,1],[0.1,1.105171]]" data-cap="$f(x)=e^x$ 곡선 위 세 주황점 $(-0.1,\,0.9048)$·$(0,\,1)$·$(0.1,\,1.1052)$. 2계 중앙차분 $\dfrac{1.105171-2+0.904837}{0.1^2}=1.0008$ 로 곡률(참값 $f''(0)=1$)을 근사."></div>
   </div>
   <div class="prob">
     <div class="prob-num">연습 3 · 편측 $O(h^2)$ (경계)</div>
@@ -538,6 +544,7 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
       <div class="dstep2"><div class="step-label">Step 2 · $2h=0.2$ 로 나눔</div>$$ \frac{0.40}{0.2}=2.0 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ f'(1)\approx 2.0 $$</div><b>정답:</b> 참값 $2$ 와 일치. 편측 공식은 한쪽 데이터만으로도 $O(h^2)$ — 단순 전진차분($O(h)$)보다 한 차수 정확해 경계에서도 차수를 유지한다.</div>
     </div>
+    <div class="nafig" data-fig="funcplot" data-fn="x^2" data-xmin="0.85" data-xmax="1.35" data-points="[[1,1],[1.1,1.21],[1.2,1.44]]" data-cap="왼쪽 <b>경계</b>라 오른쪽 세 점 $(1,\,1)$·$(1.1,\,1.21)$·$(1.2,\,1.44)$ 만 있다. 편측 $O(h^2)$ 공식 $\dfrac{-3(1)+4(1.21)-1.44}{2(0.1)}=2.0$ — 한쪽 이웃만으로 $x{=}1$ 접선(참값 $f'(1)=2$)을 근사."></div>
   </div>
 </section>
 
@@ -644,6 +651,7 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
       <div class="ans-final"><div class="ans-eq">$$ D_\text{R}=1.02 $$</div><b>정답:</b> 더 정밀한 $D(h/2)=1.04$ 쪽으로 당겨진 뒤 그 너머로 살짝 외삽됐다. 두 근사의 $h^2$ 오차가 상쇄되어 $O(h^4)$ 정확도.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="1.02 + 2*x" data-xmin="0" data-xmax="0.05" data-points="[[0.04,1.1],[0.01,1.04],[0,1.02]]" data-cap="가로축 $=h^2$. 두 근사 $D(h)=1.10$($h^2{=}0.04$)·$D(h/2)=1.04$($h^2{=}0.01$) 를 잇는 직선을 $h^2{=}0$ 으로 <b>외삽</b>하면 세로 절편 $D_\text{R}=1.02$ — $h^2$ 오차가 사라진 극한값($O(h^4)$)."></div>
 </section>
 
 <section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="수렴">
@@ -829,6 +837,7 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
       <div class="ans-final"><div class="ans-eq">$$ \frac{\partial f}{\partial x}(3,2)=6.0 $$</div><b>정답:</b> 참값 $2x=6$ 과 정확히 일치. $y$ 는 두 점에서 같은 값($2$)이라 자동으로 소거된다 — 한 방향만 움직이는 편미분의 성질.</div>
     </div>
   </div>
+  <div class="nafig" data-fig="funcplot" data-fn="x^2 + 4" data-xmin="2.6" data-xmax="3.4" data-points="[[2.9,12.41],[3.1,13.61]]" data-cap="$y{=}2$ 로 고정한 단면 $f(x,2)=x^2+4$(파랑) 위 두 주황점 $(2.9,\,12.41)$·$(3.1,\,13.61)$ 를 잇는 할선 기울기 $\dfrac{13.61-12.41}{2(0.1)}=6$ = $\partial f/\partial x$ — $y$ 를 고정했으니 이 단면의 접선기울기(참값 $2x=6$)만 잰다."></div>
 </section>
 
 <section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="함정">
@@ -907,6 +916,7 @@ fprintf('fx=%.4f  fy=%.4f  fxy=%.4f  lap=%.4f\n', fx, fy, fxy, lap);
     <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무에서 방법 선택을 좌우하는 것은 '공식의 차수'가 아니라 <b>데이터의 잡음 수준과 경계 유무</b>다 — 잘못 고른 $h$ 나 고차 공식 남용은 매끈해 보이는 답 뒤에 큰 오차를 숨긴다.</div>
+    <div class="nafig" data-fig="scatter" data-points="[[0,20.6],[1,24.1],[2,26.2],[3,30.1],[4,32],[5,36.2],[6,38.1]]" data-fit="[20.5,3]" data-cap="실측 온도 $T(t_k)$(주황) — 센서 <b>잡음</b>이 섞여 있다. 원데이터를 그대로 차분하면 잡음이 $\div h$ 로 증폭돼 튄다. 먼저 회귀직선(파랑)으로 매끄럽게 한 뒤 그 기울기 $a_1\approx3$ 을 가열속도 $dT/dt$ 로 읽는 편이 안전하다."></div>
   </div>
 </section>
 <section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="정리">
