@@ -181,6 +181,11 @@
     <div class="pitfall"><h4>⚠ 불연속이면 무효</h4><p>$1/x$ 는 $[-1,1]$ 에서 부호가 바뀌지만 근이 아니라 <b>불연속</b>일 뿐 — 연속 가정 필수.</p></div>
     <div class="pitfall"><h4>⚠ 성긴 스캔의 누락</h4><p>간격이 크면 <b>가까운 두 근</b>이 한 칸에 들어 부호 변화가 상쇄된다.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>구간 $[0,1]$ 스캔</th><th>$x{=}0$</th><th>$0.4$</th><th>$0.5$</th><th>$0.6$</th><th>$x{=}1$</th></tr></thead><tbody>
+    <tr><td class="stp-k">$f(x)=\dfrac{1}{\,x-0.5\,}$</td><td>$-2$</td><td>$-10$</td><td>$\pm\infty$</td><td>$+10$</td><td>$+2$</td></tr>
+    <tr><td class="stp-k">부호</td><td>$-$</td><td>$-$</td><td>극점</td><td>$+$</td><td>$+$</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">부호 판정이 거짓말한다 — $f(0)\,f(1)=(-2)(+2)=-4&lt;0$</div>양 끝 부호가 <b>달라</b> 이분법은 "근 있음"으로 <b>출발</b>하지만, 정작 조여드는 $x{=}0.5$ 는 근이 아니라 <b>불연속(극점)</b>이다 — 그 자리에서 $|f|\to\infty$ 로 <b>발산</b>할 뿐 $0$ 이 아니다. 중간값 정리의 <b>연속 가정</b>이 깨지면 부호 곱이 음수여도 근이 없으므로, 답을 얻은 뒤 반드시 $f(\hat x)\approx0$ 인지 <b>대입 검산</b>해야 한다.</div>
 </section>
 
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="그림">
@@ -323,6 +328,11 @@
     <div class="pitfall"><h4>⚠ 느리다</h4><p>선형 수렴이라 Newton 대비 <b>수 배~수십 배</b> 반복이 필요하다. 정밀도가 중요하면 비효율적.</p></div>
     <div class="pitfall"><h4>⚠ 복소근 불가</h4><p>실수 축 위 부호변화만 이용 → <b>복소수 근</b>은 찾을 수 없다.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:640px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>반복 $n$</th><th>$1$</th><th>$2$</th><th>$3$</th><th>$4$</th><th>$5$</th><th>$10$</th><th>$20$</th></tr></thead><tbody>
+    <tr><td class="stp-k">이분법 오차 $\le 1/2^{n}$</td><td>$5\times10^{-1}$</td><td>$2.5\times10^{-1}$</td><td>$1.3\times10^{-1}$</td><td>$6.3\times10^{-2}$</td><td>$3.1\times10^{-2}$</td><td>$9.8\times10^{-4}$</td><td>$9.5\times10^{-7}$</td></tr>
+    <tr><td class="stp-k">Newton 오차 $|\varepsilon_n|$</td><td>$2\times10^{-2}$</td><td>$4\times10^{-4}$</td><td>$1\times10^{-7}$</td><td>$8\times10^{-15}$</td><td>$\approx0$</td><td>—</td><td>—</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">"느리다"를 숫자로 — 같은 근 $\approx1.5214$, $f(x)=x^3-x-2$</div>이분법 오차는 매 반복 <b>정확히 절반</b>(선형)이라 $10^{-6}$ 까지 <b>~20회</b>를 갈아 넣어야 한다. Newton 오차는 <b>제곱</b>으로 줄어(이차) <b>4회</b> 만에 기계 정밀도($10^{-15}$)에 닿는다 — $n{=}4$ 열에서 이분법은 아직 $0.06$ 인데 Newton은 이미 $10^{-15}$ 다. 수렴은 보장되지만 <b>느린 것</b>이 이분법이 치르는 대가다.</div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="코드">

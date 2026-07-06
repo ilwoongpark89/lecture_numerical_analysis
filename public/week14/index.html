@@ -163,6 +163,23 @@
     <div class="pitfall"><h4>⚠ 경계조건 오류</h4><p>경계값(Dirichlet)·경계기울기(Neumann) 처리를 틀리면 전체 해가 틀린다.</p></div>
     <div class="pitfall"><h4>⚠ 차원의 저주</h4><p>2D·3D 격자는 미지수가 $N^2,N^3$ 로 폭증 → 반복법·희소행렬 필수.</p></div>
   </div>
+  <div style="margin-top:18px;font-weight:600;color:var(--ink)">⚠ 반례 ① 성긴 격자 — 오차가 $O(\Delta x^2)$</div>
+  <p class="lede" style="margin-top:6px">$f(x)=\sin x$ 를 2계 중심차분 $\dfrac{f(x{+}\Delta x)-2f(x)+f(x{-}\Delta x)}{\Delta x^2}$ 로 근사($f''(1)=-0.8415$ 가 참값). $\Delta x$ 를 반으로 줄일 때마다 오차가 <strong>정확히 1/4</strong> 로 — 성긴 격자(큰 $\Delta x$)는 곧 큰 오차다.</p>
+  <div class="stp-tblwrap" style="max-width:520px;margin:12px auto 0"><table class="stp-tbl"><thead><tr><th class="stp-k">$\Delta x$</th><th>근사 $f''(1)$</th><th>오차</th><th>비율</th></tr></thead><tbody>
+    <tr><td class="stp-k">0.5</td><td>−0.8241</td><td>$1.74\times10^{-2}$</td><td>—</td></tr>
+    <tr><td class="stp-k">0.25</td><td>−0.8371</td><td>$4.37\times10^{-3}$</td><td>÷3.98</td></tr>
+    <tr><td class="stp-k">0.125</td><td>−0.8404</td><td>$1.10\times10^{-3}$</td><td>÷3.99</td></tr>
+    <tr><td class="stp-k">0.0625</td><td>−0.8412</td><td>$2.74\times10^{-4}$</td><td>÷4.00</td></tr>
+  </tbody></table></div>
+  <div style="margin-top:8px;font-size:0.92em;color:var(--muted,#64748b)">비율이 4로 수렴 = 오차 $\propto\Delta x^2$. 격자를 성기게 잡으면 오차가 제곱으로 벌어진다 — 급변 영역일수록 치명적.</div>
+  <div style="margin-top:18px;font-weight:600;color:var(--ink)">⚠ 반례 ② 차원의 저주 — 미지수 $=N^d$</div>
+  <p class="lede" style="margin-top:6px">한 변에 격자점 $N$ 개를 두면 미지수는 차원 $d$ 에 대해 $N^d$ 개로 폭증한다.</p>
+  <div class="stp-tblwrap" style="max-width:520px;margin:12px auto 0"><table class="stp-tbl"><thead><tr><th class="stp-k">한 변 $N$</th><th>1D · $N$</th><th>2D · $N^2$</th><th>3D · $N^3$</th></tr></thead><tbody>
+    <tr><td class="stp-k">10</td><td>10</td><td>100</td><td>1,000</td></tr>
+    <tr><td class="stp-k">50</td><td>50</td><td>2,500</td><td>125,000</td></tr>
+    <tr><td class="stp-k">100</td><td>100</td><td>10,000</td><td>1,000,000</td></tr>
+  </tbody></table></div>
+  <div style="margin-top:8px;font-size:0.92em;color:var(--muted,#64748b)">3D $N=100$ 이면 미지수 100만 개. 밀집행렬로 풀면 원소가 $(10^6)^2=10^{12}$ 개(수 TB) — 그래서 <b>희소행렬·반복법</b>이 필수다.</div>
 </section>
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="그림">
   <div class="eyebrow">14-1 · 그림 · 유한차분 격자</div>

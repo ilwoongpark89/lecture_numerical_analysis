@@ -208,6 +208,20 @@
     <div class="pitfall"><h4>⚠ Overflow / Underflow</h4><p>$\text{realmax}$ 초과 → $\infty$, $\text{realmin}$ 미만 → 비정규화수 거쳐 $0$ 으로 소멸.</p></div>
     <div class="pitfall"><h4>⚠ NaN 은 수직선에 없다</h4><p>$0/0$, $\infty-\infty$ 는 $\texttt{NaN}$. $\texttt{NaN}\neq\texttt{NaN}$ 이라 비교로도 못 걸러낸다($\texttt{isnan}$ 사용).</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 ① 반올림 — $0.1+0.2$ 를 double 에 실제로 저장하면 (17번째 자리에서 어긋남)</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>식</th><th>실제 저장된 값</th></tr></thead><tbody>
+    <tr><td class="stp-k">$0.1+0.2$</td><td>$0.30000000000000004$</td></tr>
+    <tr><td class="stp-k">$0.3$ (직접)</td><td>$0.29999999999999999$</td></tr>
+    <tr><td class="stp-k">차이</td><td>$5.55\times10^{-17}$</td></tr>
+    <tr><td class="stp-k">$0.1{+}0.2==0.3$</td><td>거짓 (0)</td></tr>
+  </tbody></table></div>
+  <div class="vcap" style="margin-top:16px">반례 ② 큰 수 — $2^{53}$ 을 넘으면 간격이 정수 $1$ 보다 커져 이웃 정수조차 못 담는다</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>값 $v$</th><th>표현 간격(ULP)</th><th>$v$ 에 $1$ 을 더하면</th></tr></thead><tbody>
+    <tr><td class="stp-k">$2^{52}=4.5\times10^{15}$</td><td>$1$</td><td>구별됨 (정상)</td></tr>
+    <tr><td class="stp-k">$2^{53}=9007199254740992$</td><td>$2$</td><td>삼켜짐 → 그대로 $2^{53}$</td></tr>
+    <tr><td class="stp-k">$2^{54}=1.8\times10^{16}$</td><td>$4$</td><td>$+1,+2,+3$ 모두 삼켜짐</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">두 반례가 말하는 것</div>①은 <b>작은 수의 반올림</b>($0.1$ 이 이진수로 무한 반복 → 마지막 비트에서 어긋남), ②는 <b>큰 수의 간격</b>($2^{53}$ 부터 ULP $\gt1$ 이라 정수 $9007199254740993$ 은 저장 자체가 불가). 둘 다 "가장 가까운 칸으로 민" 결과다 — 그래서 $==$ 대신 $|a-b|\lt\text{tol}$ 로 비교한다.</div>
 </section>
 
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="코드">
@@ -488,6 +502,19 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <div class="pitfall"><h4>⚠ 긴 합의 오차 누적</h4><p>$N$ 개를 순진하게 더하면 반올림 오차가 최악 $\sim N\varepsilon_{\text{mach}}$ 로 쌓인다. <b>Kahan 합산</b>이 이를 보상한다.</p></div>
     <div class="pitfall"><h4>⚠ 반올림은 항상 '올림'이 아니다</h4><p>IEEE 기본은 <b>round-half-to-even</b>(짝수 반올림) — $0.5$ 를 늘 올리지 않아 한 방향 편향(bias) 누적을 막는다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 ① 흡수(swamping) — 작은 항은 어느 순간 흔적도 없이 사라진다</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>계산</th><th>double 결과</th><th>작은 항은?</th></tr></thead><tbody>
+    <tr><td class="stp-k">$1+10^{-12}$</td><td>$1.0000000000010001$</td><td>살아남음</td></tr>
+    <tr><td class="stp-k">$1+10^{-15}$</td><td>$1.0000000000000011$</td><td>겨우 살아남음</td></tr>
+    <tr><td class="stp-k">$1+10^{-16}$</td><td>$1.0000000000000000$</td><td>사라짐 ✗</td></tr>
+    <tr><td class="stp-k">$1+10^{-20}$</td><td>$1.0000000000000000$</td><td>완전히 사라짐 ✗</td></tr>
+  </tbody></table></div>
+  <div class="vcap" style="margin-top:16px">반례 ② 결합법칙이 깨진다 — 묶는 순서가 답을 바꾼다 ($a=10^{20},\,b=-10^{20},\,c=1$)</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>묶는 순서</th><th>중간 계산</th><th>최종 결과</th></tr></thead><tbody>
+    <tr><td class="stp-k">$(a+b)+c$</td><td>$0+1$</td><td>$1$ ✓</td></tr>
+    <tr><td class="stp-k">$a+(b+c)$</td><td>$b+c=-10^{20}$ ($1$ 흡수)</td><td>$0$ ✗</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">왜 이런가</div>$10^{-16}$ 은 $1$ 근처 간격($\varepsilon_{\text{mach}}/2\approx1.1\times10^{-16}$)보다 작아 <b>더해도 흡수</b>된다(①). 같은 이유로 $b+c$ 를 먼저 하면 $1$ 이 거대한 $10^{20}$ 에 삼켜져 최종 답이 $0$ 으로 바뀐다(②). <b>큰 상쇄를 뒤로, 작은 항을 먼저</b> 더해야 손실이 준다.</div>
 </section>
 
 <section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="정리">
@@ -612,6 +639,20 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <div class="pitfall"><h4>⚠ $\xi$ 를 안다고 착각</h4><p>나머지 정리는 $\xi$ 의 <b>존재</b>만 보장. 값은 모르며, 최댓값으로 <b>상한</b>만 잡는다.</p></div>
     <div class="pitfall"><h4>⚠ 중근·비매끄러움</h4><p>고차 도함수가 폭발하거나 불연속이면 나머지 항 추정이 무의미해진다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 · 수렴 반경 — 매끄러운 함수도 중심에서 멀면 급수가 발산한다</div>
+  <div class="nafig" data-fig="funcplot"
+    data-fns='[{"fn":"1/(1+x^2)","label":"1/(1+x²)"},{"fn":"1-x^2","label":"2항"},{"fn":"1-x^2+x^4","label":"3항"},{"fn":"1-x^2+x^4-x^6","label":"4항"}]'
+    data-xmin="-1.5" data-xmax="1.5"
+    data-cap="1/(1+x²) 는 실수 어디서나 매끄럽지만 x=0 전개 급수 1−x²+x⁴−… 의 수렴 반경은 1. |x|<1 에선 항을 더할수록 참값(파랑)에 붙지만, |x|>1 을 넘는 순간 항을 더할수록 오히려 더 크게 발산한다."></div>
+  <div class="vcap" style="margin-top:16px">$x=2$ 에서 항을 더할수록 — 참값 $0.2$ 에서 오히려 멀어진다</div>
+  <div class="stp-tblwrap" style="max-width:460px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>항 수</th><th>부분합</th><th>참값 $0.2$ 와의 거리</th></tr></thead><tbody>
+    <tr><td class="stp-k">1항</td><td>$1$</td><td>$0.8$</td></tr>
+    <tr><td class="stp-k">2항</td><td>$-3$</td><td>$3.2$</td></tr>
+    <tr><td class="stp-k">3항</td><td>$13$</td><td>$12.8$</td></tr>
+    <tr><td class="stp-k">4항</td><td>$-51$</td><td>$51.2$</td></tr>
+    <tr><td class="stp-k">5항</td><td>$205$</td><td>$204.8$</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">함정</div>$3{-}3$ 시연의 $e^{0.5}$ 급수는 어디서나 수렴하지만, 모든 급수가 그렇지는 않다. $1/(1+x^2)$ 은 실수 축엔 특이점이 없어도 <b>복소 평면의 $x=\pm i$</b> 가 수렴 반경을 $1$ 로 묶는다 — "매끄러우니 급수도 안전" 은 거짓이다.</div>
 </section>
 
 <section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="코드">
@@ -810,6 +851,23 @@ end
     <div class="pitfall"><h4>⚠ ill-conditioned 문제</h4><p>$\text{cond}\gg1$(예: Hilbert 행렬)은 <b>알고리즘 탓이 아니다</b> — 문제 자체가 오차를 증폭.</p></div>
     <div class="pitfall"><h4>⚠ 차수 ≠ 반복 수</h4><p>수렴 차수 $n$ 이 크다고 항상 빠른 건 아니다. 상수 $C$ 와 시작 오차에 따라 달라진다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 ① $h$ 를 무작정 줄이면 — 오차가 줄다가 다시 커진다 (전진차분 $\sin'(\pi/4)$)</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>$h$</th><th>전체 오차</th><th>추세</th></tr></thead><tbody>
+    <tr><td class="stp-k">$10^{-2}$</td><td>$3.55\times10^{-3}$</td><td>↓ 절단 지배</td></tr>
+    <tr><td class="stp-k">$10^{-4}$</td><td>$3.54\times10^{-5}$</td><td>↓</td></tr>
+    <tr><td class="stp-k">$10^{-6}$</td><td>$3.53\times10^{-7}$</td><td>↓</td></tr>
+    <tr><td class="stp-k">$10^{-8}$</td><td>$3.05\times10^{-9}$</td><td>★ 최소 ($\approx\sqrt{\varepsilon}$)</td></tr>
+    <tr><td class="stp-k">$10^{-10}$</td><td>$9.25\times10^{-7}$</td><td>↑ 반올림 지배</td></tr>
+    <tr><td class="stp-k">$10^{-12}$</td><td>$5.74\times10^{-6}$</td><td>↑</td></tr>
+    <tr><td class="stp-k">$10^{-14}$</td><td>$3.44\times10^{-3}$</td><td>↑ 처음만큼 나빠짐</td></tr>
+  </tbody></table></div>
+  <div class="vcap" style="margin-top:16px">반례 ② ill-conditioned — 입력 $0.05\%$ 흔들림이 출력을 $100\%$ 뒤집는다 (거의 평행한 두 직선, $\text{cond}\approx4000$)</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>우변 $b$</th><th>해 $x_1$</th><th>해 $x_2$</th></tr></thead><tbody>
+    <tr><td class="stp-k">$[\,2,\ 2.001\,]$</td><td>$1$</td><td>$1$</td></tr>
+    <tr><td class="stp-k">$[\,2,\ 2.002\,]$</td><td>$0$</td><td>$2$</td></tr>
+    <tr><td class="stp-k">변화</td><td colspan="2">$b_2$ 만 $0.05\%$ 바꿨는데 해가 통째로 뒤집힘</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">두 반례의 교훈</div>①은 <b>정밀도·알고리즘으로도 못 피하는 최적 $h$</b> — $\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8}$ 아래로 내려가면 반올림 $\varepsilon/h$ 가 폭발한다($h$ 를 $10^{-8}\!\to\!10^{-14}$ 로 줄이면 오차는 오히려 $10^{6}$ 배 커진다). ②는 $A=\begin{bmatrix}1&1\\1&1.001\end{bmatrix}$ 처럼 <b>문제 자체의 조건수가 크면</b>($\text{cond}\gg1$) 어떤 알고리즘도 정밀도를 회복 못 한다 — 버그가 아니라 <b>문제의 성질</b>이다.</div>
 </section>
 
 <section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="코드">

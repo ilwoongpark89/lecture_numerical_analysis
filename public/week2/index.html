@@ -231,6 +231,16 @@
     <div class="pitfall"><h4>⚠ 세미콜론 누락</h4><p>큰 배열을 <code>;</code> 없이 실행하면 수천 줄이 쏟아진다 — 출력 억제 습관.</p></div>
     <div class="pitfall"><h4>⚠ i·j 덮어쓰기</h4><p><code>i=3</code> 으로 쓰면 허수 단위가 사라진다. 반복 인덱스는 다른 이름 권장.</p></div>
   </div>
+  <div class="stp-note" style="max-width:520px;margin:16px auto 0"><b>반례 · 삼각함수는 라디안</b> — 각도(°)를 그대로 넣으면 라디안으로 해석돼 값이 어긋난다. <code>sin(30)</code> 은 $0.5$ 가 아니라 <strong>−0.988</strong> — 크기도 부호도 뒤집힌다.</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:0 auto">
+    <table class="stp-tbl"><thead><tr><th>MATLAB 입력</th><th>실제 출력</th><th>의도한 값(도 단위)</th></tr></thead><tbody>
+      <tr><td class="stp-k">sin(90)</td><td>0.8940</td><td>sin 90° = 1</td></tr>
+      <tr><td class="stp-k">sin(30)</td><td>−0.9880</td><td>sin 30° = 0.5</td></tr>
+      <tr><td class="stp-k">sin(90*pi/180)</td><td>1.0000</td><td>1 ✓</td></tr>
+      <tr><td class="stp-k">sind(90)</td><td>1.0000</td><td>1 ✓</td></tr>
+    </tbody></table>
+  </div>
+  <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">각도는 <code>×pi/180</code> 로 라디안 변환하거나 도 단위 내장 함수 <code>sind·cosd</code> 를 쓴다 — 아래 두 줄만 의도대로 나온다. <code>sin(90)=0.894</code> 는 90 라디안(≈5157°)의 sin 이다.</div>
 </section>
 
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="코드">
@@ -389,6 +399,16 @@ D = diag([2 5 8]);     <span class="cm">% 대각행렬</span></code></pre></div>
     <div class="pitfall"><h4>⚠ inv(A)*b 남용</h4><p>연립방정식은 <code>A\b</code> 가 더 빠르고 <b>수치적으로 안정</b>. 역행렬을 굳이 만들지 말 것.</p></div>
     <div class="pitfall"><h4>⚠ reshape 열 우선</h4><p><code>reshape(1:6,2,3)</code> 은 <b>열 방향</b>으로 채운다 → <code>[1 3 5;2 4 6]</code>.</p></div>
   </div>
+  <div class="stp-note" style="max-width:520px;margin:16px auto 0"><b>반례 · <code>*</code> vs <code>.*</code></b> — $A=\begin{bmatrix}1&amp;2\\3&amp;4\end{bmatrix},\ B=\begin{bmatrix}5&amp;6\\7&amp;8\end{bmatrix}$ 에서 네 성분이 <strong>모두</strong> 다르다.</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:0 auto">
+    <table class="stp-tbl"><thead><tr><th>성분 위치</th><th>A*B (행렬곱)</th><th>A.*B (원소별곱)</th></tr></thead><tbody>
+      <tr><td class="stp-k">(1,1)</td><td>19</td><td>5</td></tr>
+      <tr><td class="stp-k">(1,2)</td><td>22</td><td>12</td></tr>
+      <tr><td class="stp-k">(2,1)</td><td>43</td><td>21</td></tr>
+      <tr><td class="stp-k">(2,2)</td><td>50</td><td>32</td></tr>
+    </tbody></table>
+  </div>
+  <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">행렬곱 <code>*</code> 은 행×열 내적(예 (2,1): $3\cdot5+4\cdot7=43$), 원소별곱 <code>.*</code> 는 같은 자리끼리($3\cdot7=21$). 점(<code>.</code>) 하나가 결과 전체를 바꾼다.</div>
 </section>
 
 <section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="코드">
@@ -599,6 +619,19 @@ end</code></pre></div>
     <div class="pitfall"><h4>⚠ 사전 할당 누락</h4><p>반복 중 <code>y(i)=...</code> 로 배열을 키우면 느려진다 → <code>zeros</code> 로 미리 확보.</p></div>
     <div class="pitfall"><h4>⚠ break vs continue</h4><p><code>break</code> 는 <b>완전 탈출</b>, <code>continue</code> 는 <b>이번 회차만</b> 건너뜀 — 헷갈리면 논리 붕괴.</p></div>
   </div>
+  <div class="stp-note" style="max-width:520px;margin:16px auto 0"><b>반례 · 무한 루프</b> — 고정점 반복 $x_{n+1}=2x_n-3$ 의 고정점 $x^{*}=3$ 은 <em>밀어내는</em> 점이다. 오차 $|x_n-3|$ 가 매 회 <strong>2배</strong>로 커져 <code>while error &gt; tol</code> 이 영영 안 끝난다.</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:0 auto">
+    <table class="stp-tbl"><thead><tr><th>반복 n</th><th>값 x</th><th>오차 |x − 3|</th></tr></thead><tbody>
+      <tr><td class="stp-k">0</td><td>4</td><td>1</td></tr>
+      <tr><td class="stp-k">1</td><td>5</td><td>2</td></tr>
+      <tr><td class="stp-k">2</td><td>7</td><td>4</td></tr>
+      <tr><td class="stp-k">3</td><td>11</td><td>8</td></tr>
+      <tr><td class="stp-k">4</td><td>19</td><td>16</td></tr>
+      <tr><td class="stp-k">5</td><td>35</td><td>32</td></tr>
+      <tr><td class="stp-k">6</td><td>67</td><td>64</td></tr>
+    </tbody></table>
+  </div>
+  <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">오차가 줄기는커녕 발산 → tol 아래로 못 내려간다. 그래서 수렴 반복엔 항상 <code>iter &lt; max_iter</code> 안전장치를 함께 건다(2-3 정리). 수렴하려면 $|g'(x^{*})|&lt;1$ 이어야 한다.</div>
 </section>
 
 <section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="코드">
@@ -767,6 +800,18 @@ grid on;   axis([0 2*pi -1.2 1.2]);       <span class="cm">% 격자 · 축 범�
     <div class="pitfall"><h4>⚠ 잘못된 스케일</h4><p>지수적으로 주는 오차는 일반 <code>plot</code> 에선 안 보인다 → <code>semilogy</code>.</p></div>
     <div class="pitfall"><h4>⚠ legend 순서</h4><p><code>legend</code> 이름은 <b>plot 호출 순서</b>와 같아야 한다 — 어긋나면 오해.</p></div>
   </div>
+  <div class="stp-note" style="max-width:520px;margin:16px auto 0"><b>반례 · 잘못된 스케일</b> — 오차가 매 반복 <strong>1/10</strong> 로 준다. 일반 <code>plot</code>(선형축, 최대 높이 1)에선 3번째 점부터 x축에 붙어 <em>사라진다</em>.</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:0 auto">
+    <table class="stp-tbl"><thead><tr><th>반복 k</th><th>오차 err</th><th>선형축 높이(max=1)</th><th>semilogy log₁₀err</th></tr></thead><tbody>
+      <tr><td class="stp-k">0</td><td>1</td><td>1.00 (꼭대기)</td><td>0</td></tr>
+      <tr><td class="stp-k">1</td><td>0.1</td><td>0.10</td><td>−1</td></tr>
+      <tr><td class="stp-k">2</td><td>0.01</td><td>0.01 (바닥)</td><td>−2</td></tr>
+      <tr><td class="stp-k">3</td><td>0.001</td><td>≈0 안 보임</td><td>−3</td></tr>
+      <tr><td class="stp-k">4</td><td>0.0001</td><td>≈0 안 보임</td><td>−4</td></tr>
+      <tr><td class="stp-k">5</td><td>0.00001</td><td>≈0 안 보임</td><td>−5</td></tr>
+    </tbody></table>
+  </div>
+  <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">선형 <code>plot</code> 에선 $0.01$ 이하가 모두 바닥에 뭉쳐 구분 불가 → 지수적 수렴을 놓친다. <code>semilogy</code>·<code>loglog</code> 로 그리면 등간격 직선이 되고, 그 <strong>기울기가 수렴 차수</strong>(2-4 시연·직접계산).</div>
 </section>
 
 <section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="코드">

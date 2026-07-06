@@ -160,6 +160,14 @@
     <div class="pitfall"><h4>⚠ 큰 행렬</h4><p>$\det$ 전개 자체가 $n$ 커지면 폭증 → 실무는 특성방정식을 <b>절대 세우지 않는다.</b></p></div>
     <div class="pitfall"><h4>⚠ 그래서 반복법</h4><p>거듭제곱·역·QR 처럼 <b>행렬을 직접 굴리는</b> 반복법으로 고유값을 얻는다.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>상수항 섭동 $\delta$</th><th>두 근 $1\pm\sqrt\delta$</th><th>근 이동량</th><th>증폭 배율</th></tr></thead><tbody>
+    <tr><td class="stp-k">$0$</td><td>1.0000, 1.0000</td><td>0</td><td>이중근</td></tr>
+    <tr><td class="stp-k">$10^{-2}$</td><td>1.1000, 0.9000</td><td>0.1000</td><td>×10</td></tr>
+    <tr><td class="stp-k">$10^{-4}$</td><td>1.0100, 0.9900</td><td>0.0100</td><td>×100</td></tr>
+    <tr><td class="stp-k">$10^{-6}$</td><td>1.0010, 0.9990</td><td>0.0010</td><td>×1,000</td></tr>
+    <tr><td class="stp-k">$10^{-8}$</td><td>1.00010, 0.99990</td><td>0.00010</td><td>×10,000</td></tr>
+  </tbody></table></div>
+  <div class="keqnote" style="max-width:560px;margin:8px auto 0">특성다항식 $p(\lambda)=\lambda^2-2\lambda+(1-\delta)$ 는 이중근 $\lambda=1$ 을 가진다. 상수항을 $\delta$ 만큼만 흔들면 근은 $1\pm\sqrt\delta$ 로 벌어져 — <b>계수 오차보다 $1/\sqrt\delta$ 배 크게</b> 튄다. $\delta=10^{-8}$ 의 미세 오차가 근을 <b>10,000배</b> 증폭해 흔든다(Wilkinson 악조건). 계수→근 경로 자체가 불안정하니, 실무는 특성방정식을 <b>세우지 않는다.</b></div>
 </section>
 <section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="그림">
   <div class="eyebrow">15-1 · 그림 · 고유벡터</div>
@@ -248,6 +256,15 @@
     <div class="pitfall"><h4>⚠ 나쁜 초기벡터</h4><p>$\mathbf{x}_0$ 가 지배 고유벡터에 <b>수직</b>이면(성분 0) 못 잡는다.</p></div>
     <div class="pitfall"><h4>⚠ 최대 하나뿐</h4><p>전체 고유값이 필요하면 <b>QR</b>(15-4)로.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:540px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>반복 $k$</th><th>벡터 $\mathbf{x}_k$</th><th>$\lambda$ 근사</th><th>방향비 $x_2/x_1$</th></tr></thead><tbody>
+    <tr><td class="stp-k">0</td><td>(1.00, 0.50)</td><td>—</td><td>0.50</td></tr>
+    <tr><td class="stp-k">1</td><td>(0.50, 1.00)</td><td>1</td><td>2.00</td></tr>
+    <tr><td class="stp-k">2</td><td>(1.00, 0.50)</td><td>1</td><td>0.50</td></tr>
+    <tr><td class="stp-k">3</td><td>(0.50, 1.00)</td><td>1</td><td>2.00</td></tr>
+    <tr><td class="stp-k">4</td><td>(1.00, 0.50)</td><td>1</td><td>0.50</td></tr>
+    <tr><td class="stp-k">⋯</td><td>영원히 진동</td><td>1</td><td>0.50 ↔ 2.00</td></tr>
+  </tbody></table></div>
+  <div class="keqnote" style="max-width:540px;margin:8px auto 0">$A=\begin{bmatrix}0&1\\1&0\end{bmatrix}$ 의 고유값은 $+1,\,-1$ — <b>크기가 같다</b> $(|\lambda_2/\lambda_1|=1)$. 거듭제곱을 돌리면 방향비 $x_2/x_1$ 이 $0.50\leftrightarrow2.00$ 으로 <b>영원히 진동</b>해 어느 고유벡터로도 수렴하지 못한다. $(\lambda_2/\lambda_1)^k=(-1)^k$ 항이 결코 사라지지 않기 때문. (대조: $A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$ 은 비가 $0.52$ 라 방향비가 $0.618$ 로 정착.)</div>
 </section>
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="코드">
   <div class="eyebrow">15-2 · 코드 · MATLAB</div>

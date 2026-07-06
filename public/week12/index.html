@@ -684,6 +684,19 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
     <div class="pitfall"><h4>⚠ 홀수 차수 오차 구조</h4><p>깔끔한 소거는 오차가 $c\,h^2+d\,h^4+\cdots$ 처럼 <b>짝수 차수</b>뿐일 때다. 오차에 $h^3$ 등이 섞이면 한 번 조합으로 두 차수를 못 올린다.</p></div>
     <div class="pitfall"><h4>⚠ 반올림 바닥 무시</h4><p>$h$ 를 더 줄여 외삽해도 반올림 바닥($\sim10^{-11}$, 12-1 함정) 아래로는 못 내려간다 — 조합의 뺄셈이 유효숫자를 갉아먹는다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:16px">반례 — 중앙차분 Richardson, $f(x)=e^x$, $x=1$ (참값 $f'(1)=e=2.718282$)</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:0 auto">
+    <table class="stp-tbl">
+      <thead><tr><th>방법</th><th>근사값</th><th>오차</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">$D(h),\ h{=}0.4$</td><td>2.791351</td><td>$7.3\times10^{-2}$</td></tr>
+        <tr><td class="stp-k">$D(h/2),\ h{=}0.2$</td><td>2.736440</td><td>$1.8\times10^{-2}$</td></tr>
+        <tr><td class="stp-k">올바름 $\frac{4D(h/2)-D(h)}{3}$</td><td>2.718136</td><td>$1.5\times10^{-4}$</td></tr>
+        <tr><td class="stp-k">뒤바꿈 $\frac{4D(h)-D(h/2)}{3}$</td><td>2.809655</td><td>$9.1\times10^{-2}$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="keqnote" style="max-width:520px;margin-left:auto;margin-right:auto">순서를 지키면 오차 $1.8\times10^{-2}\to1.5\times10^{-4}$ — <b>약 125배</b> 줄어든다(공짜 정확도). 그러나 더 정밀한 $D(h/2)$ 대신 $D(h)$ 에 $\times4$ 를 붙여 <b>뒤바꾸면</b> 오차가 $9.1\times10^{-2}$ — 가장 거친 $D(0.4)$ 의 $7.3\times10^{-2}$ <b>보다도 나쁘다</b>. 계수 소거는커녕 오차가 증폭돼 외삽이 배신한다.</div>
 </section>
 
 <section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="그림">
@@ -815,6 +828,19 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
     <div class="pitfall"><h4>⚠ 교차항 분모</h4><p>$\partial^2 f/\partial x\partial y$ 분모는 $4h^2$ (단순 $h^2$ 아님). 부호 패턴 $(+,-,-,+)$ 주의.</p></div>
     <div class="pitfall"><h4>⚠ 경계 격자점</h4><p>도메인 가장자리에서는 한쪽 이웃이 없어 편측 공식/유령점(ghost node)이 필요.</p></div>
   </div>
+  <div class="vcap" style="margin-top:16px">반례 — $f(x,y)=x^2y+xy^2$, 점 $(2,1)$, $h=0.1$ ($f_{\pm\pm}=f(x{\pm}h,\,y{\pm}h)$)</div>
+  <div class="stp-tblwrap" style="max-width:540px;margin:0 auto">
+    <table class="stp-tbl">
+      <thead><tr><th>계산</th><th>사용한 점</th><th>결과</th><th>참값</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">$\partial f/\partial x$ 올바름</td><td>$\frac{f(x{+}h,y)-f(x{-}h,y)}{2h}$</td><td>5.0000</td><td>5</td></tr>
+        <tr><td class="stp-k">방향 혼동(대각점)</td><td>$\frac{f_{++}-f_{--}}{2h}$</td><td>13.02</td><td>5</td></tr>
+        <tr><td class="stp-k">$\partial^2 f/\partial x\partial y$ 올바름</td><td>$\frac{f_{++}-f_{+-}-f_{-+}+f_{--}}{4h^2}$</td><td>6.0000</td><td>6</td></tr>
+        <tr><td class="stp-k">분모 오인</td><td>$\frac{f_{++}-f_{+-}-f_{-+}+f_{--}}{h^2}$</td><td>24.00</td><td>6</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="keqnote" style="max-width:540px;margin-left:auto;margin-right:auto">대각점 $(x{+}h,y{+}h)$·$(x{-}h,y{-}h)$ 를 쓰면 $\partial f/\partial x$ 가 아니라 대각 방향 도함수 $\partial f/\partial x+\partial f/\partial y=5+8=13$ 를 계산한다 — <b>다른 미분</b>이다. 교차항 분모를 $4h^2$ 대신 $h^2$ 로 쓰면 정확히 <b>4배</b> 부풀린 $24$ — 값이 매끈해도 완전히 틀린다.</div>
 </section>
 
 <section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="코드">

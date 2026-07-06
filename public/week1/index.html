@@ -215,6 +215,20 @@
     <div class="pitfall"><h4>⚠ 반올림이 쌓인다</h4><p>컴퓨터의 유한 자릿수 때문에 <b>반올림오차</b>가 누적된다. 너무 잘게 나눠도 오히려 나빠질 수 있다.</p></div>
     <div class="pitfall"><h4>⚠ 불안정할 수 있다</h4><p>방법·스텝 크기를 잘못 고르면 답이 <b>발산</b>한다 — 뒤 주차에서 다룰 안정성 문제.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>스텝 $h$</th><th>수치미분 $\dfrac{\sin(1+h)-\sin 1}{h}$</th><th>오차 $|E|$</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">$10^{-1}$</td><td>0.497364</td><td>$4.3\times10^{-2}$</td></tr>
+        <tr><td class="stp-k">$10^{-2}$</td><td>0.536086</td><td>$4.2\times10^{-3}$</td></tr>
+        <tr><td class="stp-k">$10^{-4}$</td><td>0.540260</td><td>$4.2\times10^{-5}$</td></tr>
+        <tr><td class="stp-k">$10^{-8}$</td><td>0.540302</td><td>$3.0\times10^{-9}$ ← 최소</td></tr>
+        <tr><td class="stp-k">$10^{-10}$</td><td>0.540302</td><td>$5.8\times10^{-8}$</td></tr>
+        <tr><td class="stp-k">$10^{-12}$</td><td>0.540346</td><td>$4.3\times10^{-5}$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nafig-cap" style="max-width:560px;margin:8px auto 0;text-align:center">$\sin x$ 의 기울기를 유한차분으로($x=1$, 참값 $\cos 1=0.540302$). $h$ 를 줄이면 <b>절단오차</b>가 $\propto h$ 로 줄어(위 세 줄, $h{\times}\tfrac1{100}\Rightarrow |E|{\times}\tfrac1{100}$) — 그러나 $h\approx10^{-8}$ 을 지나면 <b>반올림오차</b>가 지배해 오차가 U자로 되커진다. "더 잘게 = 항상 좋다"가 거짓임을 값으로 실증.</div>
 </section>
 
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="연습">
@@ -499,6 +513,19 @@ end
     <div class="pitfall"><h4>⚠ 참값을 안다고 가정</h4><p>실전엔 참값이 없다. 정지 기준은 <b>근사오차 $\varepsilon_a$</b> 로 세워야 한다.</p></div>
     <div class="pitfall"><h4>⚠ 부호 소거</h4><p>서로 가까운 두 큰 수를 빼면 유효숫자가 <b>급격히 손실</b>(catastrophic cancellation)된다.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:580px;margin:14px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>$x$</th><th>$1-\cos x$</th><th>$\dfrac{1-\cos x}{x^2}$</th><th>참값 $0.5$ 대비</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">$10^{-1}$</td><td>$5.0\times10^{-3}$</td><td>0.499583</td><td>정상</td></tr>
+        <tr><td class="stp-k">$10^{-4}$</td><td>$5.0\times10^{-9}$</td><td>0.500000</td><td>정상</td></tr>
+        <tr><td class="stp-k">$10^{-6}$</td><td>$5.0\times10^{-13}$</td><td>0.500044</td><td>흔들림</td></tr>
+        <tr><td class="stp-k">$10^{-7}$</td><td>$5.0\times10^{-15}$</td><td>0.499600</td><td>흔들림</td></tr>
+        <tr><td class="stp-k">$10^{-8}$</td><td>$0$ (반올림)</td><td>0.000000</td><td>완전 붕괴</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nafig-cap" style="max-width:580px;margin:8px auto 0;text-align:center">$x$ 가 작아지면 $\cos x\approx1$ 이라 $1-\cos x$ 는 <b>거의 같은 두 수의 뺄셈</b> — 앞자리가 모두 소거되며 믿을 수 있는 유효숫자가 사라진다. $x=10^{-8}$ 에선 $1-\cos x$ 가 통째로 $0$ 으로 반올림돼, 참값 $0.5$ 가 <b>$0$ 으로 무너진다</b>(상대오차 $100\%$). 수식은 옳아도 뺄셈 순서 하나로 답이 붕괴.</div>
 </section>
 
 <section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="연습">
@@ -640,6 +667,18 @@ end
     <div class="pitfall"><h4>⚠ Verify 단계를 건너뛴다</h4><p>5단계 검증 없이 숫자를 신뢰하면 위험하다. 해석해가 없으면 $\Delta t$ 를 줄여 <b>수렴</b>을 보거나 종단속도 같은 <b>물리 타당성</b>으로 점검하라.</p></div>
     <div class="pitfall"><h4>⚠ 단위·초기조건 실수</h4><p>4단계 Compute에서 $\Delta t$ 단위나 초기조건 $v(0)=0$ 을 빠뜨리면, 알고리즘이 옳아도 <b>답 전체가 틀어진다</b>.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:600px;margin:14px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>$t$ (s)</th><th>해석해 $v$</th><th>$\Delta t=2$ 오차</th><th>$\Delta t=0.5$ 오차</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">$2$</td><td>18.729</td><td>4.76%</td><td>1.53%</td></tr>
+        <tr><td class="stp-k">$4$</td><td>33.112</td><td>9.97%</td><td>2.36%</td></tr>
+        <tr><td class="stp-k">$6$</td><td>42.076</td><td>10.03%</td><td>2.21%</td></tr>
+        <tr><td class="stp-k">$8$</td><td>46.957</td><td>6.86%</td><td>1.62%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nafig-cap" style="max-width:600px;margin:8px auto 0;text-align:center">같은 번지점퍼를 Euler로 풀되 <b>스텝만</b> 바꿨다. $\Delta t=2$ 는 $t=4\text{s}$ 에서 벌써 $\approx10\%$ 오차 — 큰 스텝이 곡선을 직선으로 오해해 <b>절단오차</b>가 급증한 것(위 함정의 수치 실증). $\Delta t=0.5$ 로 줄이면 같은 지점 오차가 $2.4\%$ 로 떨어진다.</div>
 </section>
 
 <section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="그림">
