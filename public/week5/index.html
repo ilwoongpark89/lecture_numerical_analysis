@@ -227,6 +227,20 @@
     <div class="pitfall"><h4>⚠ False Position 정체</h4><p>구간을 유지하는 변형은 한쪽 끝이 <b>고정(stagnation)</b>되어 수렴이 선형으로 느려질 수 있다.</p></div>
     <div class="pitfall"><h4>⚠ 두 점이 너무 멀면</h4><p>초기 두 점이 근에서 멀면 <b>엉뚱한 근</b>으로 가거나 근 사이를 건너뛸 수 있다.</p></div>
   </div>
+  <div style="font-size:12px;font-weight:700;color:#b4353a;text-align:center;margin-top:16px">반례 실증 · 분모가 0으로 붕괴</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>단계</th><th>값</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">$x_{n-1},\,x_n$</td><td>−1.3 , 1.30001</td><td>근 √2 양쪽</td></tr>
+        <tr><td class="stp-k">$f(x_{n-1})$</td><td>−0.310000</td><td>7자리 정밀</td></tr>
+        <tr><td class="stp-k">$f(x_n)$</td><td>−0.309974</td><td>7자리 정밀</td></tr>
+        <tr><td class="stp-k">$f_n-f_{n-1}$</td><td>0.000026</td><td>자리수 소멸</td></tr>
+        <tr><td class="stp-k">$x_{n+1}$</td><td>≈ 30999</td><td>근에서 폭발</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">두 근사점의 함수값이 거의 같아지면 할선이 <b>수평</b>이 되어 분모 $f_n-f_{n-1}$ 에서 유효숫자가 소멸한다(7자리 → 2자리). 여기에 나눗셈을 하면 다음 근사 $x_{n+1}$ 이 근 $\sqrt2\approx1.414$ 에서 <b>2만 배</b>나 튕겨 나간다. 정확히 대칭($x_{n-1}=-x_n$)이면 분모 $=0$, 곧 <b>0으로 나눔</b>.</div>
 </section>
 
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="코드">
@@ -413,6 +427,13 @@ f = @(x) x.^3 - x - 2;
     <div class="pitfall"><h4>⚠ 잘못된 근</h4><p>여러 근 중 원치 않은 근으로 수렴. 초기값이 어느 근으로 갈지 결정.</p></div>
     <div class="pitfall"><h4>⚠ 초기값 민감도</h4><p>초기값의 미세한 차이가 전혀 다른 결과로(Newton fractal basin).</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:540px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>$n$</th><th>중근 $(x{-}1)^2$ 오차</th><th>단순근 $x^2{-}2$ 오차</th></tr></thead><tbody>
+<tr><td>0</td><td>1.0</td><td>$5.9{\times}10^{-1}$</td></tr>
+<tr><td>1</td><td>0.5</td><td>$8.6{\times}10^{-2}$</td></tr>
+<tr><td>2</td><td>0.25</td><td>$2.5{\times}10^{-3}$</td></tr>
+<tr><td>3</td><td>0.125</td><td>$2.1{\times}10^{-6}$</td></tr>
+<tr><td>4</td><td>0.0625</td><td>$1.6{\times}10^{-12}$</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">중근에서 Newton 이 느려진다</div>단순근에선 오차가 <b>제곱</b>으로 붕괴(이차)하는데, <b>중근</b>에선 $f'$ 도 0에 다가가 오차가 매번 $\times\tfrac12$ 로만 준다(<b>선형</b>) — "빠른 Newton" 신화가 깨지는 지점.</div>
 </section>
 
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="코드">
@@ -625,6 +646,13 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
     <div class="pitfall"><h4>⚠ $O(n^3)$ 비용</h4><p>큰 시스템에서 매 반복 선형계 풀이가 <b>지배적 비용</b>. 희소성·근사 Jacobian 활용 필요.</p></div>
     <div class="pitfall"><h4>⚠ 원하지 않는 해</h4><p>교점이 4개 — 부호나 사분면을 반영해 <b>초기값을 신중히</b> 골라야 목표 해로 간다.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:460px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>$n$</th><th>$x_n$</th><th>$y_n$</th></tr></thead><tbody>
+<tr><td>0</td><td>0.50</td><td>0.50</td></tr>
+<tr><td>1</td><td>1.75</td><td>1.75</td></tr>
+<tr><td>2</td><td>&minus;1.06</td><td>&minus;1.06</td></tr>
+<tr><td>3</td><td>0.87</td><td>0.87</td></tr>
+<tr><td>4</td><td>1.24</td><td>1.24</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">성분별 대입은 진동·발산</div>연립 $x{=}2{-}y^2,\ y{=}2{-}x^2$ 을 한 식씩 대입 반복하면 값이 <b>안정되지 못하고 튄다</b>. 비선형 연립은 방정식을 따로 못 풀고 <b>전체 Jacobian 을 쓰는 Newton</b>($J\Delta=-F$)이 필요하다.</div>
 </section>
 
 <section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="코드">
@@ -784,6 +812,11 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
     <div class="pitfall"><h4>⚠ 나쁜 $g(x)$ 고정점</h4><p>$|g'(x^*)|>1$ 이면 <b>발산</b>. 같은 식도 $g$ 를 잘 골라야 수렴.</p></div>
     <div class="pitfall"><h4>⚠ 중근에 표준 Newton</h4><p>이차를 기대하지만 <b>선형</b>으로 기어감. Modified/$u(x)$ 로 전환.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:480px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>방법</th><th>$10^{-6}$ 까지 반복</th><th>수렴 차수</th></tr></thead><tbody>
+<tr><td>이분법</td><td><b>20회</b></td><td>선형(÷2)</td></tr>
+<tr><td>할선법</td><td>7회</td><td>초선형 1.6</td></tr>
+<tr><td>Newton</td><td><b>5회</b></td><td>이차</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">잘못된 선택의 대가 = 4배 반복</div>같은 근($\sqrt2$, 구간 $[1,2]$)을 이분법은 <b>20회</b>, Newton 은 <b>5회</b>. 단 Newton 은 $f'$ 와 좋은 초기값이 있어야 — 안전(이분법) vs 속도(Newton)의 실제 비용을 값으로 본다.</div>
 </section>
 
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="코드">

@@ -235,6 +235,15 @@
     <div class="pitfall"><h4>⚠ 특이 행렬</h4><p>$\det A = 0$ 이면 소거 도중 <b>0행</b>이 나타난다 — 유일해 없음(해 없음/무한).</p></div>
     <div class="pitfall"><h4>⚠ 후진 대입 순서 오류</h4><p>반드시 <b>맨 아래 행부터</b>. 위 행을 먼저 풀려 하면 아직 모르는 미지수가 남는다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 · 작은 피벗 $a_{11}=0.0001$ 로 순수 소거 (유효숫자 3자리 컴퓨터) — $0.0001x_1+x_2=1,\ x_1+x_2=2$</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:12px auto 0"><table class="stp-tbl"><thead><tr><th>계산 단계</th><th>피벗 없이 (3자리)</th><th>참값</th></tr></thead><tbody>
+    <tr><td class="stp-k">배수 $f=1/a_{11}$</td><td>$1/0.0001=10000$</td><td>—</td></tr>
+    <tr><td class="stp-k">$a_{22}'=1-10000{\cdot}1$</td><td>$-10000$ ('1' 소멸)</td><td>$-9999$</td></tr>
+    <tr><td class="stp-k">$b_2'=2-10000{\cdot}1$</td><td>$-10000$ ('2' 소멸)</td><td>$-9998$</td></tr>
+    <tr><td class="stp-k">$x_2=b_2'/a_{22}'$</td><td>$1.00$</td><td>$0.9999$</td></tr>
+    <tr><td class="stp-k">$x_1=(1-x_2)/0.0001$</td><td>$0$ ✗</td><td>$1.0001$</td></tr>
+  </tbody></table></div>
+  <div class="callout key" style="margin-top:10px"><div class="ct">작은 피벗이 답을 삼킨다</div>거대한 배수 $10000$ 을 곱해 빼면 $1-10000=-9999$ 에서 원래의 $1$ 이 3자리 반올림에 <b>파묻혀</b> $-10000$ 이 된다(유효숫자 소멸). 이 오염된 $a_{22}'$ 로 나눈 $x_1$ 은 참값 $1.0001$ 에서 $0$ 으로 완전히 무너진다 — 알고리즘은 옳지만 <b>작은 피벗</b> 하나가 답을 삼킨 것.</div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">해결 예고</div>앞 두 함정(0·작은 피벗)은 <strong>행을 바꿔치기</strong>하는 것만으로 대부분 해결된다 — 6-2 <strong>부분 피벗팅</strong>.</div>
 </section>
 
@@ -406,6 +415,16 @@ x = naive_gauss(A, b);
     <div class="pitfall"><h4>⚠ 그래도 특이면 무력</h4><p>$\det A=0$ 은 피벗팅으로 못 고친다 — 애초에 유일해가 없다.</p></div>
     <div class="pitfall"><h4>⚠ 큰 조건수는 별개</h4><p>피벗팅은 <b>알고리즘 안정성</b>을 준다. 문제 자체가 나쁜(큰 조건수) 경우는 6-4 참조.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 · 스케일 착시 — $2x_1+100000x_2=100000,\ x_1+x_2=2$ (참해 $\approx(1,\,1)$)</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:12px auto 0"><table class="stp-tbl"><thead><tr><th>1열 소거</th><th>크기순 피벗 (naive)</th><th>스케일드 피벗</th></tr></thead><tbody>
+    <tr><td class="stp-k">피벗 행 선택</td><td>$|2|>|1|$ → 행 1</td><td>$\tfrac{|2|}{10^5}$ vs $\tfrac{|1|}{1}$ → 행 2</td></tr>
+    <tr><td class="stp-k">피벗값 / 배수 $f$</td><td>$2$ / $0.5$</td><td>$1$ / $2$</td></tr>
+    <tr><td class="stp-k">$a_{22}'$</td><td>$1-50000\to-50000$ ('1' 소멸)</td><td>$10^5-2=99998$</td></tr>
+    <tr><td class="stp-k">$b_2'$</td><td>$2-50000\to-50000$ ('2' 소멸)</td><td>$10^5-4=99996$</td></tr>
+    <tr><td class="stp-k">$x_1$</td><td>$0$ ✗</td><td>$1.00002$ ✓</td></tr>
+    <tr><td class="stp-k">$x_2$</td><td>$1.000$</td><td>$0.99998$</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">'가장 큰 값'이 항상 좋은 피벗은 아니다</div>1열의 절댓값 최대는 $2$(행 1)지만, 그 행은 $100000$ 이라는 거대 계수로 <b>스케일</b>돼 있어 사실상 작은 피벗이다. 그대로 소거하면 $1-50000$ 에서 유효숫자가 소멸해 $x_1$ 이 $0$ 으로 무너진다(참값 $1.00002$). 행별 최대치로 나눠 비교하는 <b>스케일드 부분 피벗팅</b>($|a_{ik}|/s_i$)은 행 2를 골라 정확해를 준다.</div>
 </section>
 
 <section class="screen" data-ch="6-2" data-chtitle="부분 피벗팅" data-stage="코드">
@@ -635,6 +654,13 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
     <div class="pitfall"><h4>⚠ 피벗팅 때 $P$ 누락</h4><p>행을 교환하면 $A=LU$ 가 아니라 <b>$PA=LU$</b>. 풀 때 우변에도 $P$ 를 곱해 $L\mathbf{y}=P\mathbf{b}$ 로 시작해야 한다.</p></div>
     <div class="pitfall"><h4>⚠ $0$ 피벗이면 분해 실패</h4><p>피벗 $a_{kk}=0$ 이면 배수 $l_{ik}=a_{ik}/a_{kk}$ 가 <b>0으로 나눔</b> → 순수 $LU$ 불가. 6-2 <b>부분 피벗팅</b>으로 행 교환 후 분해한다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 · $L$ 대각을 배수로 채우면 $LU\ne A$ — $A=\begin{bmatrix}4 & 3\\6 & 3\end{bmatrix},\ l_{21}=1.5,\ U=\begin{bmatrix}4 & 3\\0 & -1.5\end{bmatrix}$</div>
+  <div class="stp-tblwrap" style="max-width:580px;margin:12px auto 0"><table class="stp-tbl"><thead><tr><th>$LU$ 성분</th><th>올바른 $L$ (대각 $=1$)</th><th>잘못된 $L$ ($l_{22}=1.5$)</th><th>$A$</th></tr></thead><tbody>
+    <tr><td class="stp-k">$(1,1)$</td><td>$1{\cdot}4=4$</td><td>$1{\cdot}4=4$</td><td>$4$</td></tr>
+    <tr><td class="stp-k">$(2,1)$</td><td>$1.5{\cdot}4=6$</td><td>$1.5{\cdot}4=6$</td><td>$6$</td></tr>
+    <tr><td class="stp-k">$(2,2)$</td><td>$1.5{\cdot}3+1{\cdot}(-1.5)=3$ ✓</td><td>$1.5{\cdot}3+1.5{\cdot}(-1.5)=2.25$ ✗</td><td>$3$</td></tr>
+  </tbody></table></div>
+  <div class="callout key" style="margin-top:10px"><div class="ct">대각은 반드시 $1$ (Doolittle)</div>$L$ 의 대각에 소거 배수를 잘못 넣으면 $(2,2)$ 성분이 $3$ 이 아닌 $2.25$ 로 어긋나 $LU\ne A$ — 분해가 <b>다른 행렬</b>을 복원한다. 배수 $l_{ik}$ 는 오직 <b>대각 아래</b>에만, 대각은 항상 $1$ 로 둔다.</div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">핵심 구분</div>$L,U$ 는 $A$ 만으로 결정된다 — <strong>우변 $\mathbf{b}$ 가 바뀌어도 재분해 없이</strong> 대입 두 번(전진 $L\mathbf{y}=\mathbf{b}$ → 후진 $U\mathbf{x}=\mathbf{y}$)만 반복한다.</div>
 </section>
 
@@ -798,6 +824,13 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
     <div class="pitfall"><h4>⚠ $\det$ 크기로 판단</h4><p>행렬을 스케일하면 $\det$ 는 변해도 $\kappa$ 는 그대로 — <b>특이 여부는 $\kappa$ 로</b> 본다.</p></div>
     <div class="pitfall"><h4>⚠ 거의 평행한 방정식</h4><p>두 직선이 거의 겹치면 교점이 요동친다 → $\kappa$ 폭증. 모델링 단계에서 피해야 한다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:18px">반례 · 작은 잔차인데 틀린 해 — $A=\begin{bmatrix}1 & 1\\1 & 1.0001\end{bmatrix},\ \mathbf b=\begin{bmatrix}2\\2.0001\end{bmatrix}$ (참해 $\mathbf x^\star=(1,\,1)$)</div>
+  <div class="stp-tblwrap" style="max-width:540px;margin:12px auto 0"><table class="stp-tbl"><thead><tr><th>척도</th><th>참 해 $(1,\,1)$</th><th>가짜 해 $(2,\,0)$</th></tr></thead><tbody>
+    <tr><td class="stp-k">잔차 $\mathbf r=A\mathbf x-\mathbf b$</td><td>$(0,\,0)$</td><td>$(0,\,-0.0001)$</td></tr>
+    <tr><td class="stp-k">잔차 크기 $\|\mathbf r\|$</td><td>$0$</td><td>$0.0001$ (거의 $0$!)</td></tr>
+    <tr><td class="stp-k">참값과의 오차 $\|\mathbf x-\mathbf x^\star\|$</td><td>$0$</td><td>$1.414$</td></tr>
+  </tbody></table></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">잔차가 작다 ≠ 해가 정확하다</div>가짜 해 $(2,0)$ 은 참해 $(1,1)$ 에서 $\|{\cdot}\|=1.414$ 만큼 멀지만, 잔차는 $0.0001$ 로 거의 $0$ 이다 — 두 방정식이 거의 평행($\kappa(A)\approx4\times10^4$)해 <b>엉뚱한 해도 우변을 거의 만족</b>시키기 때문. ill-conditioned 시스템에선 잔차만으로 정확도를 판단하면 안 된다.</div>
 </section>
 
 <section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="그림">

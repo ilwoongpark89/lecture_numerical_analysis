@@ -250,6 +250,21 @@
     <div class="pitfall"><h4>⚠ 느린 수렴</h4><p>최신 값을 안 쓰므로 Gauss-Seidel 대비 <b>약 2배</b> 반복이 필요하다.</p></div>
     <div class="pitfall"><h4>⚠ 메모리 2배</h4><p>동시 갱신이라 $\mathbf{x}^{(k)}$ 와 $\mathbf{x}^{(k+1)}$ 을 <b>둘 다 보관</b>해야 한다($2n$).</p></div>
   </div>
+  <div class="vcap" style="margin-top:16px">반례 실측 — 대각 우세가 아니면 값이 이렇게 무너진다</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>$k$</th><th>$x_1^{(k)}$</th><th>$x_2^{(k)}$</th><th>max err</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">0</td><td>0</td><td>0</td><td>1</td></tr>
+        <tr><td class="stp-k">1</td><td>3</td><td>3</td><td>2</td></tr>
+        <tr><td class="stp-k">2</td><td>−3</td><td>−3</td><td>4</td></tr>
+        <tr><td class="stp-k">3</td><td>9</td><td>9</td><td>8</td></tr>
+        <tr><td class="stp-k">4</td><td>−15</td><td>−15</td><td>16</td></tr>
+        <tr><td class="stp-k">5</td><td>33</td><td>33</td><td>32</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="keqnote" style="margin-top:8px">반례 시스템 $A=\begin{bmatrix}1&2\\2&1\end{bmatrix},\ \mathbf{b}=(3,3)$, 정해 $(1,1)$. 대각이 오프대각보다 작아($|1|\lt|2|+0$) 반복 행렬 $\rho(T_J)=2\gt1$. 표처럼 부호가 튀면서 오차가 <b>매 반복 정확히 2배</b>($1\!\to\!2\!\to\!4\!\to\!\cdots$)로 커진다 — 초기값을 바꿔도 발산은 못 막는다. 그래서 반복법을 돌리기 <b>전에</b> 대각 우세부터 확인한다.</div>
 </section>
 
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="코드">
@@ -423,6 +438,20 @@ b = np.array([7,-21,15], float)
     <div class="pitfall"><h4>⚠ 여전히 발산 가능</h4><p>대각 우세가 깨지면 GS 도 <b>발산</b>한다. "더 빠름"이 "항상 수렴"을 뜻하지 않는다.</p></div>
     <div class="pitfall"><h4>⚠ 항상 2배는 아니다</h4><p>"보통 2배"는 경험칙. 실제 배율은 $\rho(T_{GS})/\rho(T_J)$ 로 시스템마다 다르다.</p></div>
   </div>
+  <div class="vcap" style="margin-top:16px">반례 실측 — 같은 비대각우세 계에서 GS 는 Jacobi 보다 <b>더 빨리</b> 발산한다</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>$k$</th><th>GS $\mathbf{x}^{(k)}$</th><th>Jacobi err</th><th>GS err</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">0</td><td>(0, 0)</td><td>1</td><td>1</td></tr>
+        <tr><td class="stp-k">1</td><td>(3, −3)</td><td>2</td><td>4</td></tr>
+        <tr><td class="stp-k">2</td><td>(9, −15)</td><td>4</td><td>16</td></tr>
+        <tr><td class="stp-k">3</td><td>(33, −63)</td><td>8</td><td>64</td></tr>
+        <tr><td class="stp-k">4</td><td>(129, −255)</td><td>16</td><td>256</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="keqnote" style="margin-top:8px">같은 $A=\begin{bmatrix}1&2\\2&1\end{bmatrix},\ \mathbf{b}=(3,3)$ (정해 $(1,1)$)에 두 방법을 나란히. Jacobi 오차는 매 반복 $\times2$ ($\rho(T_J)=2$), <b>GS 는 $\times4$</b> ($\rho(T_{GS})=4$). GS 의 자랑인 "새 값 즉시 재사용"이 발산 방향에선 오차 확대까지 <b>즉시 가속</b>한다 — <b>더 빠름 ≠ 항상 수렴</b>. 대각 우세가 깨지면 GS 라고 안전하지 않다.</div>
 </section>
 
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="코드">
@@ -742,6 +771,21 @@ end
     <div class="pitfall"><h4>⚠ over-relax 가 항상 빠르진 않다</h4><p>이 예제처럼 <b>잘 조건화된</b> 시스템에선 $\omega>1$ 이 오히려 느리다(표 참고).</p></div>
     <div class="pitfall"><h4>⚠ GS 의 순차 의존 상속</h4><p>SOR 도 성분 순차 갱신 → <b>병렬화 난이도</b>는 GS 와 동일.</p></div>
   </div>
+  <div class="vcap" style="margin-top:16px">반례 실측 — $\omega\ge2$ 는 어떤 행렬로도 못 살린다 (오차배율 하한)</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:8px auto 0">
+    <table class="stp-tbl">
+      <thead><tr><th>$\omega$</th><th>$|1-\omega|$ · $\rho$ 하한</th><th>10회 뒤 최소 오차배율 $|1-\omega|^{10}$</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td class="stp-k">1.0</td><td>0.0</td><td>0 (GS)</td><td>수렴</td></tr>
+        <tr><td class="stp-k">1.5</td><td>0.5</td><td>0.001</td><td>수렴 가능</td></tr>
+        <tr><td class="stp-k">1.9</td><td>0.9</td><td>0.35</td><td>수렴 가능</td></tr>
+        <tr><td class="stp-k">2.0</td><td>1.0</td><td>1.00</td><td>경계 · 정체</td></tr>
+        <tr><td class="stp-k">2.1</td><td>1.1</td><td>2.59</td><td>발산 확정</td></tr>
+        <tr><td class="stp-k">2.5</td><td>1.5</td><td>57.7</td><td>발산 확정</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="keqnote" style="margin-top:8px">왜 $\omega\ge2$ 가 무조건 발산인가 — $\det(T_{SOR})=(1-\omega)^n$ 이라 최대 고유값 $\rho(T_{SOR})\ge|1-\omega|$. $\omega\ge2$ 면 $|1-\omega|\ge1$ 이라 <b>어떤 행렬·어떤 $\omega_{opt}$ 로도 $\rho$ 를 1 아래로 못 내린다.</b> 오른쪽 열 $|1-\omega|^{10}$ = 10회 반복 뒤 오차가 <b>최소</b> 몇 배로 커지는지의 하한 — $\omega=2.5$ 면 10회에 이미 <b>58배 이상</b> 확대. 반대로 $0\lt\omega\lt2$ 는 (일반 행렬에서) 수렴의 <b>필요조건</b>일 뿐, 충분조건이 아니다.</div>
 </section>
 
 <section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="코드">

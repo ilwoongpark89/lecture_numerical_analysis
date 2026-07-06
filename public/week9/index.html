@@ -229,6 +229,10 @@
     <div class="pitfall"><h4>⚠ 모델 선택이 먼저</h4><p>최소자승은 <b>주어진 형태</b> 안에서 최적일 뿐. 직선 모델이 틀렸으면 아무리 최적화해도 잔차가 크게 남는다.</p></div>
     <div class="pitfall"><h4>⚠ $\sum e_i=0$ 을 적합도로 오해</h4><p>부호가 상쇄돼 잔차 합은 늘 $\approx0$. 판단은 <b>제곱합</b> $\sum e_i^2$ 로 해야 한다.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>데이터</th><th>적합 직선</th><th>기울기</th></tr></thead><tbody>
+<tr><td>(1,1)…(5,5) 깔끔</td><td>$y=x$</td><td><b>1.0</b></td></tr>
+<tr><td>마지막을 (5,15) 이상치로</td><td>$y=3x-4$</td><td><b>3.0</b></td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">이상치 하나가 직선을 끌고 간다</div>최소제곱은 잔차를 <b>제곱</b>하므로 멀리 떨어진 점 하나의 영향이 폭증 — 점 하나로 기울기가 $1{\to}3$ 로 <b>3배</b>. 적합 전 산점도로 이상치를 먼저 봐야 한다(로버스트 회귀·이상치 제거 고려).</div>
 </section>
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="연습">
@@ -389,6 +393,10 @@
     <div class="pitfall"><h4>⚠ Vandermonde 악조건</h4><p>차수가 높아지면 $X^TX$ 의 <b>조건수가 폭발</b>해 계수가 수치적으로 불안정. 직교다항식으로 완화.</p></div>
     <div class="pitfall"><h4>⚠ 외삽(Extrapolation)</h4><p>적합 구간 <b>밖</b>은 보장이 없다. 고차 다항식은 구간 밖에서 급격히 발산.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>모델</th><th>$R^2$</th><th>$x{=}6$ 외삽</th></tr></thead><tbody>
+<tr><td>1차 직선 ($y\approx2x$)</td><td>0.999</td><td>≈ 12.1 (합리적)</td></tr>
+<tr><td>4차 다항 (점 5개 관통)</td><td><b>1.000</b></td><td><b>15.1</b> (폭주)</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">$R^2{=}1$ 은 완벽이 아니라 과적합 신호</div>점 $n$ 개는 $n{-}1$ 차 다항이 <b>항상</b> 정확히 통과($R^2{=}1$) — 하지만 잡음까지 외워 점 사이·바깥에서 요동친다. 외삽 $x{=}6$ 에서 직선 12.1 vs 4차 15.1. "$R^2$ 높다 = 좋다"가 거짓인 지점.</div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="코드">
@@ -565,6 +573,11 @@ p = polyfit(x, y, 1);
     <div class="pitfall"><h4>⚠ 오차 가중이 왜곡</h4><p>변환은 오차의 분산 구조를 바꾼다 — 등분산 가정이 깨져 최적성이 보장되지 않는다.</p></div>
     <div class="pitfall"><h4>⚠ 정밀 값은 비선형 최적화로</h4><p>선형화 결과는 <b>좋은 초기값</b>일 뿐. 정확한 적합은 원공간에서 Gauss–Newton/Levenberg–Marquardt.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:480px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>원래 $y$</th><th>변환 $1/y$</th><th>적합 영향력</th></tr></thead><tbody>
+<tr><td>0.01 (작은 값)</td><td><b>100</b></td><td>지배</td></tr>
+<tr><td>1</td><td>1</td><td>보통</td></tr>
+<tr><td>10 (큰 값)</td><td>0.1</td><td>거의 무시</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">변환은 오차 가중치를 바꾼다</div>비선형을 직선으로 펴려 $y\to1/y$(또는 $\ln y$) 변환하면, 최소제곱이 <b>변환된 값</b>의 오차를 최소화 — 위 표처럼 <b>작은 $y$ 가 fit 을 지배</b>하고 큰 $y$ 는 무시된다. 변환 fit 후엔 원래 스케일에서 잔차를 다시 확인해야 한다.</div>
 </section>
 
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="코드">
@@ -747,6 +760,13 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
     <div class="pitfall"><h4>⚠ 인과 아님</h4><p>$R^2$ 는 상관의 크기일 뿐 <b>인과관계</b>를 뜻하지 않는다.</p></div>
     <div class="pitfall"><h4>⚠ 비선형 변환 후 비교 주의</h4><p>$\ln$ 공간에서 계산한 $R^2$ 와 원공간 $R^2$ 는 <b>다르다</b> — 같은 척도로만 비교.</p></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>$x$</th><th>$y=x^2$</th><th>직선 적합 $-7{+}6x$</th><th>잔차</th></tr></thead><tbody>
+<tr><td>1</td><td>1</td><td>&minus;1</td><td>+2</td></tr>
+<tr><td>2</td><td>4</td><td>5</td><td>&minus;1</td></tr>
+<tr><td>3</td><td>9</td><td>11</td><td>&minus;2</td></tr>
+<tr><td>4</td><td>16</td><td>17</td><td>&minus;1</td></tr>
+<tr><td>5</td><td>25</td><td>23</td><td>+2</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">$R^2{=}0.963$ 인데 모델이 틀렸다</div>완전한 $2$차 데이터에 직선을 맞추면 $R^2{=}0.963$ 로 <b>훌륭해 보이지만</b>, 잔차가 $+,-,-,-,+$ <b>U자 패턴</b>(무작위 아님) — 이것이 "모델이 곡률을 놓쳤다"는 증거. $R^2$ 숫자만 보지 말고 <b>잔차 그림</b>을 반드시 봐야 한다.</div>
 </section>
 
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="코드">
