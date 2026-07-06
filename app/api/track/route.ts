@@ -90,21 +90,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  const row = {
-    student_id: sid,
-    week: Number.isFinite(body.week) ? Number(body.week) : 1,
-    kind,
-    slide: Number.isFinite(body.slide) ? Number(body.slide) : null,
-    chapter: clip(body.chapter, 32),
-    section: clip(body.section, 32),
-    question: clip(body.question, 64),
-    prompt: clip(body.prompt, 500),
-    answer: clip(body.answer, 2000),
-    is_correct: typeof body.isCorrect === "boolean" ? body.isCorrect : null,
-    user_agent: clip(req.headers.get("user-agent"), 300),
-  };
-
-  const { error } = await db.from("na_lecture_events").insert(row);
+  // enter/answer 도 token-gated SECURITY DEFINER RPC 로 (직접 anon INSERT 정책 폐기 → 세션게이트 우회 차단).
+  const { error } = await db.rpc("na_record_event", {
+    p_token: TOKEN,
+    p_id: sid,
+    p_week: Number.isFinite(body.week) ? Number(body.week) : 1,
+    p_kind: kind,
+    p_slide: Number.isFinite(body.slide) ? Number(body.slide) : null,
+    p_chapter: clip(body.chapter, 32),
+    p_section: clip(body.section, 32),
+    p_question: clip(body.question, 64),
+    p_prompt: clip(body.prompt, 500),
+    p_answer: clip(body.answer, 2000),
+    p_is_correct: typeof body.isCorrect === "boolean" ? body.isCorrect : null,
+    p_user_agent: clip(req.headers.get("user-agent"), 300),
+  });
   if (error) {
     console.error("[track] insert failed:", error.message);
     return NextResponse.json({ ok: false, error: "insert_failed" }, { status: 500 });

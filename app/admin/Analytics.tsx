@@ -35,12 +35,20 @@ function hue(id: string) {
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
   return ["#1e40af", "#0891b2", "#16a34a", "#7c3aed", "#db2777", "#ea580c"][h % 6];
 }
+// "생각:reflect-15-2" → "W15 · 생각 2"
+function labelQid(q: string) {
+  const m = q.replace(/^생각:/, "").match(/reflect-(\d+)-(\d+)/);
+  return m ? `W${m[1]} · 생각 ${m[2]}` : q.replace(/^생각:/, "") || "(기타)";
+}
+type Refl = { student_id: string; chapter: string; body: string; created_at: string };
 function Av({ id, sz = 34 }: { id: string; sz?: number }) {
   return <span className="flex flex-shrink-0 items-center justify-center rounded-lg font-bold text-white" style={{ background: hue(id), width: sz, height: sz, fontSize: sz * 0.38 }}>{id.slice(-2)}</span>;
 }
 
 export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbox: InboxRow[] }) {
-  const [view, setView] = useState<"students" | "chat">("students");
+  const [view, setView] = useState<"students" | "chat" | "reflect">("students");
+
+  const [refl, setRefl] = useState<Refl[] | null>(null);
 
   const [sel, setSel] = useState(0);
   const [detail, setDetail] = useState<{ steps: Step[]; notes: Note[] } | null>(null);
@@ -108,6 +116,18 @@ export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbo
     return g;
   }, [detail]);
 
+  useEffect(() => {
+    if (view !== "reflect") return;
+    let alive = true;
+    fetch("/api/admin/reflections").then((r) => r.json()).then((j) => { if (alive && j.ok) setRefl(j.reflections); });
+    return () => { alive = false; };
+  }, [view]);
+  const reflByQ = useMemo(() => {
+    const g: Record<string, Refl[]> = {};
+    (refl ?? []).forEach((r) => { (g[r.chapter] ||= []).push(r); });
+    return Object.entries(g).sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
+  }, [refl]);
+
   const totalUnread = inbox.reduce((a, n) => a + (read[n.student_id] ? 0 : n.unread || 0), 0);
   const legend: [string, CState][] = [["긍정(정답·학습)", "good"], ["부정(오답)", "bad"], ["미흡(미방문·연타)", "gap"]];
 
@@ -119,9 +139,42 @@ export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbo
           대화 {inbox.length}
           {totalUnread > 0 && <span className="ml-1.5 inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#dc2626] px-1 text-[11px] font-bold text-white">{totalUnread}</span>}
         </button>
+        <button onClick={() => setView("reflect")} className={`rounded-md px-3 py-1.5 text-sm font-semibold ${view === "reflect" ? "bg-accent text-white" : "text-[#52525b]"}`}>성찰</button>
       </div>
 
-      {view === "chat" ? (
+      {view === "reflect" ? (
+        refl === null ? (
+          <div className="rounded-xl border border-[#e4e4e7] bg-white p-10 text-center text-sm text-[#a1a1aa]">불러오는 중…</div>
+        ) : reflByQ.length === 0 ? (
+          <div className="rounded-xl border border-[#e4e4e7] bg-white p-10 text-center text-sm text-[#a1a1aa]">아직 성찰 답변이 없습니다.</div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <p className="text-xs text-[#a1a1aa]">학생들이 각 <b>생각(성찰)</b> 문항에 남긴 답변 — 문항별로 모아 봅니다. 대화·질문 메모는 &ldquo;대화&rdquo; 탭에 분리되어 있습니다.</p>
+            {reflByQ.map(([qid, answers]) => (
+              <div key={qid} className="rounded-xl border border-[#e4e4e7] bg-white p-4">
+                <div className="mb-3 flex items-baseline justify-between gap-2 border-b border-[#f4f4f5] pb-2">
+                  <span className="text-sm font-bold text-accent">{labelQid(qid)}</span>
+                  <span className="text-xs text-[#a1a1aa]">{answers.length}명 답변</span>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {answers.map((a, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <Av id={a.student_id} sz={30} />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[13px] font-semibold">{a.student_id}</span>
+                          <span className="text-[10px] text-[#a1a1aa]">{fmtDate(a.created_at)}</span>
+                        </div>
+                        <div className="mt-0.5 whitespace-pre-wrap rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-3 py-2 text-[13px] leading-relaxed">{a.body}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : view === "chat" ? (
         inbox.length === 0 ? (
           <div className="rounded-xl border border-[#e4e4e7] bg-white p-10 text-center text-sm text-[#a1a1aa]">아직 대화가 없습니다.</div>
         ) : (

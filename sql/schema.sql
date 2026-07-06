@@ -39,19 +39,31 @@ end $$;
 alter table public.na_lecture_events add constraint lecture_events_kind_check check (kind in ('enter', 'answer'));
 
 alter table public.na_lecture_events enable row level security;
+-- B2 (2026-07-06): 직접 anon INSERT 정책 폐기 → 세션게이트(verifySession) 우회 구멍 제거.
+-- 모든 enter/answer 삽입은 server /api/track → na_record_event(token-gated SECURITY DEFINER) 로만.
 drop policy if exists lecture_events_anon_insert on public.na_lecture_events;
-create policy lecture_events_anon_insert on public.na_lecture_events for insert to anon
-  with check (
-    char_length(student_id) between 1 and 32
-    and week between 1 and 16
-    and kind in ('enter', 'answer')
-    and char_length(coalesce(answer, ''))     <= 2000
-    and char_length(coalesce(chapter, ''))    <= 32
-    and char_length(coalesce(section, ''))    <= 32
-    and char_length(coalesce(question, ''))   <= 64
-    and char_length(coalesce(prompt, ''))     <= 500
-    and char_length(coalesce(user_agent, '')) <= 300
-  );
+
+create or replace function public.na_record_event(
+  p_token text, p_id text, p_week int, p_kind text, p_slide int,
+  p_chapter text, p_section text, p_question text, p_prompt text,
+  p_answer text, p_is_correct boolean, p_user_agent text
+) returns void language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  if p_kind not in ('enter','answer') then
+    raise exception 'bad_kind'; end if;
+  if char_length(coalesce(p_id,'')) not between 1 and 32 then
+    raise exception 'bad_id'; end if;
+  insert into na_lecture_events
+    (student_id, week, kind, slide, chapter, section, question, prompt, answer, is_correct, user_agent)
+  values
+    (p_id, greatest(1, least(16, coalesce(p_week,1))), p_kind, p_slide,
+     left(p_chapter,32), left(p_section,32), left(p_question,64),
+     left(p_prompt,500), left(p_answer,2000), p_is_correct, left(p_user_agent,300));
+end; $func$;
+revoke all on function public.na_record_event(text,text,int,text,int,text,text,text,text,text,boolean,text) from public, anon;
+grant execute on function public.na_record_event(text,text,int,text,int,text,text,text,text,text,boolean,text) to anon;
 
 -- ── 2. 교수 토큰 (anon 비공개) ───────────────────────────────────────────────
 create table if not exists public.na_admin_secret ( token text primary key );
@@ -273,7 +285,9 @@ begin
   return query
   select n.student_id, count(*)::int, count(*) filter (where n.read_at is null)::int,
          (array_agg(n.body order by n.created_at desc))[1], max(n.created_at)
-  from na_student_notes n where n.student_id <> '__prof__' and n.student_id not like 'e2e-%'
+  from na_student_notes n
+  where n.student_id <> '__prof__' and n.student_id not like 'e2e-%'
+    and (n.chapter is null or n.chapter not like '생각:%')   -- 성찰(생각:*)은 별도 '성찰' 뷰로 분리
   group by n.student_id order by max(n.created_at) desc;
 end; $$;
 
@@ -285,8 +299,26 @@ begin
   if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
     raise exception 'unauthorized'; end if;
   return query select n.chapter, n.body, n.created_at from na_student_notes n
-    where n.student_id = p_id order by n.created_at;
+    where n.student_id = p_id and (n.chapter is null or n.chapter not like '생각:%')
+    order by n.created_at;
 end; $$;
+
+-- ④' 성찰(생각:*) 전수 — 교수 '성찰' 뷰(문항별×학생별)
+create or replace function public.na_admin_reflections(p_token text)
+returns table (student_id text, chapter text, body text, created_at timestamptz)
+language plpgsql security definer set search_path = public as $$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  return query
+    select n.student_id, n.chapter, n.body, n.created_at
+    from na_student_notes n
+    where n.chapter like '생각:%'
+      and n.student_id <> '__prof__' and n.student_id not like 'e2e-%'
+    order by n.chapter, n.created_at;
+end; $$;
+revoke all on function public.na_admin_reflections(text) from public, anon;
+grant execute on function public.na_admin_reflections(text) to anon;
 
 -- ⑤ 읽음 처리
 create or replace function public.na_admin_mark_notes_read(p_token text, p_id text)

@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { timingSafeEqual } from "crypto";
-import { ADMIN_COOKIE, STUDENT_COOKIE, PROF_SID } from "@/lib/supabase";
+import { ADMIN_COOKIE, STUDENT_COOKIE, PROF_SID, supabase } from "@/lib/supabase";
 import { ipFromRequest, isRateLimited, noteAttempt, clearRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_FAILS = 10;
+// durable(서버리스 cross-instance) 백스톱 — 인메모리는 인스턴스별이라 콜드스타트마다 리셋.
+const DB_THROTTLE_MAX = 30;
+const DB_THROTTLE_WINDOW_SEC = 600;
 
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
@@ -24,6 +27,18 @@ export async function POST(req: NextRequest) {
 
   if (isRateLimited(ip, MAX_FAILS)) {
     return NextResponse.json({ ok: false, error: "locked" }, { status: 429 });
+  }
+
+  // durable DB 스로틀 — 인메모리 리셋을 우회하는 무차별 방어(강한 토큰 없으면 skip).
+  if (tokenForCookie) {
+    const { data: over, error: thrErr } = await supabase().rpc("na_auth_throttle_hit", {
+      p_token: tokenForCookie,
+      p_ip: ip,
+      p_max: DB_THROTTLE_MAX,
+      p_window_sec: DB_THROTTLE_WINDOW_SEC,
+    });
+    if (thrErr) return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
+    if (over === true) return NextResponse.json({ ok: false, error: "locked" }, { status: 429 });
   }
 
   let pw = "";
