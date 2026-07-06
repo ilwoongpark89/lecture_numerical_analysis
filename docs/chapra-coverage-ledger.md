@@ -54,6 +54,7 @@
 - ✅ 10.1 LU 단계 — w6-3 (L,U matrixgrid)
 - ✅ 10.6 벡터 노름 — w6-4 (vectors norm)
 - ✅ 조건수 악조건 평행선 — w6 (funcplot)
+- ✅ 11.1 띠행렬/삼중대각 구조 + Thomas O(n) — w6-3 (matrixgrid, 추출누락분 적대감사로 발견)
 
 ## w7 — 반복 선형해법 (Ch11)
 - ✅ 11.4 Jacobi vs GS 차이 — w7-1 (대비 callout)
@@ -95,6 +96,7 @@
 - ✅ 22.7 상수·1차 무오차 — w11-1 (nodes 쌍)
 - ✅ 22.8 Gauss 절점 균형 — w11-4 (funcplot)
 - ✅ 22.2 오차 vs 소구간수 — w11-3 (convergence 사다리꼴/Simpson)
+- ✅ TABLE 21.2 Newton-Cotes 닫힌 공식 요약표(사다리꼴·1/3·3/8·Boole+오차) — w11-3 (표 기준선 감사로 발견)
 - ➖ 21.16/21.17 이중적분 / 22.10 정규분포 (고급)
 
 ## w12 — 수치미분 (Ch23)
@@ -139,5 +141,5 @@
 
 ---
 ## 완결 (2026-07-05)
-**⬜ 0** — chapra canonical teaching 그림 전수 ✅ 커버 또는 ➖(고급/범위밖 의도제외). 총 113→117+ 시각자산, 전 14주 프로덕션 렌더·KaTeX오류 0·수치 node 재검산 검증.
+**⬜ 0** (Fable 적대감사 v2: pdftotext 캡션누락 11.1 + TABLE 기준선 2건 발견·충전, 신규 그림 6종 픽셀 육안 QA PASS) — chapra canonical teaching 그림 전수 ✅ 커버 또는 ➖(고급/범위밖 의도제외). 총 113→117+ 시각자산, 전 14주 프로덕션 렌더·KaTeX오류 0·수치 node 재검산 검증.
 ➖ 의도제외: pseudocode·Mathcad/Excel 스크린샷·물리 case study(truss/circuit/spring)·고급(Adams·Milne·Cash-Karp·ADI·2D bilinear·Muller·역2차·다중회귀 3D평면·정규분포).

@@ -665,6 +665,17 @@ end
   <h1 class="stage-h">오차가 급감한다</h1>
   <div class="nafig" data-fig="convergence" data-rates='[{"r":0.25,"label":"사다리꼴 O(h²)"},{"r":0.0625,"label":"Simpson O(h⁴)"}]' data-cap="소구간 수 $n$ 을 2배로 늘릴 때마다 — 사다리꼴 오차 $\times\tfrac14$, Simpson $\times\tfrac1{16}$. 고차 공식이 훨씬 빨리 참값으로(가로축=2배 횟수)."></div>
 </section>
+<section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="그림">
+  <div class="eyebrow">11-3 · 표 · Newton–Cotes 요약</div>
+  <h1 class="stage-h">닫힌 공식 가족 — 공식과 오차</h1>
+  <div class="stp-tblwrap" style="max-width:560px;margin:0 auto"><table class="stp-tbl"><thead><tr><th>공식</th><th>근사식</th><th>오차</th></tr></thead><tbody>
+    <tr><td>사다리꼴</td><td>$\tfrac{h}{2}(f_0+f_1)$</td><td>$-\tfrac{h^3}{12}f''$</td></tr>
+    <tr><td>Simpson 1/3</td><td>$\tfrac{h}{3}(f_0+4f_1+f_2)$</td><td>$-\tfrac{h^5}{90}f^{(4)}$</td></tr>
+    <tr><td>Simpson 3/8</td><td>$\tfrac{3h}{8}(f_0+3f_1+3f_2+f_3)$</td><td>$-\tfrac{3h^5}{80}f^{(4)}$</td></tr>
+    <tr><td>Boole</td><td>$\tfrac{2h}{45}(7f_0+32f_1+12f_2+32f_3+7f_4)$</td><td>$-\tfrac{8h^7}{945}f^{(6)}$</td></tr>
+  </tbody></table></div>
+  <div class="callout key" style="margin-top:10px"><div class="ct">Newton–Cotes 닫힌 공식 한눈에</div>점을 하나 더 쓸수록 오차 차수가 뛴다. 실무 기본기는 <b>복합 사다리꼴·복합 Simpson 1/3</b> — 3/8 은 소구간이 홀수개 남을 때 짝 맞추기용.</div>
+</section>
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="정리">
   <div class="eyebrow">11-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

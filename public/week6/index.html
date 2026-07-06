@@ -631,6 +631,19 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
   <h1 class="stage-h">A = L · U</h1>
   <div class="nafig" data-fig="matrixgrid" data-mat="[[1,0,0],[2,1,0],[1,3,1]]" data-hi="[[1,0],[2,0],[2,1]]" data-cap2="L (하삼각, 대각=1, 주황=소거 배수)" data-cap="가우스 소거를 한 번 해두면 L·U 로 저장 — 우변 b 가 바뀌어도 재분해 없이 대입 두 번으로 푼다."></div>
 </section>
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="그림">
+  <div class="eyebrow">6-3 · 그림 · 띠행렬과 Thomas</div>
+  <h1 class="stage-h">거의 다 0 이면 — $O(n)$ 으로 푼다</h1>
+  <div class="two">
+    <div class="col2">
+      <div class="nafig" data-fig="matrixgrid" data-mat='[["f₁","g₁","·","·"],["e₂","f₂","g₂","·"],["·","e₃","f₃","g₃"],["·","·","e₄","f₄"]]' data-hi="[[0,0],[1,1],[2,2],[3,3]]" data-cap2="삼중대각 — 대각 셋만 값, 나머지 0(·)" data-cap=""></div>
+    </div>
+    <div class="col2">
+      <div class="callout key"><div class="ct">Thomas 알고리즘 — $O(n)$</div>0 을 건드리지 않으니 가우스 소거가 극단적으로 짧아진다: 전진 $e_k'=e_k/f_{k-1}',\ f_k'=f_k-e_k'g_{k-1}$ 후 후진대입. $O(n^3/3)$ → <b>$O(n)$</b>.</div>
+      <div class="callout warn" style="margin-top:10px"><div class="ct">어디서 나오나</div>10주 <b>스플라인</b>($h_{i-1}M_{i-1}+2(h_{i-1}{+}h_i)M_i+h_iM_{i+1}=\cdots$)·14주 <b>음함수 열전도(BTCS)</b> 가 전부 삼중대각 — 그래서 매 스텝 연립도 싸다.</div>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="정리">
   <div class="eyebrow">6-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
