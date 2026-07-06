@@ -261,6 +261,12 @@
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">왜 되는가</div>중간값 정리 덕분에 매 반복 후에도 <strong>부호가 다른 끝점</strong>이 유지되므로 근은 항상 구간 안에 남아 있고, 구간 폭은 <strong>매번 정확히 절반</strong>이 된다.</div>
   <div class="callout warn" style="margin-top:12px"><div class="ct">오차 상한 — 반복 횟수 예측</div>$n$ 회 후 구간 폭 $=\dfrac{b-a}{2^{n}}$ 이므로 근 오차 $\le E_n=\dfrac{b-a}{2^{n}}$. 허용오차 $\varepsilon$ 까지: $\dfrac{b-a}{2^{n}}\le\varepsilon\Rightarrow n\ge\log_2\dfrac{b-a}{\varepsilon}$. 예 $[1,2],\ \varepsilon=10^{-6}$ → $n\ge\log_2 10^{6}\approx20$ 회 — 느리지만 <strong>횟수를 미리 안다</strong>.</div>
+  <div class="stp-tblwrap" style="max-width:540px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>반복</th><th>$a$</th><th>$b$</th><th>중점 $c$</th><th>$f(c)$</th></tr></thead><tbody>
+<tr><td>1</td><td>1.0000</td><td>2.0000</td><td>1.5000</td><td>&minus;0.125</td></tr>
+<tr><td>2</td><td>1.5000</td><td>2.0000</td><td>1.7500</td><td>+1.609</td></tr>
+<tr><td>3</td><td>1.5000</td><td>1.7500</td><td>1.6250</td><td>+0.666</td></tr>
+<tr><td>4</td><td>1.5000</td><td>1.6250</td><td>1.5625</td><td>+0.252</td></tr></tbody></table></div>
+<div class="callout key" style="margin-top:10px"><div class="ct">$f=x^3-x-2$, 근 $\approx1.5214$</div>매 반복 $f(c)$ 부호로 근이 든 반쪽을 골라 구간을 <b>절반</b>씩 줄인다. $f(c){<}0$ 이면 $a{\gets}c$, 아니면 $b{\gets}c$.</div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="시연">

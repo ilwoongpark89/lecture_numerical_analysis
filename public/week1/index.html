@@ -486,6 +486,10 @@ end
     </ol>
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">주의</div>실전에서는 참값이 없다. 그래서 <strong>근사오차 $\varepsilon_a$</strong> 로 "언제 멈출지"를 판단한다. 참오차는 검증(해석해 있을 때)에만 쓴다.</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>상황</th><th>오차 정의</th><th>정지 기준</th></tr></thead><tbody>
+<tr><td>참값 앎 (해석해)</td><td>참오차 $E_t=$참값$-$근사</td><td>검증·오차분석용</td></tr>
+<tr><td>참값 모름 (실전 대부분)</td><td>근사오차 $\varepsilon_a=\dfrac{|x_n-x_{n-1}|}{|x_n|}$</td><td>$\varepsilon_a<\varepsilon_s$ 면 멈춤</td></tr></tbody></table></div>
+<div class="callout key" style="margin-top:10px"><div class="ct">실전 알고리즘은 근사오차로 멈춘다</div>참값을 알면 애초에 수치해석이 필요 없다 — 그래서 <b>직전 반복과의 변화</b>($\varepsilon_a$)로 수렴을 판정한다.</div>
 </section>
 
 <section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="직접계산">

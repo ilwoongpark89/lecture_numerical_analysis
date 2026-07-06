@@ -698,6 +698,13 @@ end
     </ol>
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">푸는 법</div>$M_i=S''(x_i)$ 로 놓으면 미지수가 $M_i$ 로 줄고, 내부 매듭에서 <strong>삼중대각 연립계</strong>가 나온다: $h_{i-1}M_{i-1}+2(h_{i-1}+h_i)M_i+h_iM_{i+1}=6\!\left(\frac{y_{i+1}-y_i}{h_i}-\frac{y_i-y_{i-1}}{h_{i-1}}\right)$. Thomas 알고리즘으로 $O(n)$.</div>
+  <div class="stp-tblwrap" style="max-width:520px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>조건</th><th>개수</th></tr></thead><tbody>
+<tr><td>각 구간이 양 끝점 통과 (보간)</td><td>$2n$</td></tr>
+<tr><td>내부 매듭에서 1계 도함수 연속</td><td>$n-1$</td></tr>
+<tr><td>내부 매듭에서 2계 도함수 연속</td><td>$n-1$</td></tr>
+<tr><td>자연 경계 $S''=0$ (양 끝)</td><td>2</td></tr>
+<tr><td class="stp-k"><b>합 = 미지수 개수</b></td><td><b>$4n$</b></td></tr></tbody></table></div>
+<div class="callout key" style="margin-top:10px"><div class="ct">$n$ 개 3차 조각 = $4n$ 개 계수</div>매끄러움(값·기울기·곡률 연속)을 <b>방정식으로 번역</b>하면 미지수와 정확히 같은 $4n$ 개 — 유일해가 존재. 그리고 이 계는 <b>삼중대각</b>이라 $O(n)$ 에 풀린다(6주 Thomas).</div>
 </section>
 
 <section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="시연">

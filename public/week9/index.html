@@ -339,6 +339,11 @@
     </ol>
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">직선의 경우 확인</div>$m=1$ 이면 $X^TX=\begin{bmatrix}n&\sum x_i\\ \sum x_i&\sum x_i^2\end{bmatrix}$, $X^Ty=\begin{bmatrix}\sum y_i\\ \sum x_iy_i\end{bmatrix}$ — 9-1 의 정규방정식과 <strong>정확히 일치</strong>한다.</div>
+  <div class="dcard" style="max-width:620px;margin:14px auto 0"><div class="dh">정규방정식 유도 (최소제곱)</div>
+<div class="drow">오차제곱합 $S=\sum_i\big(y_i-\sum_j a_j x_i^{\,j}\big)^2$ 을 각 $a_k$ 로 편미분 $=0$</div>
+<div class="drow">$\dfrac{\partial S}{\partial a_k}=-2\sum_i x_i^{\,k}\big(y_i-\sum_j a_j x_i^{\,j}\big)=0$</div>
+<div class="drow">정리 → $\sum_j\big(\sum_i x_i^{\,k}x_i^{\,j}\big)a_j=\sum_i x_i^{\,k}y_i$, 즉 $(X^\mathsf{T}X)\mathbf a=X^\mathsf{T}\mathbf y$</div></div>
+<div class="callout key" style="margin-top:10px"><div class="ct">$X$ = 설계행렬 (각 행 $[1,x_i,x_i^2,\dots]$)</div>차수만 바꾸면 직선·포물선·다중회귀가 <b>같은 한 줄</b>로 통일 — 6주 가우스 소거로 푸는 $(m{+}1)\times(m{+}1)$ 선형계.</div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="시연">

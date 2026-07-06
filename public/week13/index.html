@@ -363,6 +363,11 @@ f = @(x, y) x - y;
     </ol>
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">왜 정확한가</div>구간의 <strong>양 끝 기울기를 평균</strong>하는 것은 적분을 <strong>사다리꼴</strong>로 근사하는 것과 같다 → 곡률의 1차 효과를 잡아 $O(h^2)$.</div>
+  <div class="dcard" style="max-width:600px;margin:14px auto 0"><div class="dh">Heun 한 스텝 (예측 → 수정)</div>
+<div class="drow">① 예측: 시작 기울기 $k_1=f(x_n,y_n)$, $\tilde y=y_n+h\,k_1$ (Euler)</div>
+<div class="drow">② 끝 기울기: $k_2=f(x_n{+}h,\tilde y)$</div>
+<div class="drow">③ 수정: 두 기울기 <b>평균</b>으로 재걸음 $y_{n+1}=y_n+h\dfrac{k_1+k_2}{2}$</div></div>
+<div class="callout key" style="margin-top:10px"><div class="ct">사다리꼴 적분(11주)과 같은 꼴</div>양 끝 기울기의 평균 = 사다리꼴 넓이 근사 → 오차가 $O(h^2)$ 로 개선(단순 Euler 는 $O(h)$).</div>
 </section>
 
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="그림">
