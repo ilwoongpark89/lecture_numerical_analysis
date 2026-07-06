@@ -316,6 +316,13 @@ f = @(x) x.^3 - x - 2;
       <li>수렴 보장이 있다고 오해(이분법과 혼동).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>구분</th><th>할선법 (Secant)</th><th>False Position</th></tr></thead><tbody>
+    <tr><td class="stp-k">기울기 소스</td><td>최근 두 점 $x_{n-1},x_n$</td><td>구간 끝점 $a,b$</td></tr>
+    <tr><td class="stp-k">수렴 차수</td><td>$p\approx1.618$ (초선형)</td><td>$p\approx1$ (선형)*</td></tr>
+    <tr><td class="stp-k">구간 보장</td><td>없음</td><td>있음 (부호 판정)</td></tr>
+    <tr><td class="stp-k">초기값</td><td>점 2개 · 부호 무관</td><td>구간 $[a,b]$ · $f(a)f(b)&lt;0$</td></tr>
+  </tbody></table></div>
+  <div class="nafig-cap" style="max-width:560px;margin:7px auto 0">두 방법의 <b>첫 스텝은 동일</b> — 구간 $[1,2]$ 에서 $x_2=\tfrac{4}{3}\approx1.3333$. 이후 False Position만 구간을 유지해 근을 가둔다(*정체 시 선형).</div>
 </section>
 
 <!-- ════════════════════ 5-2 다중근과 수정 기법 ════════════════════ -->
@@ -509,6 +516,12 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
       <li>순환·발산을 알고리즘 오류로 오해(초기값 문제).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>방법</th><th>조건</th><th>수렴 차수</th></tr></thead><tbody>
+    <tr><td class="stp-k">표준 Newton</td><td>중복도 무시</td><td>선형 · 오차 $\times(1-\tfrac1m)$</td></tr>
+    <tr><td class="stp-k">Modified $\times m$</td><td>$m$ 알 때</td><td>이차 복원</td></tr>
+    <tr><td class="stp-k">$u=f/f'$ Newton</td><td>$m$ 모를 때 · $f''$ 필요</td><td>이차 복원</td></tr>
+  </tbody></table></div>
+  <div class="nafig-cap" style="max-width:560px;margin:7px auto 0">표준 Newton 오차 감소율 $1-\tfrac1m$ — 이중근 $0.5$, 삼중근 $\approx0.6667$. $m$ 이 클수록 $1$ 에 가까워 거의 안 준다.</div>
 </section>
 
 <!-- ════════════════════ 5-3 비선형 연립계 ════════════════════ -->
@@ -727,6 +740,13 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
       <li>편미분 배열 순서 $\partial F_i/\partial x_j$ 혼동.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>1차원 Newton</th><th>다변수 Newton</th></tr></thead><tbody>
+    <tr><td class="stp-k">미분</td><td>$f'(x)$</td><td>Jacobian $J=[\partial F_i/\partial x_j]$</td></tr>
+    <tr><td class="stp-k">갱신</td><td>$x-\dfrac{f}{f'}$</td><td>$J\,\Delta\mathbf x=-\mathbf F$</td></tr>
+    <tr><td class="stp-k">반복 비용</td><td>$O(1)$</td><td>$O(n^3)$ (선형계 풀이)</td></tr>
+    <tr><td class="stp-k">수렴</td><td>이차</td><td>이차 ($J$ 가역 시)</td></tr>
+  </tbody></table></div>
+  <div class="nafig-cap" style="max-width:560px;margin:7px auto 0">예제 $\det J(2,0.5)=4\cdot2-1\cdot0.5=7.5\neq0$ → 가역, 선형계 $J\,\Delta\mathbf x=-\mathbf F$ 풀이 가능(이차 수렴).</div>
 </section>
 
 <!-- ════════════════════ 5-4 방법 선택 전략 ════════════════════ -->
@@ -969,6 +989,13 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
       <li>고정점 $g$ 를 아무렇게나 골라 발산.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>판단 축</th><th>핵심 질문</th><th>선택</th></tr></thead><tbody>
+    <tr><td class="stp-k">안전성</td><td>구간 $[a,b]$ 로 가둘 수 있나?</td><td>이분법 · Brent</td></tr>
+    <tr><td class="stp-k">속도</td><td>$f'$ 를 쓸 수 있나?</td><td>Newton (이차)</td></tr>
+    <tr><td class="stp-k">도함수 없음</td><td>근처 두 점만 있나?</td><td>할선법 ($p\approx1.618$)</td></tr>
+    <tr><td class="stp-k">구조</td><td>중근 · $x=g(x)$ 형태?</td><td>Modified · 고정점 ($|g'|&lt;1$)</td></tr>
+  </tbody></table></div>
+  <div class="nafig-cap" style="max-width:560px;margin:7px auto 0">모르겠으면 <b>Brent(fzero)</b> — 안전(가둠)과 속도(개방법)를 함께. 같은 근 $\sqrt2$, 구간 $[1,2]$: 이분법 $20$회 vs Newton $5$회.</div>
 </section>
 
 </div></main>

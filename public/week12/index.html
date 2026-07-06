@@ -359,6 +359,8 @@ end
       <li>표 양 끝점에 중앙차분 시도(이웃 점 부족).</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:16px auto 0;text-align:center">한눈 요약 — 세 차분 공식과 최적 $h$</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>방법</th><th>공식</th><th>오차 · $h$반감</th></tr></thead><tbody><tr><td class="stp-k">전진·후진</td><td>$\dfrac{f(x{\pm}h)\mp f(x)}{\pm h}$</td><td>$O(h)$ · $\div2$</td></tr><tr><td class="stp-k">중앙</td><td>$\dfrac{f(x{+}h)-f(x{-}h)}{2h}$</td><td>$O(h^2)$ · $\div4$</td></tr><tr><td class="stp-k">최적 $h$</td><td>절단오차 ↓ · 반올림오차 ↑</td><td>$h_{\text{opt}}\!\sim\!\varepsilon^{1/3}\!\approx\!10^{-5}$</td></tr></tbody></table></div>
 </section>
 
 <!-- ════════════════════ 12-2 고차 정확도 공식 ════════════════════ -->
@@ -559,6 +561,8 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
       <li>경계에서 4점 공식 억지 사용(범위 밖 점).</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:16px auto 0;text-align:center">한눈 요약 — 고차 · 2계 · 편측 공식</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>대상</th><th>공식</th><th>오차 · $h$반감</th></tr></thead><tbody><tr><td class="stp-k">1계 4점</td><td>$\dfrac{-f_{+2}+8f_{+1}-8f_{-1}+f_{-2}}{12h}$</td><td>$O(h^4)$ · $\div16$</td></tr><tr><td class="stp-k">2계 중앙</td><td>$\dfrac{f_{+1}-2f_0+f_{-1}}{h^2}$</td><td>$O(h^2)$ · $\div4$</td></tr><tr><td class="stp-k">편측(경계)</td><td>$\dfrac{-3f_0+4f_{+1}-f_{+2}}{2h}$</td><td>$O(h^2)$ · $\div4$</td></tr></tbody></table></div>
 </section>
 
 <!-- ════════════════════ 12-3 Richardson 외삽 ════════════════════ -->
@@ -729,6 +733,8 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
       <li>반올림 바닥 아래에서도 계속 정확해진다고 착각.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:16px auto 0;text-align:center">한눈 요약 — Richardson 외삽 ($f{=}e^x,\ x{=}1$)</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>공식 · 값</th><th>결과</th></tr></thead><tbody><tr><td class="stp-k">두 근사</td><td>$D(h),\ D(h/2)$</td><td>각 $O(h^2)$</td></tr><tr><td class="stp-k">조합 ($p{=}2$)</td><td>$D_\text{R}=\dfrac{4D(h/2)-D(h)}{3}$</td><td>$O(h^4)$</td></tr><tr><td class="stp-k">예 $h{=}0.1$</td><td>$D_\text{R}=2.718273$</td><td>오차 $9\times10^{-6}$</td></tr><tr><td class="stp-k">일반형</td><td>$\dfrac{2^{p}D(h/2)-D(h)}{2^{p}-1}$</td><td>$p\!\to\!p{+}2$</td></tr></tbody></table></div>
 </section>
 
 <!-- ════════════════════ 12-4 편미분 근사 ════════════════════ -->
@@ -918,6 +924,8 @@ fprintf('fx=%.4f  fy=%.4f  fxy=%.4f  lap=%.4f\n', fx, fy, fxy, lap);
       <li>비등간격 격자에서 방향별 $h$ 혼동.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:16px auto 0;text-align:center">한눈 요약 — 2차원 스텐실 (방향별 1차원 재사용)</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>도함수</th><th>분자 스텐실</th><th>분모</th></tr></thead><tbody><tr><td class="stp-k">$\partial f/\partial x$</td><td>$f(x{+}h,y)-f(x{-}h,y)$</td><td>$2h$</td></tr><tr><td class="stp-k">$\nabla^2 f$ 라플라시안</td><td>$f_E+f_W+f_N+f_S-4f_0$</td><td>$h^2$</td></tr><tr><td class="stp-k">교차 $\partial^2 f/\partial x\partial y$</td><td>$f_{++}-f_{+-}-f_{-+}+f_{--}$</td><td>$4h^2$</td></tr></tbody></table></div>
 </section>
 
 </div></main>

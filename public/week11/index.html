@@ -343,6 +343,13 @@ I = trapezoid(f, 0, 1);
       <li>오차 차수를 $(b-a)^2$ 로 착각(실제 $^3$).</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:14px auto 0;text-align:center">한눈 요약 · 사다리꼴 한 표로</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>식</th><th>비고</th></tr></thead><tbody>
+    <tr><td class="stp-k">단일 공식</td><td>$\dfrac{b-a}{2}[f(a)+f(b)]$</td><td>함수값 2개 · 가장 값쌈</td></tr>
+    <tr><td class="stp-k">단일 오차</td><td>$-\dfrac{(b-a)^3}{12}f''(\xi)$</td><td>$O(h^3)$ · 1차↓ 무오차</td></tr>
+    <tr><td class="stp-k">복합 공식</td><td>$\dfrac{h}{2}\bigl[f_0+2\!\sum\limits_{i=1}^{n-1}\!f_i+f_n\bigr]$</td><td>$h=\tfrac{b-a}{n}$</td></tr>
+    <tr><td class="stp-k">복합 오차</td><td>$-\dfrac{(b-a)h^2}{12}f''(\xi)$</td><td>$O(h^2)$ · $n$ 2배 → $\div4$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 11-2 Simpson 공식 ════════════════════ -->
@@ -530,6 +537,12 @@ I = simpson13(f, 0, 1);
       <li>2차라서 2차까지만 정확하다고 착각(실제 3차).</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:14px auto 0;text-align:center">한눈 요약 · Simpson 형제 한 표로</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>공식</th><th>식 · 가중치</th><th>오차 (정확차수)</th></tr></thead><tbody>
+    <tr><td class="stp-k">Simpson 1/3</td><td>$\dfrac{h}{3}[f_0+4f_1+f_2],\ h=\tfrac{b-a}{2}$</td><td>$-\dfrac{h^5}{90}f^{(4)}$ · 3차↓</td></tr>
+    <tr><td class="stp-k">Simpson 3/8</td><td>$\dfrac{3h}{8}[f_0+3f_1+3f_2+f_3],\ h=\tfrac{b-a}{3}$</td><td>$-\dfrac{3h^5}{80}f^{(4)}$ · 3차↓</td></tr>
+    <tr><td class="stp-k">복합 1/3</td><td>$\dfrac{h}{3}[f_0+4\!\sum_{\text{홀}}\!+2\!\sum_{\text{짝}}\!+f_n]$</td><td>$O(h^4)$ · $n$ 2배 → $\div16$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 11-3 복합 공식 ════════════════════ -->
@@ -755,6 +768,12 @@ end
       <li>$\tfrac{h}{2}$·$\tfrac{h}{3}$ 계수 혼동.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:14px auto 0;text-align:center">한눈 요약 · 복합 공식 한 표로 ($h=\tfrac{b-a}{n}$)</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>공식</th><th>가중합</th><th>오차 · 수렴</th></tr></thead><tbody>
+    <tr><td class="stp-k">복합 사다리꼴</td><td>$\dfrac{h}{2}\bigl[f_0+2\!\sum\limits_{i=1}^{n-1}\!f_i+f_n\bigr]$</td><td>$O(h^2)$ · $n$ 2배 → $\div4$</td></tr>
+    <tr><td class="stp-k">복합 Simpson</td><td>$\dfrac{h}{3}\bigl[f_0+4\!\sum_{\text{홀}}\!+2\!\sum_{\text{짝}}\!+f_n\bigr]$</td><td>$O(h^4)$ · $n$ 2배 → $\div16$</td></tr>
+    <tr><td class="stp-k">공통 조건</td><td>내부 절점은 두 조각이 공유</td><td>Simpson 은 $n$ 짝수 필수</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 11-4 Gauss 구적법 ════════════════════ -->
@@ -993,6 +1012,12 @@ I = gauss_quad(f, 1, 3, 2);
       <li>등간격 데이터에 억지 적용.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="max-width:560px;margin:14px auto 0;text-align:center">한눈 요약 · Gauss-Legendre 절점표 ($\int_{-1}^{1}$)</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>점수 $n$</th><th>절점 $x_i$ · 가중치 $w_i$</th><th>정확차수 $2n-1$</th></tr></thead><tbody>
+    <tr><td class="stp-k">1점</td><td>$x=0,\ \ w=2$</td><td>1차</td></tr>
+    <tr><td class="stp-k">2점</td><td>$x=\pm0.5774,\ \ w=1,\,1$</td><td>3차</td></tr>
+    <tr><td class="stp-k">3점</td><td>$x=0,\pm0.7746;\ \ w=\tfrac{8}{9},\tfrac{5}{9}$</td><td>5차</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

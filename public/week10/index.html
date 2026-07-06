@@ -293,6 +293,12 @@ yq = lagrange_interp(x, y, 2.5);
       <li>점 추가 시 기존 $L_i$ 를 재사용(전부 바뀜).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>요소</th><th>공식</th><th>핵심 성질</th></tr></thead><tbody>
+    <tr><td class="stp-k">기저 $L_i$</td><td>$\prod_{j\ne i}\frac{x-x_j}{x_i-x_j}$</td><td>$L_i(x_j)=\delta_{ij}$</td></tr>
+    <tr><td class="stp-k">보간식 $P$</td><td>$\sum_i y_i L_i(x)$</td><td>모든 점 정확 통과</td></tr>
+    <tr><td class="stp-k">기저합</td><td>$\sum_i L_i(x)=1$</td><td>상수 1도 정확 복원</td></tr>
+    <tr><td class="stp-k">예제값</td><td>$P(2.5)=6.25$</td><td>$=2.5^2$ (점 $1,4,9$)</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 10-2 Newton 차분 보간 ════════════════════ -->
@@ -473,6 +479,12 @@ x = [1 2 3];  y = [1 4 9];
       <li>중첩 곱 $\prod(x-x_j)$ 의 인수 개수 착오.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>계산</th><th>값</th></tr></thead><tbody>
+    <tr><td class="stp-k">0차 차분</td><td>$f[x_i]=y_i$</td><td>$1,\;4,\;9$</td></tr>
+    <tr><td class="stp-k">1차 차분</td><td>$\frac{f[x_{i+1}]-f[x_i]}{x_{i+1}-x_i}$</td><td>$3,\;5$</td></tr>
+    <tr><td class="stp-k">2차 차분</td><td>$\frac{5-3}{3-1}$</td><td>$1$</td></tr>
+    <tr><td class="stp-k">Newton 계수</td><td>첫 행 $1,3,1$</td><td>$P=1{+}3(x{-}1){+}(x{-}1)(x{-}2)=x^2$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 10-3 Runge 현상 ════════════════════ -->
@@ -656,6 +668,12 @@ end
       <li>Chebyshev를 "간격을 넓힌 것"으로 오해(끝에 <b>밀집</b>).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>축</th><th>등간격 노드</th><th>Chebyshev 노드</th></tr></thead><tbody>
+    <tr><td class="stp-k">노드 배치</td><td>균일 간격</td><td>끝에 밀집</td></tr>
+    <tr><td class="stp-k">$n{=}20$ 최대오차</td><td>$58.6$</td><td>$0.015$</td></tr>
+    <tr><td class="stp-k">차수 $\uparrow$ 추세</td><td>발산</td><td>수렴</td></tr>
+    <tr><td class="stp-k">처방</td><td>스플라인으로 대체</td><td>그대로 사용</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 10-4 Cubic Spline ════════════════════ -->
@@ -863,6 +881,12 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
       <li>우변의 부호·간격 $h_i$ 계산 실수.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>값·식</th><th>의미</th></tr></thead><tbody>
+    <tr><td class="stp-k">미지수 = 조건</td><td>$4n=2n{+}2(n{-}1){+}2$</td><td>딱 맞아 유일 결정</td></tr>
+    <tr><td class="stp-k">경계 (natural)</td><td>$S''(x_0)=S''(x_n)=0$</td><td>양 끝 곡률 0</td></tr>
+    <tr><td class="stp-k">예제 곡률 해</td><td>$M=(0,-4,4,0)$</td><td>삼중대각계 $\to O(n)$</td></tr>
+    <tr><td class="stp-k">연속성</td><td>$C^2$ 값·기울기·곡률</td><td>Runge 진동 없음</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

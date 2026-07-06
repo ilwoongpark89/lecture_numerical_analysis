@@ -300,6 +300,12 @@ fprintf('반지름 %d → 넓이 %.2f\n', r, area);  <span class="cm">% 서식 �
       <li>우선순위를 왼→오 순으로 착각.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>요소</th><th>규칙 한 줄</th><th>예 → 결과</th></tr></thead><tbody>
+    <tr><td class="stp-k">특수값</td><td><code>pi eps Inf NaN</code></td><td><code>1/0</code>→Inf, <code>0/0</code>→NaN</td></tr>
+    <tr><td class="stp-k">우선순위</td><td>$\wedge\gt*/\gt+-$</td><td><code>2+3*4^2</code> → 50</td></tr>
+    <tr><td class="stp-k">세미콜론 ;</td><td>출력 억제</td><td><code>a=5;</code> 조용히 대입</td></tr>
+    <tr><td class="stp-k">삼각함수</td><td>인자는 라디안</td><td><code>sind(90)</code> → 1</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 2-2 벡터·행렬 연산 ════════════════════ -->
@@ -516,6 +522,12 @@ A(2,2)</code></pre></div>
       <li><code>reshape</code> 의 열 우선 채움 간과.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>기호·함수</th><th>뜻</th><th>예 → 결과</th></tr></thead><tbody>
+    <tr><td class="stp-k">: 콜론</td><td>등간격·전체</td><td><code>0:0.5:2</code> → [0 0.5 1 1.5 2]</td></tr>
+    <tr><td class="stp-k">A(i,j)</td><td>1-based 인덱스</td><td><code>A(end,end)</code> = 마지막</td></tr>
+    <tr><td class="stp-k">* / .*</td><td>행렬곱 / 원소별곱</td><td>(2,1): 43 / 21</td></tr>
+    <tr><td class="stp-k">A\b</td><td>연립방정식 (LU)</td><td><code>[2 3;4 1]\[8;6]</code> → [1;2]</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 2-3 제어 흐름과 함수 ════════════════════ -->
@@ -700,6 +712,12 @@ root = fzero(f, -2);        <span class="cm">% 익명 함수를 fzero 에 전달
       <li>익명 함수에 <code>.^ .*</code> 안 써서 벡터 입력 실패.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>구문</th><th>언제 쓰나</th><th>핵심·예</th></tr></thead><tbody>
+    <tr><td class="stp-k">for i=1:n</td><td>횟수 고정 반복</td><td>$\textstyle\sum_{1}^{5}i$ = 15</td></tr>
+    <tr><td class="stp-k">while err&gt;tol</td><td>수렴까지 반복</td><td>2^n&gt;1000 → n=10</td></tr>
+    <tr><td class="stp-k">function</td><td>재사용 모듈</td><td>파일명 = 함수명</td></tr>
+    <tr><td class="stp-k">@(x) …</td><td>익명 함수 한 줄</td><td><code>f=@(x)x.^2+2*x+1</code>, f(3)=16</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 2-4 그래프 시각화 ════════════════════ -->
@@ -915,6 +933,12 @@ grid on;</code></pre></div>
       <li><code>legend</code> 순서와 plot 순서 불일치.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>요소</th><th>역할</th><th>예 → 해석</th></tr></thead><tbody>
+    <tr><td class="stp-k">plot(x,y,'스타일')</td><td>곡선 그리기</td><td><code>'ro--'</code> = 빨강·원·파선</td></tr>
+    <tr><td class="stp-k">hold on/off</td><td>곡선 겹치기</td><td>없으면 이전 곡선 덮어씀</td></tr>
+    <tr><td class="stp-k">loglog 기울기</td><td>수렴 차수 $p$</td><td>오차 1/4 → $p=2$</td></tr>
+    <tr><td class="stp-k">semilogy</td><td>지수 수렴 표시</td><td>1/10씩 감소도 직선</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

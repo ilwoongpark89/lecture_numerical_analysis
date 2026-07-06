@@ -356,6 +356,13 @@ b = np.array([7,-21,15], float)
       <li>$a_{ii}=0$ 인데 pivoting 안 함.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="margin-top:18px">한눈 요약 — Jacobi 한 표로</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>특성</th><th>공식 · 수치</th></tr></thead><tbody>
+    <tr><td class="stp-k">성분 갱신</td><td>우변 전부 이전값(동시)</td><td>$x_i^{(k+1)}=\tfrac{1}{a_{ii}}\big(b_i-\sum_{j\ne i}a_{ij}x_j^{(k)}\big)$</td></tr>
+    <tr><td class="stp-k">반복 행렬</td><td>오차 $\mathbf{e}^{(k+1)}=T_J\mathbf{e}^{(k)}$</td><td>$T_J=-D^{-1}(L+U)$</td></tr>
+    <tr><td class="stp-k">수렴</td><td>선형 · 느림</td><td>$\rho(T_J)&lt;1$ · 예제 약 19회</td></tr>
+    <tr><td class="stp-k">병렬 · 메모리</td><td>성분 독립 → 병렬 쉬움</td><td>메모리 $2n$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 7-2 Gauss-Seidel ════════════════════ -->
@@ -531,6 +538,13 @@ end
       <li>병렬화 시 순차 의존 무시.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="margin-top:18px">한눈 요약 — Gauss-Seidel 한 표로</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>특성</th><th>공식 · 수치</th></tr></thead><tbody>
+    <tr><td class="stp-k">성분 갱신</td><td>$j&lt;i$ 새 값 즉시 재사용</td><td>$x_i^{(k+1)}=\tfrac{1}{a_{ii}}\big(b_i-\sum_{j&lt;i}a_{ij}x_j^{(k+1)}-\sum_{j&gt;i}a_{ij}x_j^{(k)}\big)$</td></tr>
+    <tr><td class="stp-k">반복 행렬</td><td>오차 $\mathbf{e}^{(k+1)}=T_{GS}\mathbf{e}^{(k)}$</td><td>$T_{GS}=-(D+L)^{-1}U$</td></tr>
+    <tr><td class="stp-k">수렴</td><td>Jacobi 절반</td><td>예제 약 10회</td></tr>
+    <tr><td class="stp-k">병렬 · 메모리</td><td>순차 의존 → 병렬 어려움</td><td>메모리 $n$ (in-place)</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 7-3 수렴 조건 ════════════════════ -->
@@ -666,6 +680,13 @@ end
       <li>대각 원소가 작은데 반복법 강행 → 발산.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="margin-top:18px">한눈 요약 — 수렴 판정 한 표로</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>판정</th><th>조건</th><th>성격</th></tr></thead><tbody>
+    <tr><td class="stp-k">스펙트럴 반경</td><td>$\rho(T)=\max_i|\lambda_i|&lt;1$</td><td>필요 · 충분(고유값 필요)</td></tr>
+    <tr><td class="stp-k">엄격 대각 우세</td><td>$|a_{ii}|&gt;\sum_{j\ne i}|a_{ij}|\ \forall i$</td><td>충분(행만 확인)</td></tr>
+    <tr><td class="stp-k">GS vs Jacobi</td><td>$\rho(T_{GS})\approx\rho(T_J)^2$</td><td>GS 반복 ≈ 절반</td></tr>
+    <tr><td class="stp-k">반복 행렬</td><td>$T_J=-D^{-1}(L+U)$ · $T_{GS}=-(D+L)^{-1}U$</td><td>오차 $\mathbf{e}^{(k)}=T^{k}\mathbf{e}^{(0)}$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 7-4 SOR 와 완화 ════════════════════ -->
@@ -911,6 +932,13 @@ for w in [0.8, 1.0, 1.2, 1.5]:
       <li>$(1-\omega)$ 항 누락.</li>
     </ul></div>
   </div>
+  <div class="vcap" style="margin-top:18px">한눈 요약 — 완화 계수 $\omega$ 한 표로</div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:8px auto 0"><table class="stp-tbl"><thead><tr><th>$\omega$ 구간</th><th>이름</th><th>효과</th></tr></thead><tbody>
+    <tr><td class="stp-k">$0&lt;\omega&lt;1$</td><td>under-relax</td><td>진동 안정화(느려질 수 있음)</td></tr>
+    <tr><td class="stp-k">$\omega=1$</td><td>Gauss-Seidel</td><td>기준 · 예제 10회</td></tr>
+    <tr><td class="stp-k">$1&lt;\omega&lt;2$</td><td>over-relax</td><td>가속(잘 조건화 계엔 역효과)</td></tr>
+    <tr><td class="stp-k">$\omega\ge2$</td><td>발산</td><td>$\rho(T_{SOR})\ge|1-\omega|\ge1$</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

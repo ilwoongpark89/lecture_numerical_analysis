@@ -216,6 +216,12 @@
       <li>부호 변화 없음 = 근 없음으로 단정(짝수 중근 가능).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>사례</th><th>$f(a)\,f(b)$</th><th>근 판정</th></tr></thead><tbody>
+    <tr><td class="stp-k">연속·부호 반전 $x^3{-}x{-}2,\,[1,2]$</td><td>$(-2)(4)&lt;0$</td><td>근 $\ge 1$개 존재 (IVT)</td></tr>
+    <tr><td class="stp-k">양끝 부호 같음 ($f&gt;0$)</td><td>$&gt;0$</td><td>미정 — 근 $0$ 또는 짝수개</td></tr>
+    <tr><td class="stp-k">중근·접점 $(x{-}1)^2$</td><td>$&gt;0$</td><td>못 잡음 (부호 불변)</td></tr>
+    <tr><td class="stp-k">불연속 $1/(x{-}0.5)$</td><td>$&lt;0$ 이나 근 아님</td><td>대입 검산 필수</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 4-2 이분법 ════════════════════ -->
@@ -407,6 +413,12 @@ f = @(x) x.^3 - x - 2;
       <li>중근($(x-1)^2$)에 적용 시도 — 부호 안 바뀜.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>공식</th><th>$[1,2]$ 값</th></tr></thead><tbody>
+    <tr><td class="stp-k">중점</td><td>$c=(a+b)/2$</td><td>1회 $c=1.5$</td></tr>
+    <tr><td class="stp-k">오차 상한</td><td>$|\varepsilon_n|\le(b-a)/2^{n}$</td><td>$n{=}10$: $9.8\times10^{-4}$</td></tr>
+    <tr><td class="stp-k">필요 반복</td><td>$n\ge\log_2\dfrac{b-a}{\text{tol}}$</td><td>tol $10^{-6}$: $20$회</td></tr>
+    <tr><td class="stp-k">수렴 차수</td><td>$p=1$ (비 $\tfrac12$)</td><td>선형 · 3회당 1자리</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 4-3 Newton-Raphson ════════════════════ -->
@@ -593,6 +605,12 @@ df = @(x) 3*x.^2 - 1;
       <li>부호·도함수 계산 실수 → 엉뚱한 근/발산.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>식 · 조건</th><th>결과</th></tr></thead><tbody>
+    <tr><td class="stp-k">점화식</td><td>$x_{n+1}=x_n-\dfrac{f}{f'}$</td><td>$x_0{=}1.5\Rightarrow x_1{=}1.52174$</td></tr>
+    <tr><td class="stp-k">수렴 차수</td><td>$|\varepsilon_{n+1}|\approx C|\varepsilon_n|^2$</td><td>$p{=}2$ · 자릿수 매회 2배</td></tr>
+    <tr><td class="stp-k">전제(단근)</td><td>$f'\ne 0$ · 좋은 초기값</td><td>$10^{-6}$ 까지 ~5회</td></tr>
+    <tr><td class="stp-k">깨질 때</td><td>$f'(x_n)=0$ · 나쁜 $x_0$</td><td>0으로 나눔 · 순환 · 발산</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 4-4 수렴 속도 비교 ════════════════════ -->
@@ -696,6 +714,11 @@ df = @(x) 3*x.^2 - 1;
       <li>수렴 차수 $p$ 와 반복 수를 혼동.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>방법</th><th>수렴 차수 $p$</th><th>오차 재귀</th><th>$10^{-6}$ 반복</th></tr></thead><tbody>
+    <tr><td class="stp-k">이분법</td><td>$1$ (선형)</td><td>$\varepsilon_{n+1}\!\approx\!\tfrac12\varepsilon_n$</td><td>~20회</td></tr>
+    <tr><td class="stp-k">할선법</td><td>$\approx1.6$ (초선형)</td><td>$\varepsilon_{n+1}\!\approx\!C\varepsilon_n^{1.6}$</td><td>~7회</td></tr>
+    <tr><td class="stp-k">Newton</td><td>$2$ (이차)</td><td>$\varepsilon_{n+1}\!\approx\!C\varepsilon_n^{2}$</td><td>~5회</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

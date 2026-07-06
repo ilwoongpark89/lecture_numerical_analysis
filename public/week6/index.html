@@ -324,6 +324,11 @@ x = naive_gauss(A, b);
       <li>피벗 $0$ 을 무시하고 그대로 나눔.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>단계</th><th>핵심 공식</th><th>비용</th></tr></thead><tbody>
+    <tr><td class="stp-k">전진 소거</td><td>$R_i\leftarrow R_i-f\,R_k,\ f=a_{ik}/a_{kk}$</td><td>$O(n^3/3)$</td></tr>
+    <tr><td class="stp-k">후진 대입</td><td>$x_i=(c_i-\sum_{j&gt;i}u_{ij}x_j)/u_{ii}$</td><td>$O(n^2/2)$</td></tr>
+    <tr><td class="stp-k">예제 검산</td><td>$U$ 대각 $(2,0.5,-1)\Rightarrow\mathbf{x}=(2,3,-1)$</td><td>유한 정확해</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 6-2 부분 피벗팅 ════════════════════ -->
@@ -517,6 +522,11 @@ end
       <li>인덱스 오프셋($p=p+k-1$) 실수.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>규칙 / 값</th><th>효과</th></tr></thead><tbody>
+    <tr><td class="stp-k">피벗 선택</td><td>$p=\arg\max_{i\ge k}|a_{ik}|$ → 행 $k\leftrightarrow p$</td><td>$0$·작은 피벗 회피</td></tr>
+    <tr><td class="stp-k">배수 한계</td><td>$|f|=|a_{ik}/a_{kk}|\le 1$</td><td>반올림 오차 억제</td></tr>
+    <tr><td class="stp-k">예제 $a_{11}{=}0.0001$</td><td>피벗 없이 $x_1\approx0$ ✗ → 교환 후 $x_1\approx1.0001$ ✓</td><td>안정성 확보</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 6-3 LU 분해 ════════════════════ -->
@@ -713,6 +723,12 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <li>피벗팅 시 $P$ 를 우변에 안 곱함.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>요소</th><th>정의 / 예제값</th><th>비용</th></tr></thead><tbody>
+    <tr><td class="stp-k">분해 $A=LU$</td><td>$L$ 대각 $1$·배수 아래, $U$ 상삼각</td><td>$O(n^3/3)$ · 1회</td></tr>
+    <tr><td class="stp-k">전진 $L\mathbf{y}=\mathbf{b}$</td><td>$\mathbf{y}=(8,1,1)$</td><td>$O(n^2/2)$</td></tr>
+    <tr><td class="stp-k">후진 $U\mathbf{x}=\mathbf{y}$</td><td>$\mathbf{x}=(2,3,-1)$</td><td>$O(n^2/2)$</td></tr>
+    <tr><td class="stp-k">우변 $m$개 총비용</td><td>$n^3/3+m\,n^2$ (소거 $m\,n^3/3$)</td><td>재분해 $0$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 6-4 조건수와 ill-conditioning ════════════════════ -->
@@ -892,6 +908,12 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
       <li>피벗팅이 조건수를 고친다고 착각.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>개념</th><th>식 / 값</th><th>의미</th></tr></thead><tbody>
+    <tr><td class="stp-k">조건수</td><td>$\kappa=\|A\|\,\|A^{-1}\|\ge 1$</td><td>문제의 민감도</td></tr>
+    <tr><td class="stp-k">오차 증폭</td><td>$\frac{\|\delta\mathbf{x}\|}{\|\mathbf{x}\|}\lesssim\kappa\frac{\|\delta\mathbf{b}\|}{\|\mathbf{b}\|}$</td><td>입력오차 $\kappa$배</td></tr>
+    <tr><td class="stp-k">신뢰 자릿수</td><td>$\approx16-\log_{10}\kappa$</td><td>$\kappa{=}10^8\Rightarrow 8$자리</td></tr>
+    <tr><td class="stp-k">잔차 함정</td><td>가짜해 $\|\mathbf{r}\|{=}0.0001$, 참오차 $=1.414$</td><td>작은 잔차 ≠ 정확</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

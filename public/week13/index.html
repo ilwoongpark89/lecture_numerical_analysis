@@ -328,6 +328,12 @@ f = @(x, y) x - y;
       <li>국소·전역 오차 차수 혼동(2 vs 1).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>공식·값</th><th>비고</th></tr></thead><tbody>
+    <tr><td class="stp-k">전진식</td><td>$y_{n+1}=y_n+h\,f_n$</td><td>접선으로 1걸음</td></tr>
+    <tr><td class="stp-k">오차</td><td>국소 $O(h^2)$ · 전역 $O(h)$</td><td>1차(느림)</td></tr>
+    <tr><td class="stp-k">안정</td><td>$\lvert1+h\lambda\rvert&lt;1$</td><td>넘으면 발산</td></tr>
+    <tr><td class="stp-k">1스텝 예</td><td>$y_1=1+0.2(-1)=0.8$</td><td>정확 $0.8375$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 13-2 Heun ════════════════════ -->
@@ -447,6 +453,12 @@ f = @(x, y) x - y;
       <li>$\tfrac h2$ 누락(단순 평균 아님).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>단계</th><th>식</th><th>예제값 $y'\!=\!x\!-\!y$</th></tr></thead><tbody>
+    <tr><td class="stp-k">예측</td><td>$\tilde y=y_n+h\,k_1$</td><td>$\tilde y_1=0.8$</td></tr>
+    <tr><td class="stp-k">끝 기울기</td><td>$k_2=f(x_n{+}h,\tilde y)$</td><td>$k_2=-0.6$</td></tr>
+    <tr><td class="stp-k">수정(평균)</td><td>$y_{n+1}=y_n+\tfrac h2(k_1{+}k_2)$</td><td>$y_1=0.84$</td></tr>
+    <tr><td class="stp-k">차수</td><td>전역 $O(h^2)$</td><td>오차 $0.0025$</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 13-3 RK4 ════════════════════ -->
@@ -584,6 +596,15 @@ f = @(x,y) x - y;
       <li>가중치 $1,2,2,1$ 와 $\tfrac h6$ 혼동.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>기울기</th><th>정의</th><th>값 ($h{=}0.2$)</th></tr></thead><tbody>
+    <tr><td class="stp-k">$k_1$</td><td>$f(x_n,\,y_n)$</td><td>$-1$</td></tr>
+    <tr><td class="stp-k">$k_2$</td><td>$f(x_n{+}\tfrac h2,\ y_n{+}\tfrac h2 k_1)$</td><td>$-0.8$</td></tr>
+    <tr><td class="stp-k">$k_3$</td><td>$f(x_n{+}\tfrac h2,\ y_n{+}\tfrac h2 k_2)$</td><td>$-0.82$</td></tr>
+    <tr><td class="stp-k">$k_4$</td><td>$f(x_n{+}h,\ y_n{+}h\,k_3)$</td><td>$-0.636$</td></tr>
+  </tbody></table></div>
+  <div class="keqbox" style="max-width:560px;margin:10px auto 0">
+    <div class="keqrow"><span class="keqcap">가중 평균</span><span class="keqline">$ y_1=y_0+\tfrac h6(k_1+2k_2+2k_3+k_4)=0.8375 $</span></div>
+  </div>
 </section>
 
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="연습">
@@ -717,6 +738,12 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
       <li>성분별 갱신 순서·짝 맞추기 실수.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>방법·식</th><th>예 ($y''\!=\!-y$)</th></tr></thead><tbody>
+    <tr><td class="stp-k">차수 낮추기</td><td>$v=y'$ 도입</td><td>$y'=v,\ v'=-y$</td></tr>
+    <tr><td class="stp-k">상태 벡터</td><td>$\mathbf Y=[y,\,v]^{\top}$</td><td>$\mathbf Y_0=[1,\,0]$</td></tr>
+    <tr><td class="stp-k">벡터 전진</td><td>$\mathbf Y_{n+1}=\mathbf Y_n+h\,\mathbf F$</td><td>$[1,\,-0.1]$</td></tr>
+    <tr><td class="stp-k">일반화</td><td>$n$차 → 상태 $n$개</td><td>Euler/RK4 그대로</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

@@ -297,6 +297,12 @@
       <li>절대값 합을 최소화한다고 서술(표준은 제곱).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>개념</th><th>정의 · 공식</th><th>핵심</th></tr></thead><tbody>
+    <tr><td class="stp-k">잔차 $e_i$</td><td>$y_i-f(x_i)$</td><td>데이터−곡선 세로차 (부호 섞임)</td></tr>
+    <tr><td class="stp-k">목적함수 $S$</td><td>$\sum e_i^2\ \rightarrow\ \min$</td><td>제곱합 최소화 (절대값 ✗)</td></tr>
+    <tr><td class="stp-k">최소 조건</td><td>$\partial S/\partial a_k=0$</td><td>→ 정규방정식(선형계)</td></tr>
+    <tr><td class="stp-k">예제 $S$</td><td>$\sum e_i^2\approx0.171$</td><td>반복·초기값 없이 한 번에</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ════════════════════ 9-2 선형·다항 회귀 ════════════════════ -->
@@ -479,6 +485,12 @@ p = polyfit(x, y, 1);
       <li>polyfit 계수 순서(높은 차수부터) 착오.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>모델</th><th>설계행렬 $X$ 한 행</th><th>정규계 크기</th></tr></thead><tbody>
+    <tr><td class="stp-k">직선 $m{=}1$</td><td>$[\,1\ \ x_i\,]$</td><td>$2\times2$</td></tr>
+    <tr><td class="stp-k">2차 $m{=}2$</td><td>$[\,1\ \ x_i\ \ x_i^2\,]$</td><td>$3\times3$</td></tr>
+    <tr><td class="stp-k">$m$차 다항</td><td>$[\,1\ \cdots\ x_i^m\,]$</td><td>$(m{+}1)\times(m{+}1)$</td></tr>
+  </tbody></table></div>
+  <div class="keqbox" style="max-width:560px;margin:8px auto 0"><div class="keqrow"><span class="keqcap">공통 틀</span><span class="keqline">$ (X^TX)\,a=X^Ty $ &nbsp;→&nbsp; 5점 예제 $ y=0.29+1.91x $</span></div></div>
 </section>
 
 <!-- ════════════════════ 9-3 비선형 선형화 ════════════════════ -->
@@ -635,6 +647,12 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       <li>$\log10$ 을 $\ln$ 대신 사용.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>모델</th><th>변환 $(X,\ Y)$</th><th>복원</th></tr></thead><tbody>
+    <tr><td class="stp-k">지수 $ae^{bx}$</td><td>$(x,\ \ln y)$</td><td>$a=e^{A_0},\ b=A_1$</td></tr>
+    <tr><td class="stp-k">거듭제곱 $ax^b$</td><td>$(\ln x,\ \ln y)$</td><td>$a=e^{A_0},\ b=A_1$</td></tr>
+    <tr><td class="stp-k">포화 $\frac{ax}{b+x}$</td><td>$(1/x,\ 1/y)$</td><td>$a=1/A_0,\ b=A_1a$</td></tr>
+  </tbody></table></div>
+  <div class="keqbox" style="max-width:560px;margin:8px auto 0"><div class="keqrow"><span class="keqcap">지수 예제</span><span class="keqline">$ A_0{=}0.940,\ A_1{=}0.457\ \Rightarrow\ y=2.560\,e^{0.457x} $</span></div></div>
 </section>
 
 <!-- ════════════════════ 9-4 결정계수 R² ════════════════════ -->
@@ -880,6 +898,12 @@ fprintf('R^2_adj = %.4f\n', R2adj);
       <li>변환 공간과 원공간 $R^2$ 를 혼용 비교.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>지표</th><th>공식</th><th>예제값</th></tr></thead><tbody>
+    <tr><td class="stp-k">결정계수 $R^2$</td><td>$1-SS_{\text{res}}/SS_{\text{tot}}$</td><td>$1-\dfrac{0.171}{39.708}=0.9957$</td></tr>
+    <tr><td class="stp-k">수정 $R^2_{\text{adj}}$</td><td>$1-\dfrac{(1-R^2)(n-1)}{n-p-1}$</td><td>차수 벌점 → 과적합 차단</td></tr>
+    <tr><td class="stp-k">표준오차 $s_{y/x}$</td><td>$\sqrt{S_r/(n-2)}$</td><td>$\sqrt{1.475/3}=0.701$</td></tr>
+    <tr><td class="stp-k">상관계수 $r$</td><td>$\pm\sqrt{R^2}$</td><td>$\sqrt{0.741}=0.861$</td></tr>
+  </tbody></table></div>
 </section>
 
 </div></main>

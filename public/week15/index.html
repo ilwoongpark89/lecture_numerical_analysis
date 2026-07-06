@@ -189,6 +189,12 @@
       <li>$n\ge5$ 는 <strong>반복법</strong> 필수.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>개념</th><th>공식</th><th>$2\times2$ 예제</th></tr></thead><tbody>
+    <tr><td class="stp-k">고유값 정의</td><td>$A\mathbf{x}=\lambda\mathbf{x}$</td><td>방향 불변·길이 $\lambda$ 배</td></tr>
+    <tr><td class="stp-k">특성방정식</td><td>$\det(A-\lambda I)=0$</td><td>$\lambda^2-7\lambda+11=0$</td></tr>
+    <tr><td class="stp-k">합 = 대각합</td><td>$\sum\lambda=\operatorname{tr}A$</td><td>$4.618+2.382=7$</td></tr>
+    <tr><td class="stp-k">곱 = 행렬식</td><td>$\prod\lambda=\det A$</td><td>$4.618\times2.382=11$</td></tr>
+  </tbody></table></div>
 </section>
 
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="문제">
@@ -300,6 +306,12 @@ A = [4 1; 1 3];
       <li>고유값을 최대성분이 아닌 노름으로 착각.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>단계</th><th>수식</th><th>의미·결과</th></tr></thead><tbody>
+    <tr><td class="stp-k">① 곱하기</td><td>$\mathbf{y}=A\mathbf{x}_k$</td><td>6주 $A\mathbf{x}$ 재사용</td></tr>
+    <tr><td class="stp-k">② 고유값</td><td>$\lambda=\max_i|y_i|$</td><td>지배 $\lambda_1$ 근사</td></tr>
+    <tr><td class="stp-k">③ 정규화</td><td>$\mathbf{x}_{k+1}=\mathbf{y}/\lambda$</td><td>발산 방지, 반복</td></tr>
+    <tr><td class="stp-k">수렴 속도</td><td>$|\lambda_2/\lambda_1|$</td><td>$2.382/4.618\approx0.52$</td></tr>
+  </tbody></table></div>
 </section>
 
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="연습">
@@ -380,6 +392,11 @@ A = [4 1; 1 3];
       <li>shift $(A-\mu I)^{-1}$ → $\mu$ <strong>근처</strong> 고유값, 가속.</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>방법</th><th>매 반복 푸는 식</th><th>겨냥 고유값</th></tr></thead><tbody>
+    <tr><td class="stp-k">거듭제곱</td><td>$\mathbf{y}=A\mathbf{x}_k$</td><td>최대 $\lambda_1=4.618$</td></tr>
+    <tr><td class="stp-k">역 거듭제곱</td><td>$A\mathbf{y}=\mathbf{x}_k$ (LU)</td><td>최소 $\lambda_n=2.382$</td></tr>
+    <tr><td class="stp-k">shift</td><td>$(A-\mu I)\mathbf{y}=\mathbf{x}_k$</td><td>$\mu$ 근처 · 가속</td></tr>
+  </tbody></table></div>
 </section>
 
 <section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="문제">

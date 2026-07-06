@@ -199,6 +199,15 @@
       <li>경계점을 미지수로 착각.</li>
     </ul></div>
   </div>
+  <div class="keqbox" style="max-width:560px;margin:16px auto 0">
+    <div class="keq-label">세 유형 공통 뼈대 · 2계 중심차분</div>
+    <div class="keqrow"><span class="keqcap">곡률</span><span class="keqline">$ \dfrac{\partial^2 u}{\partial x^2}\approx\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2},\quad O(\Delta x^2) $</span></div>
+  </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>유형</th><th>대표 방정식</th><th>풀이 방식</th></tr></thead><tbody>
+    <tr><td class="stp-k">포물형 (확산)</td><td>$u_t=\alpha u_{xx}$</td><td>시간 전진 · 조건부 안정 $\lambda\le\tfrac12$</td></tr>
+    <tr><td class="stp-k">타원형 (평형)</td><td>$\nabla^2u=0$</td><td>반복 수렴 (시간축 없음)</td></tr>
+    <tr><td class="stp-k">쌍곡형 (전파)</td><td>$u_{tt}=c^2u_{xx}$</td><td>시간 전진 · CFL 조건</td></tr>
+  </tbody></table></div>
 </section>
 
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="문제">
@@ -325,6 +334,11 @@ end
       <li>갱신 시 <strong>옛 값 $T^n$</strong> 사용(제자리 갱신 금지).</li>
     </ul></div>
   </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:16px auto 0"><table class="stp-tbl"><thead><tr><th>방법</th><th>갱신 구조</th><th>안정 · 정확도</th></tr></thead><tbody>
+    <tr><td class="stp-k">FTCS (명시)</td><td>새 값 = 이전 3점 직접</td><td>조건부 $\lambda\le\tfrac12$ · $O(\Delta t)$</td></tr>
+    <tr><td class="stp-k">BTCS (음함수)</td><td>매 스텝 연립 풀이</td><td>무조건 안정 · $O(\Delta t)$</td></tr>
+    <tr><td class="stp-k">Crank–Nicolson</td><td>두 시각 평균 (6점)</td><td>무조건 안정 · $O(\Delta t^2)$</td></tr>
+  </tbody></table></div>
 </section>
 
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="문제">
@@ -429,6 +443,15 @@ end
       <li>경계값을 갱신 대상에 포함.</li>
     </ul></div>
   </div>
+  <div class="keqbox" style="max-width:560px;margin:16px auto 0">
+    <div class="keq-label">5점 평균 (라플라스 핵심)</div>
+    <div class="keqrow"><span class="keqcap">평형</span><span class="keqline">$ u_{i,j}=\tfrac14\,(u_{i+1,j}+u_{i-1,j}+u_{i,j+1}+u_{i,j-1}) $</span></div>
+  </div>
+  <div class="stp-tblwrap" style="max-width:560px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>항목</th><th>관계 · 식</th><th>결과</th></tr></thead><tbody>
+    <tr><td class="stp-k">5점 차분</td><td>각 점 = 이웃 4점 평균</td><td>뾰족함 없음 (최대·최소는 경계)</td></tr>
+    <tr><td class="stp-k">연립계</td><td>$A\mathbf{u}=\mathbf{b}$</td><td>미지수 = 내부 격자점 수</td></tr>
+    <tr><td class="stp-k">반복법</td><td>Jacobi / Gauss–Seidel</td><td>평형장 수렴 (GS ~2배 빠름)</td></tr>
+  </tbody></table></div>
 </section>
 
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="문제">
