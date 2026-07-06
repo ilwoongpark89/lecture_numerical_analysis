@@ -401,7 +401,7 @@ f = @(x) x.^3 - x - 2;
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="그림">
   <div class="eyebrow">4-2 · 그림 · 짝수 근의 함정</div>
   <h1 class="stage-h">같은 부호인데 근이 둘</h1>
-  <div class="nafig" data-fig="funcplot" data-fn="(x-1)*(x-2)" data-xmin="0.3" data-xmax="2.7" data-roots="1,2" data-cap="구간 양 끝 부호가 <b>같아도</b>($f>0$) 안에 근이 <b>짝수개</b>(여기선 2개, 주황) 숨을 수 있다 — $f(a)f(b)>0$ 이라 이분법은 "근 없음"으로 오판. 성긴 간격 스캔 전 먼저 그려야 한다."></div>
+  <div class="nafig" data-fig="funcplot" data-fn="(x-1)*(x-2)" data-xmin="0.3" data-xmax="2.7" data-roots="1,2" data-cap="구간 양 끝 부호가 <b>같아도</b>($f>0$) 안에 근이 <b>짝수개</b>(여기선 2개, 빨강) 숨을 수 있다 — $f(a)f(b)>0$ 이라 이분법은 "근 없음"으로 오판. 성긴 간격 스캔 전 먼저 그려야 한다."></div>
 </section>
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="정리">
   <div class="eyebrow">4-2 · 정리 · Summary</div>
@@ -626,7 +626,7 @@ df = @(x) 3*x.^2 - 1;
   <h1 class="stage-h">안전한 이분법 vs 빠른 Newton <span class="en">· speed ⟷ safety</span></h1>
   <div class="analogy"><span class="ic">⚖️</span><div class="tx"><b>직관</b> — 이분법은 느리지만 <b>절대 실패하지 않는</b> 거북이, Newton은 빠르지만 <b>넘어질 수 있는</b> 토끼다. 실무는 둘의 장점을 섞는다: 거북이로 근처까지 안전하게 간 뒤 토끼로 마무리(하이브리드).</div></div>
   <p class="lede">같은 방정식 $f(x)=x^3-x-2$ 를 두 방법으로 <strong>나란히 반복</strong>시켜 "같은 근에 몇 번 만에 닿는가" 를 직접 비교한다.</p>
-  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법(선형)"},{"r":0.1,"label":"Newton(이차)"}]' data-cap="같은 근을 이분법은 20회, Newton 은 5회 — 안전과 속도의 트레이드오프를 이번 챕터에서 결정한다."></div>
+  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법(선형)"},{"order":2,"label":"Newton(이차)"}]' data-cap="같은 근을 이분법은 20회, Newton 은 5회 — 안전과 속도의 트레이드오프를 이번 챕터에서 결정한다."></div>
 </section>
 
 <section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="시연">

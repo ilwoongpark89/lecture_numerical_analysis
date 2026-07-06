@@ -653,11 +653,24 @@
 
   function figConverge(el) {
     var rates = _j(el, 'data-rates', [{ r: 0.6, label: 'Jacobi' }, { r: 0.35, label: 'Gauss–Seidel' }, { r: 0.15, label: 'SOR' }]);
+    var xlab = el.getAttribute('data-xlab') || '반복 k'; // 인스턴스별 축 라벨(반복 k / 세분화 단계 등)
     var pL = 46, pT = 14, pw = 480 - pL - 16, ph = 250 - pT - 30, K = 12;
     var mx = function (k) { return pL + k / K * pw; }, my = function (le) { return pT + (0 - le) / 8 * ph; }; // le = log10(err) in [-8,0]
-    var s = _axes(pL, pT, pw, ph) + _lab(pL + pw / 2, 246, '반복 k', 'middle', FG.gray) + '<text x="16" y="' + (pT + ph / 2) + '" text-anchor="middle" font-size="12" fill="' + FG.gray + '" transform="rotate(-90 16 ' + (pT + ph / 2) + ')">log₁₀ 오차</text>';
+    var s = _axes(pL, pT, pw, ph) + _lab(pL + pw / 2, 246, xlab, 'middle', FG.gray) + '<text x="16" y="' + (pT + ph / 2) + '" text-anchor="middle" font-size="12" fill="' + FG.gray + '" transform="rotate(-90 16 ' + (pT + ph / 2) + ')">log₁₀ 오차</text>';
     var pal = [FG.or, FG.blue, FG.gr];
-    rates.forEach(function (rt, ri) { var d = ''; for (var k = 0; k <= K; k++) { var le = k * Math.log(rt.r) / Math.LN10; if (le < -8) le = -8; d += (d ? 'L' : 'M') + mx(k).toFixed(1) + ',' + my(le).toFixed(1) + ' '; } s += '<path d="' + d + '" fill="none" stroke="' + pal[ri % 3] + '" stroke-width="2.4"/>' + _lab(pL + pw - 4, pT + 16 + ri * 16, rt.label, 'end', pal[ri % 3]); });
+    // 계열 형태: seq(명시 log10오차 수열) / order≥2(이차 이상 = 가속 오목 곡선 le_{k+1}=order·le_k) / r(등비 = 직선 선형수렴)
+    rates.forEach(function (rt, ri) {
+      var d = '', le0 = -0.3;
+      for (var k = 0; k <= K; k++) {
+        var le;
+        if (rt.seq) { le = (k < rt.seq.length) ? rt.seq[k] : rt.seq[rt.seq.length - 1]; }
+        else if (rt.order && rt.order >= 2) { le = le0 * Math.pow(rt.order, k); } // 이차: -0.3,-0.6,-1.2,-2.4,-4.8… 가속
+        else { le = k * Math.log(rt.r) / Math.LN10; } // 등비(선형): 일정 기울기 직선
+        if (le < -8) le = -8;
+        d += (d ? 'L' : 'M') + mx(k).toFixed(1) + ',' + my(le).toFixed(1) + ' ';
+      }
+      s += '<path d="' + d + '" fill="none" stroke="' + pal[ri % 3] + '" stroke-width="2.4"/>' + _lab(pL + pw - 4, pT + 16 + ri * 16, rt.label, 'end', pal[ri % 3]);
+    });
     return _wrap(s);
   }
 
