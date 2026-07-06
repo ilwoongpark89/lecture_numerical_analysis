@@ -1,7 +1,7 @@
 /* Heat-Transfer Week2 학습 추적 — new2.html(mockup)에 주입.
    학번 게이트 확인 + 접속/체류/답안 이벤트를 /api/track 로 전송. */
 // 채점 단일 정의 (#18 통합) — 상대오차 rtol + 절대오차 atol (numpy isclose 형). 0 근처 target 은 atol 필수.
-// lecture-engine.js(시각 피드백) 와 na-track.js(서버 isCorrect) 가 동일 함수 사용 → 판정 불일치 0.
+// lecture-engine.js(시각 피드백) 와 na-app.js(서버 isCorrect) 가 동일 함수 사용 → 판정 불일치 0.
 window.NA_grade = function (v, ans, rtol, atol) {
   return !isNaN(v) && !isNaN(ans) && Math.abs(v - ans) <= Math.abs(ans) * (rtol || 0) + (atol || 0);
 };
@@ -54,12 +54,10 @@ window.NA_grade = function (v, ans, rtol, atol) {
   function textOf(el) { return el ? (el.textContent || "").replace(/\s+/g, " ").trim() : ""; }
   var IS_STUDENT = !IS_PROF;
 
-  // ── 정답·풀이·답변예시 봉인: 학생 화면엔 숨기고 교수(__prof__)만 본다 ──
+  // ── 정답·풀이·답변예시 봉인 ──
+  // 봉인 CSS 는 lecture.css 정적 규칙(body:not(.na-prof) …{display:none})이 담당 = fail-closed.
+  // JS 주입을 폐기해 "봉인 전 순간 노출(flash 유출)" 을 구조적으로 제거. 여기선 교수만 na-prof 로 해제.
   (function seal() {
-    var css = IS_STUDENT
-      ? "body.na-student .reveal-btn,body.na-student .revealable.solution,body.na-student .prof-example{display:none !important;}"
-      : "";
-    var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
     function tag() { if (document.body) document.body.classList.add(IS_STUDENT ? "na-student" : "na-prof"); }
     if (document.body) tag(); else document.addEventListener("DOMContentLoaded", tag);
   })();

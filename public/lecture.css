@@ -239,3 +239,8 @@
 .code-cap-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .code-copy{ font-size:11px; font-weight:600; color:var(--gray2); background:transparent; border:1px solid var(--hair); border-radius:6px; padding:2px 9px; cursor:pointer; text-transform:none; letter-spacing:0; transition:background .12s,color .12s; flex-shrink:0; }
 .code-copy:hover{ background:#f4f4f5; color:#18181b; }
+
+/* #15 seal 정적화 — 정답/풀이/예시 기본 봉인(fail-closed). JS 주입 폐기로 봉인전 flash 유출 0. 교수(na-prof)만 해제. */
+body:not(.na-prof) .reveal-btn,
+body:not(.na-prof) .revealable.solution,
+body:not(.na-prof) .prof-example{ display:none !important; }
