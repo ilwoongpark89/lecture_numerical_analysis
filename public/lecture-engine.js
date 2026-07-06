@@ -39,7 +39,10 @@
     recompute();
   }); }
 
-  function renderMath(){ initCalcs(); if(window.renderMathInElement){ renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); } fitActive(); if(window.requestAnimationFrame)requestAnimationFrame(fitActive); }
+  // 코드 복사 버튼 (R4) — 정적 codeblock 에 1회 배선
+  function initCopy(){ Array.prototype.forEach.call(document.querySelectorAll('.codeblock:not([data-copy])'),function(bl){ bl.setAttribute('data-copy','1'); var cap=bl.querySelector('.code-cap'); var pre=bl.querySelector('pre'); if(!pre)return; var btn=document.createElement('button'); btn.type='button'; btn.className='code-copy'; btn.textContent='복사'; btn.addEventListener('click',function(){ var t=(bl.querySelector('code')||pre).innerText; if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ btn.textContent='복사됨 ✓'; setTimeout(function(){btn.textContent='복사';},1400); },function(){ btn.textContent='실패'; }); } }); if(cap){ cap.classList.add('code-cap-row'); cap.appendChild(btn); } else { bl.insertBefore(btn,bl.firstChild); } }); }
+
+  function renderMath(){ initCalcs(); initCopy(); if(window.renderMathInElement){ renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); } fitActive(); if(window.requestAnimationFrame)requestAnimationFrame(fitActive); }
 
   function applyDeep(){ var p=new URLSearchParams(location.search), idx=0; var s=parseInt(p.get('slide'),10); if(!isNaN(s))idx=Math.min(Math.max(s,0),N-1); var u=p.get('unit'); if(u){ for(var i=0;i<N;i++){ if(chOf(i)===u){idx=i;break;} } } var rev=p.get('reveal')==='all'; show(idx); if(rev){ Array.prototype.forEach.call(screens[idx].querySelectorAll('.reveal-btn'),function(b){toggleReveal(b);}); Array.prototype.forEach.call(screens[idx].querySelectorAll('.cq'),function(cq){ var o=cq.querySelector('.opt[data-correct]'); if(o){o.classList.add('sel'); var sb=cq.querySelector('.cp-submit'); if(sb)sb.click();} }); } }
 
