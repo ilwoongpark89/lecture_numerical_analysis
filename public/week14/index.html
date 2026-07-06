@@ -245,6 +245,13 @@
   <h1 class="stage-h">안정 조건 $\lambda\le\tfrac12$</h1>
   <div class="callout key"><div class="ct">von Neumann 안정성</div>$\lambda=\alpha\Delta t/\Delta x^2\le\tfrac12$ 일 때만 오차가 감쇠. <strong>공간 격자를 반으로</strong> 줄이면 $\Delta t$ 는 <strong>1/4</strong> 로 — 명시적 방법의 큰 대가.</div>
   <div class="keqnote" style="margin-top:14px">그래서 세밀한 격자엔 <b style="color:var(--ink)">음함수(implicit)</b> 방법(BTCS·Crank-Nicolson)을 쓴다 — 무조건 안정이지만 매 스텝 연립방정식을 푼다.</div>
+  <div class="stp-tblwrap" style="max-width:480px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>스텝 $n$</th><th>$\lambda{=}0.4$ (안정)</th><th>$\lambda{=}0.6$ (불안정)</th></tr></thead><tbody>
+<tr><td>0</td><td>1.00</td><td>1.00</td></tr>
+<tr><td>1</td><td>0.60</td><td>1.40</td></tr>
+<tr><td>2</td><td>0.36</td><td>1.96</td></tr>
+<tr><td>3</td><td>0.22</td><td>2.74</td></tr>
+<tr><td>4</td><td>0.13</td><td>3.84</td></tr></tbody></table></div>
+<div class="callout warn" style="margin-top:10px"><div class="ct">$\lambda\le\tfrac12$ 를 넘기면 오차가 폭발</div>오차 진폭이 매 스텝 $|1-4\lambda|$ 배. $\lambda{=}0.4$ 는 $\times0.6$ 로 <b>감쇠(안정)</b>, $\lambda{=}0.6$ 은 $\times1.4$ 로 <b>지수 폭발</b>(부호까지 진동). 안정조건은 협상 불가.</div>
 </section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="함정">
   <div class="eyebrow">14-2 · 함정 · Break it</div>

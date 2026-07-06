@@ -407,6 +407,7 @@ f = @(x, y) x - y;
   <h1 class="stage-h">2차 수렴 — $h$ 절반이면 오차 1/4</h1>
   <div class="callout key"><div class="ct">$O(h^2)$</div>$h$ 를 $\tfrac12$ 로 줄이면 오차는 대략 <strong>$\tfrac14$</strong>. Euler(반씩) 대비 훨씬 빠르게 정확해진다 — 기울기 2회 평가의 값어치.</div>
   <div class="keqnote" style="margin-top:14px">$y(2)$ 오차: Euler $h{=}0.2$ 는 $0.056$, Heun $h{=}0.2$ 는 $\approx 0.0042$ — 같은 계산량 근처에서 <b style="color:var(--ink)">십수 배</b> 정확.</div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler O(h)"},{"r":0.25,"label":"Heun O(h²)"}]' data-cap="$h$ 를 절반으로 줄일 때 — Euler 오차는 $\times\tfrac12$, Heun 은 $\times\tfrac14$. 예측-수정으로 차수가 하나 올라 같은 $h$ 로 훨씬 빨리 참해에 닿는다(2차 수렴)."></div>
 </section>
 
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="그림">
