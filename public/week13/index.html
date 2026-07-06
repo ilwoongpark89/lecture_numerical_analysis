@@ -37,6 +37,16 @@
     <div class="intro-teaser">공통 예제 <em>$y'=x-y,\ y(0)=1$</em> (정확해 $y=x-1+2e^{-x}$)로 세 방법을 같은 화면에서 전진시켜 정확도를 비교한다.</div>
   </div>
 </section>
+<section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 13 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>미분·도함수(기울기) · 12주</b> — 도함수는 그 점 접선의 기울기다. 이번 주 Euler $y_{n+1}=y_n+h\,f(x_n,y_n)$ 의 $f=y'$ 가 바로 그 기울기라, 접선을 따라 한 걸음 딛는 재료로 그대로 쓰인다.</li>
+    <li><b>정적분·넓이 누적 · 11주</b> — 적분은 변화율을 쌓아 총량을 복원하는 일. 이번 주 ODE 풀이 $y=y_0+\int f\,dx$ 는 곧 기울기를 적분해 곡선을 되살리는 것 — Heun은 <b>사다리꼴</b>, RK4는 <b>Simpson</b> 적분과 같은 뼈대다.</li>
+    <li><b>적분 = 가장 간단한 ODE · 11주</b> — 우변에 $y$ 가 없는 $y'=f(x)$ 는 그냥 $y=\int f\,dx$. 11주 수치적분(사다리꼴·Simpson)이 이번 주 전진법의 특수한 경우라, 이미 절반은 배운 셈이다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>"도함수 = 그 점에서의 순간 변화율(접선 기울기)" 한 줄만 붙잡으면 된다 — $f(x,y)=y'$ 가 지금 선 자리에서 곡선이 향하는 방향이고, 거기에 걸음 폭 $h$ 를 곱해 다음 점을 찍는 것이 이번 주 모든 방법의 공통 첫 동작이다.</div>
+</section>
 <section class="screen" data-ch="시작" data-chtitle="상미분방정식 시작" data-stage="정리">
   <div class="intro">
     <div class="intro-eyebrow">WEEK 13 · 수치해석은 "돌려봐야" 안다</div>
@@ -675,6 +685,18 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
   <div class="eyebrow">13-4 · 그림 · Shooting 법</div>
   <h1 class="stage-h">경계값을 초기값 문제로</h1>
   <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x^3-0.5*x","label":"기울기 작음(미달)"},{"fn":"x^3","label":"딱 맞음"},{"fn":"x^3+0.5*x","label":"기울기 큼(초과)"}]' data-xmin="0" data-xmax="1" data-points="[[1,1]]" data-cap="양끝 조건(경계값 문제)을 푸는 법 — 시작 <b>기울기를 바꿔가며 쏘아</b>(shooting) 반대편 목표(주황 (1,1))에 맞춘다. 미달·초과를 보고 기울기를 조정, 근찾기로 정확한 초기 기울기를 찾는다."></div>
+</section>
+<section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="연습">
+  <div class="eyebrow">13-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">어떤 전진법을, <span class="hl">왜</span>?</h1>
+  <div class="longform" data-qid="design-13" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">너는 세 상황에서 $y'=f(x,y)$ 를 풀어야 한다 — ① <b>소형 드론의 실시간 자세 제어</b>: 매 밀리초마다 한 스텝, 연산 예산이 빠듯하다. ② <b>위성 궤도 장기 적분</b>: 하룻밤이 걸려도 좋으니 최대한 정확해야 한다. ③ <b>빠른·느린 반응이 섞인 화학 반응(강성, stiff)</b>. 각 상황에서 Euler·Heun·RK4(필요하면 음함수법) 중 무엇을 <em>먼저</em> 꺼내겠는가? "정확도가 높으니 무조건 RK4"가 답이 아닌 이유를 <b>스텝당 기울기 평가 횟수(비용)·안정성·요구 정밀도의 맞교환</b>으로 설명하고, 정확해가 없어 답을 대조할 수 없을 때 스텝 $h$ 를 어떻게 정하고 그 수치해를 언제 믿을지 근거와 함께 써보자. 정답은 하나가 아니다 — 네가 무엇을 더 중요하게 봤는지가 핵심이다.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — ①은 스텝당 기울기 $1$회로 싸고 빠른 Euler(대신 $h$ 를 충분히 작게)가 현실적일 수 있지만 발산 안 하게 <em>안정조건부터</em> 확인… ②는 큰 $h$ 로도 소수 여러 자리 정확한 RK4가 총비용에서 오히려 유리… ③은 아무리 고차라도 명시적법이면 안정조건이 $h$ 를 극단적으로 조이니 음함수법으로 갈아타는 게…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무에서 "어느 방법"은 정확도만이 아니라 <b>비용(기울기 평가 횟수)·안정영역·강성 여부·요구 정밀도</b>의 맞교환으로 정해진다 — 정확도(차수)와 안정성은 서로 다른 축이고, 정확해가 없을 때 신뢰의 근거는 "$h$ 를 반으로 줄여도 답이 거의 안 변하는가"($h$-절반 대조)다.</div>
+  </div>
 </section>
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
   <div class="eyebrow">13-4 · 정리 · Summary</div>

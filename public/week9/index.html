@@ -40,6 +40,17 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 (선수지식 발판) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 9 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>6주 · 정규방정식(선형계)</b> — 미지수 여러 개짜리 선형 연립방정식 $A\mathbf x=\mathbf b$ 를 가우스 소거로 푸는 법. 이번 주 <b>9-1·9-2</b> 에서 최소자승의 최적 계수가 $(X^TX)a=X^Ty$ 라는 <b>선형계 한 번</b>으로 떨어지고, 그걸 바로 이 방법으로 푼다.</li>
+    <li><b>3주 · 오차(잔차의 뿌리)</b> — 참값과 근삿값의 차이를 재는 감각. 이번 주 <b>9-1</b> 에서는 데이터와 곡선의 세로 차이 $e_i=y_i-f(x_i)$ 를 <b>잔차</b>로 삼아, 그 제곱합 $S=\sum e_i^2$ 를 최소화하는 것이 곡선 적합의 목표가 된다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>정규방정식은 새로운 공식이 아니라 <b>6주에서 배운 선형 연립방정식</b>일 뿐 — $\begin{bmatrix}n&\sum x_i\\ \sum x_i&\sum x_i^2\end{bmatrix}\!\begin{bmatrix}a_0\\a_1\end{bmatrix}=\begin{bmatrix}\sum y_i\\ \sum x_iy_i\end{bmatrix}$ 도 결국 미지수 2개짜리 $A\mathbf x=\mathbf b$ 다.</div>
+</section>
+
 <!-- ════════ 시작 / 정리 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="곡선 적합 시작" data-stage="정리">
   <div class="intro">
@@ -782,6 +793,20 @@ fprintf('R^2_adj = %.4f\n', R2adj);
       <div class="dstep2"><div class="step-label">계산</div>$$ R^2_{\text{adj}}=1-\frac{(1-0.999)(6-1)}{6-2-1}=1-\frac{0.001\times5}{3}=1-0.001667 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ R^2_{\text{adj}}\approx 0.9983 $$</div><b>정답:</b> 원 $R^2(0.999)$ 보다 소폭 하락 — 변수 수 벌점이 반영됨.</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════ 설계형 연습 · 방법 선택 판단 ════════ -->
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="연습">
+  <div class="eyebrow">9-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">어떤 모델로 적합할 것인가 <span class="en">· pick the model, defend it</span></h1>
+  <div class="longform" data-qid="design-9" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">센서 보정용 실험 데이터 <strong>8점</strong>이 완만하게 위로 휘어 있다. 세 동료가 서로 다른 적합 방법을 주장한다 — A는 "<strong>$R^2$ 를 최대로</strong> 만들자"며 $7$차 다항식을, B는 "물리적으로 <strong>지수 증가</strong>가 예상되니 $\ln y$ 로 선형화한 뒤 직선 회귀"를, C는 "복잡하게 갈 것 없이 <strong>$2$차 다항식</strong>"을 밀고 있다. 너라면 <strong>어느 접근을, 왜</strong> 고르겠는가? 정답은 하나가 아니다 — $R^2$ 한 숫자만 보고 결정하면 왜 위험한지, 그리고 <strong>과적합 · 외삽(측정 범위 밖 예측) · 물리적 타당성 · 로그의 정의역($y\le0$ 이면 $\ln y$ 불가) · 데이터 점 수 대비 차수</strong>를 어떻게 저울질했는지, 상황에 따라 답이 갈리는 트레이드오프로 근거를 펼쳐 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 점이 $8$개뿐인데 $7$차를 쓰면 모든 점을 지나 $R^2\approx1$ 이 나오지만 점 사이가 요동쳐 보정식으로는 못 쓴다… 나라면 먼저 데이터가 정말 지수꼴인지(물리 근거·$y>0$ 여부)부터 보고, 원 $R^2$ 대신 수정 $R^2$ 나 남겨 둔 점으로 검증하겠다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무의 곡선 적합은 "가장 높은 $R^2$" 를 고르는 게 아니라, 모델 형태를 <b>데이터 거동·물리적 근거·예측 목적</b>에 맞춰 고르고 과적합·외삽 위험까지 함께 책임지는 판단이다 — 엑셀 '추세선' 버튼이 대신 해 주지 않는 부분.</div>
   </div>
 </section>
 

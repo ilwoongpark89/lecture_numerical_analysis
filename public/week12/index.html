@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치 미분 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 12 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>유한차분 · 차분몫 (1주)</b> — 도함수 정의 $\lim_{h\to0}\frac{f(x+h)-f(x)}{h}$ 에서 극한을 유한한 $h$ 로 멈춘 근사. 이번 주 <strong>12-1 전·후·중앙 차분</strong>이 바로 이 차분몫을 어느 점(앞/뒤/대칭)에 두느냐의 이야기다.</li>
+    <li><b>Taylor 전개로 오차 재기 (1주)</b> — $f(x{+}h)=f+hf'+\tfrac{h^2}{2}f''+\cdots$ 에서 <em>버린 항이 곧 오차</em>. 이번 주 <strong>12-1·12-2 원리</strong>가 이 전개로 정확도 차수 $O(h)\!\cdot\!O(h^2)\!\cdot\!O(h^4)$ 와 4점 가중치 $(-1,8,-8,1)$ 을 결정한다.</li>
+    <li><b>Richardson 외삽 · Romberg (11주)</b> — 서로 다른 $h$ 로 얻은 두 근사를 선형결합해 오차 최저차 항을 소거하던 기법. 11주엔 적분(Romberg)에 썼고, 이번 주 <strong>12-3</strong>에서 <em>똑같은 조합</em>을 미분에 옮겨 $O(h^2)\!\to\!O(h^4)$ 로 끌어올린다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>Richardson 외삽 = "$h$ 로 한 번, $h/2$ 로 한 번 잰 뒤 $\dfrac{4D(h/2)-D(h)}{3}$ 로 섞기" — 계수 $4{=}2^2$ 는 기저 공식이 $O(h^2)$ 라서 붙는다(11주 Romberg에서 본 그 규칙).</div>
+</section>
+
 <!-- ════════ 시작 / 학습법 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="수치 미분 시작" data-stage="정리">
   <div class="intro">
@@ -845,6 +857,19 @@ fprintf('fx=%.4f  fy=%.4f  fxy=%.4f  lap=%.4f\n', fx, fy, fxy, lap);
   <div class="eyebrow">12-4 · 그림 · 편미분 근사</div>
   <h1 class="stage-h">각 방향 이웃의 차이</h1>
   <div class="nafig" data-fig="stencil" data-cap="편미분 ∂/∂x·∂/∂y 도 격자 이웃의 차이로 — 각 좌표 방향의 이웃 격자점을 써서 근사한다(5점 스텐실)."></div>
+</section>
+<!-- ════════ 12-4 / 설계형 연습 ════════ -->
+<section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="연습">
+  <div class="eyebrow">12-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">"더 정확한 공식"이 <span class="hl">늘 정답은 아니다</span></h1>
+  <div class="longform" data-qid="design-12" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">열전달 실험에서 금속판 온도를 <b>공간 격자</b> $T(x_i,y_j)$ 와, 한 점의 <b>시간 표</b> $T(t_k)$ 로 측정했다 — 측정값엔 센서 <b>잡음</b>이 섞여 있다. 여기서 <b>열유속</b>(공간 기울기 $\partial T/\partial x$)과 <b>가열 속도</b>($dT/dt$)를 수치미분으로 뽑아야 한다. 이때 ① 중앙차분의 스텝 $h$ 를 얼마나 작게 잡을지, ② 4점 $O(h^4)$·Richardson 외삽 같은 <b>고차 정확도 기법을 동원할지 말지</b>, ③ 격자·표의 <b>경계점</b>은 어떻게 처리할지를 정해야 한다. 정답은 하나가 아니다 — <b>측정 잡음·절단오차·반올림오차·데이터가 놓인 위치(내부 vs 경계)</b> 를 근거로, 네가 무엇을 고르고 무엇은 굳이 안 쓸지, 그 트레이드오프를 서술하라.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 잡음이 큰 실측이면 $h$ 를 무작정 줄여봐야 잡음·반올림이 $\div h$ 로 튀어 오히려 <b>중간 크기 $h$</b> 가 낫고, 고차 공식은 매끈한 함수엔 이득이지만 잡음 데이터엔 잡음을 더 크게 물어올 수도 있어…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무에서 방법 선택을 좌우하는 것은 '공식의 차수'가 아니라 <b>데이터의 잡음 수준과 경계 유무</b>다 — 잘못 고른 $h$ 나 고차 공식 남용은 매끈해 보이는 답 뒤에 큰 오차를 숨긴다.</div>
+  </div>
 </section>
 <section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="정리">
   <div class="eyebrow">12-4 · 정리 · Summary</div>

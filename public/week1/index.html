@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 1 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span> <span class="en" style="font-size:.5em;font-weight:500">— 미적분학에서 가져오는 세 도구</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>도함수·기울기</b> <span class="en">(미적분학)</span> — 곡선 위 한 점의 <b>접선 기울기</b> = 순간 변화율. 이번 주 유한차분 $\frac{dv}{dt}\approx\frac{\Delta v}{\Delta t}$ 와 Euler 계단(1-1·1-2)의 뼈대로 쓰인다.</li>
+    <li><b>극한의 정의</b> <span class="en">(미적분학)</span> — $\lim_{\Delta t\to0}\frac{\Delta v}{\Delta t}$. 이번 주는 이 극한을 <b>취하지 않고</b> 유한한 $\Delta t$ 에서 멈춰 근사로 쓴다(1-1 원리·1-2 Euler).</li>
+    <li><b>정적분·넓이</b> <span class="en">(미적분학)</span> — $\int_a^b f\,dx$ = 곡선 아래 넓이. 이번 주 사다리꼴 합(1-1 시연)으로 이 넓이를 유한 조각으로 근사한다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>도함수 $f'(x)$ 는 곡선 위 한 점에서의 <b>접선 기울기</b>(그 순간의 변화율) — 이번 주는 이 기울기를 극한 대신 <b>두 점의 차</b> $\frac{\Delta v}{\Delta t}$ 로 근사하는 데서 출발한다.</div>
+</section>
+
 <!-- ════════ 시작 / 정리 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="수치해석 시작" data-stage="정리">
   <div class="intro">
@@ -640,6 +652,22 @@ end
   <h1 class="stage-h">차수가 오를수록 더 휜다</h1>
   <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"x","label":"m=1"},{"fn":"x^2","label":"m=2"},{"fn":"x^3","label":"m=3"},{"fn":"x^4","label":"m=4"}]' data-xmin="0" data-xmax="1.6" data-cap="$f(x)=x^m$ — $m$ 이 클수록 곡선이 더 심하게 휜다(비선형↑). 비선형이 강할수록 해석해가 드물어 수치해석이 필요해진다."></div>
 </section>
+
+<!-- ════════ 1-4 / 설계형 연습 ════════ -->
+<section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="연습">
+  <div class="eyebrow">1-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">이 문제, 해석해로 풀까 수치해로 풀까</h1>
+  <div class="longform" data-qid="design-1" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">후배 엔지니어가 두 과제를 들고 왔다. <b>(A)</b> 번지점퍼의 속도 $v(t)$ — 항력계수 $c_d$ 가 상수라 해석해 $v=\sqrt{gm/c_d}\,\tanh(\cdot)$ 가 존재한다. <b>(B)</b> 같은 번지점퍼인데 낙하 중 자세가 바뀌어 $c_d$ 가 속도에 따라 변한다 — 닫힌 형태의 해석해가 없다. 두 과제 각각에 <strong>해석해와 수치해(Euler 반복) 중 무엇을 주력으로 쓸지, 왜 그렇게 판단했는지</strong>를 정답 하나로 단정하지 말고 트레이드오프(정확도·일반성·검증·계산비용)를 저울질하며 적어보자. 특히 — (A)처럼 해석해가 있는데도 <em>굳이</em> 수치해를 함께 돌려 볼 이유가 있다면 무엇인가? 그리고 수치해를 택했다면 스텝 $\Delta t$ 를 무슨 근거로 정하고, 참값이 없는 (B)에서 그 답을 언제 "믿을 만하다"고 보겠는가?</div>
+    <div class="lf-eg"><b>예</b> 방향만 — (A)는 해석해가 정확하니 그것을 기준으로 삼되 같은 문제를 Euler로도 풀어 <em>내 코드가 맞는지 검증</em>하는 데 쓰고, (B)는 수치해 말고는 길이 없으니 $\Delta t$ 를 절반으로 줄여가며…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무에서 "정답 방법"이 미리 정해진 문제는 드물다 — 해석해가 있으면 <b>검증의 잣대</b>로 쓰고, 없으면 수치해로 가되 $\Delta t$ 를 절반으로 줄여 답이 거의 안 변하는지(수렴)로 신뢰를 쌓는 이 <b>판단</b>이 엔지니어의 실력이다.</div>
+  </div>
+</section>
+
+<!-- ════════ 1-4 / 정리 ════════ -->
 <section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="정리">
   <div class="eyebrow">1-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 이번 학기 지도</h1>

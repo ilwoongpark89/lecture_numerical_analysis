@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 3 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주가 딛고 서는 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>Taylor 급수 (1주)</b> — 함수를 전개점 근처 다항식으로 펼치는 법. 이번 주 <b>3-3 절단오차</b>(급수를 유한 항에서 자른 나머지 $R_n$)와 <b>3-4 오차 전파</b>($\Delta f\approx f'(x)\Delta x$ 는 곧 1차 Taylor)의 밑바탕이 된다.</li>
+    <li><b>절대·상대 오차 (1주)</b> — 참값 대비 어긋난 양의 정의. 이번 주 <b>3-2 반올림 오차 크기</b>($\le\varepsilon_{\text{mach}}/2$)와 <b>3-4 조건수·유효숫자</b> 판정 전반에서 그대로 쓰인다.</li>
+    <li><b>MATLAB 반복문·format long (2주)</b> — <code>while</code>/<code>for</code> 와 자릿수 표시. 이번 주 <b>3-2 halving 으로 eps 구하기</b>와 <b>3-4 최적 $h$ 의 U자 곡선(loglog)</b> 코드에서 직접 돌린다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>Taylor 급수는 $f(x{+}h)=f(x)+f'(x)h+\tfrac{f''(x)}{2!}h^2+\cdots$ 처럼 전개점 근처를 다항식으로 편 것 — 이 무한 급수를 유한 항에서 <b>싹둑 자른 나머지</b>가 곧 이번 주의 절단오차다.</div>
+</section>
+
 <!-- ════════ 시작 / 학습법 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="오차 시작" data-stage="정리">
   <div class="intro">
@@ -840,6 +852,20 @@ fprintf('기울기 ≈ %.2f\n', slope(1));   <span class="out">% ≈ 1  (전진�
       <div class="dstep2"><div class="step-label">계산</div>$$ \log(\text{error})=n\log h+C \;\Rightarrow\; n=\text{기울기}=2 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ n=2 $$</div><b>정답:</b> $2$차 방법(예: 중심 차분). 기울기가 곧 차수다.</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════ 3-4 / 설계형 연습 (판단) ════════ -->
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="연습">
+  <div class="eyebrow">3-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">무엇을, 왜 고를 것인가 — 미분법 선택</h1>
+  <div class="longform" data-qid="design-3" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">어떤 함수 $f$ 의 도함수 $f'(x)$ 를 여러 점에서 구해야 하는데, $f$ 를 <strong>한 번 부를 때마다 무거운 시뮬레이션</strong>이 돌아 함수 평가가 매우 비싸다. 예산이 빠듯해 평가 횟수를 아끼고 싶다. 이때 <strong>전진 차분</strong> $\dfrac{f(x{+}h)-f(x)}{h}$ ($O(h)$ · 이미 가진 $f(x)$ 재사용 → 새 평가 $1$ 회) 과 <strong>중심 차분</strong> $\dfrac{f(x{+}h)-f(x{-}h)}{2h}$ ($O(h^2)$ · 새 평가 $2$ 회) 중 무엇을 고르겠는가? 정확도만 보면 중심이 유리하지만 <strong>평가 비용은 두 배</strong>다. 게다가 스텝 $h$ 를 얼마로 잡을지도 정해야 한다 — 무작정 작게 하면 3-2 에서 본 <strong>상쇄(반올림)</strong> 때문에 오히려 나빠지고, 최적은 $\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8}$ 근처다. 하나의 정답을 고르지 말고, <strong>정확도 목표가 느슨할 때 / 빡셀 때, 평가가 쌀 때 / 비쌀 때</strong> 어느 쪽이 옳은지 를 근거와 함께 저울질해 적어라.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 요구 정확도가 소수 $2$~$3$ 자리면 전진 차분 $1$ 회 평가로 충분할 수 있고, 정밀한 결과가 필요하면 비용을 감수하고 중심 차분(같은 $h$ 로 오차 $\tfrac{1}{100}$)을… 반대로 중심으로 정확도를 사는 대신 $h$ 를 조금 키워 상쇄를 피하는 절충도…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무의 방법 선택은 '가장 정확한 것' 이 아니라 '주어진 제약 안에서 가장 나은 것' 이다 — 정확도·계산 비용·수치 안정성을 함께 저울질하는 이 판단이 공식 암기보다 오래 남는다.</div>
   </div>
 </section>
 

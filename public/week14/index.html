@@ -36,6 +36,15 @@
     <div class="intro-teaser">유형마다 성격이 다르다 — 확산은 <em>퍼지고</em>, 평형은 <em>매끄럽고</em>, 파동은 <em>전파</em>한다.</div>
   </div>
 </section>
+<section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 14 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>12주 · 2계 중앙차분</b> $\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2}$ — 여기서 왔다. 이번 주 <b>14-1~14-4 모든 PDE</b>의 공간 미분(라플라시안·열확산·파동)이 전부 이 한 조각으로 조립된다.</li>
+    <li><b>7주 · Gauss–Seidel / Jacobi 반복</b> — 연립 $A\mathbf{u}=\mathbf{b}$ 를 "한 점씩 이웃 값으로 고쳐 넣기"로 풀던 그 방법. 이번 주 <b>14-3 라플라스</b>의 평형 온도장을 "각 점 = 이웃 4점 평균" 반복으로 수렴시킬 때 그대로 재사용한다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>2계 중앙차분은 "오른쪽 이웃 $+$ 왼쪽 이웃 $-\,2\times$자기 자신"을 $\Delta x^2$ 로 나눈 값 — <b>곡률(휘어짐)</b> 을 재는 자다. 양수면 아래로 볼록.</div>
+</section>
 <section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="정리">
   <div class="intro">
     <div class="intro-eyebrow">WEEK 14 · 학습법</div>
@@ -478,6 +487,18 @@ end
   <div class="eyebrow">14-4 · 그림 · 파동 이동</div>
   <h1 class="stage-h">모양 유지한 채 진행</h1>
   <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"sin(pi*x)","label":"t=0"},{"fn":"sin(pi*(x-0.4))","label":"t=1"},{"fn":"sin(pi*(x-0.8))","label":"t=2"}]' data-xmin="0" data-xmax="3" data-cap="파동은 감쇠 없이 모양을 유지한 채 오른쪽으로 이동. Δt 가 CFL 조건(cΔt≤Δx)을 넘으면 수치 파동이 폭발한다."></div>
+</section>
+<section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="연습">
+  <div class="eyebrow">14-5 · 설계형 · 판단</div>
+  <h1 class="stage-h">명시적 vs <span class="hl">음함수</span>, 무엇을 고를까</h1>
+  <div class="longform" data-qid="design-14" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">얇은 금속판의 열전도를 <strong>아주 촘촘한 공간 격자</strong>($\Delta x$ 를 매우 작게)로 정밀하게 풀어야 한다. <strong>명시적 FTCS</strong>($\lambda=\alpha\Delta t/\Delta x^2\le\tfrac12$, 안정조건 있음)를 쓸지, <strong>음함수(Crank–Nicolson, 무조건 안정)</strong>를 쓸지 — 어느 쪽을 <strong>왜</strong> 고를지 근거와 함께 서술하라. 안정조건이 강제하는 $\Delta t$ 상한(FTCS는 $\Delta x$ 를 반으로 줄이면 $\Delta t$ 가 $1/4$), 스텝당 계산 부담(음함수는 매 스텝 연립 $A\mathbf{u}=\mathbf{b}$ 를 푼다)을 <strong>저울질</strong>하라. 정답은 하나가 아니다 — 격자 크기·정확도 요구·마감시간에 따라 갈린다.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 격자가 아주 촘촘하면 FTCS는 $\Delta t \propto \Delta x^2$ 라 스텝 수가 폭증하니, 스텝당 연립을 풀더라도 $\Delta t$ 를 크게 잡는 음함수가 총비용에서 유리할 수 있다. 반대로 격자가 성기고 코드가 단순해야 하면…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무의 방법 선택은 "어느 것이 절대적으로 옳은가"가 아니라 "이 조건에서 <strong>안정성과 스텝당 비용의 트레이드오프</strong>가 어느 쪽 총비용을 작게 만드는가"다 — 이 저울질이 수치해석 엔지니어의 핵심 판단이다.</div>
+  </div>
 </section>
 <section class="screen" data-ch="14-4" data-chtitle="파동 (쌍곡형)" data-stage="정리">
   <div class="eyebrow">14-4 · 정리 · Summary</div>

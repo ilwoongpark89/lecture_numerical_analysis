@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 7 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span> <span class="en" style="font-size:.5em;font-weight:500">— 5·6주 위에 선다</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>가우스 소거법 · 직접법 $\tfrac13n^3$</b> <span class="en">(6주)</span> — 정확한 해를 한 번에 구하던 방법. 이번 주 첫 화면의 <b>대조 기준</b>이다: 대형·희소 시스템에서 $O(n^3)$ 비용과 fill-in 때문에 직접법이 막히는 것이 곧 반복법의 존재 이유.</li>
+    <li><b>삼각행렬 · 전진/후진 대입</b> <span class="en">(6주)</span> — 소거 뒤 삼각 시스템을 위→아래로 풀던 대입. 7-2 <b>Gauss–Seidel</b> 의 $(D+L)^{-1}$ 갱신이 바로 하삼각 <b>전진대입</b> — 방금 구한 $x_j$ 를 그 자리에서 다음 식에 흘려보낸다.</li>
+    <li><b>고정점 반복 · $|g'(x^{*})|<1$</b> <span class="en">(5주)</span> — $x=g(x)$ 를 $x^{(k+1)}=g(x^{(k)})$ 로 되풀이해 고정점으로 다가가던 것. 7-3 의 Jacobi·GS·SOR 는 모두 $\mathbf{x}^{(k+1)}=T\mathbf{x}^{(k)}+\mathbf{c}$ 꼴 고정점 반복이고, 수렴 조건 $\rho(T)<1$ 이 바로 스칼라 $|g'|<1$ 의 <b>벡터판</b>이다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>고정점 반복(5주) 한 문장 복습 — $x^{(k+1)}=g(x^{(k)})$ 는 기울기 $|g'|$ 가 $1$ 보다 작을 때만 고정점으로 수렴한다. 이번 주는 스칼라 $g'$ 자리에 <b>반복 행렬 $T$</b> 가, $|g'|<1$ 자리에 <b>$\rho(T)<1$</b> 이 들어설 뿐이다.</div>
+</section>
+
 <!-- ════════ 시작 / 학습법 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="반복법 시작" data-stage="정리">
   <div class="intro">
@@ -798,6 +810,20 @@ for w in [0.8, 1.0, 1.2, 1.5]:
       <div class="dstep2"><div class="step-label">계산</div>$$ \omega_{opt}=\frac{2}{1+\sqrt{1-0.8^2}}=\frac{2}{1+0.6}=\frac{2}{1.6}=1.25 $$</div>
       <div class="ans-final"><div class="ans-eq">$$ \omega_{opt}=1.25 $$</div><b>정답:</b> $\rho(T_J)$ 가 1에 가까울수록 $\omega_{opt}$ 가 2에 근접 — over-relaxation 이 크게 이득.</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════ 설계형 · 방법 선택 판단 ════════ -->
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="연습">
+  <div class="eyebrow">7-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">어느 반복법을, <span class="hl">왜</span> 고르나</h1>
+  <div class="longform" data-qid="design-7" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">열전달 시뮬레이션에서 나온 $10^{6}\times10^{6}$ 성긴 대각 우세 시스템 $A\mathbf{x}=\mathbf{b}$ 를 풀어야 한다. 실행 환경이 둘이다 — <b>(A)</b> 수천 코어의 GPU 클러스터, <b>(B)</b> 메모리가 빠듯한 단일 노트북. 각 환경에서 <strong>Jacobi · Gauss–Seidel · SOR 중 무엇을</strong> 고르겠는가? <em>"반복 수가 적은 방법이 항상 빠르다"</em>는 단순 논리가 왜 (A)에서 깨질 수 있는지(GS·SOR 의 <b>순차 의존</b> vs Jacobi 의 <b>동시 갱신</b>), 그리고 (B)에서 메모리($2n$ vs $n$)와 순차성이 선택을 어떻게 바꾸는지를 <strong>근거와 함께</strong> 서술하라. 정답은 하나가 아니다 — <b>환경이 판단을 바꾼다.</b></div>
+    <div class="lf-eg"><b>예</b> 방향만 — GPU 라면 반복 수가 2배여도 한 반복을 수천 코어가 동시에 처리하니… / 노트북이라면 벡터 하나만 쓰는 in-place 가… / 순차 의존이 있는 GS·SOR 는 병렬 기계에 그대로 못 올리니… / $\rho(T_J)$ 가 1에 가까운 대형 격자라면 SOR 의 최적 $\omega$ 가…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무의 알고리즘 선택은 '이론상 가장 빠른 것'이 아니라 '이 하드웨어·이 행렬에서 가장 빠른 것'이다 — 반복 수·병렬성·메모리는 서로 맞바꿔진다.</div>
   </div>
 </section>
 

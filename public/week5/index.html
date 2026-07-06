@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 5 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>이분법·가둠 (4주)</b> — 부호가 다른 두 끝점 $f(a)f(b)<0$ 으로 근을 <b>가둔다</b>. 이번 주 5-4 방법 선택에서 "느려도 안전한" 기준선이자, 할선법·Newton이 근을 못 가두면 발산할 수 있다는 대비의 축이 된다.</li>
+    <li><b>접선·Taylor 1차 (1주)</b> — Newton은 접선(1차 Taylor 근사)의 기울기 $f'(x)$ 로 도약했다. 이번 주 <b>할선법</b>은 그 $f'$ 를 <b>두 점을 이은 할선(유한 차분)</b> 으로 바꿔 도함수 없이 같은 도약을 한다(5-1).</li>
+    <li><b>근 $f(x)=0$ (4주)</b> — 곡선이 x축과 만나는 점. 이번 주 5-3에서 두 곡선의 <b>교점</b> $\mathbf F(\mathbf x)=\mathbf 0$ 으로, 스칼라에서 벡터로 확장한다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>접선(1차 Taylor)이란 $f(x+h)\approx f(x)+f'(x)\,h$ — 곡선을 근 부근에서 직선 하나로 바꿔 보는 것이다. 할선은 이 직선의 기울기 $f'(x)$ 를 "가까운 두 점의 기울기 $\dfrac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}}$" 로 대신할 뿐이다.</div>
+</section>
+
 <!-- ════════ 시작 / 학습법 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="비선형 방정식 II 시작" data-stage="정리">
   <div class="intro">
@@ -888,6 +900,20 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
   <h1 class="stage-h">같은 방정식, 나쁜 g — 나선이 튕겨나간다</h1>
   <p class="lede">$x^2-3x+2=0$ 을 $x=g(x)=\dfrac{x^2+2}{3}$ 로 반복한다. 고정점 $1$ ($|g'|=\tfrac23<1$ 흡인)과 $2$ ($|g'|=\tfrac43>1$ 반발). $x_0=2.1$ 에서 시작하면 — 반발점 근처라 <strong>나선이 밖으로 튕겨</strong> 발산한다.</p>
   <div class="stepper" data-kind="fixed-point" data-gfn="(x*x+2)/3" data-x0="2.1" data-xmin="0.5" data-xmax="4" data-steps="7" data-title="발산 cobweb — g=(x²+2)/3, x₀=2.1 (반발 고정점 2 근처)" data-note="같은 g 라도 x₀=0.5 로 시작하면 흡인점 1 로 수렴한다 — 수렴은 알고리즘이 아니라 |g′| 이 결정."></div>
+</section>
+
+<!-- ════════ 5-4 · 설계형 연습 (판단) ════════ -->
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="연습">
+  <div class="eyebrow">5-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">이 문제엔 <span class="hl">어느 근 찾기</span>를, 왜?</h1>
+  <div class="longform" data-qid="design-5" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">실험 장비의 <b>온도–저항 곡선</b>이 표(데이터)로만 주어져 $f'(x)$ 를 손으로 구할 수 없고, 근이 하나 있을 것 같지만 <b>부호가 다른 두 점(구간)은 아직 확보하지 못한</b> 상황이라 하자. 여기에 <b>이분법 · Newton · 할선법</b> 중 무엇을, 왜 고르겠는가? 정답은 하나가 아니다 — <b>안전성(수렴 보장)</b> vs <b>속도(반복 수)</b> vs <b>요구조건(도함수·구간 확보·초기값 2개)</b> 의 트레이드오프를 근거로, 네가 <em>어떤 위험을 감수하고 무엇을 포기할지</em> 를 결정으로 드러내며 서술하라. "만약 나중에 부호 다른 구간을 찾는다면 선택이 어떻게 바뀌는가?" 까지 덧붙이면 좋다.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 도함수를 못 구하니 Newton은 후보에서 빠지고, 부호 다른 구간을 아직 못 잡았으니 이분법도 지금 당장은 어렵다 → 근처 두 점만으로 시작하는 <b>할선법</b>을 우선 시도하되, 발산·진동에 대비해 반복이 튀면 멈추고 구간을 다시 감싸는 안전장치를 둔다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무에서는 "가장 빠른 방법"이 아니라 "주어진 정보(도함수 유무·구간 확보 여부·안정성 요구)에 맞는 방법"을 고르는 판단이 알고리즘 지식보다 중요하다 — fzero·fsolve 같은 하이브리드가 기본값이 된 이유다.</div>
+  </div>
 </section>
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="정리">
   <div class="eyebrow">5-4 · 정리 · Summary</div>

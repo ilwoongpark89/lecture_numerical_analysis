@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 2 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span> <span class="en" style="font-size:.5em;font-weight:500">— 1주 「오차」 개념 위에 선다</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>절대오차 · 상대오차</b> — 1주 <em>「1-3 오차와 근사」</em>의 "참값과 근사값의 차이". 이번 주 <strong>직접계산 채점의 허용오차(tol)</strong>와, 근사가 언제 "충분한지" 가늠하는 잣대가 된다.</li>
+    <li><b>근사오차 $|x_n-x_{n-1}|$</b> — 참값을 모를 때 쓰는 "이전값과 이번값의 차이"(1주 1-3). 이번 주 <strong>2-3 <code>while error &gt; tol</code></strong> 수렴 반복이 <em>바로 이 값</em>이 작아지는 순간 멈춘다.</li>
+    <li><b>반올림 오차 · 머신 엡실론</b> — 1주에서 "$h$ 를 줄여도 좋기만 하진 않다"며 만난 부동소수점 한계. 이번 주 특수값 <code>eps</code>$\approx 2.2\times10^{-16}$ 과, 실수를 <code>==</code> 대신 <strong>tol 안에서</strong> 비교해야 하는 이유로 이어진다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>절대오차 $=|\text{참값}-\text{근사값}|$, 상대오차 $=$ 절대오차 $\div\,|\text{참값}|$ — 반복은 참값을 모르니 대신 $|\text{이번값}-\text{지난값}|$ 이 tol 아래로 내려가면 멈춘다.</div>
+</section>
+
 <!-- ════════ 시작 / 정리 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="MATLAB 시작" data-stage="정리">
   <div class="intro">
@@ -801,6 +813,20 @@ grid on;</code></pre></div>
     <div class="revealable solution">
       <div class="ans-final"><div class="ans-eq">$$ s(4) = 0.75 $$</div><b>정답:</b> 간격 $1/4=0.25$, 1-based 이므로 4번째 = $0.75$.</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════ 2-4 설계형 · 판단 (정답 없음) ════════ -->
+<section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="연습">
+  <div class="eyebrow">2-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">반복문이냐, <span class="hl">벡터화</span>냐</h1>
+  <div class="longform" data-qid="design-2" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">같은 계산을 MATLAB으로 옮기는 길은 보통 둘이다 — <code>for</code>/<code>while</code> 반복문으로 <strong>한 스텝씩</strong> 쓰거나, 벡터·행렬을 <strong>통째로</strong> 거는 벡터화로 한 줄에 쓰거나. 예컨대 ① 점수 $10000$ 개에 모두 $5$ 를 더하기 ② $x_{n+1}=\cos(x_n)$ 을 값이 안정될 때까지 되풀이하기 — 두 작업은 같은 도구로도 택할 길이 다르다. <strong>어떤 상황에서 벡터화를, 어떤 상황에서 반복문을 고르겠는가?</strong> 속도·가독성·메모리, 그리고 <em>'각 스텝이 앞 스텝의 결과에 의존하는가'</em> 를 근거로 — 정답 하나가 아니라 트레이드오프로 판단해 적어보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — 원소끼리 서로 <em>독립</em>인 계산(전원 $+5$, 사진 밝기 보정)은 벡터화가 짧고 빠르다. 그런데 다음 값이 <em>앞 값에서 나오는</em> 수렴 반복은 애초에 통째로 계산할 수가 없어 <code>while</code> 이 답이다 — 속도만 보고 무조건 벡터화가 정답은 아니다…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 다음 주부터 배울 이분법·Newton·Euler는 모두 <strong>'앞 값 → 다음 값'</strong> 반복이라 벡터화가 불가능하다. "독립이면 벡터화, 의존이면 반복문" 이라는 이 판단이 실무에서 코드의 속도와 정확성을 동시에 좌우한다.</div>
   </div>
 </section>
 

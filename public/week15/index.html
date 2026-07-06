@@ -36,6 +36,16 @@
     <div class="intro-teaser">공통 예제 <em>$A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$</em> (고유값 $4.618,\ 2.382$)로 거듭제곱 수렴을 직접 본다.</div>
   </div>
 </section>
+<section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 15 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>행렬–벡터 곱 $A\mathbf{x}$ (6주 행렬)</b> — 거듭제곱법은 이 곱을 <strong>매 반복</strong> 계산한다. "곱하고·정규화·반복"의 그 <em>곱하고</em>가 바로 6주의 $A\mathbf{x}$.</li>
+    <li><b>LU 분해로 연립방정식 풀기 (6주)</b> — 역·shift 거듭제곱(15-3)은 $A^{-1}$ 를 직접 만들지 않고 매 반복 $A\mathbf{y}=\mathbf{x}$ 를 LU로 푼다. 한 번 분해해 재사용.</li>
+    <li><b>반복법과 수렴 (7주)</b> — "같은 절차를 되풀이해 답에 다가간다"는 감각. 거듭제곱법은 행렬을 <strong>거듭 곱하는</strong> 반복법이라, 7주의 수렴·수렴속도가 그대로 이어진다($|\lambda_2/\lambda_1|$).</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>반복법은 "정답 공식을 한 번에 쓰는 것"이 아니라 <strong>같은 계산을 되풀이하며 답에 점점 가까워지는 것</strong> — 거듭제곱법에서 그 반복 한 걸음은 "행렬을 한 번 더 곱하고 정규화하기"다.</div>
+</section>
 <section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="정리">
   <div class="intro">
     <div class="intro-eyebrow">WEEK 15 · 학습법</div>
@@ -440,6 +450,27 @@ A = [4 1; 1 3];
         <li>QR이 <strong>닮음변환</strong>이라 고유값 보존.</li>
         <li>거듭제곱 수렴 속도 $|\lambda_2/\lambda_1|$.</li>
       </ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="연습">
+  <div class="eyebrow">15-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">어떤 <span class="hl">고유값 도구</span>를 고를까</h1>
+  <div class="longform" data-qid="design-15" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">진동 해석 팀에 두 요청이 들어왔다. <b>①</b> 초고층 건물 모델(자유도 수백만, <strong>희소</strong> 행렬)에서 안전 판정에 쓸 <strong>가장 낮은 공진 진동수 하나</strong>만 필요하다. <b>②</b> 작은 부품 모델($6\times6$ <strong>밀집</strong> 행렬)의 <strong>모든 고유진동수</strong>가 필요하다. 각 요청에 <em>거듭제곱 · 역 거듭제곱 · shift · QR</em> 중 무엇을 고르겠는가? '몇 개가 필요한가(하나/최소/전체)', 행렬의 <strong>크기·희소성</strong>, 수렴 속도($|\lambda_2/\lambda_1|$)를 근거로 트레이드오프를 서술하라. 정답은 하나가 아니다 — <strong>판단의 근거</strong>가 핵심이다.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — ①은 '최소 하나 + 큰 희소'라 $A\mathbf{x}$ 곱만 쓰는 역 거듭제곱(필요하면 shift로 겨냥·가속)이 자연스럽고, QR은 행렬을 통째로 삼각화해 수백만 차원엔 메모리·연산이 과하다. ②는 '전부 + 작고 밀집'이라…</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무에선 <code>eig</code>(전체·밀집) vs <code>eigs</code>(일부·희소)처럼 <strong>목적과 행렬 성질에 맞춰 루틴을 고르는 판단</strong>이 먼저다 — 잘못 고르면 수백 배 느리거나 메모리가 터진다.</div>
+    <div class="prof-example">
+      <div class="pe-h">교수 전용 · 답변 예시</div>
+      <ul>
+        <li>① 최소 고유값 <strong>하나</strong> + 수백만 차원 희소 → <strong>역 거듭제곱</strong>. $A^{-1}$ 를 만들지 않고 매 반복 $A\mathbf{y}=\mathbf{x}$ 를 (희소) 분해로 풀며, 목표 진동수 근처로 <strong>shift</strong> $(A-\mu I)^{-1}$ 하면 $|\lambda_2/\lambda_1|$ 이 작아져 빨리 수렴. QR은 삼각화가 조밀 연산이라 수백만 차원엔 부적합.</li>
+        <li>② <strong>모든</strong> 고유값 + 작은 밀집 → <strong>QR 알고리즘</strong>. 닮음변환을 반복해 대각선에 전부 드러나고, $6\times6$ 은 연산·메모리 부담이 없다. 거듭제곱으로 하나씩 6번 겨냥하는 건 비효율.</li>
+        <li>핵심 판단축 — "몇 개(하나/최소/전체)"가 방법을 가르고, "크기·희소성"이 QR 가능 여부를 가르며, "$|\lambda_2/\lambda_1|$ 이 1에 가까운가"가 shift 필요를 가른다. 단일 정답이 아니라 이 세 축의 트레이드오프를 읽어내는 게 목표.</li>
+      </ul>
     </div>
   </div>
 </section>

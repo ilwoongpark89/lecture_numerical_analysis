@@ -40,6 +40,18 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 6 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>행렬·벡터로 연립방정식 쓰기 (2주)</b> — 여러 식을 $A\mathbf{x}=\mathbf{b}$ 한 줄로 압축하는 표기. 이번 주 증대행렬 $[A\,|\,\mathbf{b}]$ 와 $A=LU$ 분해가 전부 이 표기 위에서 돌아간다.</li>
+    <li><b>행렬 곱 · 행벡터 내적 (2주)</b> — 행 $\times$ 열을 성분별로 곱해 더하는 계산. 소거의 $R_i\leftarrow R_i-f\,R_k$, $LU=A$ 검산, 후진 대입 $\sum_j u_{ij}x_j$ 가 모두 이 한 줄 계산의 반복이다.</li>
+    <li><b>근찾기 — 반복 vs 직접 (4·5주)</b> — 이분법·Newton은 비선형 $f(x)=0$ 을 <em>수렴할 때까지 반복</em>해 풀었다. 이번 주 소거·LU는 정해진 횟수 만에 <em>정확해</em>를 주는 <b>직접법</b> — "몇 번 반복하면 수렴하나?"라는 물음 자체가 없다는 대조가 핵심이다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>행렬–벡터 곱 $A\mathbf{x}$ 의 $i$번째 성분은 $A$ 의 $i$행과 $\mathbf{x}$ 를 성분별로 곱해 더한 값 — $a_{i1}x_1+a_{i2}x_2+\cdots+a_{in}x_n$. 이 '한 행 $\times$ 열' 계산이 소거·대입의 기본 단위다.</div>
+</section>
+
 <!-- ════════ 시작 / 정리 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="가우스 소거법 시작" data-stage="정리">
   <div class="intro">
@@ -816,6 +828,19 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
         <li>다른 상황으로 전이 — 여러 센서로 위치를 추정하거나 데이터에 직선을 맞출 때도 "측정 방향들이 거의 겹치면(거의 평행) 답이 흔들린다"는 같은 구조가 나타난다. 그래서 실무에선 먼저 조건수·스케일을 점검하고, 필요하면 방정식을 다시 세우거나 정규화한 뒤 푼다.</li>
       </ul>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="6-4" data-chtitle="조건수와 ill-conditioning" data-stage="연습">
+  <div class="eyebrow">6-x · 설계형 · 판단</div>
+  <h1 class="stage-h">어떤 방법을 왜 고를까</h1>
+  <div class="longform" data-qid="design-6" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">회로 시뮬레이터를 만든다. 노드 방정식의 계수행렬 $A$(수백$\times$수백)는 <strong>한 번 정해지면 고정</strong>이고, 입력 전압 조건 $\mathbf{b}$ 만 시간마다 바뀌어 <strong>수천 번</strong> 풀어야 한다. 게다가 어떤 노드 구성에서는 대각 원소가 유난히 작아지고, 어떤 회로는 두 방정식이 거의 평행(조건수 $\kappa$ 가 큼)해진다. 이때 ⑴ <b>매번 가우스 소거를 처음부터</b> 할지 아니면 <b>LU 분해를 한 번 해두고 재사용</b>할지, ⑵ <b>부분 피벗팅을 켤지</b>, ⑶ $\kappa$ 가 크다는 신호가 보이면 <b>어떻게 대응</b>할지 — 세 결정을 각각 <strong>비용과 안정성의 trade-off</strong>와 함께 근거를 들어 논하라. 정답은 하나가 아니다. 상황의 <em>어떤 특징</em>이 결정을 뒤집는지 보여라.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — $A$ 는 고정이고 우변만 수천 개니, 분해를 재사용하면 비싼 $O(n^3)$ 소거를 한 번만 치르고 이후엔 값싼 대입만 반복하는 쪽이... / 작은 피벗이 관측되면 피벗팅으로 $|f|\le1$ 을 보장하지만, 만약 $A$ 가 이미 대각지배라면 그 비용이...</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께 적어보세요"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 방법 선택 하나가 대규모 반복 풀이의 실행시간을 수십 배 가르고, 피벗팅과 조건수 판단이 답의 신뢰 자릿수를 좌우한다 — 실무에서 '무엇을 왜 고르는가'는 공식을 아는 것만큼 중요하다.</div>
   </div>
 </section>
 

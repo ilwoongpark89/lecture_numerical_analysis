@@ -40,6 +40,17 @@
   </div>
 </section>
 
+<!-- ════════ 시작 / 딛고 서는 것 (선수지식 발판) ════════ -->
+<section class="screen" data-ch="시작" data-chtitle="보간 시작" data-stage="여정">
+  <div class="eyebrow">WEEK 10 · 딛고 서는 것</div>
+  <h1 class="stage-h">이번 주 <span class="hl">발판</span></h1>
+  <div class="callout key"><div class="ct">먼저 있어야 할 것</div><ul>
+    <li><b>9주 · 곡선 적합(근사 vs 정확 통과)</b> — 데이터에 곡선을 앉히되 잔차 제곱합 $S=\sum e_i^2$ 를 <b>최소화</b>만 하고 점을 꼭 지나진 않았다. 이번 주 <b>시작·10-1</b> 은 <b>정반대 약속</b>에서 출발한다 — 보간 곡선은 <b>모든 점을 정확히 통과</b>($P(x_i)=y_i$)한다. 그래서 "가장 가깝게"가 아니라 "반드시 지난다"가 목표다.</li>
+    <li><b>6주 · 선형 연립계(가우스 소거)</b> — 미지수 여러 개짜리 $A\mathbf x=\mathbf b$ 를 소거로 푸는 법. 이번 주 <b>10-4</b> 에서 natural cubic spline 의 이음매 곡률 $M_i=S''(x_i)$ 가 <b>삼중대각 연립계</b> $h_{i-1}M_{i-1}+2(h_{i-1}+h_i)M_i+h_iM_{i+1}=\cdots$ 로 떨어지고, 이걸 (Thomas 알고리즘으로) $O(n)$ 에 푼다.</li>
+  </ul></div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">헷갈리면</div>지난주 <b>적합(회귀)</b>은 점을 반드시 지나지 않고 잔차 $S=\sum e_i^2$ 를 <b>최소화</b>만 했다 — 이번 주 <b>보간</b>은 정반대로 <b>모든 점을 정확히 통과</b>한다. '가장 가깝게'가 아니라 '반드시 지난다'가 핵심.</div>
+</section>
+
 <!-- ════════ 시작 / 학습법 ════════ -->
 <section class="screen" data-ch="시작" data-chtitle="보간 시작" data-stage="정리">
   <div class="intro">
@@ -768,6 +779,24 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
     <div class="revealable solution">
       <div class="ans-final"><div class="ans-eq">$$ S''(x_0)=0,\quad S''(x_n)=0 $$</div><b>정답:</b> "natural"은 양 끝에서 곡률 0 = 직선처럼 뻗음. clamped(기울기 지정)·not-a-knot 은 다른 경계 조건.</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════ 10-4 / 설계형 연습 (방법 선택·판단) ════════ -->
+<section class="screen" data-ch="10-4" data-chtitle="Cubic Spline" data-stage="연습">
+  <div class="eyebrow">10-4 · 설계형 · 판단</div>
+  <h1 class="stage-h">이 데이터에 <span class="hl">어느 보간을</span>, 왜?</h1>
+  <div class="longform" data-qid="design-10" data-kind="reflect">
+    <span class="lf-tag think">설계 판단</span>
+    <div class="lf-q">한 실험에서 <b>온도–점도</b>를 측정해 점을 모았다. 아래 세 상황에서 <b>Lagrange 고차 보간 · Newton 차분 보간 · 3차 스플라인</b> 중 무엇을 고르고 <em>왜</em> 그렇게 고르는지, 각 방법의 대가(정확도·안정성·재계산 비용)를 저울질해 서술하라 — 정답은 하나가 아니다.<br>
+      (가) 등간격 측정점이 <b>20개</b>이고 전 구간에 걸쳐 매끄러운 곡선이 필요하다.<br>
+      (나) 실험이 끝나지 않아 앞으로 <b>측정점을 계속 추가</b>할 계획이다.<br>
+      (다) 이미 만든 보간식에서 <b>$x=137^\circ$ 한 점의 값만</b> 빨리 얻으면 된다.<br>
+      특히 "점이 많으면 <b>차수를 그만큼 높이면</b> 되지 않나?"라는 반론에 무엇을 근거로 답할지 반드시 포함하라.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — (가)는 20점을 하나의 $19$차식으로 꿰면 양 끝이 튀므로(Runge) 구간별 저차인 $\dots$ 를 고르고, (나)는 새 점이 들어와도 기존 항을 다시 안 푸는 $\dots$ 형식이 유리하며, (다)는 계수가 이미 있으면 어느 형식이든 대입만 하면 되니 $\dots$</div>
+    <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
+    <div class="lf-hint">💡 실무에서 보간 선택은 "가장 정확한 것"이 아니라 <b>안정성·재사용·계산량</b>의 트레이드오프다 — 등간격 고차를 고르면 점을 더할수록(Runge) 결과가 오히려 나빠진다.</div>
   </div>
 </section>
 
