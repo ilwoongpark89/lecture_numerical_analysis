@@ -23,6 +23,7 @@
     <p class="intro-sub">2차 방정식엔 근의 공식이 있다. 3차·4차도 (끔찍하지만) 있다. 그러나 $x^3-x-2=0$, $\cos x = x$, $xe^x = 1$ 처럼 조금만 섞이면 <strong>닫힌 형태의 공식이 존재하지 않는다.</strong> 그럼 공학자는 어떻게 근을 구할까?</p>
     <div class="intro-teaser">답 — <em>반복(iteration).</em> 근을 한 번에 맞히는 대신, <em>점점 가까워지는 수열</em>을 컴퓨터로 만든다. 이번 주는 그 첫 두 방법을 <strong>직접 돌려본다.</strong></div>
   </div>
+  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="funcplot" data-fn="x^3-x-2" data-xmin="0" data-xmax="2" data-roots="1.5214" data-cap="곡선이 x축과 만나는 곳(빨강 $\approx1.5214$)이 근. 어떻게 <b>체계적으로</b> 이 점을 찾을까 — 이분법·가위치법."></div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->
@@ -155,6 +156,7 @@
     </ol>
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">주의</div>간격 $\Delta x$ 가 크면 <strong>두 근이 한 칸에 같이</strong> 들어(부호 안 바뀜) 놓칠 수 있다. 촘촘히 스캔할수록 안전하지만 계산이 는다.</div>
+  <div class="stp-tblwrap" style="max-width:480px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>$x$</th><th>$f(x)=x^3{-}x{-}2$</th><th>부호</th></tr></thead><tbody><tr><td>0</td><td>&minus;2</td><td>&minus;</td></tr><tr><td>1</td><td>&minus;2</td><td>&minus;</td></tr><tr><td>2</td><td>+4</td><td><b>+ ← 여기</b></td></tr><tr><td>3</td><td>+22</td><td>+</td></tr></tbody></table></div><div class="callout key" style="margin-top:10px"><div class="ct">부호가 바뀌는 칸 $[1,2]$ 에 근이 있다</div>일정 간격으로 훑어 $f(a)f(b)<0$ 인 구간을 찾으면 근을 <b>가둔다</b>(bracket) — 그 안에서 좁혀 간다.</div>
 </section>
 
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="직접계산">
@@ -624,6 +626,7 @@ df = @(x) 3*x.^2 - 1;
   <h1 class="stage-h">안전한 이분법 vs 빠른 Newton <span class="en">· speed ⟷ safety</span></h1>
   <div class="analogy"><span class="ic">⚖️</span><div class="tx"><b>직관</b> — 이분법은 느리지만 <b>절대 실패하지 않는</b> 거북이, Newton은 빠르지만 <b>넘어질 수 있는</b> 토끼다. 실무는 둘의 장점을 섞는다: 거북이로 근처까지 안전하게 간 뒤 토끼로 마무리(하이브리드).</div></div>
   <p class="lede">같은 방정식 $f(x)=x^3-x-2$ 를 두 방법으로 <strong>나란히 반복</strong>시켜 "같은 근에 몇 번 만에 닿는가" 를 직접 비교한다.</p>
+  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법(선형)"},{"r":0.1,"label":"Newton(이차)"}]' data-cap="같은 근을 이분법은 20회, Newton 은 5회 — 안전과 속도의 트레이드오프를 이번 챕터에서 결정한다."></div>
 </section>
 
 <section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="시연">

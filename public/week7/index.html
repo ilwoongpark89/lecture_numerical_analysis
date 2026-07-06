@@ -23,6 +23,7 @@
     <p class="intro-sub">Gauss 소거법은 $n$개의 미지수에 대해 약 $\tfrac13 n^3$ 번의 연산이 든다. $n=10^6$ 이면 약 $3\times10^{17}$ 연산 — 게다가 성긴(sparse) 행렬의 <strong>0 자리까지 채워(fill-in)</strong> 메모리가 폭발한다. 유한요소·유한차분에서 나오는 거대·성긴 시스템에 직접법은 통하지 않는다.</p>
     <div class="intro-teaser">답 — <em>반복(iteration).</em> 정확한 해를 한 번에 구하는 대신, <em>해에 점점 가까워지는 벡터 수열</em> $\mathbf{x}^{(0)}\!\to\!\mathbf{x}^{(1)}\!\to\!\cdots$ 을 만든다. 각 스텝은 <strong>행렬-벡터 곱 한 번</strong>뿐이라 성긴 구조를 그대로 살린다. 이번 주는 그 대표 세 방법을 <strong>직접 반복시켜 본다.</strong></div>
   </div>
+  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="convergence" data-rates='[{"r":0.4,"label":"Gauss-Seidel"},{"r":0.6,"label":"Jacobi"}]' data-cap="$10^6{\times}10^6$ 은 직접법($O(n^3)$)으로 불가 — <b>반복</b>으로 근사해를 점점 조인다(대각 우세면 수렴 보장)."></div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->
