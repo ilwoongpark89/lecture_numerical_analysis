@@ -696,7 +696,9 @@
     function pt(lh, le) { le = Math.max(-8, Math.min(0, le)); return mx(lh).toFixed(1) + ',' + my(le).toFixed(1); }
     var s = _axes(pL, pT, pw, ph) + _lab(pL + pw / 2, 246, 'log₁₀ h', 'middle', FG.gray) + '<text x="16" y="' + (pT + ph / 2) + '" text-anchor="middle" font-size="12" fill="' + FG.gray + '" transform="rotate(-90 16 ' + (pT + ph / 2) + ')">log₁₀ 오차</text>';
     var dt = '', dr = '', dtot = '';
-    for (var i = 0; i <= N; i++) { var lh = -8 + 8 * i / N; var trunc = lh + 0.3; var round = -8 - lh - 8.3; var tot = Math.log(Math.pow(10, trunc) + Math.pow(10, round)) / Math.LN10; dt += (dt ? 'L' : 'M') + pt(lh, trunc) + ' '; dr += (dr ? 'L' : 'M') + pt(lh, round) + ' '; dtot += (dtot ? 'L' : 'M') + pt(lh, tot) + ' '; }
+    // 절단오차 ∝ h (오른쪽=큰 h 에서 지배) slope +1, 반올림오차 ∝ ε/h (왼쪽=작은 h 에서 지배) slope −1.
+    // 두 선이 중간에서 교차 → 총오차 = 둘의 합이 V(U)자, 최적 h 에서 최소. (Chapra Fig 4.8)
+    for (var i = 0; i <= N; i++) { var lh = -8 + 8 * i / N; var trunc = lh - 0.5; var round = -lh - 9; var tot = Math.log(Math.pow(10, trunc) + Math.pow(10, round)) / Math.LN10; dt += (dt ? 'L' : 'M') + pt(lh, trunc) + ' '; dr += (dr ? 'L' : 'M') + pt(lh, round) + ' '; dtot += (dtot ? 'L' : 'M') + pt(lh, tot) + ' '; }
     s += '<path d="' + dt + '" fill="none" stroke="' + FG.gray + '" stroke-width="1.4" stroke-dasharray="4 3"/>' + _lab(pL + pw - 4, my(-0.5), '절단오차', 'end', FG.gray);
     s += '<path d="' + dr + '" fill="none" stroke="' + FG.or + '" stroke-width="1.4" stroke-dasharray="4 3"/>' + _lab(pL + 4, my(-0.5), '반올림', 'start', FG.or);
     s += '<path d="' + dtot + '" fill="none" stroke="' + FG.blue + '" stroke-width="2.6"/>' + _lab(240, pT + 12, '총오차 = 둘의 합 (V자, 최적 h 존재)', 'middle', FG.blue);
