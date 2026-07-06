@@ -362,7 +362,7 @@ f = @(x) x.^3 - x - 2;
   <div class="prob">
     <div class="prob-num">연습 2 · 구간 폭</div>
     <p class="prob-statement">초기 구간 폭이 $2$ 일 때, <strong>10회 반복 후</strong> 구간 폭 $|b-a|$ 는? $(2/2^{10})$</p>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답 (소수/지수)" data-answer="0.001953125" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답 (소수/지수)" data-answer="0.001953125" data-tol="0.02" data-atol="0.0002"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">계산</div>$$ \frac{2}{2^{10}} = \frac{2}{1024} \approx 1.95\times10^{-3} $$</div>
@@ -635,18 +635,18 @@ df = @(x) 3*x.^2 - 1;
 <!-- ════════ 생각 (소비형 · 되돌아봄) ════════ -->
 <section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="생각">
   <div class="longform" data-qid="reflect-4-3" data-kind="reflect">
-    <span class="lf-tag think">생각 3 · 이 도구를 언제 믿고 언제 의심할까</span>
-    <div class="lf-q">이제 이분법(느리지만 안전)과 Newton(빠르지만 예민)을 <strong>둘 다 손으로 돌려봤다.</strong> 만약 네가 실제 공학 문제에서 $f(x)=0$ 의 근을 하나 구해야 한다면 — 어떤 방법을 <em>먼저</em> 꺼내고, 언제 그 결과를 <em>의심</em>하겠는가? 두 방법이 배신할 법한 상황(초기값을 전혀 모를 때, $f'$ 가 지저분하거나 $0$ 근처일 때, 근이 축에 접해 부호가 안 바뀔 때…)을 하나 떠올려 어떻게 대비할지 적어보자. 그리고 "반씩 좁히기"나 "기울기로 도약하기"라는 이 아이디어를 방정식 풀이 <strong>바깥</strong>(탐색·최적화·일상 판단)에서 써먹을 곳이 있을지도 상상해 보자.</div>
-    <div class="lf-eg"><b>예</b> 방향만 — 초기값을 모를 땐 이분법으로 근처까지 안전하게 간 뒤 Newton으로 마무리하는 <em>하이브리드</em>가 떠오르고, 값이 $0\to1\to0$ 처럼 튀기 시작하면 이차 수렴을 믿지 말아야 한다는 신호…</div>
+    <span class="lf-tag think">생각 3 · 이분법이 배신한 순간을 부검하기</span>
+    <div class="lf-q">이분법(또는 가위치법)을 돌렸는데 근을 <strong>못 찾거나 엉뚱한 값</strong>을 뱉은 장면 하나를 골라 부검해 보자. 예컨대 $f(x)=(x-2)^2$ 처럼 근이 축에 <em>접해</em> 부호가 안 바뀌는 중근, $f(x)=1/(x-3)$ 처럼 부호는 멀쩡히 바뀌지만 정작 그 자리는 근이 아니라 <em>불연속점</em>인 경우, 스캔 간격이 너무 성겨 한 구간 $[a,b]$ 안에 근이 <em>둘</em> 들어가 양끝 부호가 같아진 경우, 혹은 애초에 $f(a)\cdot f(b)>0$ 라 알고리즘이 첫 줄에서 멈춘 경우 — 무엇이 <em>어디서 왜</em> 무너졌는지 되짚어라. 그 실패를 코드가 <strong>스스로 감지</strong>하게 하려면 어떤 점검을 끼워 넣어야 할까? 그리고 '부호로 근을 가둔다'는 이 전제가 깨지는 실패 패턴을, 방정식 밖(성긴 측정·구간 탐색·경보 설계)에서 마주친 적은 없는지도 떠올려 보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — $(x-2)^2$ 는 그래프가 축에 <em>닿기만</em> 하고 넘지 않아 어떤 구간을 잡아도 $f(a)\cdot f(b)>0$ 이라 이분법이 근의 <em>존재조차 확인하지 못하는데</em>, 여기서 무너진 건 방법이 아니라 '부호 변화 = 근'이라던 <em>전제</em> 쪽이었다…</div>
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
-    <div class="lf-hint">💡 "빠른 방법이 항상 좋은 건 아니다" — 보장(이분법)과 속도(Newton)는 맞바꾸는 관계이고, 실무(Brent 등)는 둘을 <strong>섞어</strong> 쓴다.</div>
+    <div class="lf-hint">💡 이분법이 근을 놓쳤다면 <strong>알고리즘의 버그가 아니라 전제(부호 변화·연속성)가 깨진 것</strong>일 때가 많다 — 실패 지점을 정확히 짚어야 어떤 안전장치를 덧댈지가 보인다.</div>
     <div class="prof-example">
       <div class="pe-h">교수 전용 · 답변 예시</div>
       <ul>
-        <li>도함수를 손으로 구하기 쉽고 근이 대략 어디인지 감이 오면 Newton을 먼저 쓰지만, 몇 번 돌려도 값이 튀거나 $f'(x_n)$ 이 $0$ 근처로 가면 <strong>즉시 의심</strong>하고 이분법으로 후퇴한다. 이차 수렴은 "좋은 초기값"이라는 전제 위에서만 위력을 낸다는 걸 함정 단계에서 몸으로 봤다.</li>
-        <li>풀기 전에 근이 접해 있진 않은지($(x-1)^2$ 같은 <strong>중근</strong>)를 먼저 점검하는 습관이 생겼다 — 중근은 부호가 안 바뀌어 이분법이 아예 못 잡고, Newton도 이차가 아니라 선형으로 느려지기 때문이다.</li>
-        <li>"반씩 좁히기"는 정렬된 목록에서 값 찾기(이진 탐색)나 "조건을 만족하는 최소 설정 찾기"처럼 <strong>단조로운 판정</strong> 문제 어디에나 옮겨 쓸 수 있고, "기울기로 도약하기"는 오차를 줄이는 방향으로 파라미터를 조정하는 <strong>최적화(경사하강)</strong> 와 사실상 한 가족임을 알게 됐다.</li>
+        <li>$f(x)=(x-1)^2$ 로 이분법을 돌렸더니 시작하자마자 "$f(a)$ 와 $f(b)$ 의 부호가 같다"며 멈췄다. 무너진 지점은 <em>첫 브래킷 검사</em>이고 원인은 근이 축에 접한 <strong>중근</strong>이라 어떤 구간에서도 부호가 안 바뀐다는 것 — 방법의 결함이 아니라 '부호 변화로 근을 가둔다'는 <strong>전제 자체가 이 함수엔 성립하지 않는다</strong>는 신호였다. 대비책은 근을 직접 가두는 대신 $|f|$ 의 최솟값을 찾거나 $f'$ 의 근을 함께 보는 것.</li>
+        <li>$f(x)=1/(x-3)$ 에 $[2,4]$ 로 이분법을 걸면 $f(2)<0,\ f(4)>0$ 라 부호는 멀쩡히 바뀌어 알고리즘이 $x=3$ 으로 <em>수렴</em>하는데, 정작 거긴 근이 아니라 <strong>불연속(발산)점</strong>이었다. 무너진 곳은 방법이 아니라 '부호가 바뀌면 그 사이에 근이 있다'는 <strong>중간값 정리의 전제(연속성)</strong> — 답을 받은 뒤 반드시 $f(\hat x)$ 가 실제로 $0$ 근처인지 <em>대입 검산</em>하는 습관이 이 함정을 잡아준다.</li>
+        <li>스캔 간격을 크게 잡았더니 한 구간 안에 근이 <strong>둘</strong> 들어가 양끝 부호가 같아졌고, 이분법은 그 구간을 통째로 <em>건너뛰어</em> 근을 못 봤다. '성긴 표본은 사이에 숨은 사건을 놓친다'는 이 실패는 방정식 밖에서도 되풀이된다 — 드문드문 찍은 센서가 짧은 스파이크를 놓치거나 간격 큰 로그가 순간 장애를 지나치는 것과 <strong>한 가족</strong>이라, 대비는 <em>먼저 촘촘히 훑어 부호 변화를 전수 스캔</em>한 뒤 각 브래킷을 좁히는 2단계 전략이다.</li>
       </ul>
     </div>
   </div>

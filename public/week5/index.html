@@ -830,18 +830,18 @@ root3 = fzero(f, [1, 2], opts);</code></pre></div>
 
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="생각">
   <div class="longform" data-qid="reflect-5-3" data-kind="reflect">
-    <span class="lf-tag think">생각 3 · 빠른 방법을 언제 믿고 언제 의심할까</span>
-    <div class="lf-q">할선법·Newton은 초선형·이차로 빠르지만 항상 빠른 게 좋을까? 다 배운 지금 되돌아보자 — 이 빠른 방법이 오히려 실패하거나 느려지는 곳($f'\approx0$, 나쁜 초기값, 두 시작점이 근을 못 감싸는 경우)은 어디일지, 그리고 <strong>느려도 안전한 이분법 vs 빠르지만 위험한 할선·Newton</strong> 을 실무에서 언제 골라 쓸지 적어보자. 경사하강(기계학습)도 같은 고민이다.</div>
-    <div class="lf-eg"><b>예</b> 방향만 — 수렴이 갑자기 튀거나 두 근사가 오락가락하면, 속도를 포기하고 이분법으로 한 번 감싸 안전지대를 확보한 뒤 다시 빠른 방법으로…</div>
+    <span class="lf-tag think">생각 3 · 같은 근, 세 방법 링에 세우기 — 누가 이기나</span>
+    <div class="lf-q">같은 방정식 $f(x)=0$ 을 놓고 <strong>이분법·Newton·할선법</strong>을 한 링에 세우면 상황마다 승자가 달라진다. (가) $f'$ 을 손으로 구하기 어렵다, (나) 초기값이 근에서 멀거나 두 시작점이 근을 못 감싼다, (다) $f$ 값에 측정 노이즈가 섞였다, (라) 소수 12자리까지 정확해야 한다 — 이 네 경기에서 각각 <strong>누가 이기고 왜 이기는지</strong> 대결 구도로 적어보자. 'Newton이 제일 빠르니 항상 최고'라는 주장을 <strong>반박</strong>할 상황도 최소 하나 찾고, 그 판단 기준을 경사하강(기계학습) 같은 다른 최적화 문제로 전이해보자.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — $f'$ 을 못 구하는 경기라면 도함수가 필요 없는 할선·이분법이 앞서고, 노이즈가 큰 경기라면 기울기에 민감한 Newton·할선이 흔들려 부호만 보는 이분법이…</div>
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
-    <div class="lf-hint">💡 수렴 속도(얼마나 빨리)와 안정성(수렴이 보장되나)은 <strong>별개</strong> — 빠른 방법일수록 안전장치가 필요하다.</div>
+    <div class="lf-hint">💡 '항상 이기는 방법'은 없다 — 도함수 유무·초기값·노이즈·정확도 요구가 바뀌면 승자도 바뀐다.</div>
     <div class="prof-example">
       <div class="pe-h">교수 전용 · 답변 예시</div>
       <ul>
-        <li>Newton이 발산 조짐(값이 튀거나 $f'$ 이 0에 가까움)을 보이면 그 스텝을 버리고 이분법 한 번으로 구간을 좁힌 뒤 재개한다.</li>
-        <li>시작 전에 부호가 다른 두 점으로 근을 감싸(브래킷) 두면, 빠른 방법이 벗어나도 되돌아올 안전지대가 남는다.</li>
-        <li>경사하강의 학습률도 같은 트레이드오프 — 크게 잡으면 빠르지만 발산, 작게 잡으면 안전하지만 느리다.</li>
+        <li><b>(가) $f'$ 을 못 구하는 경기</b> — Newton은 매 스텝 $f'$ 이 필요해 탈락, 두 점의 기울기로 도함수를 대신하는 <strong>할선법이 승</strong>(이분법은 안전하지만 느려 2위).</li>
+        <li><b>(나) 초기값 나쁨 · 근을 못 감싸는 경기</b> — Newton·할선은 엉뚱한 곳으로 튀어 발산할 수 있어 위험, 부호만 보고 구간을 반씩 줄이는 <strong>이분법이 승</strong>(유일하게 수렴 보장). 여기서 '항상 Newton'은 반박된다.</li>
+        <li><b>(다) 노이즈 vs (라) 극한 정확도</b> — $f$ 값에 노이즈가 섞이면 기울기 추정이 흔들려 Newton·할선이 불안, 부호 판정만 쓰는 <strong>이분법이 승</strong>. 반대로 노이즈 없이 12자리를 요구하는 마무리 경기에선 이차수렴 <strong>Newton이 압승</strong> — 경사하강의 학습률·모멘텀 선택도 같은 상황 의존 트레이드오프다.</li>
       </ul>
     </div>
   </div>

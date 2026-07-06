@@ -1,5 +1,11 @@
 /* Heat-Transfer Week2 학습 추적 — new2.html(mockup)에 주입.
    학번 게이트 확인 + 접속/체류/답안 이벤트를 /api/track 로 전송. */
+// 채점 단일 정의 (#18 통합) — 상대오차 rtol + 절대오차 atol (numpy isclose 형). 0 근처 target 은 atol 필수.
+// lecture-engine.js(시각 피드백) 와 na-track.js(서버 isCorrect) 가 동일 함수 사용 → 판정 불일치 0.
+window.NA_grade = function (v, ans, rtol, atol) {
+  return !isNaN(v) && !isNaN(ans) && Math.abs(v - ans) <= Math.abs(ans) * (rtol || 0) + (atol || 0);
+};
+
 (function () {
   "use strict";
   var WEEK = (typeof window !== "undefined" && window.NA_WEEK) ? window.NA_WEEK : 2;
@@ -77,8 +83,9 @@
       if (!raw) { if (pf) { pf.textContent = "먼저 답을 입력하세요"; pf.className = "check-fb pr-fb"; pf.style.color = "var(--gray2)"; } return; }
       var target = input ? parseFloat(input.getAttribute("data-answer")) : NaN;
       var tol = input ? parseFloat(input.getAttribute("data-tol") || "0.02") : 0.02;
+      var atol = input ? parseFloat(input.getAttribute("data-atol") || "0") : 0;
       var v = parseFloat(raw.replace(/[,\s]/g, ""));
-      var ok = !isNaN(v) && !isNaN(target) && Math.abs(v - target) <= Math.abs(target) * tol;
+      var ok = window.NA_grade(v, target, tol, atol);
       var aKey = ansKey(scr, pb, stageOf(scr) || "연습", ".prob");
       if (lastAns[aKey] !== raw) {
         lastAns[aKey] = raw;

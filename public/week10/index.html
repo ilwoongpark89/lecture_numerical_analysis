@@ -422,7 +422,7 @@ x = [1 2 3];  y = [1 4 9];
     <div class="prob-num">연습 1 · 3차 차분</div>
     <p class="prob-statement">점 $(0,1),(1,2),(3,10),(4,17)$ 에서 2차 차분은 $f[x_0,x_1,x_2]=1,\; f[x_1,x_2,x_3]=1$ 이다. <strong>3차 분할 차분 $f[x_0,x_1,x_2,x_3]$</strong> 를 구하시오.</p>
     <div class="given"><span class="chip">$f[x_0,\dots,x_3]=\dfrac{f[x_1,x_2,x_3]-f[x_0,x_1,x_2]}{x_3-x_0}$</span></div>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0" data-tol="0.0" data-atol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="dstep2"><div class="step-label">대입</div>$$ f[x_0,x_1,x_2,x_3]=\frac{1-1}{4-0}=0 $$</div>
@@ -774,7 +774,7 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
   <div class="prob">
     <div class="prob-num">연습 2 · Natural 경계</div>
     <p class="prob-statement">Natural cubic spline 의 왼쪽 경계 조건에서 $S''(x_0)$ 의 값은 얼마인가?</p>
-    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="0" data-tol="0.0"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
+    <div class="ans-row"><input class="ans-input" type="text" inputmode="numeric" placeholder="내 답" data-answer="0" data-tol="0.0" data-atol="0.01"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div>
     <button class="reveal-btn"><span>풀이 보기</span><span class="caret">▾</span></button>
     <div class="revealable solution">
       <div class="ans-final"><div class="ans-eq">$$ S''(x_0)=0,\quad S''(x_n)=0 $$</div><b>정답:</b> "natural"은 양 끝에서 곡률 0 = 직선처럼 뻗음. clamped(기울기 지정)·not-a-knot 은 다른 경계 조건.</div>

@@ -411,18 +411,18 @@ A = [4 1; 1 3];
 </section>
 <section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="생각">
   <div class="longform" data-qid="reflect-15-3" data-kind="reflect">
-    <span class="lf-tag think">생각 3 · 거듭제곱법을 언제 믿고 언제 의심할까</span>
-    <div class="lf-q">거듭제곱법으로 지배 고유값을 찾았다. 언제 믿고 언제 의심할까? 다 배운 지금 되돌아보자 — 수렴이 느리거나 안 되는 곳(두 고유값이 비슷·복소 켤레), <strong>최대 하나만</strong> 주는 한계(전체가 필요하면 QR), 그리고 이 감각을 PageRank·진동 모드·주성분(PCA)에 어떻게 옮길지 적어보자.</div>
-    <div class="lf-eg"><b>예</b> 방향만 — 수렴이 답답하게 느리면 두 번째 고유값이 지배값과 가까운지($|\lambda_2/\lambda_1|\to1$) 의심하고 shift로 가속하거나…</div>
+    <span class="lf-tag think">생각 3 · 한 고유값 방정식, 네 무대로 전이</span>
+    <div class="lf-q">거듭제곱법이 구글 PageRank에서 웹 링크 행렬의 <strong>지배 고유벡터(=정상 분포)</strong>를 뽑아 페이지 중요도를 매기는 걸 봤다. 그런데 똑같은 $A\mathbf{x}=\lambda\mathbf{x}$ 가 PCA에선 공분산 행렬의 고유벡터(주성분), 구조 진동에선 강성·질량 행렬의 고유값(고유진동수), 양자역학에선 해밀토니안의 고유값(에너지 준위)으로 다시 나타난다. 이 넷 중 하나를 골라, 그 무대에서 <strong>행렬 $A$ 가 무엇이고 $\lambda$·$\mathbf{x}$ 가 현실에서 각각 무엇을 뜻하는지</strong> 연결하라. 그리고 PageRank에서 얻은 '지배(최대) 고유값이 계를 지배한다'는 감각이 그 무대에서도 통하는지, 아니면 어긋나는지 대결시켜 보라.</div>
+    <div class="lf-eg"><b>예</b> 방향만 — PCA를 고르면 $A$=공분산 행렬, 가장 큰 $\lambda$ 가 '가장 많은 분산을 설명하는 축'이라 PageRank의 '지배 고유벡터=가장 중요한 방향'과 곧장 겹치고…</div>
     <textarea class="lf-input" maxlength="4000" placeholder="네 생각을 자유롭게 적어보세요"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
-    <div class="lf-hint">💡 거듭제곱법은 <strong>가장 센 하나</strong>만 준다 — 전부 필요하거나 값이 비슷하면 다른 도구(QR)로.</div>
+    <div class="lf-hint">💡 무대는 달라도 방정식은 하나 — $A\mathbf{x}=\lambda\mathbf{x}$. 바뀌는 건 '$A$ 가 무엇을 담고 $\lambda$ 가 무엇을 재는가'뿐.</div>
     <div class="prof-example">
       <div class="pe-h">교수 전용 · 답변 예시</div>
       <ul>
-        <li>수렴이 느리면 $|\lambda_2/\lambda_1|$ 가 1에 가깝다는 신호 — shift $(A-\mu I)$ 로 가속한다.</li>
-        <li>고유값이 전부 필요하면 거듭제곱법 대신 QR 알고리즘으로 한꺼번에 구한다.</li>
-        <li>구글 PageRank가 바로 거대한 거듭제곱법 — 지배 고유벡터가 페이지 중요도가 된다.</li>
+        <li>PageRank→PCA 전이는 매끄럽다 — 둘 다 '지배 고유벡터=가장 중요한 방향'. PageRank는 링크 확률 행렬의 정상 분포(최대 $\lambda=1$), PCA는 공분산 행렬의 최대 분산 축이라 거듭제곱법이 그대로 옮겨간다.</li>
+        <li>반박 지점: 진동·양자에선 '최대'가 아니라 '최소·특정' $\lambda$ 가 관심이다 — 건물은 가장 낮은 고유진동수(안전), 양자는 바닥 상태 에너지. 그래서 '지배값만' 감각은 어긋나고 역 거듭제곱·shift로 전이해야 한다.</li>
+        <li>공통 원리: 모든 무대에서 $A\mathbf{x}=\lambda\mathbf{x}$ 는 'A가 방향 $\mathbf{x}$ 를 회전 없이 $\lambda$ 배로만 늘리는 특별한 축'을 찾는 일이다. 바뀌는 건 $A$ 의 정체와 $\lambda$ 의 의미(중요도·분산·진동수·에너지)뿐 — 원리 하나, 해석 넷.</li>
       </ul>
     </div>
   </div>
