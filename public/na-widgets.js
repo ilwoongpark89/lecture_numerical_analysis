@@ -664,7 +664,7 @@
       for (var k = 0; k <= K; k++) {
         var le;
         if (rt.seq) { le = (k < rt.seq.length) ? rt.seq[k] : rt.seq[rt.seq.length - 1]; }
-        else if (rt.order && rt.order >= 2) { le = le0 * Math.pow(rt.order, k); } // 이차: -0.3,-0.6,-1.2,-2.4,-4.8… 가속
+        else if (rt.order && rt.order > 1) { le = le0 * Math.pow(rt.order, k); } // 초선형·이차(order>1): -0.3,-0.49… 가속 오목곡선
         else { le = k * Math.log(rt.r) / Math.LN10; } // 등비(선형): 일정 기울기 직선
         if (le < -8) le = -8;
         d += (d ? 'L' : 'M') + mx(k).toFixed(1) + ',' + my(le).toFixed(1) + ' ';
