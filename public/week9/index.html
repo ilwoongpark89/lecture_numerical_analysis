@@ -23,7 +23,7 @@
     <p class="intro-sub">측정값 $(x_i,y_i)$ 에는 항상 잡음이 섞인다. 모든 점을 <strong>정확히 통과</strong>시키려 하면(보간) 잡음까지 흉내 내 곡선이 요동친다. 그럼 우리가 원하는 것은? — 점들을 <strong>지나지 않아도 되니, 전체 경향을 가장 잘 대표</strong>하는 매끄러운 함수다.</p>
     <div class="intro-teaser">답 — <em>최소자승(least squares).</em> "가장 잘" 을 <em>잔차 제곱합의 최소</em>로 정의하면, 최적 곡선이 <strong>연립방정식 한 번</strong>으로 딱 떨어진다 — 반복도 초기값도 필요 없다.</div>
   </div>
-  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="scatter" data-points="[[1,1.2],[2,2.1],[3,2.8],[4,4.3],[5,4.9]]" data-fit="[0.31,0.93]" data-cap="실험 점 다섯 — 정확히 통과가 아니라 <b>추세를 관통</b>하는 직선(최소제곱). 잔차 제곱합 최소가 답."></div>
+  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="scatter" data-points="[[1,1.2],[2,2.1],[3,2.8],[4,4.3],[5,4.9]]" data-fit="[0.18,0.96]" data-cap="실험 점 다섯 — 정확히 통과가 아니라 <b>추세를 관통</b>하는 직선(최소제곱). 잔차 제곱합 최소가 답."></div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->
@@ -219,7 +219,7 @@
       <div class="ans-final"><div class="ans-eq">$$ e = +0.18 $$</div><b>정답:</b> 데이터가 직선보다 $0.18$ 위에 있다. 이 값을 제곱($0.0324$)해 다른 점들과 합치면 $S=\sum e_i^2$.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="scatter" data-points="[[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-fit="[0.29,1.91]" data-cap="공통 데이터에 적합된 직선 $y=0.29+1.91x$ — 빨간 점선이 각 점의 세로 잔차다. 이 문제의 $x{=}3$ 점 $(3,6.2)$은 직선값 $f(3){=}6.02$보다 위에 있어 잔차 $e=+0.18$."></div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-fit="[0.05,1.99]" data-cap="공통 데이터에 적합된 최소제곱 직선 $y=0.05+1.99x$ — 빨간 점선이 각 점의 세로 잔차다. 이 문제의 $x{=}3$ 점 $(3,6.2)$은 직선값 $f(3){=}6.02$보다 위에 있어 잔차 $e=+0.18$."></div>
 </section>
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="함정">
@@ -397,7 +397,7 @@
       <div class="ans-final"><div class="ans-eq">$$ a_0 = 0.29 $$</div><b>정답:</b> 최적 직선 $y=0.29+1.91x$ 완성.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="funcplot" data-fn="0.29+1.91*x" data-xmin="-0.3" data-xmax="5.6" data-points="[[0,0.29],[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-cap="정규방정식을 푼 직선 $y=0.29+1.91x$. 맨 왼쪽 점 $(0,\,0.29)$ — 직선이 $x{=}0$에서 갖는 높이가 바로 이 문제에서 구한 절편 $a_0=0.29$."></div>
+  <div class="nafig" data-fig="funcplot" data-fn="0.05+1.99*x" data-xmin="-0.3" data-xmax="5.6" data-points="[[0,0.05],[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-cap="정규방정식을 푼 최소제곱 직선 $y=0.05+1.99x$. 맨 왼쪽 점 $(0,\,0.05)$ — 직선이 $x{=}0$에서 갖는 높이가 바로 이 문제에서 구한 절편 $a_0=0.05$."></div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="함정">
@@ -468,12 +468,12 @@ p = polyfit(x, y, 1);
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="그림">
   <div class="eyebrow">9-2 · 그림 · 최소제곱</div>
   <h1 class="stage-h">잔차 제곱합 최소</h1>
-  <div class="nafig" data-fig="scatter" data-points="[[1,3],[2,4.9],[3,7.2]]" data-fit="[1.1,2.0]" data-cap="직선 y=1.1+2.0x. 빨간 점선 = 잔차(점−직선). 이 잔차들의 제곱합을 가장 작게 하는 직선이 최소제곱 해."></div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,3.2],[2,4.9],[3,7.2]]" data-fit="[1.1,2.0]" data-cap="직선 y=1.1+2.0x. 빨간 점선 = 잔차(점−직선). 이 잔차들의 제곱합을 가장 작게 하는 직선이 최소제곱 해."></div>
 </section>
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="그림">
   <div class="eyebrow">9-2 · 그림 · R² 의 뜻</div>
   <h1 class="stage-h">평균 대비 얼마나 줄였나</h1>
-  <div class="two"><div class="col2"><div class="nafig" data-fig="scatter" data-points="[[1,2],[2,3.5],[3,3],[4,5],[5,4.5]]" data-fit="[3.6,0]" data-cap="평균선 기준 흩어짐 $S_t=\sum(y_i-\bar y)^2=5.70$"></div></div><div class="col2"><div class="nafig" data-fig="scatter" data-points="[[1,2],[2,3.5],[3,3],[4,5],[5,4.5]]" data-fit="[1.65,0.65]" data-cap="회귀선 기준 흩어짐 $S_r=\sum(y_i-\hat y)^2=1.48$"></div></div></div><div class="callout key" style="margin-top:8px"><div class="ct">$R^2=\dfrac{S_t-S_r}{S_t}=\dfrac{5.70-1.48}{5.70}=0.741$</div>직선이 평균보다 흩어짐을 <b>74%</b> 설명. $R^2$ 는 "평균만 쓸 때보다 오차를 얼마나 줄였나"의 비율.</div>
+  <div class="two"><div class="col2"><div class="nafig" data-fig="scatter" data-points="[[1,2],[2,3.5],[3,3],[4,5],[5,4.5]]" data-fit="[3.6,0]" data-cap="평균선 기준 흩어짐 $S_t=\sum(y_i-\bar y)^2=5.70$"></div></div><div class="col2"><div class="nafig" data-fig="scatter" data-points="[[1,2],[2,3.5],[3,3],[4,5],[5,4.5]]" data-fit="[1.65,0.65]" data-cap="회귀선 기준 흩어짐 $S_r=\sum(y_i-\hat y)^2=1.475$"></div></div></div><div class="callout key" style="margin-top:8px"><div class="ct">$R^2=\dfrac{S_t-S_r}{S_t}=\dfrac{5.70-1.475}{5.70}=0.741$</div>직선이 평균보다 흩어짐을 <b>74%</b> 설명. $R^2$ 는 "평균만 쓸 때보다 오차를 얼마나 줄였나"의 비율.</div>
 </section>
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="정리">
   <div class="eyebrow">9-2 · 정리 · Summary</div>
@@ -625,7 +625,7 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="그림">
   <div class="eyebrow">9-3 · 그림 · 결정계수 R²</div>
   <h1 class="stage-h">얼마나 잘 맞나</h1>
-  <div class="nafig" data-fig="scatter" data-points="[[1,3],[2,4.9],[3,7.2]]" data-fit="[1.1,2.0]" data-cap="R² = 직선이 설명한 변동 비율(0~1). 잔차(빨강)가 작을수록 1에 가깝다. R²=1 은 모든 점이 직선 위."></div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,3.2],[2,4.9],[3,7.2]]" data-fit="[1.1,2.0]" data-cap="R² = 직선이 설명한 변동 비율(0~1). 잔차(빨강)가 작을수록 1에 가깝다. R²=1 은 모든 점이 직선 위."></div>
 </section>
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="그림">
   <div class="eyebrow">9-3 · 그림 · 변환 전후</div>
@@ -762,7 +762,7 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       <div class="ans-final"><div class="ans-eq">$$ R^2 \approx 0.9957 $$</div><b>정답:</b> 잔차변동이 총변동의 $0.43\%$ 에 불과 → 설명력 $99.6\%$.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="scatter" data-points="[[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-fit="[0.29,1.91]" data-cap="잔차(빨강)의 제곱합 $SS_{res}=0.171$이, 평균 둘레로 흩어진 총변동 $SS_{tot}=39.708$에 비해 극히 작다 → $R^2=1-0.171/39.708=0.9957$."></div>
+  <div class="nafig" data-fig="scatter" data-points="[[1,2.1],[2,3.9],[3,6.2],[4,7.8],[5,10.1]]" data-fit="[0.05,1.99]" data-cap="잔차(빨강)의 제곱합 $SS_{res}=0.107$이, 평균 둘레로 흩어진 총변동 $SS_{tot}=39.708$에 비해 극히 작다 → $R^2=1-0.107/39.708=0.9973$."></div>
 </section>
 
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="수렴">
@@ -844,7 +844,7 @@ fprintf('R^2_adj = %.4f\n', R2adj);
       <div class="ans-final"><div class="ans-eq">$$ R^2_{\text{adj}}\approx 0.9983 $$</div><b>정답:</b> 원 $R^2(0.999)$ 보다 소폭 하락 — 변수 수 벌점이 반영됨.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="funcplot" data-fn="0.18*x^2 + 0.18*x + 1.2" data-xmin="-0.3" data-xmax="5.3" data-points="[[0,1.28],[1,1.5],[2,2.34],[3,3.3],[4,4.87],[5,6.55]]" data-cap="완만히 위로 휜 데이터에 2차 다항곡선을 적합 — 점들이 곡선에 거의 붙어 잔차²합이 총변동의 $0.2\%$뿐. 연습 1의 $SS_{res}{=}0.045,\ SS_{tot}{=}22.5$로 $R^2=0.998$."></div>
+  <div class="nafig" data-fig="funcplot" data-fn="0.18*x^2 + 0.18*x + 1.2" data-xmin="-0.3" data-xmax="5.3" data-points="[[0,1.28],[1,1.5],[2,2.34],[3,3.3],[4,4.87],[5,6.55]]" data-cap="완만히 위로 휜 데이터에 2차 다항곡선을 적합 — 점들이 곡선에 거의 붙어 잔차²합 $SS_{res}{\approx}0.025$이 총변동 $SS_{tot}{\approx}21.3$의 $0.1\%$뿐 → $R^2\approx0.999$."></div>
 </section>
 
 <!-- ════════ 설계형 연습 · 방법 선택 판단 ════════ -->

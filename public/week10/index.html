@@ -23,7 +23,7 @@
     <p class="intro-sub">실험은 $x=1,2,3$ 에서만 측정했는데 $x=2.5$ 의 값이 필요하다. 물성표는 $100^\circ\text{C}$ 단위로만 있는데 $137^\circ\text{C}$ 의 밀도를 알아야 한다. 측정·계산된 <strong>불연속한 데이터 점들</strong>을 지나는 <strong>매끄러운 함수</strong>를 만들어 그 사이를 메우는 것 — 이것이 <strong>보간(interpolation)</strong>이다.</p>
     <div class="intro-teaser">핵심 약속 — 보간 곡선은 <em>주어진 점을 반드시 통과</em>한다(회귀와 다름). $n+1$ 개의 점을 지나는 <em>차수 $n$ 이하의 다항식은 유일하게 하나</em> 존재한다. 이번 주는 그 다항식을 <strong>서로 다른 방식으로 구성</strong>하고, 고차 보간의 <strong>함정</strong>과 그 해법(스플라인)까지 간다.</p>
   </div>
-  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="funcplot" data-fn="1+0.9*x-0.15*x^2" data-xmin="0" data-xmax="5" data-points="[[0,1],[2,2.2],[4,1.0]]" data-cap="아는 점(주황)은 셋뿐 — 그 <b>사이 값</b>을 어떻게 메울까? 모든 점을 정확히 지나는 곡선을 세운다(보간)."></div>
+  <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="funcplot" data-fn="1+1.2*x-0.3*x^2" data-xmin="0" data-xmax="4.6" data-points="[[0,1],[2,2.2],[4,1.0]]" data-cap="아는 점(주황)은 셋뿐 — 그 <b>사이 값</b>을 어떻게 메울까? 모든 점을 정확히 지나는 곡선을 세운다(보간)."></div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->
@@ -640,7 +640,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \max_{[-1,1]}|f-P_n|\to\infty $$</div><b>정답:</b> (2) 발산. 등간격 고차 보간은 수렴을 보장하지 않는다 — Chebyshev 노드 또는 스플라인으로 전환해야 한다.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="funcplot" data-fn="sqrt(1-x^2)" data-xmin="-1.15" data-xmax="1.15" data-roots="0.866,0,-0.866" data-points="[[0.866,0.5],[0,1],[-0.866,0.5]]" data-cap="연습 1의 상황 — Chebyshev 노드는 반원 위 <b>같은 각도</b> 점들을 $x$축에 내린 그림자. $n{=}2$ 는 $30°$ 간격이라 $x_0=\cos 30°=0.866,\ x_1=0,\ x_2=-0.866$(빨강). 그림자가 <b>양 끝에 더 촘촘</b>해 끝점 진동을 억제한다(연습 2의 발산 처방)."></div>
+  <div class="nafig" data-fig="funcplot" data-fn="sqrt(1-x^2)" data-xmin="-1.15" data-xmax="1.15" data-roots="0.866,0,-0.866" data-points="[[0.866,0.5],[0,1],[-0.866,0.5]]" data-cap="연습 1의 상황 — Chebyshev 노드는 반원 위 <b>같은 각도 간격</b> 점들을 $x$축에 내린 그림자. $n{=}2$ 의 각도는 $30°,90°,150°$ — $x_k=\cos\frac{(2k+1)\pi}{6}$ 로 <b>노드간 $60°$</b>, 양끝은 $0°/180°$에서 $30°$ 안쪽이다. 따라서 $x_0=\cos 30°=0.866,\ x_1=0,\ x_2=-0.866$(빨강). 그림자가 <b>양 끝에 더 촘촘</b>해 끝점 진동을 억제한다(연습 2의 발산 처방)."></div>
 </section>
 
 <section class="screen" data-ch="10-3" data-chtitle="Runge 현상" data-stage="그림">

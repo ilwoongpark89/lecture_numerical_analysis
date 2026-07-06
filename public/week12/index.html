@@ -795,7 +795,7 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
     </ol>
   </div>
   <div class="callout key" style="margin-top:12px"><div class="ct">차원의 분리</div>편미분은 "한 방향 1차원 문제"의 집합이다. 그래서 12-1~12-3의 모든 결과(차수·최적 $h$·Richardson)가 <strong>각 방향에 그대로</strong> 적용된다 — 새 이론이 아니라 <strong>방향별 재사용</strong>이다.</div>
-  <div class="nafig" data-fig="stencil" data-cap="라플라시안 5점 스텐실 — $x$ 방향 2계 중앙차분 $(f_{i+1,j}-2f_{ij}+f_{i-1,j})/h^2$ 와 $y$ 방향을 더해 $\nabla^2 f\approx(f_{동}+f_{서}+f_{남}+f_{북}-4f_{중})/h^2$. 중심 $-4$, 네 이웃 $+1$."></div>
+  <div class="nafig" data-fig="stencil" data-cap="라플라시안 5점 스텐실 — $x$ 방향 2계 중앙차분 $(f_{i+1,j}-2f_{ij}+f_{i-1,j})/h^2$ 와 $y$ 방향을 더해 $\nabla^2 f\approx(f_{동}+f_{서}+f_{남}+f_{북}-4f_{중})/h^2$ (중심 $-4$, 네 이웃 $+1$). $\nabla^2 f=0$(Laplace)으로 두면 그림 라벨처럼 <b>중앙점이 네 이웃의 평균</b> $f_{중}=(f_{동}+f_{서}+f_{남}+f_{북})/4$ 으로 갱신되는 식이 된다."></div>
 </section>
 
 <section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="시연">
@@ -917,7 +917,7 @@ fprintf('fx=%.4f  fy=%.4f  fxy=%.4f  lap=%.4f\n', fx, fy, fxy, lap);
     <textarea class="lf-input" maxlength="4000" placeholder="네 판단을 근거와 함께"></textarea>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무에서 방법 선택을 좌우하는 것은 '공식의 차수'가 아니라 <b>데이터의 잡음 수준과 경계 유무</b>다 — 잘못 고른 $h$ 나 고차 공식 남용은 매끈해 보이는 답 뒤에 큰 오차를 숨긴다.</div>
-    <div class="nafig" data-fig="scatter" data-points="[[0,20.6],[1,24.1],[2,26.2],[3,30.1],[4,32],[5,36.2],[6,38.1]]" data-fit="[20.5,3]" data-cap="실측 온도 $T(t_k)$(주황) — 센서 <b>잡음</b>이 섞여 있다. 원데이터를 그대로 차분하면 잡음이 $\div h$ 로 증폭돼 튄다. 먼저 회귀직선(파랑)으로 매끄럽게 한 뒤 그 기울기 $a_1\approx3$ 을 가열속도 $dT/dt$ 로 읽는 편이 안전하다."></div>
+    <div class="nafig" data-fig="scatter" data-points="[[0,20.6],[1,24.1],[2,26.2],[3,30.1],[4,32],[5,36.2],[6,38.1]]" data-fit="[20.78,2.95]" data-cap="실측 온도 $T(t_k)$(주황) — 센서 <b>잡음</b>이 섞여 있다. 원데이터를 그대로 차분하면 잡음이 $\div h$ 로 증폭돼 튄다. 먼저 회귀직선(파랑)으로 매끄럽게 한 뒤 그 기울기 $a_1\approx3$ 을 가열속도 $dT/dt$ 로 읽는 편이 안전하다."></div>
   </div>
 </section>
 <section class="screen" data-ch="12-4" data-chtitle="편미분 근사" data-stage="정리">

@@ -230,8 +230,8 @@
       <table class="ktab"><thead><tr><th>$h$</th><th>$y(2)$ 근사</th><th>오차</th></tr></thead><tbody>
         <tr><td>0.4</td><td>1.156</td><td>0.115</td></tr>
         <tr><td>0.2</td><td>1.215</td><td>0.056</td></tr>
-        <tr><td>0.1</td><td>1.242</td><td>0.029</td></tr>
-        <tr><td>0.05</td><td>1.256</td><td>0.015</td></tr>
+        <tr><td>0.1</td><td>1.243</td><td>0.028</td></tr>
+        <tr><td>0.05</td><td>1.257</td><td>0.014</td></tr>
       </tbody></table>
       <div class="keqnote">정확값 $y(2)=1+2e^{-2}=1.2707$. $h$ 를 반씩 줄일 때 오차가 <b style="color:var(--ink)">대략 반씩</b> 줄어드는 것이 1차 수렴의 지문이다.</div>
     </div>
@@ -434,7 +434,7 @@ f = @(x, y) x - y;
   <h1 class="stage-h">2차 수렴 — $h$ 절반이면 오차 1/4</h1>
   <div class="callout key"><div class="ct">$O(h^2)$</div>$h$ 를 $\tfrac12$ 로 줄이면 오차는 대략 <strong>$\tfrac14$</strong>. Euler(반씩) 대비 훨씬 빠르게 정확해진다 — 기울기 2회 평가의 값어치.</div>
   <div class="keqnote" style="margin-top:14px">$y(2)$ 오차: Euler $h{=}0.2$ 는 $0.056$, Heun $h{=}0.2$ 는 $\approx 0.0042$ — 같은 계산량 근처에서 <b style="color:var(--ink)">십수 배</b> 정확.</div>
-  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler O(h)"},{"r":0.25,"label":"Heun O(h²)"}]' data-cap="$h$ 를 절반으로 줄일 때 — Euler 오차는 $\times\tfrac12$, Heun 은 $\times\tfrac14$. 예측-수정으로 차수가 하나 올라 같은 $h$ 로 훨씬 빨리 참해에 닿는다(2차 수렴)."></div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler O(h)"},{"r":0.25,"label":"Heun O(h²)"}]' data-xlab="h 반감 단계" data-cap="$h$ 를 절반으로 줄일 때 — Euler 오차는 $\times\tfrac12$, Heun 은 $\times\tfrac14$. 예측-수정으로 차수가 하나 올라 같은 $h$ 로 훨씬 빨리 참해에 닿는다(2차 수렴)."></div>
 </section>
 
 <section class="screen" data-ch="13-2" data-chtitle="개선 Euler (Heun)" data-stage="그림">
@@ -602,7 +602,7 @@ f = @(x,y) x - y;
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="그림">
   <div class="eyebrow">13-3 · 그림 · 차수의 값어치</div>
   <h1 class="stage-h">같은 노력, 큰 정확도차</h1>
-  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler 1차"},{"r":0.25,"label":"RK2 2차"},{"r":0.0625,"label":"RK4 4차"}]' data-cap="$h$ 를 반으로 줄일 때마다 — Euler 오차 $\times\tfrac12$, RK2 $\times\tfrac14$, RK4 $\times\tfrac1{16}$. 한 스텝에 기울기를 더 여러 번 재는 대신, 훨씬 큰 스텝으로도 정확 → 같은 계산량에 RK4 가 압도적."></div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler 1차"},{"r":0.25,"label":"RK2 2차"},{"r":0.0625,"label":"RK4 4차"}]' data-xlab="h 반감 단계" data-cap="$h$ 를 반으로 줄일 때마다 — Euler 오차 $\times\tfrac12$, RK2 $\times\tfrac14$, RK4 $\times\tfrac1{16}$. 한 스텝에 기울기를 더 여러 번 재는 대신, 훨씬 큰 스텝으로도 정확 → 같은 계산량에 RK4 가 압도적."></div>
 </section>
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="정리">
   <div class="eyebrow">13-3 · 정리 · Summary</div>
@@ -755,7 +755,7 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
     <div class="lf-row"><button class="lf-save btn primary" type="button">기록하기</button><span class="lf-fb"></span></div>
     <div class="lf-hint">💡 실무에서 "어느 방법"은 정확도만이 아니라 <b>비용(기울기 평가 횟수)·안정영역·강성 여부·요구 정밀도</b>의 맞교환으로 정해진다 — 정확도(차수)와 안정성은 서로 다른 축이고, 정확해가 없을 때 신뢰의 근거는 "$h$ 를 반으로 줄여도 답이 거의 안 변하는가"($h$-절반 대조)다.</div>
   </div>
-  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler O(h)"},{"r":0.25,"label":"Heun O(h²)"},{"r":0.0625,"label":"RK4 O(h⁴)"}]' data-cap="이 판단의 저울 — $h$ 를 절반으로 줄일 때 오차가 Euler $\times\tfrac12$, Heun $\times\tfrac14$, RK4 $\times\tfrac1{16}$ 로 준다. 높은 차수는 큰 $h$ 로도 정확하지만 스텝당 기울기 평가(비용)가 늘고, 강성 문제에선 차수와 무관하게 안정조건이 $h$ 를 조인다 — 비용·정확도·안정성의 맞교환이 방법 선택을 가른다."></div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.5,"label":"Euler O(h)"},{"r":0.25,"label":"Heun O(h²)"},{"r":0.0625,"label":"RK4 O(h⁴)"}]' data-xlab="h 반감 단계" data-cap="이 판단의 저울 — $h$ 를 절반으로 줄일 때 오차가 Euler $\times\tfrac12$, Heun $\times\tfrac14$, RK4 $\times\tfrac1{16}$ 로 준다. 높은 차수는 큰 $h$ 로도 정확하지만 스텝당 기울기 평가(비용)가 늘고, 강성 문제에선 차수와 무관하게 안정조건이 $h$ 를 조인다 — 비용·정확도·안정성의 맞교환이 방법 선택을 가른다."></div>
 </section>
 <section class="screen" data-ch="13-4" data-chtitle="연립·고차 ODE" data-stage="정리">
   <div class="eyebrow">13-4 · 정리 · Summary</div>

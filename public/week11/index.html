@@ -217,7 +217,7 @@
       <div class="ans-final"><div class="ans-eq">$$ I \approx 0.5 $$</div><b>정답:</b> 참값 $\tfrac13\approx0.3333$ 이므로 오차 $0.1667$. 오차 공식 $-\tfrac{1}{12}f''=-\tfrac{1}{12}(2)=-\tfrac16\approx-0.1667$ 와 정확히 일치.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="nodes" data-fn="x^2" data-xmin="0" data-xmax="1" data-nodes="[0,1]" data-cap="이 그래프의 파란 넓이가 지금 계산하는 $\int_0^1 x^2\,dx$. 사다리꼴 공식은 양 끝점 $x{=}0,1$(주황)만 읽어 그 사이를 <b>직선</b>으로 이어 근사한다 — 아래로 볼록한 $x^2$ 위를 직선이 지나므로 $0.5$ 로 <b>과대평가</b>(참값 $\tfrac13$)."></div>
+  <div class="nafig" data-fig="nodes" data-fn="x^2" data-xmin="0" data-xmax="1" data-nodes="[0,1]" data-cap="이 그래프의 파란 넓이가 지금 계산하는 $\int_0^1 x^2\,dx$. 주황 = 사다리꼴 공식이 읽는 두 적분 절점 $x{=}0,1$($f{=}0,1$). 이 두 함수값만으로 근사하면 $0.5$ — 아래로 볼록한 $x^2$ 라 사다리꼴은 $0.5$ 로 <b>과대평가</b>(참값 $\tfrac13$)."></div>
 </section>
 
 <section class="screen" data-ch="11-1" data-chtitle="사다리꼴 공식" data-stage="수렴">
@@ -312,7 +312,7 @@ I = trapezoid(f, 0, 1);
       <div class="ans-final"><b>정답:</b> $-0.1667$. 근사값 $0.5$ − 참값 $0.3333$ = $+0.1667$ 로 부호까지 정확히 맞는다(과대평가).</div>
     </div>
   </div>
-  <div class="nafig" data-fig="nodes" data-fn="exp(x)" data-xmin="0" data-xmax="1" data-nodes="[0,1]" data-cap="연습 1 의 대상 — 파란 넓이 $\int_0^1 e^x\,dx$(참값 $e{-}1{=}1.7183$). 사다리꼴은 두 끝점 $f(0){=}1,\ f(1){=}e{=}2.7183$(주황)만 직선으로 이어 $1.8591$ 로 근사 — 볼록한 $e^x$ 라 현이 곡선 위를 지나 과대평가."></div>
+  <div class="nafig" data-fig="nodes" data-fn="exp(x)" data-xmin="0" data-xmax="1" data-nodes="[0,1]" data-cap="연습 1 의 대상 — 파란 넓이 $\int_0^1 e^x\,dx$(참값 $e{-}1{=}1.7183$). 주황 = 사다리꼴이 읽는 두 끝 적분 절점 $f(0){=}1,\ f(1){=}e{=}2.7183$. 이 두 함수값의 가중합이 $1.8591$ — 볼록한 $e^x$ 라 사다리꼴은 과대평가."></div>
 </section>
 
 <!-- ════════ 11-1 그림: 1차 이하 무오차 ════════ -->
@@ -322,11 +322,11 @@ I = trapezoid(f, 0, 1);
   <div class="vizgrid">
     <div>
       <div class="vcap">상수함수 $f=c$</div>
-      <div class="nafig" data-fig="nodes" data-fn="2" data-xmin="0" data-xmax="3" data-nodes="[0,3]" data-cap="양 끝을 잇는 직선(사다리꼴 윗변)이 함수와 <b>완전히 겹쳐</b> 넓이가 정확 — 오차 $\propto f''=0$."></div>
+      <div class="nafig" data-fig="nodes" data-fn="2" data-xmin="0" data-xmax="3" data-nodes="[0,3]" data-cap="주황 = 양 끝 적분 절점. 상수함수라 두 절점의 함수값이 같아 사다리꼴 근사가 참 넓이와 <b>완전히 일치</b> — 오차 $\propto f''=0$."></div>
     </div>
     <div>
       <div class="vcap">1차함수 $f=mx+b$</div>
-      <div class="nafig" data-fig="nodes" data-fn="0.6 + 0.6*x" data-xmin="0" data-xmax="3" data-nodes="[0,3]" data-cap="두 끝점을 잇는 직선이 곧 함수 자신 — 사다리꼴 넓이 = 참 넓이. 그래서 <b>1차 이하 다항식엔 무오차</b>."></div>
+      <div class="nafig" data-fig="nodes" data-fn="0.6 + 0.6*x" data-xmin="0" data-xmax="3" data-nodes="[0,3]" data-cap="주황 = 양 끝 적분 절점. 함수 자체가 직선(1차)이라 사다리꼴 근사가 참 넓이와 정확히 같다 — 그래서 <b>1차 이하 다항식엔 무오차</b>."></div>
     </div>
   </div>
 </section>
@@ -436,7 +436,7 @@ I = trapezoid(f, 0, 1);
       <div class="ans-final"><div class="ans-eq">$$ I = \tfrac13 $$</div><b>정답:</b> 참값 $\tfrac13$ 과 <strong>정확히 일치(오차 0)</strong> — Simpson 1/3 은 3차 이하 다항식에 무오차이므로 $x^2$ 는 완벽.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="nodes" data-fn="x^2" data-xmin="0" data-xmax="1" data-nodes="[0,0.5,1]" data-cap="이 파란 넓이 $\int_0^1 x^2\,dx$ 를 Simpson 은 세 점 $x{=}0,\tfrac12,1$(주황, 값 $0,0.25,1$)으로 읽어 포물선으로 잇는다. $x^2$ 자체가 포물선이라 근사 포물선이 곡선과 <b>완전히 겹쳐</b> $\tfrac13$ 정확(오차 0)."></div>
+  <div class="nafig" data-fig="nodes" data-fn="x^2" data-xmin="0" data-xmax="1" data-nodes="[0,0.5,1]" data-cap="이 파란 넓이 $\int_0^1 x^2\,dx$ 를 Simpson 은 세 적분 절점 $x{=}0,\tfrac12,1$(주황, 값 $0,0.25,1$)의 함수값으로 근사한다. $x^2$ 자체가 2차라 Simpson 근사가 참값과 <b>완전히 일치</b> — $\tfrac13$ 정확(오차 0)."></div>
 </section>
 
 <section class="screen" data-ch="11-2" data-chtitle="Simpson 공식" data-stage="수렴">
@@ -524,7 +524,7 @@ I = simpson13(f, 0, 1);
       <div class="ans-final"><div class="ans-eq">$$ 3\ \text{차} $$</div><b>정답:</b> 2차 보간인데 대칭성 덕에 3차까지 정확 — Newton-Cotes 의 "짝수 규칙 보너스".</div>
     </div>
   </div>
-  <div class="nafig" data-fig="nodes" data-fn="sin(x)" data-xmin="0" data-xmax="3.14159" data-nodes="[0,1.5708,3.14159]" data-cap="연습 1 의 대상 — 파란 넓이 $\int_0^\pi\sin x\,dx$(참값 $2$). Simpson 은 세 점 $0,\tfrac\pi2,\pi$(주황, 값 $0,1,0$)으로 포물선을 세워 $\tfrac{2\pi}{3}{=}2.0944$ 로 근사 — $\sin$ 은 포물선이 아니라 오차가 남는다."></div>
+  <div class="nafig" data-fig="nodes" data-fn="sin(x)" data-xmin="0" data-xmax="3.14159" data-nodes="[0,1.5708,3.14159]" data-cap="연습 1 의 대상 — 파란 넓이 $\int_0^\pi\sin x\,dx$(참값 $2$). Simpson 은 세 적분 절점 $0,\tfrac\pi2,\pi$(주황, 값 $0,1,0$)의 함수값으로 $\tfrac{2\pi}{3}{=}2.0944$ 로 근사 — $\sin$ 은 2차 곡선이 아니라 오차가 남는다."></div>
 </section>
 
 <section class="screen" data-ch="11-2" data-chtitle="Simpson 공식" data-stage="정리">
@@ -612,7 +612,7 @@ I = simpson13(f, 0, 1);
       <div class="ans-final"><div class="ans-eq">$$ I \approx 4.25 $$</div><b>정답:</b> 참값 $\int_0^2 x^3=\tfrac{2^4}{4}=4$ 이므로 오차 $0.25$. $n$ 을 늘리면 $O(h^2)$ 로 준다.</div>
     </div>
   </div>
-  <div class="nafig" data-fig="nodes" data-fn="x^3" data-xmin="0" data-xmax="2" data-nodes="[0,0.5,1,1.5,2]" data-cap="이 파란 넓이 $\int_0^2 x^3\,dx$(참값 $4$)를 폭 $h{=}0.5$ 의 사다리꼴 <b>4조각</b>으로 근사한다. 주황 절점 $0,0.5,1,1.5,2$($f{=}0,0.125,1,3.375,8$) 사이를 직선으로 이어 더하면 $4.25$ — 조각을 늘릴수록 참값 $4$ 로."></div>
+  <div class="nafig" data-fig="nodes" data-fn="x^3" data-xmin="0" data-xmax="2" data-nodes="[0,0.5,1,1.5,2]" data-cap="이 파란 넓이 $\int_0^2 x^3\,dx$(참값 $4$)를 폭 $h{=}0.5$ 로 나눈 <b>5개 적분 절점</b>으로 근사한다. 주황 절점 $0,0.5,1,1.5,2$($f{=}0,0.125,1,3.375,8$)의 함수값을 복합 사다리꼴로 더하면 $4.25$ — 조각을 늘릴수록 참값 $4$ 로."></div>
 </section>
 
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="수렴">
@@ -718,7 +718,7 @@ end
       <div class="ans-final"><div class="ans-eq">$$ \tfrac14 $$</div><b>정답:</b> $4$ 분의 1. (복합 Simpson 이면 $h^4\to\tfrac{1}{16}$ 로 16분의 1.)</div>
     </div>
   </div>
-  <div class="nafig" data-fig="nodes" data-fn="exp(x)" data-xmin="0" data-xmax="1" data-nodes="[0,0.5,1]" data-cap="연습 1 의 대상 — 파란 넓이 $\int_0^1 e^x\,dx$(참값 $1.7183$)를 사다리꼴 <b>2조각</b>($h{=}0.5$)으로. 주황 절점 $0,\tfrac12,1$($f{=}1,\ 1.6487,\ 2.7183$) 사이 직선 합이 $1.7539$ — 단일 조각($1.8591$)보다 오차가 약 $\tfrac14$ 로."></div>
+  <div class="nafig" data-fig="nodes" data-fn="exp(x)" data-xmin="0" data-xmax="1" data-nodes="[0,0.5,1]" data-cap="연습 1 의 대상 — 파란 넓이 $\int_0^1 e^x\,dx$(참값 $1.7183$)를 복합 사다리꼴 $n{=}2$($h{=}0.5$)로. 주황 = 세 적분 절점 $0,\tfrac12,1$($f{=}1,\ 1.6487,\ 2.7183$), 이 함수값들의 가중합이 $1.7539$ — 단일 조각($1.8591$)보다 오차가 약 $\tfrac14$ 로."></div>
 </section>
 
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="그림">
@@ -736,7 +736,7 @@ end
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="그림">
   <div class="eyebrow">11-3 · 그림 · 소구간 늘리면</div>
   <h1 class="stage-h">오차가 급감한다</h1>
-  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.25,"label":"사다리꼴 O(h²)"},{"r":0.0625,"label":"Simpson O(h⁴)"}]' data-cap="소구간 수 $n$ 을 2배로 늘릴 때마다 — 사다리꼴 오차 $\times\tfrac14$, Simpson $\times\tfrac1{16}$. 고차 공식이 훨씬 빨리 참값으로(가로축=2배 횟수)."></div>
+  <div class="nafig" data-fig="convergence" data-rates='[{"r":0.25,"label":"사다리꼴 O(h²)"},{"r":0.0625,"label":"Simpson O(h⁴)"}]' data-xlab="n 2배 횟수" data-cap="소구간 수 $n$ 을 2배로 늘릴 때마다 — 사다리꼴 오차 $\times\tfrac14$, Simpson $\times\tfrac1{16}$. 고차 공식이 훨씬 빨리 참값으로(가로축=2배 횟수)."></div>
 </section>
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="그림">
   <div class="eyebrow">11-3 · 표 · Newton–Cotes 요약</div>
