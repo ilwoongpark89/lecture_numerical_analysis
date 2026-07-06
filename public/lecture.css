@@ -228,3 +228,9 @@
   body.na-prof .prof-example{ display:block; }
   .prof-example .pe-h{ font-size:10.5px; font-weight:700; letter-spacing:.05em; color:var(--accent); margin-bottom:8px; text-transform:uppercase; }
   .prof-example ul{ margin:0; padding-left:16px; } .prof-example li{ font-size:12.5px; line-height:1.6; color:var(--gray); margin-bottom:6px; } .prof-example li:last-child{ margin-bottom:0; } .prof-example li strong{ color:var(--ink); font-weight:700; }
+
+/* R7 — ktab/stp-tbl 모바일 가로 오버플로 방지 */
+@media (max-width:640px){
+  .stp-tblwrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table.ktab{ display:block; overflow-x:auto; white-space:nowrap; }
+}

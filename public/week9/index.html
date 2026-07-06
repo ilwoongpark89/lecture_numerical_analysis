@@ -804,6 +804,17 @@ fprintf('R^2_adj = %.4f\n', R2adj);
     </div>
   </div>
 </section>
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="원리">
+  <div class="eyebrow">9-4 · 원리 · 표준오차와 상관계수</div>
+  <h1 class="stage-h">$R^2$ 의 사촌들 — $s_{y/x}$, $r$</h1>
+  <div class="two">
+    <div class="col2"><div class="callout key"><div class="ct">추정 표준오차 $s_{y/x}$</div>
+      $s_{y/x}=\sqrt{\dfrac{S_r}{n-2}}$ — 회귀선 둘레로 데이터가 흩어진 <b>전형적 세로거리</b>(잔차의 표준편차). $n{-}2$ 는 직선이 자유도 2개(기울기·절편)를 썼기 때문.<br><span class="num">$=\sqrt{1.475/3}=0.701$</span></div></div>
+    <div class="col2"><div class="callout key"><div class="ct">상관계수 $r$</div>
+      $r=\pm\sqrt{R^2}=\pm\sqrt{\dfrac{S_t-S_r}{S_t}}$ — 부호는 기울기 방향. <br><span class="num">$=\sqrt{0.741}=0.861$</span> (양의 상관)<br><span class="dim">$|r|{=}1$ 완전 직선, $0$ 무관계.</span></div></div>
+  </div>
+  <div class="callout warn" style="margin-top:10px"><div class="ct">다중 선형회귀로 확장</div>독립변수가 여럿이면 $y=a_0+a_1x_1+a_2x_2+\cdots$ — 같은 최소제곱 원리로 정규방정식이 $(X^\mathsf{T}X)\mathbf a=X^\mathsf{T}\mathbf y$ 한 줄로 일반화된다($X$=설계행렬). 2차 다항적합도 $x_1{=}x,x_2{=}x^2$ 인 다중회귀의 특수형.</div>
+</section>
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="정리">
   <div class="eyebrow">9-4 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

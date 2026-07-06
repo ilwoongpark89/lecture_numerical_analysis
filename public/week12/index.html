@@ -199,7 +199,7 @@
   <h1 class="stage-h">$h$ 를 줄이며 직접 수렴시켜 보기</h1>
   <p class="lede">중앙차분으로 $f'(1)$ ($f=e^x$, 참값 $2.71828$)을 계산하되, "다음 반복" 마다 $h$ 를 <strong>절반씩</strong> 줄인다. 오차가 처음엔 $O(h^2)$ 로 줄다가, $h$ 가 너무 작아지면 <strong>반올림오차가 되살아나 다시 커지는</strong> 걸 한 줄씩 관찰하라 — 그 바닥이 <strong>최적 $h$</strong> 다.</p>
   <div class="stepper"
-    data-kind="diff" data-fn="exp(x)" data-x0="1" data-h0="0.5" data-mode="central" data-true="2.718281828" data-steps="20"
+    data-kind="diff" data-fn="exp(x)" data-x0="1" data-h0="0.5" data-mode="central" data-true="2.718281828" data-steps="26"
     data-title="중앙차분 h→0 — f=eˣ, x=1 (참 f′=2.71828)"
     data-note="오차가 h 절반마다 ¼로 줄다가(2차 수렴), h≈2×10⁻⁶ 부근에서 최소를 찍고 반올림오차로 다시 상승 — 무작정 작은 h가 답이 아니다."></div>
 </section>

@@ -676,6 +676,17 @@ end
   </tbody></table></div>
   <div class="callout key" style="margin-top:10px"><div class="ct">Newton–Cotes 닫힌 공식 한눈에</div>점을 하나 더 쓸수록 오차 차수가 뛴다. 실무 기본기는 <b>복합 사다리꼴·복합 Simpson 1/3</b> — 3/8 은 소구간이 홀수개 남을 때 짝 맞추기용.</div>
 </section>
+<section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="원리">
+  <div class="eyebrow">11-3 · 원리 · Romberg 적분</div>
+  <h1 class="stage-h">사다리꼴을 <span class="hl">가속</span>한다</h1>
+  <p class="lede">복합 사다리꼴 $T(h)$ 는 $O(h^2)$ 이고 오차가 <b>짝수 차수뿐</b>이다. 그러면 Richardson 조합 $\dfrac{4T(h/2)-T(h)}{3}$ 이 $h^2$ 항을 소거해 $O(h^4)$(=Simpson!)이 되고, 이를 <b>표로 반복</b>하면 $O(h^6),O(h^8),\dots$ 로 폭주 수렴한다.</p>
+  <div class="stp-tblwrap" style="max-width:560px;margin:0 auto"><table class="stp-tbl"><thead><tr><th>분할</th><th>$O(h^2)$ 사다리꼴</th><th>$O(h^4)$</th><th>$O(h^6)$</th></tr></thead><tbody>
+    <tr><td>$n{=}1$</td><td>1.85914</td><td></td><td></td></tr>
+    <tr><td>$n{=}2$</td><td>1.75393</td><td>1.71886</td><td></td></tr>
+    <tr><td>$n{=}4$</td><td>1.72722</td><td>1.71832</td><td><b>1.718283</b></td></tr>
+  </tbody></table></div>
+  <div class="callout key" style="margin-top:10px"><div class="ct">$\displaystyle\int_0^1 e^x\,dx=e-1=1.718282$</div>사다리꼴은 $n{=}4$ 에서도 2자리인데, Romberg 는 <b>같은 3개 값</b>만 조합해 <b>6자리</b> 정확 — 새 함수 계산 0회로 4자리를 벌었다. 12주 Richardson 과 완전히 같은 원리(적분판).</div>
+</section>
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="정리">
   <div class="eyebrow">11-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>

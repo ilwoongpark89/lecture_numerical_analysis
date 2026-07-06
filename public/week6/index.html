@@ -644,6 +644,22 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
     </div>
   </div>
 </section>
+<section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="원리">
+  <div class="eyebrow">6-3 · 원리 · 대칭이면 절반</div>
+  <h1 class="stage-h">Cholesky — $A=LL^\mathsf{T}$</h1>
+  <p class="lede">행렬이 <b>대칭이고 양의 정부호</b>이면(공분산·강성행렬 등 실무에 흔함), LU 대신 <b>한 삼각행렬만</b> 구하면 된다: $A=LL^\mathsf{T}$. 저장·연산이 <b>절반</b>($\sim n^3/6$).</p>
+  <div class="two">
+    <div class="col2"><div class="dcard"><div class="dh">유도 (원소별)</div>
+      <div class="drow">$a_{jj}=\textstyle\sum_{k\le j}l_{jk}^2 \Rightarrow l_{jj}=\sqrt{a_{jj}-\sum_{k<j}l_{jk}^2}$</div>
+      <div class="drow">$a_{ij}=\textstyle\sum_{k\le j}l_{ik}l_{jk} \Rightarrow l_{ij}=\dfrac{a_{ij}-\sum_{k<j}l_{ik}l_{jk}}{l_{jj}}$</div>
+    </div></div>
+    <div class="col2"><div class="callout key"><div class="ct">수치 예 $A=\begin{bmatrix}4&2\\2&3\end{bmatrix}$</div>
+      $l_{11}=\sqrt4=2$, $l_{21}=2/2=1$, $l_{22}=\sqrt{3-1^2}=\sqrt2$.<br>
+      $L=\begin{bmatrix}2&0\\1&\sqrt2\end{bmatrix}$, 확인 $LL^\mathsf{T}=\begin{bmatrix}4&2\\2&3\end{bmatrix}$ ✓</div>
+      <div class="callout warn" style="margin-top:8px"><div class="ct">양의 정부호 판정 보너스</div>$\sqrt{\ }$ 안이 음수가 되면 그 행렬은 양의 정부호가 아니다 — Cholesky 가 곧 판정기.</div>
+    </div>
+  </div>
+</section>
 <section class="screen" data-ch="6-3" data-chtitle="LU 분해" data-stage="정리">
   <div class="eyebrow">6-3 · 정리 · Summary</div>
   <h1 class="stage-h">핵심 · 실수</h1>
