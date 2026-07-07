@@ -715,7 +715,7 @@ end
     </div>
   </div>
   <div class="cq" style="max-width:620px;margin:16px auto 0">
-    <div class="qtext"><span class="qn">개념 점검</span>$A=\begin{bmatrix}1&2&3\\4&5&6\\7&8&9\end{bmatrix}$ 에 Jacobi 를 그대로 돌리니 발산한다. 알고리즘을 바꾸기 전에 <b>가장 먼저</b> 시도할 것은?</div>
+    <div class="qtext"><span class="qn">개념 점검</span>$A=\begin{bmatrix}1&5&1\\6&2&1\\1&1&4\end{bmatrix}$ 에 Jacobi 를 그대로 돌리니 발산한다. 알고리즘을 바꾸기 전에 <b>가장 먼저</b> 시도할 것은?</div>
     <div class="opts">
       <button class="opt" data-correct="1">행·열을 <b>재배열(pivoting)</b>해 대각 원소를 키워 대각 우세를 회복시켜 본다</button>
       <button class="opt">초기값을 정확한 해로 두면 발산이 사라진다</button>
@@ -724,7 +724,7 @@ end
     </div>
     <button class="btn primary cp-submit">확인</button>
     <div class="cp-fb"></div>
-    <div class="cp-exp"><span class="exp-h">왜</span>첫 행부터 $|1|<|2|+|3|$ 이라 대각 우세가 깨져 $\rho(T_J)\ge1$ 이다. 초기값·tol·반복 수는 발산 자체를 못 막고, $\omega>2$ 는 오히려 확실히 발산시킨다. 손쓸 첫 수는 <b>행·열 재배열</b>로 큰 원소를 대각에 올려 대각 우세(따라서 $\rho<1$)를 만드는 것.</div>
+    <div class="cp-exp"><span class="exp-h">왜</span>첫 행부터 $|1|<|5|+|1|$ 이라 대각 우세가 깨져 $\rho(T_J)\ge1$ 이다(재배열하면 $6,5,4$ 가 대각에 올라 $\rho<1$). 초기값·tol·반복 수는 발산 자체를 못 막고, $\omega>2$ 는 오히려 확실히 발산시킨다. 손쓸 첫 수는 <b>행·열 재배열</b>로 큰 원소를 대각에 올려 대각 우세(따라서 $\rho<1$)를 만드는 것.</div>
   </div>
 </section>
 
