@@ -153,6 +153,21 @@
   </div>
 </section>
 
+<section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="감잡기">
+  <div class="eyebrow">9-1 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 세 숫자를 "한 숫자"로 대표하기</h1>
+  <div class="warmup">
+    <div class="wu-intro">친구 셋의 키를 쟀더니 $2,\ 3,\ 7$ 이 나왔다. 이 셋을 <b>딱 한 숫자</b>로 대표한다면 몇을 고르겠는가? 너무 낮게 잡으면 큰 애가 삐죽 튀고, 너무 높게 잡으면 작은 애들이 처진다. "가장 안 억울한" 자리는 어디일까? 손으로 몇 번 찍어 보며 찾아보자.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>$3$ 으로 찍어 본다. 벗어난 정도를 각각 제곱해 더하면 $1+0+16=17$. <span class="wu-say">"큰 애가 너무 멀잖아…"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>조금 올려 $4$ 로. $4+1+9=14$ 로 <b>줄었다!</b> 더 올려 $5$ 로 가보면 $9+4+4=17$ — 다시 커진다.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>$4$ 에서 위로 건드려도, 아래로 건드려도 합이 커진다. 딱 <b>바닥(가장 작은 값)</b> 인 자리 — 그게 대표값 $4$ (사실은 평균).</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      "벗어난 정도를 제곱해서 더한 값을 가장 작게" 가 바로 목적함수 $S=\sum e_i^2$ 다. 그리고 "위로도 아래로도 건드리면 커지는 바닥" = 접선 기울기가 $0$ 인 지점, 곧 $\partial S/\partial a_k=0$. 공식이 먼저가 아니라, 네가 방금 손으로 찾은 <b>골짜기 바닥</b>이 먼저다 — 원리는 그 바닥을 직선($a_0,a_1$)에 대해 한 번에 찾아 주는 방법일 뿐이다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="원리">
   <div class="eyebrow">9-1 · 원리 · Minimization</div>
   <h1 class="stage-h">최소는 어디서? — 편미분이 0</h1>
@@ -379,6 +394,21 @@
   </div>
 </section>
 
+<section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="감잡기">
+  <div class="eyebrow">9-2 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 맞힐 게 몇 개면 단서도 몇 개</h1>
+  <div class="warmup">
+    <div class="wu-intro">친구가 숫자를 숨기고 단서를 준다. 숨긴 숫자가 <b>하나</b>면 단서 하나로 맞힌다. <b>둘</b>이면? 단서 하나로는 어림없고 서로 다른 단서 <b>둘</b>이 있어야 딱 정해진다. 셋이면 셋. — 맞혀야 할 개수만큼 단서(식)가 필요하다는 이 감각만 챙기자.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>직선 하나를 정하려면 알아야 할 게 <b>둘</b> — 높이(어디서 출발)와 기울기(얼마나 기울까). <span class="wu-say">"맞힐 게 2개네"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>그럼 단서(식)도 <b>2개</b> 필요. 데이터가 "이렇게 균형 잡아라" 하고 식 $2$개를 준다 → 둘 풀면 직선 완성.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>포물선은 알아야 할 게 <b>셋</b>(높이·기울기·휘는 정도) → 단서도 <b>3개</b>. <b>하는 방법은 똑같고 개수만 늘 뿐.</b></div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      "맞힐 게 몇 개면 식도 몇 개" 가 바로 정규방정식이다 — 직선은 미지수 $a_0,a_1$ 둘이라 식이 $2$개($2\times2$), 포물선은 $a_0,a_1,a_2$ 셋이라 $3$개($3\times3$). 그 식 묶음을 한 줄로 압축한 게 $(X^TX)a=X^Ty$ 이고, 크기는 딱 미지수 개수 $(m{+}1)\times(m{+}1)$. 새 공식이 아니라, 네가 아는 "미지수 수 = 식 수" 그대로다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="원리">
   <div class="eyebrow">9-2 · 원리 · Normal equation</div>
   <h1 class="stage-h">$(X^TX)a=X^Ty$ — 어디서 나오나</h1>
@@ -587,6 +617,21 @@ p = polyfit(x, y, 1);
   </div>
 </section>
 
+<section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="감잡기">
+  <div class="eyebrow">9-3 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 두 배씩 늘어난 걸 곧게 펴기</h1>
+  <div class="warmup">
+    <div class="wu-intro">접시 위 세균이 한 시간마다 <b>두 배</b>가 된다. $1 \to 2 \to 4 \to 8 \to 16$ 마리. 이 숫자를 그냥 점으로 찍으면 뒤로 갈수록 확 치솟아 <b>휜 곡선</b>이 된다 — 자를 대고 직선 하나로 잇기가 영 어렵다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>마릿수 대신 <b>"몇 번 두 배 됐나"</b> 를 세어 보자. $1$ 은 0번, $2$ 는 1번, $4$ 는 2번, $8$ 은 3번, $16$ 은 4번. <span class="wu-say">"어? 0,1,2,3,4 네"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>그 "두 배 횟수" $0,1,2,3,4$ 는 간격이 <b>똑같다</b>. 점을 찍으면 완벽한 <b>직선!</b></div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>휜 곡선이 <b>곧게 펴졌다.</b> 이제 직선으로 다루고, 답이 필요하면 "두 배 횟수" 를 다시 마릿수로 되돌리면 된다.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      "몇 번 두 배 됐나 세기" 가 바로 <b>로그</b> $\ln y$ 다. 지수 $y=ae^{bx}$ 에 로그를 씌우면 $\ln y=\ln a+b\,x$ — 곧은 직선이 되어 9-2 의 직선 회귀를 그대로 쓴다. 그리고 마지막에 로그를 풀어($a=e^{A_0}$) 원래 곡선으로 되돌린다. <b>변환·회귀·복원</b>, 딱 이 순서다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="원리">
   <div class="eyebrow">9-3 · 원리 · Three transforms</div>
   <h1 class="stage-h">세 가지 모델의 변환 공식</h1>
@@ -790,6 +835,21 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       </div>
       <div class="callout key"><div class="ct">핵심</div>$R^2$ 는 잔차를 <strong>총변동으로 정규화</strong>한 값 — 단위·스케일에 무관해 서로 다른 적합을 비교할 수 있다.</div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="감잡기">
+  <div class="eyebrow">9-4 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — "그냥 평균" 보다 얼마나 나아졌나</h1>
+  <div class="warmup">
+    <div class="wu-intro">아무 정보가 없을 때, 내일 카페 손님 수를 하나로 찍으라면 최선은 <b>평균</b>이다. 그런데 늘 평균만 대면 어떤 날은 많이 빗나간다. 이제 "기온" 같은 단서로 예측 하나를 세웠다고 하자. 이게 <b>그냥 평균보다 얼마나 나은지</b> 를 한 숫자로 매기고 싶다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>평균으로만 찍었을 때 <b>빗나간 총량</b>이 $100$ 이었다고 하자. <span class="wu-say">"이게 아무것도 안 한 기준점"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>새 예측을 쓰니 빗나간 총량이 $10$ 으로 줄었다. $100$ 중 $90$ 을 <b>지운</b> 셈.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>지운 비율 $= 90/100 = 0.9$. "평균 대비 $90\%$ 나아졌다" 는 점수다. 다 지우면 $1$, 하나도 못 지우면 $0$.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      "평균으로 찍었을 때 빗나간 총량" 이 $SS_{\text{tot}}=\sum(y_i-\bar y)^2$, "내 곡선이 남긴 빗나감" 이 $SS_{\text{res}}=\sum(y_i-f(x_i))^2$. 지운 비율이 곧 $R^2=1-\dfrac{SS_{\text{res}}}{SS_{\text{tot}}}$ 다. 이겨야 할 상대는 언제나 <b>'그냥 평균'</b> $\bar y$ — 원리에서는 이 평균 기준선의 흩어짐을 회귀변동과 잔차변동으로 쪼개 본다.</div>
   </div>
 </section>
 

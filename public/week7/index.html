@@ -163,6 +163,21 @@
   </div>
 </section>
 
+<section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="감잡기">
+  <div class="eyebrow">7-1 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 다 같이 "옆 사람 평균"</h1>
+  <div class="warmup">
+    <div class="wu-intro">다섯 자리에 사람이 한 줄로 앉는다. 맨 왼쪽·오른쪽 사람은 각각 <b>0</b> 과 <b>10</b> 을 든 채 안 움직인다. 가운데 세 명은 아직 자기 숫자를 몰라 일단 <b>0</b> 부터 든다. 규칙 딱 하나: <b>"내 숫자 = 양옆 두 사람 숫자의 평균"</b>. 계산기도 공식도 필요 없다 — 그냥 옆을 보고 반씩 더해 나눈다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>중요한 약속: 모두 <b>옆 사람이 지금 든 숫자</b>만 보고 계산한 뒤, <span class="wu-say">"하나 둘 셋!"</span> 에 <b>다 같이 동시에</b> 새 숫자로 바꿔 든다. 남을 안 기다린다.</div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>첫 라운드: 가운데 셋은 옆이 다 0/0 이라 그대로 0, 맨 오른쪽만 $(0+10)/2=5$. → <b>0, 0, 5</b>. 다음 라운드엔 5 가 옆으로 번져 <b>0, 2.5, 5</b>.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>이 "동시에 옆 평균" 을 계속 돌리면 숫자들이 더는 안 변하는 값 <b>2.5, 5, 7.5</b> 로 정착한다. <span class="wu-say">"어, 저절로 답이 나오네"</span> — 이게 반복법이다.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      방금 한 <b>"양옆 평균으로 내 숫자 새로"</b> 가 바로 방정식 한 줄을 내 미지수 $x_i$ 에 대해 푼 것: $x_i^{(k+1)}=\frac{1}{a_{ii}}\big(b_i-\sum_{j\ne i}a_{ij}x_j^{(k)}\big)$. <b>"옆 사람이 지금 든 숫자"</b> 가 이전 반복값 $x_j^{(k)}$, <b>"다 같이 동시에 바꾼다"</b> 가 서로 안 기다리는 <b>병렬 갱신</b>이다. 공식이 먼저가 아니라, 방금 손으로 한 그 감이 먼저다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="원리">
   <div class="eyebrow">7-1 · 원리 · Derivation</div>
   <h1 class="stage-h">$A=D+L+U$ 에서 반복식 유도</h1>
@@ -444,6 +459,21 @@ b = np.array([7,-21,15], float)
   </div>
 </section>
 
+<section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="감잡기">
+  <div class="eyebrow">7-2 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 방금 바뀐 옆 값을 바로 쓰기</h1>
+  <div class="warmup">
+    <div class="wu-intro">앞 장의 <b>줄서기 게임</b> 그대로다(양 끝 0·10 고정, 가운데 셋은 옆 평균으로 갱신). 딱 하나만 바꾼다. 앞에선 다 같이 눈 감고 "동시에" 바꿨는데, 이번엔 <b>왼쪽 사람부터 한 명씩 차례로</b> 고쳐 든다. 그러면 내 차례엔 왼쪽 사람이 <b>이미 방금 새 숫자로</b> 바꿔 든 상태다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>왼쪽부터 순서대로 고친다. 내 차례가 오면 <span class="wu-say">"왼쪽은 방금 바꿨네, 그 <b>새 숫자</b>를 쓰자"</span> — 헌 값 대신 갓 나온 값을 바로 반영한다.</div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>첫 라운드는 동시 방식과 똑같이 <b>0, 0, 5</b>(왼쪽·가운데는 아직 0에서 계산). 그런데 <b>둘째 라운드</b>부터 벌어진다 — 차례 방식 <b>0, 2.5, 6.25</b> vs 동시 방식 <b>0, 2.5, 5</b>. 오른쪽 끝이 벌써 6.25 대 5, <b>한 발 앞선다</b>(방금 바뀐 옆 값을 바로 썼으니까).</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>같은 목표값 <b>2.5, 5, 7.5</b> 로 가는데, 동시 방식보다 <b>거의 절반의 라운드</b>면 도착한다. <span class="wu-say">"공짜로 더 빨라졌네"</span></div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      <b>"왼쪽부터 차례로"</b> 가 위에서 아래로 순서대로 갱신, <b>"방금 바뀐 왼쪽 새 값을 바로 쓴다"</b> 가 이미 구한 성분에 새 값 $x_j^{(k+1)}\ (j\lt i)$ 를 대입하는 것: $x_i^{(k+1)}=\frac{1}{a_{ii}}\big(b_i-\sum_{j\lt i}a_{ij}x_j^{(k+1)}-\sum_{j\gt i}a_{ij}x_j^{(k)}\big)$. Jacobi 와 <b>공식은 똑같고 옆 값만 '방금 것'</b> — 그래서 순서를 지켜야 하고(순차 의존), 대신 보통 2배 빨리 수렴한다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="원리">
   <div class="eyebrow">7-2 · 원리 · Substitution order</div>
   <h1 class="stage-h">대입 순서 — 새 값이 즉시 흘러든다</h1>
@@ -659,6 +689,21 @@ end
   </div>
 </section>
 
+<section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="감잡기">
+  <div class="eyebrow">7-3 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 매번 곱하는 "배율" 하나</h1>
+  <div class="warmup">
+    <div class="wu-intro">반복이 잘 되는지 안 되는지는 사실 <b>배율 게임</b> 하나로 감이 온다. 지금 답이 참값에서 <b>100</b> 만큼 어긋나 있다고 하자(이게 오차). 반복을 한 번 돌 때마다 이 어긋남에 <b>같은 배율</b>이 곱해진다. 배율이 얼마냐가 전부다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>배율이 <b>0.5</b> 라면: 오차 100 → 50 → 25 → 12.5 → … <span class="wu-say">"점점 쪼그라들어 0 이 되네"</span> → <b>수렴</b>.</div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>배율이 <b>1.3</b> 이라면: 100 → 130 → 169 → 220 → … <span class="wu-say">"눈덩이처럼 커지잖아"</span> → <b>발산</b>. 마이크를 스피커에 바짝 대면 삐— 하고 커지는 그 하울링과 똑같다.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>즉 <b>배율이 1 보다 작으면 성공, 1 보다 크면 실패</b>. 그럼 배율을 미리 어떻게 알까? 지름길: 각 줄에서 <b>내 자리 숫자(대각)가 나머지들 합보다 세면</b> 배율은 1 미만이 보장된다 — 숫자표만 훑어도 안심.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      매 라운드 오차에 곱해지는 그 <b>"배율"</b> 이 반복 행렬 $T$ 이고(정확히는 그 크기 = 스펙트럴 반경 $\rho(T)$), <b>"배율 &lt; 1"</b> 이 수렴의 정확한 조건 $\rho(T)<1$ 이다. <b>"내 자리가 나머지보다 세다"</b> 가 대각 우세 $|a_{ii}|>\sum_{j\ne i}|a_{ij}|$ — 고유값을 안 구해도 <b>행만 보면</b> 배율 1 미만을 보장하는 충분조건이다(만족 안 해도 수렴할 순 있다).</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="원리">
   <div class="eyebrow">7-3 · 원리 · Diagonal dominance &amp; spectral radius</div>
   <h1 class="stage-h">대각 우세와 반복 행렬</h1>
@@ -824,6 +869,21 @@ end
       </div>
       <div class="callout warn"><div class="ct">발산 경계</div>대칭 양정치 행렬에서 SOR 수렴은 정확히 <strong>$0<\omega<2$</strong> 에서만 성립(Kahan 정리). 경계를 넘기면 무조건 발산.</div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="감잡기">
+  <div class="eyebrow">7-4 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 방향이 같으면 더 세게 민다</h1>
+  <div class="warmup">
+    <div class="wu-intro">방 저쪽 <b>문</b>이 목표라고 하자. Gauss-Seidel 은 매 걸음 문 쪽으로 <b>조금씩</b> 다가간다. 그런데 걸음마다 방향이 늘 <b>같은 문 쪽</b>이라면? 매번 얌전히 조금씩 가는 게 오히려 답답하다. 방향이 확실할 땐 <b>일부러 좀 더 세게</b> 밀어붙이는 게 빠르다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>지금 내 위치가 <b>2.0</b>, GS 는 <b>4.0</b> 까지 가자고 한다. 그대로 따르면 딱 4.0(이게 $\omega=1$).</div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>방향이 계속 문 쪽이니 <span class="wu-say">"GS 가 가려던 것보다 <b>1.5배</b> 더 가보자"</span> → 2.0 에서 5.0 까지. 살짝 지나친 듯해도 다음 걸음이 확 빨라진다(over-relax).</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>단 <b>2배 이상</b> 너무 세게 밀면 문을 <b>뚫고 지나쳐</b> 반대쪽 벽에 튕긴다 → 왔다갔다 <b>발산</b>. 그래서 <span class="wu-say">"딱 적당한 세기"</span> 가 어딘가 있다.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      <b>"GS 가 가려던 걸음"</b> 이 $\Delta_i=x_i^{GS}-x_i^{(k)}$, <b>"몇 배 세게 밀지"</b> 가 완화 계수 $\omega$ 다: $x_i^{(k+1)}=x_i^{(k)}+\omega\,\Delta_i$. $\omega=1$ 이면 그냥 GS, $1<\omega<2$ 면 걸음을 키워 가속(over-relax), <b>"2배 넘게 밀면 튕긴다"</b> 가 발산 경계 $\omega\ge2$. 안전하게 이득 보는 구간은 $0<\omega<2$ — 이 안에서 딱 좋은 $\omega$ 를 고르는 게 다음 시연의 실험이다.</div>
   </div>
 </section>
 

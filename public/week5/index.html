@@ -163,6 +163,21 @@
   </div>
 </section>
 
+<section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="감잡기">
+  <div class="eyebrow">5-1 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 두 번 맛보고 "이쯤이면 되겠다"</h1>
+  <div class="warmup">
+    <div class="wu-intro">커피에 설탕을 타는데 얼마나 넣어야 딱 좋을지 모르겠다. 그래서 두 번만 맛본다. <b>1스푼 넣으니 단맛이 "2점"</b>, <b>3스푼 넣으니 "6점"</b>. 내가 원하는 건 단맛 <b>5점</b>. 정확한 "스푼당 단맛 공식" 같은 건 몰라도 — 두 번 맛본 걸로 충분히 겨눌 수 있다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>두 번의 결과를 점으로 찍는다: (1스푼, 2점), (3스푼, 6점). <span class="wu-say">"2스푼 늘렸더니 4점 올랐네 — 한 스푼에 2점씩이구나"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>두 점을 <b>곧은 자로 이어</b> 쭉 늘린다. 이 직선이 목표 "5점" 을 지나는 곳을 읽는다.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>1스푼에서 5점까지는 3점 더 필요 → 한 스푼에 2점이니 $1.5$스푼 더 → <b>약 2.5스푼</b>. <span class="wu-say">"공식 없이 두 번 맛본 걸로 겨눴다!"</span></div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      방금 한 게 바로 <b>할선법</b>이다. 맛본 두 번 = 두 근사값 $x_{n-1},x_n$, "한 스푼에 2점씩" = 두 점을 이은 직선의 기울기 $\dfrac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}}$ (이게 접선 기울기 $f'$ 를 대신하는 <b>할선</b>이다), 그 직선이 목표(0)를 지나는 곳 = 다음 근사값 $x_{n+1}$. 공식이 먼저가 아니라, 네가 이미 아는 "두 번 재보고 직선 그어 겨누기" 감이 먼저다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="원리">
   <div class="eyebrow">5-1 · 원리 · Derivation</div>
   <h1 class="stage-h">접선을 할선으로 바꿔치기 — 점화식 유도</h1>
@@ -406,6 +421,21 @@ f = @(x) x.^3 - x - 2;
       </div>
       <div class="callout key"><div class="ct">핵심</div>겹친 근은 표준 Newton으로 <strong>느리게만</strong> 수렴한다. 중복도 $m$ 을 알면 공식에 $m$ 을 곱하고, 모르면 $u(x)=f/f'$ 로 단근으로 바꿔 <strong>이차 수렴을 되살린다.</strong></div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="감잡기">
+  <div class="eyebrow">5-2 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 매번 절반씩만 가면 답답하다</h1>
+  <div class="warmup">
+    <div class="wu-intro">주차할 때 차를 벽 바로 앞 선에 딱 붙이려 한다. 그런데 겁이 나서 <b>매번 남은 거리의 절반씩만</b> 살살 전진한다. 처음 벽까지 $80$cm 였다면 → $40$cm → $20$cm → $10$cm … 계속 절반씩. 아무리 가도 딱 붙지를 않아 답답하다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>남은 거리를 재보니 매번 정확히 <b>절반</b>씩만 준다. <span class="wu-say">"이러다 밤새겠네 — 매번 반절만 가잖아?"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>패턴을 알아챈다: 어차피 절반만 갈 거면, <b>이번엔 두 배로 크게</b> 디뎌보자.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>남은 $40$cm 일 때 평소의 <b>2배</b>로 $40$cm 를 밀면 → 벽에 <b>단번에 딱</b>. <span class="wu-say">"절반인 걸 알면 2배로! 한 방이네"</span></div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      근이 <b>겹쳐 있으면</b>(중복도 $m$) 표준 Newton은 딱 이 주차처럼 오차를 매번 $\left(1-\tfrac1m\right)$ 배로만 줄인다 — 이중근이면 매번 <b>절반씩</b>($x_0{=}1.8\to1.4\to1.2\to\cdots$), 답답한 선형 crawl. 해결도 똑같다: "절반씩인 걸 알면 <b>보폭을 $m$ 배로</b>" — 이게 <b>Modified Newton</b> $x_{n+1}=x_n-m\dfrac{f}{f'}$ 다. 이중근($m{=}2$)이면 $\times2$ 로 한 걸음에 근에 딱 붙는다. 공식이 무서운 게 아니라, "절반씩 가면 답답하니 두 배로" 라는 감이 먼저다.</div>
   </div>
 </section>
 
@@ -656,6 +686,21 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
   </div>
 </section>
 
+<section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="감잡기">
+  <div class="eyebrow">5-3 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 샤워 꼭지 두 개를 같이 돌리기</h1>
+  <div class="warmup">
+    <div class="wu-intro">샤워할 때 <b>온수 꼭지</b>와 <b>냉수 꼭지</b> 두 개를 맞춰 원하는 상태를 만든다. 원하는 건 두 가지: <b>온도도 딱 좋고</b>, <b>물살 세기도 딱 좋고</b>. 조건 두 개, 손잡이 두 개다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>온수만 조금 더 튼다. 그런데 따뜻해지긴 했는데 <b>물살도 같이 세졌다</b>. <span class="wu-say">"하나만 건드렸는데 둘 다 변하네?"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>그래서 한 개씩 따로 돌리지 않고, 온도와 물살을 <b>같이 보면서 두 꼭지를 함께</b> 조금씩 움직인다.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>두 조건이 <b>동시에</b> 맞는 순간 멈춘다. <span class="wu-say">"따로따로가 아니라 함께 맞춰야 하는구나"</span></div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      두 꼭지 = 두 미지수 $(x,y)$, 두 조건 = 두 식 $\mathbf F(\mathbf x)=\mathbf 0$. "온수를 틀면 온도뿐 아니라 물살도 변한다"는 <b>얽힘</b>이 바로 <b>Jacobian</b> $J=\left[\dfrac{\partial F_i}{\partial x_j}\right]$ 의 비대각 성분이다. 한 식씩 번갈아 대입하면 뜨겁↔차갑 왔다갔다 튀고(발산), 두 꼭지를 함께 조정하듯 <b>선형계 $J\,\Delta\mathbf x=-\mathbf F$</b> 를 풀어 한 번에 움직여야 맞는다. 행렬이 무서운 게 아니라, "얽힌 손잡이는 같이 돌린다" 는 감이 먼저다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="원리">
   <div class="eyebrow">5-3 · 원리 · Algorithm</div>
   <h1 class="stage-h">다변수 Newton — Jacobian으로 선형화</h1>
@@ -892,6 +937,21 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
       <div class="callout key"><div class="ct">실전 원칙</div>① 그래프로 근의 위치·개수 파악 → ② 이분법으로 구간 좁힘 → ③ 할선/Newton으로 마무리. 범용 해결사는 <strong>Brent(MATLAB fzero)</strong>.</div>
       <div class="callout warn"><div class="ct">Brent's Method</div>이분법(안전) + 할선(속도) + 역이차보간(IQI, 더 빠름)을 <strong>결합</strong>. 각 반복에서 빠른 방법을 시도하되, 결과가 구간을 벗어나면 <strong>이분법으로 안전 복귀</strong>.</div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="감잡기">
+  <div class="eyebrow">5-4 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 목적지 가는 길, 상황따라 다르게</h1>
+  <div class="warmup">
+    <div class="wu-intro">약속 장소에 가려 한다. 늘 똑같은 방법으로 가지 않는다 — 그날 <b>상황(가진 정보·위험·급함)</b>에 따라 가는 방법을 고른다. 근 찾기도 똑같다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>훤한 지름길을 알고 급하다 → <b>냅다 뛴다</b>(제일 빠름). 단, 길을 잘못 알면 엉뚱한 데로. <span class="wu-say">"빠른데 위험도 감수"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>안개 껴서 앞이 안 보이면 → <b>난간 잡고 한 칸씩</b> 확실하게(느리지만 절대 안 넘어짐).</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>잘 모르겠으면 → <b>내비게이션</b>을 켠다. 빠른 길을 시도하다 막히면 알아서 안전한 길로 되돌린다. <span class="wu-say">"고민되면 내비가 최고"</span></div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      "지름길 뛰기" = 도함수 $f'$ 로 빠르게 가는 <b>Newton</b>(빠르지만 발산 위험), "난간 한 칸씩" = 구간을 가둬 절대 근을 놓치지 않는 <b>이분법</b>(안전하나 느림), 두 이정표만으로 방향 잡기 = <b>할선법</b>. 그리고 "내비게이션" = <b>Brent(fzero)</b> — 빠른 방법을 시도하되 벗어나면 이분법으로 안전 복귀하는 하이브리드. 결국 판단은 두 축, <b>안전(가둠) vs 속도(도함수)</b> 사이의 선택이다. 어려운 게 아니라, "상황 보고 이동 수단 고르기" 감이 먼저다.</div>
   </div>
 </section>
 

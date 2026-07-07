@@ -163,6 +163,21 @@
   </div>
 </section>
 
+<section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="감잡기">
+  <div class="eyebrow">3-1 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 큰 수는 "숫자"와 "0 개수"를 따로 적는다</h1>
+  <div class="warmup">
+    <div class="wu-intro">지구에서 태양까지 거리를 적어 보자. 150,000,000 km. 0을 세느라 눈이 아프다. 그래서 우리는 "1.5 뒤에 0이 8칸" 이라는 뜻으로 1.5 × 10⁸ 이라고 짧게 쓴다 — 숫자 부분과 "소수점을 몇 칸 옮기는지"를 따로 적는 것이다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>유효숫자만 남긴다: 150,000,000 → 앞자리 몇 개만 크게 보면 "1.5". <span class="wu-say">"0들은 나중에 세지 뭐"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>소수점을 옮긴 칸수를 적는다: 1.5 를 1억 5천만으로 되돌리려면 소수점을 오른쪽으로 8칸 → ×10⁸.</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>부호(+/−)까지 붙이면 끝 — 어떤 수든 "부호 · 숫자 · 몇 칸 이동" 세 조각이면 다 적힌다. 아주 작은 수 0.0000003 도 ×10⁻⁷ 처럼 칸수를 음수로 적으면 된다.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      방금 셋으로 나눠 적은 게 바로 부동소수점이다. 컴퓨터는 밑을 10 대신 $2$ 로 쓸 뿐 — 식 $(-1)^s \times 1.f \times 2^{\,e-\text{bias}}$ 에서 부호 $s$ 는 +/−, 앞자리를 항상 한 자리로 맞춘 $1.f$ 가 "숫자 부분(유효숫자)", $2^{e}$ 가 "소수점을 몇 칸 옮길지" 다. 그리고 음의 칸수(아주 작은 수)까지 양수 하나로 저장하려고 더해 두는 게 bias 다. 공식이 먼저가 아니라, 네가 이미 쓰던 과학적 표기법이 먼저다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="원리">
   <div class="eyebrow">3-1 · 원리 · Encoding</div>
   <h1 class="stage-h">8비트 미니플롯으로 원리를 — 인코딩 절차</h1>
@@ -413,6 +428,21 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
   </div>
 </section>
 
+<section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="감잡기">
+  <div class="eyebrow">3-2 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 자로 잴 때 "더 올려도 티 안 나는" 최소 크기</h1>
+  <div class="warmup">
+    <div class="wu-intro">mm 눈금 자 위에 무언가를 올려 두고, 그 위에 아주 얇은 실오라기 한 올을 얹어 보자. 눈금은 꿈쩍도 안 한다. "더 얹어야 비로소 눈금이 움직이는 가장 작은 두께" — 그게 이 자의 한계다. 컴퓨터에도 똑같은 한계가 있다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>실오라기 한 올을 얹는다. 눈금이 안 변한다. <span class="wu-say">"이건 있으나 없으나네"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>두 올, 네 올… 점점 두껍게 하다 보면 어느 순간 눈금이 딱 한 칸 움직인다 — 거기가 "더해서 티 나는 최소 크기".</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>반대로 큰 데서 시작해 두께를 반씩 줄여 가며 "마지막으로 티 나던 두께"를 찾아도 똑같다 — 절반씩 줄이다 티가 사라지기 직전 값.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      컴퓨터의 "눈금 간격"이 머신 엡실론 $\varepsilon_{\text{mach}}=2^{-t}$ 다. $1.0$ 에 이보다 작은 수를 더하면 실오라기처럼 흔적도 없이 사라진다(흡수). 눈금 사이 한가운데를 넘느냐로 위/아래 눈금이 갈리니까, 반올림 오차 상한은 간격의 절반 $\varepsilon_{\text{mach}}/2$ 다. 3단계에서 "반씩 줄이다 티 사라지기 직전"을 찾은 게 바로 원리의 halving 알고리즘($e\leftarrow e/2$ 를 반복하다 마지막 값 복원)이다. 겁나는 기호 이전에, 네가 자로 이미 하던 일이다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="원리">
   <div class="eyebrow">3-2 · 원리 · Half-ULP</div>
   <h1 class="stage-h">반올림 경계는 간격의 절반 — 알고리즘</h1>
@@ -643,6 +673,21 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
       </div>
       <div class="callout key"><div class="ct">핵심</div>$\xi$ 의 정확한 값은 몰라도, $f^{(n+1)}$ 의 최댓값으로 <strong>오차의 상한</strong>을 잡는다. 그리고 오차 규모는 항상 $h^{n+1}$ 에 비례한다.</div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="감잡기">
+  <div class="eyebrow">3-3 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 무한소수를 몇 자리에서 끊으면?</h1>
+  <div class="warmup">
+    <div class="wu-intro">원주율 $\pi = 3.141592\ldots$ 는 끝없이 이어진다. 계산기에 다 넣을 수 없으니 우리는 그냥 3.14 쯤에서 <b>끊어</b> 쓴다. 그렇게 잘라 버린 꼬리(0.00159…)가 곧 오차다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>π 를 3.14 에서 끊는다. 버린 꼬리 = 0.00159… <span class="wu-say">"요만큼 손해 봤네"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>한 자리 더 살려 3.141 로 끊는다. 버린 꼬리 = 0.00059… → 오차가 눈에 띄게 준다(자리를 늘릴수록 버린 꼬리가 빠르게 작아진다).</div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>여기서 눈치 — 버린 꼬리 중 <b>맨 앞자리</b>(3.14 에선 0.001)가 오차의 대부분을 차지한다. 뒤로 갈수록 자리가 작아지니까.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      Taylor 급수도 똑같다. $e^x=1+x+\tfrac{x^2}{2!}+\cdots$ 를 무한히 못 더하니 $n$ 항에서 끊고, 잘라낸 나머지가 절단오차 $R_n$ 이다. "자리 하나 더 살리면 오차 급감" = 항 하나 더 더하면 급감이고, "버린 꼬리 중 첫 자리가 지배" = 첫 버린 항 $\dfrac{f^{(n+1)}(\xi)}{(n+1)!}h^{n+1}$ 이 오차를 대표한다 — 그래서 오차 규모를 $O(h^{n+1})$ 로 적는다. 스텝 $h$ 가 작을수록($h<1$) 뒷자리처럼 급히 작아진다.</div>
   </div>
 </section>
 
@@ -877,6 +922,21 @@ end
       </div>
       <div class="callout key"><div class="ct">핵심</div>뺄셈의 오차 전파 $\Delta(a-b)=\Delta a+\Delta b$ 는 $a\approx b$ 일 때 <strong>상대 오차가 폭발</strong>한다(상쇄). 조건수가 큰 문제(예: Hilbert 행렬)는 아무리 좋은 알고리즘도 구하기 어렵다.</div>
     </div>
+  </div>
+</section>
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="감잡기">
+  <div class="eyebrow">3-4 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 언덕 경사, 두 점을 얼마나 벌려 잴까</h1>
+  <div class="warmup">
+    <div class="wu-intro">굽은 언덕에서 "지금 발밑 경사"를 재고 싶다. 두 지점의 높이 차를 그 사이 거리로 나누면 된다. 그런데 두 지점을 얼마나 떨어뜨려 잴까? 너무 벌려도, 너무 붙여도 엉뚱한 값이 나온다.</div>
+    <div class="wu-steps">
+      <div class="wu-step"><span class="wu-n">1</span><div>두 지점을 <b>멀리</b>(예: 10 m 간격) 잡는다. 그 사이 언덕이 휘어 있어, 재어 나온 건 "그 구간 평균 경사"일 뿐 지금 발밑 경사와 다르다. <span class="wu-say">"너무 대충 봤네"</span></div></div>
+      <div class="wu-step"><span class="wu-n">2</span><div>그래서 간격을 <b>바짝</b> 좁힌다(1 cm, 1 mm…). 이번엔 두 높이가 거의 똑같아서 자 눈금으로는 그 미세한 차이를 못 읽는다 → 0 이거나 들쭉날쭉. <span class="wu-say">"이번엔 너무 붙였어"</span></div></div>
+      <div class="wu-step"><span class="wu-n">3</span><div>결국 너무 멀지도 너무 붙지도 않은 <b>중간 간격</b>이 가장 정확하다.</div></div>
+    </div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      이 "간격"이 수치미분의 스텝 $h$ 다. 너무 크면 언덕의 휘어짐을 무시한 <b>절단오차</b>($\propto h$), 너무 작으면 거의 같은 두 수를 빼다 자릿수가 날아가는 <b>반올림오차</b>($\propto \varepsilon_{\text{mach}}/h$) — 둘을 더하면 원리의 <b>U자 곡선</b>이 되고, 그 바닥의 최적점이 $h_{\text{opt}}\approx\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8}$ 다. 어느 한쪽만 줄이려 애쓰면 다른 쪽이 커진다는 걸, 방금 언덕에서 몸으로 느낀 것이다.</div>
   </div>
 </section>
 
