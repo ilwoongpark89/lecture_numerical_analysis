@@ -619,6 +619,8 @@ end
 f = @(x,y) x - y;
 [x, y] = rk4(f, 0, 1, 0.2, 2);
 <span class="out">% y(end) ≈ 1.27069  (정확값 1.27067)</span></code></pre></div>
+
+  <div class="prob" style="max-width:660px;margin:16px auto 0"><div class="prob-num">💻 구현 과제 · RK4</div><p class="prob-statement">RK4 를 구현하라. $\dfrac{dy}{dx}=y,\ y(0)=1$ 을 $h=0.5$ 로 $x=0\to1$ (2스텝) 전진하면 $y(1)=$? (소수 3자리, 참값 $e=2.718$)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="실행 결과" data-answer="2.717" data-tol="0.002"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div><div class="lf-hint" style="margin-top:8px">💡 언어는 자유(Python/MATLAB/C…). 위 알고리즘을 직접 코드로 옮겨 <b>실행</b>하고, 나온 값을 입력하라 — 수치해석은 구현해 봐야 진짜 안다.</div></div>
 </section>
 
 <section class="screen" data-ch="13-3" data-chtitle="Runge-Kutta (RK4)" data-stage="그림">

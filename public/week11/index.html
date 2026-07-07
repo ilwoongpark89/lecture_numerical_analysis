@@ -525,6 +525,8 @@ f = @(x) x.^2;
 I = simpson13(f, 0, 1);
 <span class="out">% I = 0.333333   (참값 1/3,  오차 0 — 3차 이하 무오차)</span></code></pre></div>
   <div class="callout warn" style="margin-top:12px"><div class="ct">더 정확하려면</div>단일 Simpson 으로 부족하면 구간을 짝수 개로 쪼개는 <strong>복합 Simpson(11-3)</strong> — 오차 $O(h^4)$.</div>
+
+  <div class="prob" style="max-width:660px;margin:16px auto 0"><div class="prob-num">💻 구현 과제 · 복합 Simpson</div><p class="prob-statement">복합 Simpson 1/3 을 구현하라. $\displaystyle\int_0^1 e^x\,dx$ 를 $n=4$ 조각으로 계산하면? (소수 4자리, 참값 $e-1=1.71828$)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="실행 결과" data-answer="1.7183" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div><div class="lf-hint" style="margin-top:8px">💡 언어는 자유(Python/MATLAB/C…). 위 알고리즘을 직접 코드로 옮겨 <b>실행</b>하고, 나온 값을 입력하라 — 수치해석은 구현해 봐야 진짜 안다.</div></div>
 </section>
 
 <section class="screen" data-ch="11-2" data-chtitle="Simpson 공식" data-stage="연습">
@@ -790,6 +792,8 @@ end
     <tr><td>$n{=}4$</td><td>1.72722</td><td>1.71832</td><td><b>1.718283</b></td></tr>
   </tbody></table></div>
   <div class="callout key" style="margin-top:10px"><div class="ct">$\displaystyle\int_0^1 e^x\,dx=e-1=1.718282$</div>사다리꼴은 $n{=}4$ 에서도 2자리인데, Romberg 는 <b>같은 3개 값</b>만 조합해 <b>6자리</b> 정확 — 새 함수 계산 0회로 4자리를 벌었다. 12주 Richardson 과 완전히 같은 원리(적분판).</div>
+
+  <div class="prob" style="max-width:600px;margin:14px auto 0"><div class="prob-num">직접 해보기 · Romberg</div><p class="prob-statement">사다리꼴 $T(h)=1.85914$(1조각)와 $T(h/2)=1.75393$(2조각)이 주어졌다. Romberg 1단계 $\dfrac{4\,T(h/2)-T(h)}{3}$ 를 계산하라 — 새 함수 계산 0회로 얼마가 나오나? (소수 4자리)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="1.7189" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div></div>
 </section>
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="정리">
   <div class="eyebrow">11-3 · 정리 · Summary</div>
@@ -881,6 +885,8 @@ end
       <div class="keqnote">$\tfrac{1}{\sqrt3}=0.57735$, $\sqrt{3/5}=0.77460$, $\tfrac59=0.5556$, $\tfrac89=0.8889$.</div>
     </div>
   </div>
+
+  <div class="prob" style="max-width:600px;margin:14px auto 0"><div class="prob-num">직접 해보기 · Gauss 3점</div><p class="prob-statement">3점 Gauss 구적($\pm\sqrt{3/5}$, $0$; 가중치 $\tfrac59,\tfrac89,\tfrac59$)으로 $\displaystyle\int_{-1}^{1}x^4\,dx$ 를 구하라. 참값 $\tfrac25$ 과 비교해 보라. (소수 2자리)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="내 답" data-answer="0.4" data-tol="0.02"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div></div>
 </section>
 
 <section class="screen" data-ch="11-4" data-chtitle="Gauss 구적법" data-stage="직접계산">

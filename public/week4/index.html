@@ -437,6 +437,8 @@ end
 f = @(x) x.^3 - x - 2;
 [root, n] = bisection(f, 1, 2, 1e-6);
 <span class="out">% root = 1.5213797  (n = 20)</span></code></pre></div>
+
+  <div class="prob" style="max-width:660px;margin:16px auto 0"><div class="prob-num">💻 구현 과제 · 이분법</div><p class="prob-statement">이분법을 구현하라. $f(x)=x^3-x-2$, 초기 구간 $[1,2]$ 에서 <b>10회</b> 반복한 뒤 중점 $c=\tfrac{a+b}{2}$ 를 출력하면? (소수 4자리)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="실행 결과" data-answer="1.5210" data-tol="0.001"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div><div class="lf-hint" style="margin-top:8px">💡 언어는 자유(Python/MATLAB/C…). 위 알고리즘을 직접 코드로 옮겨 <b>실행</b>하고, 나온 값을 입력하라 — 수치해석은 구현해 봐야 진짜 안다.</div></div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="연습">
