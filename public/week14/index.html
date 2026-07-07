@@ -144,6 +144,8 @@
       <div class="callout key"><div class="ct">유형이 방법을 정한다</div>포물·쌍곡은 <strong>시간 전진</strong>(안정조건 있음), 타원은 시간이 없어 <strong>반복 수렴</strong>으로 평형장을 맞춘다.</div>
     </div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>PDE 를 타원형·포물형·쌍곡형으로 나누는 이유는?</div><div class="opts"><button class="opt" data-correct="1">유형마다 정보가 퍼지는 방식이 달라 <b>맞는 수치기법</b>이 다르기 때문</button><button class="opt">이름을 붙이기 편해서</button><button class="opt">난이도 순으로 나열하려고</button><button class="opt">계수가 커서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>타원형(라플라스)=평형, 포물형(열)=시간확산, 쌍곡형(파동)=전파. 경계·초기조건과 안정조건이 유형별로 달라 방법 선택이 갈린다.</div></div>
 </section>
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">2계 차분 · 자동 채점</span></div>
@@ -182,6 +184,8 @@
     <tr><td class="stp-k">100</td><td>100</td><td>10,000</td><td>1,000,000</td></tr>
   </tbody></table></div>
   <div style="margin-top:8px;font-size:0.92em;color:var(--muted,#64748b)">3D $N=100$ 이면 미지수 100만 개. 밀집행렬로 풀면 원소가 $(10^6)^2=10^{12}$ 개(수 TB) — 그래서 <b>희소행렬·반복법</b>이 필수다.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>격자 간격 $\Delta x$ 를 너무 크게 잡으면 생기는 문제는?</div><div class="opts"><button class="opt" data-correct="1">해의 급변(경계층·첨점)을 격자가 못 잡아 <b>공간 정확도</b>가 무너진다</button><button class="opt">계산이 느려진다</button><button class="opt">항상 발산한다</button><button class="opt">경계조건이 사라진다</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>공간 차분 오차 $\propto \Delta x^2$. 해가 빠르게 변하는 곳에서 격자가 성기면 그 변화를 표현 못 해 큰 오차. 필요한 곳은 격자를 촘촘히(적응 격자).</div></div>
 </section>
 <section class="screen" data-ch="14-1" data-chtitle="유한차분 개요" data-stage="그림">
   <div class="eyebrow">14-1 · 그림 · 유한차분 격자</div>
@@ -239,6 +243,8 @@
     <div class="dcard"><h4>③ 정리</h4><div class="sub">$\lambda=\alpha\Delta t/\Delta x^2$</div><div class="eq">$ T_i^{n+1}=T_i^{n}+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n) $</div><p>명시적 전진식.</p></div>
   </div>
   <div class="callout key"><div class="ct">핵심</div>새 온도 = 옛 온도 + $\lambda\times$(이웃과의 곡률). 곡률이 양수(아래로 볼록)면 데워지고, 음수면 식는다 — 뾰족한 곳이 가장 빨리 깎인다.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>열방정식의 FTCS 는 시간·공간을 각각 어떻게 이산화하나?</div><div class="opts"><button class="opt" data-correct="1">시간=전방차분(1차), 공간=중앙 2계차분(2차)</button><button class="opt">둘 다 중앙차분</button><button class="opt">둘 다 전방차분</button><button class="opt">시간=중앙, 공간=전방</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>Forward-Time Central-Space: 시간 미분은 전방차분, 공간 2계 미분은 중앙차분. 명시적이라 계산이 쉽지만 안정조건 $\lambda=\frac{\alpha\Delta t}{\Delta x^2}\le\frac12$ 제약이 붙는다.</div></div>
 </section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">FTCS 한 시간스텝 · 자동 채점</span></div>
@@ -281,6 +287,8 @@
     <div class="pitfall"><h4>⚠ 조건 위반 = 발산</h4><p>$\lambda>\tfrac12$ 면 고주파 오차가 <b>증폭</b>. 격자를 세밀히 해도 폭발.</p></div>
     <div class="pitfall"><h4>⚠ 해결</h4><p>$\Delta t$ 를 줄이거나 <b>음함수법</b>(무조건 안정)으로 전환.</p></div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>FTCS 로 열방정식을 풀 때 $\lambda=\frac{\alpha\Delta t}{\Delta x^2}>\frac12$ 이면?</div><div class="opts"><button class="opt" data-correct="1">해가 폭발·진동한다 — 명시적 방법의 안정조건 위반</button><button class="opt">더 정확해진다</button><button class="opt">변화 없다</button><button class="opt">자동으로 안정화된다</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>명시적 FTCS 는 $\lambda\le\frac12$ 에서만 안정. $\Delta t$ 를 키우면 이 한계를 넘어 오차가 매 스텝 증폭돼 발산. 큰 $\Delta t$ 가 필요하면 암시적(Crank-Nicolson) 방법으로.</div></div>
 </section>
 <section class="screen" data-ch="14-2" data-chtitle="열전도 (포물형)" data-stage="코드">
   <div class="eyebrow">14-2 · 코드 · MATLAB</div>
@@ -342,6 +350,8 @@ end
     <tr><td class="stp-k">BTCS (음함수)</td><td>매 스텝 연립 풀이</td><td>무조건 안정 · $O(\Delta t)$</td></tr>
     <tr><td class="stp-k">Crank–Nicolson</td><td>두 시각 평균 (6점)</td><td>무조건 안정 · $O(\Delta t^2)$</td></tr>
   </tbody></table></div>
+
+  <div class="longform lf-compact" data-qid="concept-14-2" data-kind="reflect"><div class="lf-q"><span class="qn">한 줄 생각</span>명시적 방법에서 시간 스텝 $\Delta t$ 를 마음대로 키우지 못하는 이유는? 한 줄로.</div><textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea><div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div></div>
 </section>
 
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="문제">
@@ -371,6 +381,8 @@ end
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">핵심</div>라플라스 해는 <strong>각 점이 네 이웃의 평균</strong>인 상태 — 뾰족함이 없다(최대·최소는 경계에서만). 이 관계를 모든 내부격자에 세우면 <strong>연립 선형계</strong>가 되고, 7주 Jacobi/Gauss–Seidel 로 "이웃 평균으로 갱신"을 반복해 푼다(아래 시연).</div>
   <div class="callout warn" style="margin-top:10px"><div class="ct">한 스텝 예</div>내부점이 이웃 $100,0,0,0$ 에 둘러싸이면 Jacobi 첫 갱신 $u=\tfrac{100+0+0+0}{4}=25$.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>라플라스 방정식을 차분하면 각 격자점 값이 무엇이 되나?</div><div class="opts"><button class="opt" data-correct="1">상하좌우 <b>네 이웃의 평균</b></button><button class="opt">네 이웃의 합</button><button class="opt">대각 이웃의 곱</button><button class="opt">자기 값의 2배</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>$\nabla^2 u=0$ 을 두 방향 2계 중앙차분으로 쓰면 $u_{i,j}=\frac14(u_{i+1,j}+u_{i-1,j}+u_{i,j+1}+u_{i,j-1})$ — 평형에서 각 점은 이웃 평균. 그래서 반복(Gauss-Seidel)으로 수렴시킨다.</div></div>
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="시연">
   <div class="eyebrow">14-3 · 시연 · Step-through</div>
@@ -386,6 +398,8 @@ end
     data-steps="18"
     data-title="라플라스 Jacobi — 윗변 100°, 내부 2×2 격자"
     data-note="각 점 = 이웃 4점 평균. 대칭이라 u₁=u₂, u₃=u₄ → (37.5,37.5,12.5,12.5) 수렴."></div>
+
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px"><div class="qtext"><span class="qn">예측</span>각 점을 '네 이웃의 평균'으로 반복 갱신하면 내부 값들은?</div><div class="opts"><button class="opt" data-correct="1">경계값에 맞춰 매끄러운 평형 분포로 수렴한다</button><button class="opt">무한히 진동한다</button><button class="opt">모두 0으로 사라진다</button></div><button class="btn primary cp-submit">예측 확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>이웃 평균 반복(Jacobi/Gauss-Seidel)은 라플라스 해로 수렴 — 열이 고르게 퍼진 평형 상태. 경계조건이 내부로 스며든다.</div></div>
 </section>
 <section class="screen" data-ch="14-3" data-chtitle="라플라스 (타원형)" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 반복 · 자동 채점</span></div>

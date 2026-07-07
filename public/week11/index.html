@@ -185,6 +185,8 @@
     <div class="dcard"><h4>③ 정리</h4><div class="sub">사다리꼴</div><div class="eq">$ I \approx \dfrac{b-a}{2}\bigl[f(a)+f(b)\bigr] $</div><p>밑변 합 × 높이 ÷ 2.</p></div>
   </div>
   <div class="callout warn"><div class="ct">오차의 근원</div>$E=-\dfrac{(b-a)^3}{12}f''(\xi)$ — 구간 폭 $(b-a)$ 의 <strong>세제곱</strong>에 비례한다. 폭을 반으로 줄이면 조각당 오차는 $1/8$ 로 급감(복합 공식의 원리).</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>사다리꼴 공식은 곡선 아래 넓이를 어떻게 근사하나?</div><div class="opts"><button class="opt" data-correct="1">두 끝점을 잇는 <b>직선</b> 아래 사다리꼴 넓이로</button><button class="opt">곡선을 그대로 적분해서</button><button class="opt">포물선 아래 넓이로</button><button class="opt">중점 높이 × 폭으로만</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>사다리꼴은 구간 양 끝 $f(a),f(b)$ 를 직선으로 잇고 그 아래 넓이 $\frac{h}{2}(f(a)+f(b))$ 를 쓴다. 곡선을 1차로 근사하므로 오차는 $f''$(곡률)에 비례.</div></div>
 </section>
 
 <section class="screen" data-ch="11-1" data-chtitle="사다리꼴 공식" data-stage="시연">
@@ -201,6 +203,8 @@
     data-steps="6"
     data-title="사다리꼴 — ∫₀¹ eˣ dx,  참값 e−1 = 1.718282"
     data-note="파랑=사다리꼴 조각, n 을 2배 할 때마다 오차 |근사−참값| 이 약 1/4 로 준다 (O(h²))."></div>
+
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px"><div class="qtext"><span class="qn">예측</span>조각 수 $n$ 을 2배로 늘리면 사다리꼴 오차는 대략?</div><div class="opts"><button class="opt" data-correct="1">약 $1/4$ 로 (오차 $\propto h^2$)</button><button class="opt">약 $1/2$ 로</button><button class="opt">변하지 않음</button></div><button class="btn primary cp-submit">예측 확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>복합 사다리꼴 오차 $\propto h^2$. $n$ 2배 → $h$ 절반 → 오차 $(1/2)^2=1/4$. Simpson 이면 $h^4$ 라 $1/16$.</div></div>
 </section>
 
 <section class="screen" data-ch="11-1" data-chtitle="사다리꼴 공식" data-stage="직접계산">
@@ -271,6 +275,8 @@
   </div>
   <div class="vcap" style="margin-top:18px">반례 실증 ② · 아래로 볼록이면 사다리꼴은 <b>항상</b> 과대평가</div>
   <div class="nafig" data-fig="funcplot" data-fns='[{"fn":"exp(x)","label":"f = e^x (볼록)"},{"fn":"1 + 1.718282*x","label":"사다리꼴 현(직선)"}]' data-xmin="0" data-xmax="1" data-points="[[0,1],[1,2.718282]]" data-cap="아래로 볼록($f''&gt;0$)인 $e^x$(파랑) 위로 두 끝점을 잇는 현(주황)이 <b>구간 내내 곡선보다 위</b>에 있다 — 그래서 현 아래 사다리꼴 넓이가 참 넓이를 항상 초과한다. 실제 $\int_0^1 e^x\,dx=1.7183$ 인데 단일 사다리꼴 $=1.8591$ 로 $+0.1409$ <b>과대평가</b>. 오차 부호가 곡률 부호로 예측된다."></div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>사다리꼴 공식이 <b>가장 크게</b> 틀리는 구간은?</div><div class="opts"><button class="opt" data-correct="1">곡률(2계 도함수)이 큰, 많이 휜 구간</button><button class="opt">함수가 직선인 구간</button><button class="opt">함수값이 0인 구간</button><button class="opt">적분 결과가 큰 구간</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>사다리꼴 오차 $\propto f''$. 직선($f''=0$)이면 오차 0, 급격히 휜 곳에서 직선 근사가 크게 빗나간다. 그런 곳은 조각(n)을 더 잘게 나눠야 한다.</div></div>
 </section>
 
 <section class="screen" data-ch="11-1" data-chtitle="사다리꼴 공식" data-stage="코드">
@@ -404,6 +410,8 @@ I = trapezoid(f, 0, 1);
       <div class="callout warn" style="margin-top:12px"><div class="ct">언제 3/8?</div>구간을 3의 배수로 나눌 때, 또는 복합 1/3 에서 <strong>홀수 조각</strong>이 남을 때 마지막 3조각을 3/8 로 처리.</div>
     </div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>Simpson 1/3 공식이 사다리꼴보다 정확한 근본 이유는?</div><div class="opts"><button class="opt" data-correct="1">직선 대신 <b>포물선(2차)</b>으로 세 점을 근사하기 때문</button><button class="opt">조각을 더 잘게 나눠서</button><button class="opt">반올림오차가 없어서</button><button class="opt">적분 구간이 짧아서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>Simpson 은 세 점을 지나는 2차 곡선 아래 넓이를 쓴다. 사다리꼴(1차)보다 곡선을 잘 따라가 오차가 $f''$ 대신 $f^{(4)}$ 에 비례 → 훨씬 빨리 줄어든다.</div></div>
 </section>
 
 <section class="screen" data-ch="11-2" data-chtitle="Simpson 공식" data-stage="시연">
@@ -548,6 +556,8 @@ I = simpson13(f, 0, 1);
     <tr><td class="stp-k">Simpson 3/8</td><td>$\dfrac{3h}{8}[f_0+3f_1+3f_2+f_3],\ h=\tfrac{b-a}{3}$</td><td>$-\dfrac{3h^5}{80}f^{(4)}$ · 3차↓</td></tr>
     <tr><td class="stp-k">복합 1/3</td><td>$\dfrac{h}{3}[f_0+4\!\sum_{\text{홀}}\!+2\!\sum_{\text{짝}}\!+f_n]$</td><td>$O(h^4)$ · $n$ 2배 → $\div16$</td></tr>
   </tbody></table></div>
+
+  <div class="longform lf-compact" data-qid="concept-11-2" data-kind="reflect"><div class="lf-q"><span class="qn">한 줄 생각</span>같은 계산량이라면 사다리꼴과 Simpson 중 어느 쪽을 쓰겠는가? 근거 한 줄.</div><textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea><div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div></div>
 </section>
 
 <!-- ════════════════════ 11-3 복합 공식 ════════════════════ -->
@@ -596,6 +606,8 @@ I = simpson13(f, 0, 1);
     <div class="col2"><div class="callout key"><div class="ct">복합 사다리꼴 오차</div>$E=-\dfrac{b-a}{12}h^2 f''(\xi)=O(h^2)$ — $n$ 2배 시 $\times\tfrac14$.</div></div>
     <div class="col2"><div class="callout key"><div class="ct">복합 Simpson 오차</div>$E=-\dfrac{b-a}{180}h^4 f^{(4)}(\xi)=O(h^4)$ — $n$ 2배 시 $\times\tfrac{1}{16}$.</div></div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>복합 Simpson 에서 내부 점 가중치가 $\dots4,2,4,2,4\dots$ 로 번갈아 나오는 이유는?</div><div class="opts"><button class="opt" data-correct="1">홀수번째=포물선의 중점(가중치 4), 짝수번째=이웃 두 포물선의 <b>공유 끝점</b>(2=1+1)이라서</button><button class="opt">무작위로 정한 상수라서</button><button class="opt">점 개수를 맞추려고</button><button class="opt">반올림을 줄이려고</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>각 Simpson 조각은 $\frac{h}{3}(1,4,1)$. 인접 조각을 이어붙이면 경계점의 $1+1=2$ 가 되고 중점은 $4$ 그대로 → $1,4,2,4,2,\dots,4,1$ 패턴.</div></div>
 </section>
 
 <section class="screen" data-ch="11-3" data-chtitle="복합 공식" data-stage="직접계산">
@@ -823,6 +835,8 @@ end
   <div class="keqbox" style="margin-top:14px">
     <div class="keqrow"><span class="keqcap">일반 구간 공식</span><span class="keqline">$ \displaystyle\int_a^b f(x)\,dx \approx \frac{b-a}{2}\sum_{i=1}^{n} w_i\, f\!\Bigl(\tfrac{b-a}{2}t_i+\tfrac{a+b}{2}\Bigr) $</span></div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>Gauss 구적법이 $n$ 점으로 $2n-1$ 차 다항식까지 정확한 비결은?</div><div class="opts"><button class="opt" data-correct="1">점의 <b>위치</b>와 <b>가중치</b>를 <b>둘 다</b> 자유롭게 최적화하기 때문</button><button class="opt">점을 등간격으로 촘촘히 두어서</button><button class="opt">반올림오차가 상쇄되어서</button><button class="opt">항상 포물선을 쓰기 때문</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>Newton-Cotes 는 점 위치가 등간격으로 고정($n$ 자유도). Gauss 는 위치 $n$개 + 가중치 $n$개 = $2n$ 자유도를 모두 써서 $2n-1$ 차까지 정확히 적분한다.</div></div>
 </section>
 
 <section class="screen" data-ch="11-4" data-chtitle="Gauss 구적법" data-stage="시연">

@@ -162,6 +162,8 @@
     <div class="dcard"><h4>③ 차수의 의미</h4><div class="sub">오차 $\propto h^p$</div><div class="eq">$ E(h)\approx C\,h^{p} $</div><p>$h\!\to\!h/2$ 이면 전진은 오차 $\tfrac12$, 중앙은 $\tfrac14$. 차수 $p$ 가 클수록 급감.</p></div>
   </div>
   <div class="callout warn"><div class="ct">주의 — 대칭이 열쇠</div>중앙차분이 $O(h^2)$ 인 것은 $x$ 를 <strong>가운데</strong> 두어 좌우 오차가 상쇄되기 때문이다. 전진·후진은 한쪽으로 치우쳐 있어 1차 항($\tfrac{h}{2}f''$)이 남는다.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>전방차분 $\frac{f(x+h)-f(x)}{h}$ 와 중앙차분 $\frac{f(x+h)-f(x-h)}{2h}$, 정확도 차수는?</div><div class="opts"><button class="opt" data-correct="1">전방 $O(h)$, 중앙 $O(h^2)$ — 중앙이 한 차수 높다</button><button class="opt">둘 다 $O(h)$ 로 같다</button><button class="opt">전방이 $O(h^2)$ 로 더 높다</button><button class="opt">둘 다 $O(h^3)$</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>Taylor 전개에서 중앙차분은 짝수항이 대칭으로 상쇄돼 $O(h^2)$, 전방차분은 상쇄가 없어 $O(h)$. 그래서 같은 $h$ 에서 중앙이 더 정확.</div></div>
 </section>
 
 <section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="시연">
@@ -205,6 +207,8 @@
       <div class="keqnote">중앙차분의 오차가 전진·후진보다 약 <strong>30배</strong> 작다 — 함수 평가 횟수는 똑같이 2회인데도. 대칭 배치의 힘이다.</div>
     </div>
   </div>
+
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px"><div class="qtext"><span class="qn">예측</span>$h$ 를 $10^{-1}\to10^{-4}\to10^{-8}$ 로 줄이면 중앙차분 오차는?</div><div class="opts"><button class="opt" data-correct="1">처음엔 급히 줄다가 어느 지점 이후 다시 커진다(U자)</button><button class="opt">계속 단조로 줄어 0에 수렴</button><button class="opt">전혀 변하지 않는다</button></div><button class="btn primary cp-submit">예측 확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>절단오차↓(∝$h^2$)와 반올림오차↑(∝$1/h$)의 합 → 최소점을 지나면 되커짐. $h$ 를 무작정 줄이는 것이 답이 아니다.</div></div>
 </section>
 
 <section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="시연">
@@ -293,6 +297,8 @@
     <div class="pitfall"><h4>⚠ 상쇄(cancellation)</h4><p>$h\to0$ 이면 $f(x+h)\approx f(x-h)$ — 유효숫자가 뺄셈에서 사라진다.</p></div>
     <div class="pitfall"><h4>⚠ 최적 $h$ 존재</h4><p>중앙차분은 $h_\text{opt}\sim\varepsilon_\text{mach}^{1/3}\approx10^{-5}$. "작을수록"은 거짓.</p></div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>수치미분에서 $h$ 를 계속 줄였더니 어느 지점부터 오차가 <b>다시 커졌다</b>. 원인은?</div><div class="opts"><button class="opt" data-correct="1">가까운 두 수의 빼기에서 유효자릿수가 소거돼 <b>반올림오차</b>가 지배</button><button class="opt">절단오차가 커져서</button><button class="opt">함수가 불연속이라서</button><button class="opt">$h$ 가 작으면 계산이 느려서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>절단오차는 $h$ 와 함께 줄지만, $f(x+h)-f(x)$ 가 거의 같은 두 수의 빼기라 $h$ 가 너무 작으면 <b>자리빠짐</b>으로 반올림오차 $\propto 1/h$ 가 폭발. 최적 $h$ 가 존재(U자).</div></div>
 </section>
 
 <section class="screen" data-ch="12-1" data-chtitle="전·후·중앙 차분" data-stage="코드">
@@ -413,6 +419,8 @@ end
 <div class="drow">$f'$ 는 살리고 $f'',f''',f^{(4)}$ 항이 <b>소거</b>되도록 계수를 맞춘다</div>
 <div class="drow">$\Rightarrow f'(x)\approx\dfrac{-f(x{+}2h)+8f(x{+}h)-8f(x{-}h)+f(x{-}2h)}{12h}$</div></div>
 <div class="callout key" style="margin-top:10px"><div class="ct">가중치 $(-1,8,-8,1)/12h$ 는 소거 조건의 해</div>점을 더 많이 쓰는 대신 오차 차수를 $O(h^2){\to}O(h^4)$ 로 올린다 — "가중치는 임의가 아니라 <b>Taylor 소거가 정한다</b>".</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>고차정확도 차분공식의 가중치는 어떻게 정하나?</div><div class="opts"><button class="opt" data-correct="1">Taylor 전개에서 원하는 차수까지 <b>오차항이 소거</b>되도록 연립방정식을 풀어</button><button class="opt">실험으로 대충 맞춰서</button><button class="opt">모두 같은 값으로</button><button class="opt">무작위로</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>여러 점 $f(x\pm kh)$ 의 Taylor 전개를 세우고, 원하는 도함수만 남고 낮은 차수 오차항이 0이 되도록 가중치 연립방정식을 푼다 — 미정계수법.</div></div>
 </section>
 
 <section class="screen" data-ch="12-2" data-chtitle="고차 정확도 공식" data-stage="시연">
@@ -571,6 +579,8 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
   </div>
   <div class="vcap" style="max-width:560px;margin:16px auto 0;text-align:center">한눈 요약 — 고차 · 2계 · 편측 공식</div>
   <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>대상</th><th>공식</th><th>오차 · $h$반감</th></tr></thead><tbody><tr><td class="stp-k">1계 4점</td><td>$\dfrac{-f_{+2}+8f_{+1}-8f_{-1}+f_{-2}}{12h}$</td><td>$O(h^4)$ · $\div16$</td></tr><tr><td class="stp-k">2계 중앙</td><td>$\dfrac{f_{+1}-2f_0+f_{-1}}{h^2}$</td><td>$O(h^2)$ · $\div4$</td></tr><tr><td class="stp-k">편측(경계)</td><td>$\dfrac{-3f_0+4f_{+1}-f_{+2}}{2h}$</td><td>$O(h^2)$ · $\div4$</td></tr></tbody></table></div>
+
+  <div class="longform lf-compact" data-qid="concept-12-2" data-kind="reflect"><div class="lf-q"><span class="qn">한 줄 생각</span>"$h$ 를 작게 할수록 수치미분이 정확해진다"는 항상 옳은가? 한 줄로.</div><textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea><div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div></div>
 </section>
 
 <!-- ════════════════════ 12-3 Richardson 외삽 ════════════════════ -->
@@ -610,6 +620,8 @@ fprintf('d2(O h^2)=%.8f  (true 2.718282)\n', d2);
     <div class="dcard"><h4>③ 정리</h4><div class="sub">$f'$ 추정</div><div class="eq">$ D_\text{R}=\dfrac{4D(h/2)-D(h)}{3} $</div><p>남은 오차는 $O(h^4)$ — 두 차수 이득.</p></div>
   </div>
   <div class="callout warn"><div class="ct">전제 — 오차가 짝수 차수만</div>Richardson이 계수 $4$ 로 깔끔한 이유는 중앙차분 오차가 $c\,h^2+d\,h^4+\cdots$ 처럼 <strong>짝수 차수</strong>뿐이기 때문이다. 전진차분($O(h)$) 기반이면 $2^p=2^1=2$ 를 써야 하고, 오차 구조가 규칙적이지 않으면 이득이 줄어든다.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>Richardson 외삽은 두 개의 $O(h^2)$ 근사 $D(h),D(h/2)$ 를 어떻게 조합하나?</div><div class="opts"><button class="opt" data-correct="1">$\frac{4D(h/2)-D(h)}{3}$ 로 $h^2$ 오차항을 소거해 $O(h^4)$ 로 올린다</button><button class="opt">둘을 단순 평균한다</button><button class="opt">더 작은 것을 버린다</button><button class="opt">둘을 곱한다</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>두 근사의 $h^2$ 오차 계수가 같음을 이용, $\frac{4D(h/2)-D(h)}{3}$ 로 그 항을 정확히 지운다 → 정확도 $O(h^4)$. Romberg 적분과 같은 아이디어.</div></div>
 </section>
 
 <section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="시연">
@@ -715,6 +727,8 @@ fprintf('Richardson=%.8f  err=%.2e\n', DR, abs(DR-exp(1)));
     </table>
   </div>
   <div class="keqnote" style="max-width:520px;margin-left:auto;margin-right:auto">순서를 지키면 오차 $1.8\times10^{-2}\to1.5\times10^{-4}$ — <b>약 125배</b> 줄어든다(공짜 정확도). 그러나 더 정밀한 $D(h/2)$ 대신 $D(h)$ 에 $\times4$ 를 붙여 <b>뒤바꾸면</b> 오차가 $9.1\times10^{-2}$ — 가장 거친 $D(0.4)$ 의 $7.3\times10^{-2}$ <b>보다도 나쁘다</b>. 계수 소거는커녕 오차가 증폭돼 외삽이 배신한다.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>Richardson 외삽(더 정확해 보이는 조합)이 오히려 <b>배신</b>하는 경우는?</div><div class="opts"><button class="opt" data-correct="1">바탕 근사에 반올림오차가 이미 지배적일 때 — 없는 정밀도를 짜내려 하면 노이즈만 증폭</button><button class="opt">함수가 다항식일 때</button><button class="opt">$h$ 가 충분히 클 때</button><button class="opt">항상 안전하다</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>외삽은 오차가 <b>깨끗한 $h$ 멱급수</b>라는 가정 위에서 작동. $h$ 가 너무 작아 반올림이 지배하면 그 가정이 깨져 외삽이 노이즈를 증폭한다.</div></div>
 </section>
 
 <section class="screen" data-ch="12-3" data-chtitle="Richardson 외삽" data-stage="그림">

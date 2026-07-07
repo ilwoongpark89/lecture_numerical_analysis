@@ -140,6 +140,8 @@
     <div class="dcard"><h4>③ n차 다항</h4><div class="sub">특성다항식</div><div class="eq">$ p(\lambda)=0,\ \deg p=n $</div><p>근 $n$ 개 = 고유값.</p></div>
   </div>
   <div class="callout key"><div class="ct">핵심</div>고유값 = 특성다항식 $\det(A-\lambda I)$ 의 근. $2\times2$ 는 $\lambda^2-(\operatorname{tr}A)\lambda+\det A=0$ — <strong>trace·det 로 바로 검산</strong>된다.</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>고유값 방정식 $A\mathbf{x}=\lambda\mathbf{x}$ 에서 $\det(A-\lambda I)=0$ 이 나오는 이유는?</div><div class="opts"><button class="opt" data-correct="1">$(A-\lambda I)\mathbf{x}=0$ 이 <b>비자명해</b>를 가지려면 행렬이 특이(det=0)해야 하므로</button><button class="opt">고유벡터가 항상 0이라서</button><button class="opt">$A$ 가 대칭이라서</button><button class="opt">$\lambda$ 가 항상 실수라서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>$(A-\lambda I)\mathbf{x}=0$ 에서 $\mathbf{x}\ne0$ 이려면 $A-\lambda I$ 가 역행렬을 가지면 안 됨 → $\det(A-\lambda I)=0$. 이것이 특성방정식이고 근이 고유값.</div></div>
 </section>
 <section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">고유값 확인 · 자동 채점</span></div>
@@ -170,6 +172,8 @@
     <tr><td class="stp-k">$10^{-8}$</td><td>1.00010, 0.99990</td><td>0.00010</td><td>×10,000</td></tr>
   </tbody></table></div>
   <div class="keqnote" style="max-width:560px;margin:8px auto 0">특성다항식 $p(\lambda)=\lambda^2-2\lambda+(1-\delta)$ 는 이중근 $\lambda=1$ 을 가진다. 상수항을 $\delta$ 만큼만 흔들면 근은 $1\pm\sqrt\delta$ 로 벌어져 — <b>계수 오차보다 $1/\sqrt\delta$ 배 크게</b> 튄다. $\delta=10^{-8}$ 의 미세 오차가 근을 <b>10,000배</b> 증폭해 흔든다(Wilkinson 악조건). 계수→근 경로 자체가 불안정하니, 실무는 특성방정식을 <b>세우지 않는다.</b></div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>특성방정식을 손으로 전개해 근을 구하는 방식이 <b>큰 행렬</b>에서 실패하는 이유는?</div><div class="opts"><button class="opt" data-correct="1">고차 다항식의 근찾기가 계수에 극도로 <b>민감</b>해 수치적으로 불안정하기 때문</button><button class="opt">행렬식이 항상 0이라서</button><button class="opt">고유값이 존재하지 않아서</button><button class="opt">계산이 느릴 뿐 정확함</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>다항식 근은 계수의 작은 오차에 크게 흔들린다(Wilkinson). 그래서 실무는 특성방정식 대신 <b>반복법</b>(거듭제곱·QR)으로 고유값을 직접 구한다.</div></div>
 </section>
 <section class="screen" data-ch="15-1" data-chtitle="고유값 문제" data-stage="그림">
   <div class="eyebrow">15-1 · 그림 · 고유벡터</div>
@@ -228,6 +232,8 @@
     <div class="dcard"><h4>③ $\lambda_1^{k}$ 로 묶기</h4><div class="sub">비율 뽑기</div><div class="eq">$ =\lambda_1^{k}\!\Big[c_1\mathbf v_1+\!\sum_{i\ge2}\!c_i\Big(\tfrac{\lambda_i}{\lambda_1}\Big)^{\!k}\mathbf v_i\Big] $</div></div>
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">핵심</div>$|\lambda_i/\lambda_1|<1$ 이므로 $(\lambda_i/\lambda_1)^{k}\to0$ — 괄호 안이 $c_1\mathbf v_1$ 만 남는다. 그래서 $A^{k}\mathbf x^{(0)}$ 는 <strong>지배 고유벡터 $\mathbf v_1$ 방향</strong>으로 정렬되고, 매 스텝 최대성분으로 정규화하면 그 성분이 <strong>$\lambda_1$</strong> 로 수렴한다. 수렴 속도 $=|\lambda_2/\lambda_1|$ — 둘째로 센 고유값이 가까울수록 느리다(시연의 $\approx0.52$).</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>거듭제곱법(power method)이 <b>가장 큰</b> 고유값으로 수렴하는 이유는?</div><div class="opts"><button class="opt" data-correct="1">반복 $A\mathbf{x}$ 마다 큰 고유값 방향이 상대적으로 더 증폭되어 결국 지배하기 때문</button><button class="opt">작은 고유값이 먼저 사라져서</button><button class="opt">무작위로 아무 방향이나 골라서</button><button class="opt">행렬이 대칭이라서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>벡터를 고유기저로 펼치면 $A^k$ 곱마다 각 성분이 $\lambda_i^k$ 로 스케일. $|\lambda_1|$ 이 가장 크면 그 항이 기하급수적으로 지배 → 최대 고유값·고유벡터로 수렴.</div></div>
 </section>
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="시연">
   <div class="eyebrow">15-2 · 시연 · Iterate</div>
@@ -237,6 +243,8 @@
     data-kind="power" data-a="[[4,1],[1,3]]" data-x0="[1,0]" data-true="4.6180" data-steps="12"
     data-title="거듭제곱법 — A=[[4,1],[1,3]], x₀=(1,0)"
     data-note="매 반복 λ(최대성분)→4.618, 벡터→(1,0.618). 수렴 속도 ∝ |λ₂/λ₁|=2.382/4.618≈0.52 — 두 고유값이 가까울수록 느리다."></div>
+
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px"><div class="qtext"><span class="qn">예측</span>임의 벡터에 $A$ 를 반복해 곱하고 정규화하면 벡터 방향은?</div><div class="opts"><button class="opt" data-correct="1">최대 고유값의 고유벡터 방향으로 수렴한다</button><button class="opt">계속 무작위로 바뀐다</button><button class="opt">0 벡터가 된다</button></div><button class="btn primary cp-submit">예측 확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>최대 고유값 성분이 매 곱마다 지배적으로 커져 그 고유벡터로 정렬. 레일리 몫으로 고유값도 함께 추정.</div></div>
 </section>
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">한 반복 · 자동 채점</span></div>
@@ -275,6 +283,8 @@
     <tr><td class="stp-k">⋯</td><td>영원히 진동</td><td>1</td><td>0.50 ↔ 2.00</td></tr>
   </tbody></table></div>
   <div class="keqnote" style="max-width:540px;margin:8px auto 0">$A=\begin{bmatrix}0&1\\1&0\end{bmatrix}$ 의 고유값은 $+1,\,-1$ — <b>크기가 같다</b> $(|\lambda_2/\lambda_1|=1)$. 거듭제곱을 돌리면 방향비 $x_2/x_1$ 이 $0.50\leftrightarrow2.00$ 으로 <b>영원히 진동</b>해 어느 고유벡터로도 수렴하지 못한다. $(\lambda_2/\lambda_1)^k=(-1)^k$ 항이 결코 사라지지 않기 때문. (대조: $A=\begin{bmatrix}4&1\\1&3\end{bmatrix}$ 은 비가 $0.52$ 라 방향비가 $0.618$ 로 정착.)</div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>거듭제곱법이 잘 수렴하지 못하는(막히는) 대표적 경우는?</div><div class="opts"><button class="opt" data-correct="1">가장 큰 두 고유값의 크기가 비슷할 때 ($|\lambda_1|\approx|\lambda_2|$)</button><button class="opt">고유값이 모두 다를 때</button><button class="opt">행렬이 클 때</button><button class="opt">초기벡터가 0이 아닐 때</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>수렴 속도 $\propto|\lambda_2/\lambda_1|^k$. 두 최대 고유값 크기가 비슷하면 비율이 1에 가까워 매우 느리거나 진동. 이동(shift)이나 다른 방법이 필요.</div></div>
 </section>
 <section class="screen" data-ch="15-2" data-chtitle="거듭제곱법 (Power)" data-stage="코드">
   <div class="eyebrow">15-2 · 코드 · MATLAB</div>
@@ -372,6 +382,8 @@ A = [4 1; 1 3];
       <div class="callout key"><div class="ct">핵심</div>$A^{-1}$ 를 직접 구하지 않는다 — 매 반복 <strong>LU 분해(6주)</strong> 로 $A\mathbf{y}=\mathbf{x}$ 를 푼다. 한 번 분해하면 재사용해 저렴. shift $(A-\mu I)^{-1}$ 은 $\mu$ 에 <strong>가장 가까운</strong> 고유값을 겨냥·가속.</div>
     </div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>$A^{-1}$ 에 거듭제곱법을 적용하면 무엇을 얻나?</div><div class="opts"><button class="opt" data-correct="1">$A$ 의 <b>가장 작은</b> 고유값 (역행렬의 최대 고유값 = 원래의 최소)</button><button class="opt">가장 큰 고유값</button><button class="opt">고유값의 합</button><button class="opt">행렬식</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>$A\mathbf{x}=\lambda\mathbf{x}\Rightarrow A^{-1}\mathbf{x}=\frac1\lambda\mathbf{x}$. $A^{-1}$ 의 최대 고유값 $1/\lambda_{\min}$ → 역거듭제곱법으로 최소 고유값을 구한다(shift 하면 임의 고유값).</div></div>
 </section>
 <section class="screen" data-ch="15-3" data-chtitle="역·shift 거듭제곱" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">역 거듭제곱 · 자동 채점</span></div>
@@ -403,6 +415,8 @@ A = [4 1; 1 3];
     <tr><td class="stp-k">역 거듭제곱</td><td>$A\mathbf{y}=\mathbf{x}_k$ (LU)</td><td>최소 $\lambda_n=2.382$</td></tr>
     <tr><td class="stp-k">shift</td><td>$(A-\mu I)\mathbf{y}=\mathbf{x}_k$</td><td>$\mu$ 근처 · 가속</td></tr>
   </tbody></table></div>
+
+  <div class="longform lf-compact" data-qid="concept-15-3" data-kind="reflect"><div class="lf-q"><span class="qn">한 줄 생각</span>큰 행렬의 고유값을 왜 특성방정식이 아니라 반복법으로 구할까? 한 줄로.</div><textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea><div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div></div>
 </section>
 
 <section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="문제">
@@ -438,6 +452,8 @@ A = [4 1; 1 3];
       <div class="callout key"><div class="ct">핵심</div>$A_{k+1}=Q_k^{-1}A_kQ_k$ 는 <strong>닮음변환</strong> — 고유값은 닮음 아래 <strong>불변</strong>. 그래서 반복해도 고유값이 보존되고, $A_k$ 는 상삼각으로 수렴해 <strong>대각선에 모든 고유값</strong>이 드러난다.</div>
     </div>
   </div>
+
+  <div class="cq" style="max-width:620px;margin:16px auto 0"><div class="qtext"><span class="qn">개념 점검</span>QR 알고리즘이 $A=QR \to A'=RQ$ 로 순서를 바꿔 곱해도 고유값이 보존되는 이유는?</div><div class="opts"><button class="opt" data-correct="1">$A'=RQ=Q^{-1}AQ$ 로 $A$ 와 <b>닮음(similar)</b>이라 고유값이 같기 때문</button><button class="opt">$R$ 이 대각행렬이라서</button><button class="opt">$Q$ 가 항상 단위행렬이라서</button><button class="opt">고유값이 우연히 같아서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>$A=QR$ 이면 $R=Q^{-1}A$, 따라서 $RQ=Q^{-1}AQ$ = 닮음변환. 닮은 행렬은 고유값이 동일. 반복하면 상삼각으로 수렴해 대각에 고유값이 드러난다.</div></div>
 </section>
 <section class="screen" data-ch="15-4" data-chtitle="QR 개요" data-stage="직접계산">
   <div class="panel-head"><span class="tag">직접 계산</span><span class="panel-title">닮음 불변량 · 자동 채점</span></div>
