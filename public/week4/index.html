@@ -156,6 +156,17 @@
   </div>
 </section>
 
+<section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="감잡기">
+  <div class="eyebrow">4-1 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 수영장에서 발끝으로</h1>
+  <div class="warmup">
+    <div class="wu-intro">발끝 하나는 <b>물 위(공기)</b>, 다른 발끝은 <b>물 아래</b>에 담갔다. 그럼 두 발 사이 어딘가, 발끝이 <b>딱 수면(높이 0)</b>에 닿는 지점이 <b>반드시</b> 있다. 안 지나고 건너뛸 방법이 없다.</div>
+    <div class="wu-steps"><div class="wu-step"><span class="wu-n">1</span><div>왼쪽 끝 높이를 재니 <b>+2</b>(물 위), 오른쪽 끝은 <b>−3</b>(물 아래).</div></div><div class="wu-step"><span class="wu-n">2</span><div>한쪽은 플러스, 한쪽은 마이너스 → 그 사이 어딘가에서 <b>부호가 뒤집힌다</b>. 뒤집히는 그 순간이 <b>높이 0</b>.</div></div><div class="wu-step"><span class="wu-n">3</span><div>그 0 지점이 바로 우리가 찾는 <b>근</b>. 아직 어딘지는 몰라도 '이 구간 안에 있다'는 건 확실하다.</div></div></div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      왼끝·오른끝 높이의 <b>부호가 다르다</b> = $f(a)\,f(b)<0$, 그 사이 <b>반드시 0을 지난다</b> = <b>중간값 정리</b>. 근을 좁히기 <b>전에</b> "이 구간에 근이 있다"를 이렇게 먼저 보증한다 — 겁먹을 공식이 아니라 수영장 상식이다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="원리">
   <div class="eyebrow">4-1 · 원리 · Bracket search</div>
   <h1 class="stage-h">부호 변화로 근을 가둔다</h1>
@@ -547,6 +558,17 @@ f = @(x) x.^3 - x - 2;
   </div>
 </section>
 
+<section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="감잡기">
+  <div class="eyebrow">4-3 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 언덕에서 공 굴리기</h1>
+  <div class="warmup">
+    <div class="wu-intro">이분법은 "범위를 반씩" 줄였다. 더 빠를 순 없을까? 언덕 위에 공을 놓으면, 공은 눈앞의 <b>경사(기울기)</b>를 따라 데굴데굴 내려가 바닥에 <b>금방</b> 닿는다. Newton 은 이 "경사 따라 미끄러지기"다.</div>
+    <div class="wu-steps"><div class="wu-step"><span class="wu-n">1</span><div>지금 서 있는 자리에서 곡선의 <b>기울기(접선)</b> 하나만 본다.</div></div><div class="wu-step"><span class="wu-n">2</span><div>그 <b>접선을 쭉 그어</b> x축(바닥)에 닿는 곳으로 <b>껑충</b> 건너뛴다. 반씩이 아니라 한 번에 훅.</div></div><div class="wu-step"><span class="wu-n">3</span><div>새 자리에서 또 접선 따라 미끄러지면 — <b>몇 번 만에</b> 근에 착 달라붙는다(아주 빠름).</div></div></div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      "접선 따라 x축까지 미끄러진다" = $x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)}$. 기울기 $f'$ 만 알면 이분법보다 <b>훨씬 빠르다</b>(이차수렴). 대신 접선(도함수)이 필요하고, 시작 위치가 나쁘면 엉뚱한 데로 미끄러질 수도 — 그건 함정에서 본다.</div>
+  </div>
+</section>
+
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="원리">
   <div class="eyebrow">4-3 · 원리 · Derivation</div>
   <h1 class="stage-h">접선의 $x$절편 — 점화식 유도</h1>
@@ -760,6 +782,17 @@ df = @(x) 3*x.^2 - 1;
   <div class="analogy"><span class="ic">⚖️</span><div class="tx"><b>직관</b> — 이분법은 느리지만 <b>절대 실패하지 않는</b> 거북이, Newton은 빠르지만 <b>넘어질 수 있는</b> 토끼다. 실무는 둘의 장점을 섞는다: 거북이로 근처까지 안전하게 간 뒤 토끼로 마무리(하이브리드).</div></div>
   <p class="lede">같은 방정식 $f(x)=x^3-x-2$ 를 두 방법으로 <strong>나란히 반복</strong>시켜 "같은 근에 몇 번 만에 닿는가" 를 직접 비교한다.</p>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="convergence" data-rates='[{"r":0.5,"label":"이분법(선형)"},{"order":2,"label":"Newton(이차)"}]' data-cap="같은 근을 이분법은 20회, Newton 은 5회 — 안전과 속도의 트레이드오프를 이번 챕터에서 결정한다."></div>
+</section>
+
+<section class="screen" data-ch="4-4" data-chtitle="방법 선택" data-stage="감잡기">
+  <div class="eyebrow">4-4 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 하산길 고르기</h1>
+  <div class="warmup">
+    <div class="wu-intro">산에서 내려올 때, <b>넓고 완만한 길</b>은 느리지만 절대 안 넘어지고, <b>가파른 지름길</b>은 빠르지만 미끄러질 수 있다. 어느 길이 정답일까? — 상황에 따라 다르다. 근찾기도 똑같다.</div>
+    <div class="wu-steps"><div class="wu-step"><span class="wu-n">1</span><div><b>이분법</b> = 완만한 길. 느려도(선형) <b>반드시</b> 근에 도착(안전).</div></div><div class="wu-step"><span class="wu-n">2</span><div><b>Newton</b> = 지름길. 빠르지만(이차) 시작점이 나쁘면 엉뚱한 데로 튄다.</div></div><div class="wu-step"><span class="wu-n">3</span><div>그래서 <b>구간이 잡히나? 도함수가 있나? 시작점이 좋나?</b> 를 보고 고른다 — 정답은 하나가 아니다.</div></div></div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      <b>안전</b>(브래킷 보장) ↔ <b>속도</b>(이차수렴)의 트레이드오프. 실무는 둘을 섞는다(Brent) — 완만히 안전하게 시작해, 근처에 오면 지름길로 갈아탄다. 방법을 <b>고르는 눈</b>이 이 절의 핵심이다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="4-4" data-chtitle="수렴 속도 비교" data-stage="시연">
