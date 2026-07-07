@@ -802,6 +802,8 @@ plot(x, Y(:,1));                   <span class="cm">% y(x) = cos(x)</span>
     <tr><td class="stp-k">벡터 전진</td><td>$\mathbf Y_{n+1}=\mathbf Y_n+h\,\mathbf F$</td><td>$[1,\,-0.1]$</td></tr>
     <tr><td class="stp-k">일반화</td><td>$n$차 → 상태 $n$개</td><td>Euler/RK4 그대로</td></tr>
   </tbody></table></div>
+
+  <div class="cq" style="max-width:640px;margin:16px auto 0"><div class="qtext"><span class="qn">응용 · 왜 배우나</span>번지점퍼의 속도는 $\dfrac{dv}{dt}=g-\dfrac{c_d}{m}v^2$ 를 따른다. $v(t)$ 를 구하려면 왜 수치 ODE 해법(Euler·RK)이 필요한가?</div><div class="opts"><button class="opt" data-correct="1">$v^2$ 때문에 <b>비선형</b>이라 깔끔한 닫힌 해가 없어, 초기값에서 시간을 한 스텝씩 전진시켜야 하므로</button><button class="opt">$v$ 를 시간에 대해 단순 적분하면 바로 나오기 때문</button><button class="opt">방정식이 선형이라 행렬로 한 번에 풀리기 때문</button><button class="opt">$v$ 를 미지수로 하는 근찾기 문제이기 때문</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>우변에 $v^2$ 이 있어 비선형 1계 ODE. 해석해가 tanh 로 특수하게 존재하지만 일반적 저항·힘 모델에선 없어, <b>기울기를 따라 $\Delta t$ 씩 전진</b>(Euler/RK)하는 수치해가 표준. 초기조건 $v(0)$ 에서 시작하는 초기값 문제다.</div></div>
 </section>
 
 </div></main>

@@ -963,6 +963,13 @@ fprintf('fx=%.4f  fy=%.4f  fxy=%.4f  lap=%.4f\n', fx, fy, fxy, lap);
   </div>
   <div class="vcap" style="max-width:560px;margin:16px auto 0;text-align:center">한눈 요약 — 2차원 스텐실 (방향별 1차원 재사용)</div>
   <div class="stp-tblwrap" style="max-width:560px;margin:6px auto 0"><table class="stp-tbl"><thead><tr><th>도함수</th><th>분자 스텐실</th><th>분모</th></tr></thead><tbody><tr><td class="stp-k">$\partial f/\partial x$</td><td>$f(x{+}h,y)-f(x{-}h,y)$</td><td>$2h$</td></tr><tr><td class="stp-k">$\nabla^2 f$ 라플라시안</td><td>$f_E+f_W+f_N+f_S-4f_0$</td><td>$h^2$</td></tr><tr><td class="stp-k">교차 $\partial^2 f/\partial x\partial y$</td><td>$f_{++}-f_{+-}-f_{-+}+f_{--}$</td><td>$4h^2$</td></tr></tbody></table></div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>가열판에 열전대(thermocouple)를 격자로 붙여 각 점의 온도만 측정했다. Fourier 법칙 $\vec q = -k\nabla T$ 로 열유속을 구하려 할 때, 왜 수치 편미분(중앙차분)이 필요한가?</div>
+    <div class="opts"><button class="opt" data-correct="1">측정값은 격자점의 이산 온도뿐이라 해석적 $T(x,y)$ 함수가 없으므로, 이웃 점 차분으로 $\nabla T$ 를 근사해야 한다</button><button class="opt">열유속은 온도의 적분이므로 미분 대신 수치적분을 써야 한다</button><button class="opt">해석적 미분이 존재하지만 수치 미분이 항상 더 정확해서</button><button class="opt">열전도도 $k$ 를 모르기 때문에 온도를 미분해야 한다</button></div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>실측 온도장은 격자점의 이산 데이터로만 주어져 미분할 닫힌형 함수가 없다. 열유속은 온도의 <b>기울기</b> $\nabla T$(적분 아님)에 비례하므로, 이웃 점 온도차를 $2h$ 로 나눈 중앙차분으로 각 방향 편미분을 근사해 $\vec q=-k\nabla T$ 를 계산한다. $k$ 는 재료 물성값으로 이미 주어진다.</div>
+  </div>
 </section>
 
 </div></main>

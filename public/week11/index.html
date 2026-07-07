@@ -108,6 +108,13 @@
       <div class="col2"><div class="callout warn"><div class="ct">깨뜨려 본다</div><ul><li><strong>함정</strong>: 진동·특이점·짝수 조건 위반으로 공식이 무너지는 걸 확인한다.</li><li>왜 "고차 공식이 항상 좋지 않은지" 를 몸으로 안다.</li></ul></div></div>
     </div>
   </div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>자율주행 시험차의 속도계가 $0.5$초 간격으로 <b>속도값만</b> 기록한다 — 속도를 나타내는 <b>수식은 없다</b>. 이 이산 데이터로 <b>주행 거리</b>를 구하려면 어떤 접근이 옳은가?</div>
+    <div class="opts"><button class="opt" data-correct="1">속도–시간 그래프 <b>아래 넓이</b>를 사다리꼴로 조각내어 더한다 ($s=\int v\,dt$)</button><button class="opt">마지막(또는 평균) 속도에 총 시간을 곱한다</button><button class="opt">속도값을 시간으로 <b>미분</b>해 거리를 얻는다</button><button class="opt">기록된 속도 중 최댓값을 대표값으로 쓴다</button></div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>거리는 속도의 시간 적분 $s=\int_a^b v\,dt$, 곧 속도–시간 곡선 아래 넓이다. 측정값이 <b>이산 데이터</b>뿐이라 적분할 수식이 없으니 해석적분은 불가능 → 점 사이를 직선으로 이어 사다리꼴 넓이를 합하는 <b>수치적분</b>이 맞다. 미분은 가속도를 줄 뿐 거리와 무관하고, 최댓값·마지막값은 변하는 속도를 버려 과대·과소 추정이 된다. 하천 단면의 불규칙 넓이나 유량도 같은 원리(측정된 폭·유속 데이터의 넓이 합)로 구한다.</div>
+  </div>
 </section>
 
 <!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->

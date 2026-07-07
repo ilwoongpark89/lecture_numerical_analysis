@@ -749,6 +749,18 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
     <tr><td class="stp-k">포화 $\frac{ax}{b+x}$</td><td>$(1/x,\ 1/y)$</td><td>$a=1/A_0,\ b=A_1a$</td></tr>
   </tbody></table></div>
   <div class="keqbox" style="max-width:560px;margin:8px auto 0"><div class="keqrow"><span class="keqcap">지수 예제</span><span class="keqline">$ A_0{=}0.940,\ A_1{=}0.457\ \Rightarrow\ y=2.560\,e^{0.457x} $</span></div></div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>화학반응 속도상수 $k$ 와 절대온도 $T$ 는 Arrhenius 식 $k=A\,e^{-E_a/RT}$ 로 <b>비선형</b>이다. 여러 온도에서 $k$ 를 측정해 활성화에너지 $E_a$ 를 <b>직선 최소제곱</b>으로 뽑고 싶다. 무엇을 $Y$·$X$ 축으로 잡아야 데이터가 직선으로 펴지는가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$Y=\ln k$ 를 $X=1/T$ 에 대해 — 기울기가 $-E_a/R$</button>
+      <button class="opt">$Y=k$ 를 $X=T$ 에 대해 그대로 (변환 없이)</button>
+      <button class="opt">$Y=\ln k$ 를 $X=\ln T$ 에 대해 (거듭제곱 모델)</button>
+      <button class="opt">$Y=1/k$ 를 $X=1/T$ 에 대해 (포화 모델)</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>양변에 자연로그를 취하면 $\ln k=\ln A-\dfrac{E_a}{R}\cdot\dfrac1T$ — 즉 $\ln k$ 가 $1/T$ 에 대해 <b>완벽한 직선</b>이 된다(지수형 선형화, 단 $x$ 자리에 $1/T$). 여기서 $X{=}1/T$ 축의 $k$ 값들이 최소제곱 기저에 해당하고, 직선 기울기 $A_1{=}-E_a/R$ 에서 $E_a$ 를, 절편 $A_0{=}\ln A$ 에서 지수앞자리 $A$ 를 복원한다. $\ln T$ 축(거듭제곱)이나 $1/k$ 축(포화)으로 두면 이 데이터는 휘어 직선 회귀가 편향된다. 비선형을 직접 다루는 반복 최적화 대신, 변환 한 번으로 반복·초기값 없는 정규방정식에 얹는 것이 이 방법의 실익이다.</div>
+  </div>
 </section>
 
 <!-- ════════════════════ 9-4 결정계수 R² ════════════════════ -->

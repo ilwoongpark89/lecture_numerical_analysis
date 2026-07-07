@@ -408,6 +408,13 @@ b = np.array([7,-21,15], float)
     <tr><td class="stp-k">수렴</td><td>선형 · 느림</td><td>$\rho(T_J)&lt;1$ · 예제 약 19회</td></tr>
     <tr><td class="stp-k">병렬 · 메모리</td><td>성분 독립 → 병렬 쉬움</td><td>메모리 $2n$</td></tr>
   </tbody></table></div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>정상상태 열전도판을 유한차분으로 풀면 격자점마다 "이웃 4점 온도의 평균" 관계식이 생겨 $A\mathbf{x}=\mathbf{b}$ 가 된다. 격자점 $n\approx10^6$, 각 행에 비영 원소는 5개뿐인 <b>대형 희소</b> 행렬이다. 이 계에 Gauss 소거(직접법) 대신 Jacobi 같은 <b>반복법</b>을 쓰는 핵심 이유는?</div>
+    <div class="opts"><button class="opt" data-correct="1">직접법은 소거 중 fill-in 으로 희소성이 깨져 $O(n^3)$ 연산과 조밀 저장이 필요하지만, 반복법은 행렬·벡터 곱만 써서 희소성을 보존해 반복당 $O(n)$·메모리 $2n$ 으로 감당된다</button><button class="opt">반복법이 직접법보다 항상 더 정확한 해를 주기 때문</button><button class="opt">열전달 행렬은 대칭이라 직접법은 아예 적용할 수 없기 때문</button><button class="opt">반복법은 초기 추정값이 필요 없어 절차가 더 간단하기 때문</button></div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>격자 연립계의 관건은 정확도가 아니라 <b>규모와 희소성</b>이다. $n=10^6$ 이면 직접법은 $n^3\approx10^{18}$ 연산에 더해 소거 fill-in 이 0 자리를 채워 $O(n^2)$ 메모리를 요구한다. Jacobi/Gauss-Seidel 은 행렬을 곱셈으로만 만나므로(행당 5개 원소 → 반복당 $\approx5n=5\times10^6$ 연산) 희소 구조를 그대로 두고 메모리 $2n$ 으로 푼다 — 대각 우세가 성립하는 열전달 격자에서 반복법이 직접법을 이기는 지점이 바로 이 규모다.</div>
+  </div>
 </section>
 
 <!-- ════════════════════ 7-2 Gauss-Seidel ════════════════════ -->

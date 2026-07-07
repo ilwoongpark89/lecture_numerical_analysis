@@ -721,6 +721,13 @@ df = @(x) 3*x.^2 - 1;
     <tr><td class="stp-k">전제(단근)</td><td>$f'\ne 0$ · 좋은 초기값</td><td>$10^{-6}$ 까지 ~5회</td></tr>
     <tr><td class="stp-k">깨질 때</td><td>$f'(x_n)=0$ · 나쁜 $x_0$</td><td>0으로 나눔 · 순환 · 발산</td></tr>
   </tbody></table></div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>화학 공정에서 실기체(CO₂)의 몰부피 $v$ 를 van der Waals 식 $\left(P+\dfrac{a}{v^2}\right)(v-b)=RT$ 로 구한다. 이 식을 $v$ 에 대해 전개하면 <b>3차식</b>이라 $v$ 를 대수적으로 고립시킬 수 없다. 그래서 $f(v)=\left(P+\dfrac{a}{v^2}\right)(v-b)-RT$ 의 근을 찾는데, 이 문제에 Newton–Raphson 이 특히 <b>적합한</b> 이유로 가장 옳은 것은?</div>
+    <div class="opts"><button class="opt" data-correct="1">$f(v)$ 와 도함수 $f'(v)$ 를 해석적으로 쉽게 얻고, 이상기체 값 $v_0=RT/P$ 를 초기값으로 쓰면 이차 수렴으로 몇 번 만에 근에 닿기 때문</button><button class="opt">van der Waals 식은 $v$ 에 대해 선형이라 한 번의 나눗셈으로 정확한 해가 나오기 때문</button><button class="opt">근이 여러 개일 수 있어 도함수를 쓰지 않는 이분법 외에는 어떤 방법도 쓸 수 없기 때문</button><button class="opt">$a,b$ 가 상수여서 $f(v)=0$ 을 만족하는 근이 존재하지 않기 때문</button></div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>여기서 "근"은 <b>주어진 $P,T$ 에서 상태식을 만족하는 몰부피 $v$</b> 다. $f(v)$ 는 매끄럽고 $f'(v)$ 를 손으로 미분해 얻을 수 있어 Newton 의 접선 도약이 그대로 적용되며, 물리적으로 자명한 이상기체 부피 $v_0=RT/P$ 가 참값에 매우 가까운 초기값을 공짜로 준다. 실제 CO₂($T{=}300$K, $P{=}1$atm) 계산에서 $v_0{=}24.616$ 에서 출발해 <b>단 2회</b>만에 $v{=}24.5126$ L/mol 로 이차 수렴한다(Bash node 검산). 선형이 아니므로 한 번에 못 풀고(오답 2), Newton 도 충분히 쓸 수 있으며(오답 3), 근은 분명히 존재한다(오답 4). 이것이 Chapra 가 근찾기를 "왜 배우나"로 드는 대표 사례다.</div>
+  </div>
 </section>
 
 <!-- ════════════════════ 4-4 수렴 속도 비교 ════════════════════ -->

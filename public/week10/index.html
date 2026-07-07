@@ -923,6 +923,13 @@ plot(xf, yn, 'b-', x, y, 'o');       <span class="cm">% 곡선 + 데이터 점</
     <tr><td class="stp-k">예제 곡률 해</td><td>$M=(0,-4,4,0)$</td><td>삼중대각계 $\to O(n)$</td></tr>
     <tr><td class="stp-k">연속성</td><td>$C^2$ 값·기울기·곡률</td><td>Runge 진동 없음</td></tr>
   </tbody></table></div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>CNC 절삭기·로봇 팔이 몇 개의 경유점(waypoint)을 순서대로 지나며 움직인다. 경로를 3차 스플라인으로 잇는 핵심 이유 — 특히 이음매에서 $C^2$(곡률=2차 미분) 연속을 요구하는 실무적 이유는?</div>
+    <div class="opts"><button class="opt" data-correct="1">곡률이 연속이라 가속도가 급변하지 않아, 기계 진동·충격 없이 매끄럽게 움직인다</button><button class="opt">데이터점(경유점)을 지나지 않아도 되어 자유도가 커지기 때문</button><button class="opt">단일 고차 다항식보다 차수가 높아 더 정확하기 때문</button><button class="opt">구간별 계산이라 항상 선형보간보다 빠르기 때문</button></div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>물체의 가속도는 경로의 2차 미분(곡률)에 비례한다. $C^2$ 연속이면 이음매에서 곡률이 튀지 않아 가속도가 매끈하게 이어져 저크(jerk)·진동이 없다. 값만 잇는 선형보간은 이음매에서 기울기가 꺾여($C^0$) 순간 충격을 주고, 고차 단일 다항식은 Runge 진동을 낳는다. 그래서 성긴 경유점을 매끄럽게 통과하는 로봇 경로·CAM 툴패스에 3차 스플라인이 표준이다.</div>
+  </div>
 </section>
 
 </div></main>

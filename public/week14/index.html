@@ -599,6 +599,8 @@ end
       </ul></div>
     </div>
   </div>
+
+  <div class="cq" style="max-width:640px;margin:16px auto 0"><div class="qtext"><span class="qn">응용 · 왜 배우나</span>가열된 금속판의 <b>정상상태</b> 온도분포는 $\nabla^2 T=0$ 을 만족한다. 격자로 풀 때 각 내부점 온도는 무엇이 되고, 왜 <b>반복법</b>을 쓰나?</div><div class="opts"><button class="opt" data-correct="1">각 점이 이웃 4점의 <b>평균</b>이 되며, 모든 점이 서로 얽힌 거대 연립계라 이웃평균 갱신을 반복해 수렴시킨다</button><button class="opt">각 점을 독립적으로 한 번에 계산할 수 있어서</button><button class="opt">정상상태라 시간을 전진시켜 풀어야 하므로</button><button class="opt">경계값만 알면 내부는 모두 0이라서</button></div><button class="btn primary cp-submit">확인</button><div class="cp-fb"></div><div class="cp-exp"><span class="exp-h">왜</span>라플라스를 두 방향 중앙차분하면 $T_{i,j}=\frac14(T_{i+1,j}+T_{i-1,j}+T_{i,j+1}+T_{i,j-1})$ — 각 점이 이웃 평균. 수천 점이 상호 의존해 하나의 큰 희소 연립계가 되고, 직접법은 비싸 <b>Gauss-Seidel 이웃평균 반복</b>으로 평형에 수렴시킨다. 정상상태이므로 시간항은 없다.</div></div>
 </section>
 
 </div></main>

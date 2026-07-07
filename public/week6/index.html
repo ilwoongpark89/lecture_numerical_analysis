@@ -826,6 +826,13 @@ fprintf('cond(A) = %.2f\n', cond(A));</code></pre></div>
     <tr><td class="stp-k">후진 $U\mathbf{x}=\mathbf{y}$</td><td>$\mathbf{x}=(2,3,-1)$</td><td>$O(n^2/2)$</td></tr>
     <tr><td class="stp-k">우변 $m$개 총비용</td><td>$n^3/3+m\,n^2$ (소거 $m\,n^3/3$)</td><td>재분해 $0$</td></tr>
   </tbody></table></div>
+  <div class="cq" style="max-width:640px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">응용 · 왜 배우나</span>정정 트러스를 절점 평형식 $A\mathbf{x}=\mathbf{b}$($A$=부재 방향코사인 기하 행렬, $\mathbf{x}$=부재력, $\mathbf{b}$=절점 하중)로 세운다. 이제 <b>같은 트러스</b>를 자중·적설·풍하중 등 <b>50가지 하중 조합</b>에 대해 해석해야 한다. 왜 매번 가우스 소거를 반복하지 않고 LU 분해를 쓰는가?</div>
+    <div class="opts"><button class="opt" data-correct="1">기하 행렬 $A$는 고정이고 하중 $\mathbf{b}$만 바뀌므로, $A=LU$ 분해를 1회만 하고 하중마다 값싼 전진·후진 대입($O(n^2)$)만 반복하면 되기 때문</button><button class="opt">트러스 평형 행렬은 항상 대칭이라 가우스 소거로는 풀 수 없기 때문</button><button class="opt">하중이 바뀌면 방향코사인 행렬 $A$도 매번 다시 조립해야 하므로 분해를 재사용할 수 없기 때문</button><button class="opt">LU 분해가 가우스 소거보다 반올림 오차를 원리적으로 제거해 주기 때문</button></div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>여러 하중 조합 = <b>같은 $A$, 다른 $\mathbf{b}$</b>인 다중 우변 문제다. LU는 비싼 분해($O(n^3/3)$)를 딱 1회 하고 하중마다 대입만 반복하므로 총비용이 $n^3/3 + m\,n^2$인 반면, 매번 가우스 소거는 $m\,n^3/3$이다. $n{=}100,\ m{=}50$이면 약 <b>20배</b> 절약(node 검산: Gauss $1.67\times10^7$ vs LU $8.3\times10^5$). 오답: $A$는 기하만으로 정해져 하중과 무관하게 고정이고(재조립 불필요), 대칭성은 요구 조건이 아니며, LU와 가우스 소거는 같은 연산이라 조건수·반올림 특성이 동일하다.</div>
+  </div>
 </section>
 
 <!-- ════════════════════ 6-4 조건수와 ill-conditioning ════════════════════ -->
