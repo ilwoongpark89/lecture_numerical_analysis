@@ -268,3 +268,14 @@ body:not(.na-prof) .prof-example{ display:none !important; }
 .wk-outcomes ul.wk-list{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:7px; }
 .wk-outcomes ul.wk-list li{ font-size:14px; line-height:1.5; padding-left:26px; position:relative; color:var(--ink); }
 .wk-outcomes ul.wk-list li::before{ content:"☐"; position:absolute; left:0; top:-1px; color:var(--accent); font-size:15px; }
+
+/* 감 잡기(Warm-up) — 문제→원리 사이 완충: 쉬운 예를 손으로 풀고 원리로 연결 */
+.warmup{ max-width:720px; margin:16px auto 0; }
+.wu-intro{ font-size:15.5px; line-height:1.75; background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:16px 20px; color:#713f12; }
+.wu-intro b{ color:#b45309; }
+.wu-steps{ margin-top:16px; display:flex; flex-direction:column; gap:11px; }
+.wu-step{ display:flex; gap:13px; align-items:flex-start; font-size:15px; line-height:1.65; color:var(--ink); }
+.wu-n{ flex-shrink:0; width:27px; height:27px; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+.wu-say{ color:var(--gray); font-style:italic; }
+.wu-bridge{ margin-top:20px; padding:15px 19px; border-radius:13px; background:var(--accent-soft); border:1px dashed var(--accent-line); font-size:14.5px; line-height:1.7; }
+.wu-bridge .bh{ display:block; font-weight:800; color:var(--accent); font-size:12.5px; letter-spacing:.03em; margin-bottom:5px; }
