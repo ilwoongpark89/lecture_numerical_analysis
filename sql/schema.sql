@@ -361,3 +361,131 @@ do $$ begin
 end $$;
 
 -- 완료. 이후 학생이 /enter 에서 학번 등록 → 강의 열람 시 학습 기록이 여기에 쌓입니다.
+
+-- ══════════════════════════════════════════════════════════════════
+-- L2 교수-학생 피드백 루프 (2026-07-07, P-list L1-L2) — 아래 정의가 위 동명 RPC를 대체(SoT)
+-- ══════════════════════════════════════════════════════════════════
+create or replace function public.na_admin_mark_notes_read(p_token text, p_id text)
+returns void language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  update na_student_notes set read_at = now()
+    where student_id = p_id and read_at is null
+      and (chapter is null or chapter not like '생각:%');
+end; $func$;
+
+create or replace function public.na_admin_mark_reflections_read(p_token text, p_chapter text)
+returns void language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  update na_student_notes set read_at = now()
+    where chapter = p_chapter and read_at is null and student_id <> '__prof__';
+end; $func$;
+revoke all on function public.na_admin_mark_reflections_read(text, text) from public, anon;
+grant execute on function public.na_admin_mark_reflections_read(text, text) to anon;
+
+create or replace function public.na_admin_mark_all_reflections_read(p_token text)
+returns void language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  update na_student_notes set read_at = now()
+    where chapter like '생각:%' and read_at is null and student_id <> '__prof__';
+end; $func$;
+revoke all on function public.na_admin_mark_all_reflections_read(text) from public, anon;
+grant execute on function public.na_admin_mark_all_reflections_read(text) to anon;
+
+-- L2 교수-학생 피드백 루프 (P3-P7). additive: 컬럼 3 + RPC 5.
+alter table public.na_student_notes add column if not exists reply_body  text;
+alter table public.na_student_notes add column if not exists replied_at  timestamptz;
+alter table public.na_student_notes add column if not exists featured_at  timestamptz;
+
+-- P3: 학생 본인 피드백 조회 (읽음/회신/우수 플래그) — server GET /api/feedback 이 admin 토큰으로 호출, p_id=검증 sid
+create or replace function public.na_student_feedback(p_token text, p_id text, p_week int)
+returns table (chapter text, body text, read_at timestamptz, reply_body text, featured boolean, created_at timestamptz)
+language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  return query
+    select n.chapter, n.body, n.read_at, n.reply_body, (n.featured_at is not null), n.created_at
+    from na_student_notes n
+    where n.student_id = p_id and (p_week = 0 or n.week = p_week)
+    order by n.created_at;
+end; $func$;
+revoke all on function public.na_student_feedback(text, text, int) from public, anon;
+grant execute on function public.na_student_feedback(text, text, int) to anon;
+
+-- P7: 클래스 우수답변 익명 노출 (학번 미반환)
+create or replace function public.na_class_featured(p_token text, p_week int)
+returns table (chapter text, body text)
+language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  return query
+    select n.chapter, n.body from na_student_notes n
+    where n.featured_at is not null and n.student_id <> '__prof__'
+      and (p_week = 0 or n.week = p_week)
+    order by n.chapter, n.featured_at;
+end; $func$;
+revoke all on function public.na_class_featured(text, int) from public, anon;
+grant execute on function public.na_class_featured(text, int) to anon;
+
+-- P5: 교수 개별 회신
+create or replace function public.na_admin_reply_note(p_token text, p_note_id bigint, p_body text)
+returns void language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  update na_student_notes
+    set reply_body = nullif(left(p_body, 2000), ''), replied_at = case when nullif(p_body,'') is null then null else now() end
+    where id = p_note_id;
+end; $func$;
+revoke all on function public.na_admin_reply_note(text, bigint, text) from public, anon;
+grant execute on function public.na_admin_reply_note(text, bigint, text) to anon;
+
+-- P7: 우수답변 토글
+create or replace function public.na_admin_feature_note(p_token text, p_note_id bigint, p_on boolean)
+returns void language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  update na_student_notes set featured_at = case when p_on then now() else null end where id = p_note_id;
+end; $func$;
+revoke all on function public.na_admin_feature_note(text, bigint, boolean) from public, anon;
+grant execute on function public.na_admin_feature_note(text, bigint, boolean) to anon;
+
+-- P5/P6/P7: 어드민 성찰 조회에 id·read_at·reply·featured 추가 (signature 변경 → drop+create)
+drop function if exists public.na_admin_reflections(text);
+create function public.na_admin_reflections(p_token text)
+returns table (id bigint, student_id text, chapter text, body text, created_at timestamptz, read_at timestamptz, reply_body text, featured boolean)
+language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  return query
+    select n.id, n.student_id, n.chapter, n.body, n.created_at, n.read_at, n.reply_body, (n.featured_at is not null)
+    from na_student_notes n
+    where n.chapter like '생각:%' and n.student_id <> '__prof__' and n.student_id not like 'e2e-%'
+    order by n.chapter, n.created_at;
+end; $func$;
+revoke all on function public.na_admin_reflections(text) from public, anon;
+grant execute on function public.na_admin_reflections(text) to anon;
+
+-- P5: 어드민 대화 스레드에 id·reply 추가
+drop function if exists public.na_admin_student_notes(text, text);
+create function public.na_admin_student_notes(p_token text, p_id text)
+returns table (id bigint, chapter text, body text, created_at timestamptz, reply_body text)
+language plpgsql security definer set search_path = public as $func$
+begin
+  if p_token is null or not exists (select 1 from na_admin_secret s where s.token = p_token) then
+    raise exception 'unauthorized'; end if;
+  return query select n.id, n.chapter, n.body, n.created_at, n.reply_body from na_student_notes n
+    where n.student_id = p_id and (n.chapter is null or n.chapter not like '생각:%')
+    order by n.created_at;
+end; $func$;
+revoke all on function public.na_admin_student_notes(text, text) from public, anon;
+grant execute on function public.na_admin_student_notes(text, text) to anon;

@@ -274,7 +274,8 @@ window.NA_grade = function (v, ans, rtol, atol) {
     return n;
   }
   function ansKey(scr, el, section, selector) {
-    return WEEK + "|" + (chOf(scr) || "?") + "|" + section + "|" + ordinalOf(scr, el, selector);
+    // slideIndex 포함 — 같은 챕터의 서로 다른 화면 첫 문항 키 충돌(2번째 답 미기록) 방지
+    return WEEK + "|" + (chOf(scr) || "?") + "|" + slideIndex(scr) + "|" + section + "|" + ordinalOf(scr, el, selector);
   }
   function twinOf(scr, el, selector) {
     if (!scr) return null;

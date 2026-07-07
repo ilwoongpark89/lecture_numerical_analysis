@@ -40,7 +40,7 @@ function labelQid(q: string) {
   const m = q.replace(/^생각:/, "").match(/reflect-(\d+)-(\d+)/);
   return m ? `W${m[1]} · 생각 ${m[2]}` : q.replace(/^생각:/, "") || "(기타)";
 }
-type Refl = { student_id: string; chapter: string; body: string; created_at: string };
+type Refl = { id: number; student_id: string; chapter: string; body: string; created_at: string; read_at: string | null; reply_body: string | null; featured: boolean };
 function Av({ id, sz = 34 }: { id: string; sz?: number }) {
   return <span className="flex flex-shrink-0 items-center justify-center rounded-lg font-bold text-white" style={{ background: hue(id), width: sz, height: sz, fontSize: sz * 0.38 }}>{id.slice(-2)}</span>;
 }
@@ -116,12 +116,26 @@ export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbo
     return g;
   }, [detail]);
 
+  const [reflUnread, setReflUnread] = useState(0);
+  const applyReflPatch = (id: number, patch: Partial<Refl>) => setRefl((cur) => (cur ? cur.map((r) => (r.id === id ? { ...r, ...patch } : r)) : cur));
   useEffect(() => {
+    // 성찰 탭 열람: 로드 + 미읽음이 있으면 전체 읽음 처리(P6) + 탭 배지 0
     if (view !== "reflect") return;
     let alive = true;
-    fetch("/api/admin/reflections").then((r) => r.json()).then((j) => { if (alive && j.ok) setRefl(j.reflections); });
+    fetch("/api/admin/reflections").then((r) => r.json()).then((j) => {
+      if (!alive || !j.ok) return;
+      setRefl(j.reflections as Refl[]);
+      setReflUnread(0);
+      if ((j.reflections as Refl[]).some((r) => !r.read_at)) fetch("/api/admin/reflect-read", { method: "POST" });
+    });
     return () => { alive = false; };
   }, [view]);
+  useEffect(() => {
+    // 초기: 성찰 미읽음 수만 조회 → 탭 배지
+    let alive = true;
+    fetch("/api/admin/reflections").then((r) => r.json()).then((j) => { if (alive && j.ok) setReflUnread((j.reflections as Refl[]).filter((r) => !r.read_at).length); });
+    return () => { alive = false; };
+  }, []);
   const reflByQ = useMemo(() => {
     const g: Record<string, Refl[]> = {};
     (refl ?? []).forEach((r) => { (g[r.chapter] ||= []).push(r); });
@@ -139,7 +153,10 @@ export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbo
           대화 {inbox.length}
           {totalUnread > 0 && <span className="ml-1.5 inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#dc2626] px-1 text-[11px] font-bold text-white">{totalUnread}</span>}
         </button>
-        <button onClick={() => setView("reflect")} className={`rounded-md px-3 py-1.5 text-sm font-semibold ${view === "reflect" ? "bg-accent text-white" : "text-[#52525b]"}`}>성찰</button>
+        <button onClick={() => setView("reflect")} className={`relative rounded-md px-3 py-1.5 text-sm font-semibold ${view === "reflect" ? "bg-accent text-white" : "text-[#52525b]"}`}>
+          성찰
+          {reflUnread > 0 && <span className="ml-1.5 inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#dc2626] px-1 text-[11px] font-bold text-white">{reflUnread}</span>}
+        </button>
       </div>
 
       {view === "reflect" ? (
@@ -157,18 +174,7 @@ export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbo
                   <span className="text-xs text-[#a1a1aa]">{answers.length}명 답변</span>
                 </div>
                 <div className="flex flex-col gap-3">
-                  {answers.map((a, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <Av id={a.student_id} sz={30} />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[13px] font-semibold">{a.student_id}</span>
-                          <span className="text-[10px] text-[#a1a1aa]">{fmtDate(a.created_at)}</span>
-                        </div>
-                        <div className="mt-0.5 whitespace-pre-wrap rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-3 py-2 text-[13px] leading-relaxed">{a.body}</div>
-                      </div>
-                    </div>
-                  ))}
+                  {answers.map((a) => <ReflectAnswer key={a.id} a={a} onPatch={applyReflPatch} />)}
                 </div>
               </div>
             ))}
@@ -338,6 +344,50 @@ export default function Analytics({ roster, inbox }: { roster: RosterRow[]; inbo
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function ReflectAnswer({ a, onPatch }: { a: Refl; onPatch: (id: number, patch: Partial<Refl>) => void }) {
+  const [reply, setReply] = useState(a.reply_body ?? "");
+  const [saving, setSaving] = useState(false);
+  const [open, setOpen] = useState(false);
+  const saveReply = async () => {
+    setSaving(true);
+    const r = await fetch("/api/admin/reply", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: a.id, body: reply }) }).then((x) => x.json()).catch(() => ({ ok: false }));
+    setSaving(false);
+    if (r.ok) { onPatch(a.id, { reply_body: reply.trim() || null }); setOpen(false); }
+  };
+  const toggleFeature = async () => {
+    const on = !a.featured;
+    const r = await fetch("/api/admin/feature", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: a.id, on }) }).then((x) => x.json()).catch(() => ({ ok: false }));
+    if (r.ok) onPatch(a.id, { featured: on });
+  };
+  return (
+    <div className="flex items-start gap-2.5">
+      <Av id={a.student_id} sz={30} />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="text-[13px] font-semibold">{a.student_id}</span>
+          <span className="text-[10px] text-[#a1a1aa]">{fmtDate(a.created_at)}</span>
+          <button onClick={toggleFeature} title="우수 답변 — 클래스에 익명 공유" className={`ml-auto text-[16px] leading-none ${a.featured ? "text-[#f59e0b]" : "text-[#d4d4d8] hover:text-[#f59e0b]"}`}>{a.featured ? "★" : "☆"}</button>
+        </div>
+        <div className="mt-0.5 whitespace-pre-wrap rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-3 py-2 text-[13px] leading-relaxed">{a.body}</div>
+        {a.reply_body && !open ? (
+          <div className="mt-1.5 flex items-start gap-1.5 rounded-lg border border-accent/25 bg-accent-soft px-3 py-2 text-[13px]">
+            <span className="flex-1"><b className="text-accent">교수 회신:</b> {a.reply_body}</span>
+            <button onClick={() => setOpen(true)} className="text-[11px] text-[#71717a] underline hover:text-accent">수정</button>
+          </div>
+        ) : open ? (
+          <div className="mt-1.5 flex gap-1.5">
+            <input value={reply} onChange={(e) => setReply(e.target.value)} placeholder="회신 한 줄 (학생이 다음 접속 시 봅니다)" className="flex-1 rounded-md border border-[#e4e4e7] px-2.5 py-1.5 text-[13px]" onKeyDown={(e) => { if (e.key === "Enter") saveReply(); }} />
+            <button onClick={saveReply} disabled={saving} className="rounded-md bg-accent px-3 py-1.5 text-[12px] font-semibold text-white disabled:opacity-50">저장</button>
+            <button onClick={() => setOpen(false)} className="rounded-md border border-[#e4e4e7] px-2.5 py-1.5 text-[12px] text-[#71717a]">취소</button>
+          </div>
+        ) : (
+          <button onClick={() => setOpen(true)} className="mt-1 text-[11px] text-[#71717a] underline hover:text-accent">↩ 회신 달기</button>
+        )}
+      </div>
     </div>
   );
 }

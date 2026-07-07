@@ -67,6 +67,38 @@
     postNote(qid, v, fb, b);
   });
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", restore);
-  else restore();
+  function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+  // P4: 교수 읽음 확인 + 회신 + 클래스 우수답변(익명) 을 학생 화면에 표시 (학생→교수 반대 방향).
+  function loadFeedback() {
+    if (isProf() || WEEK === 0) return;
+    fetch("/api/feedback?week=" + WEEK, { credentials: "same-origin" })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j || !j.ok) return;
+        (j.mine || []).forEach(function (m) {
+          var qid = (m.chapter || "").replace(/^생각:/, "");
+          var lf = document.querySelector('.longform[data-qid="' + qid + '"]');
+          if (!lf) return;
+          var input = lf.querySelector(".lf-input"), fb = lf.querySelector(".lf-fb");
+          if (m.read_at && fb && input && (input.value || "").trim()) { fb.textContent = "기록됨 ✓ · 교수님이 읽었어요 👀"; fb.style.color = "var(--accent)"; }
+          if (m.reply_body && !lf.querySelector(".lf-reply")) {
+            var d = document.createElement("div"); d.className = "lf-reply"; d.innerHTML = "<b>교수님 회신</b> " + esc(m.reply_body); lf.appendChild(d);
+          }
+        });
+        var byQ = {};
+        (j.featured || []).forEach(function (f) { var qid = (f.chapter || "").replace(/^생각:/, ""); (byQ[qid] = byQ[qid] || []).push(f.body); });
+        Object.keys(byQ).forEach(function (qid) {
+          var lf = document.querySelector('.longform[data-qid="' + qid + '"]');
+          if (!lf || lf.querySelector(".lf-featured")) return;
+          var box = document.createElement("div"); box.className = "lf-featured";
+          box.innerHTML = '<div class="lf-featured-h">★ 교수님 pick · 좋은 답변 (익명)</div>' + byQ[qid].map(function (b) { return '<div class="lf-featured-a">' + esc(b) + "</div>"; }).join("");
+          lf.appendChild(box);
+        });
+      }).catch(function () {});
+  }
+
+  function init() { restore(); loadFeedback(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();
