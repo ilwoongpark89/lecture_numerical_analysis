@@ -24,6 +24,18 @@
     <div class="intro-teaser">답 — <em>모든 수치 계산에는 오차가 있다.</em> 이번 주는 오차가 <em>어디서 생기고</em>, <em>얼마나 커지며</em>, <em>어떻게 통제하는지</em> 를 직접 계산하고 슬라이더로 돌려본다.</div>
   </div>
   <div class="stp-tblwrap" style="max-width:520px;margin:22px auto 0"><table class="stp-tbl"><thead><tr><th>식</th><th>컴퓨터 저장값</th></tr></thead><tbody><tr><td>$0.1+0.2$</td><td>0.30000000000000004</td></tr><tr><td>$0.3$</td><td>0.29999999999999999</td></tr><tr><td class="stp-k">$0.1{+}0.2==0.3$</td><td><b>거짓</b> (차 $5.6{\times}10^{-17}$)</td></tr></tbody></table></div><div class="vcap" style="text-align:center;margin-top:8px;color:var(--gray2);font-size:13px">유한한 2진 비트로는 $0.1$ 조차 정확히 못 담는다 — 이번 주의 출발점.</div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>IEEE 754 비트열과 십진수를 서로 변환하고, 값 $v$ 근처의 표현 간격(ULP) $2^{\lfloor\log_2 v\rfloor-t}$ 를 계산할 수 있다.</li>
+      <li>머신 엡실론 $\varepsilon_{\text{mach}}=2^{-t}$ 를 halving 알고리즘으로 구하고, 반올림 상대오차가 $\varepsilon_{\text{mach}}/2$ 이하임을 설명할 수 있다.</li>
+      <li>절단 오차(알고리즘의 한계)와 반올림 오차(컴퓨터의 한계)를 구분하고, 정밀도를 높일 때 어느 오차가 줄어드는지 판정할 수 있다.</li>
+      <li>비슷한 두 수를 뺄 때 유효숫자가 사라지는 상쇄(자리 잃음)를 상대오차로 계산해 보일 수 있다.</li>
+      <li>Taylor 나머지 항 $R_n=O(h^{n+1})$ 로 절단오차의 차수를 유도하고, 전진차분($O(h)$)과 중심차분($O(h^2)$)의 수렴 속도를 비교할 수 있다.</li>
+      <li>오차 전파 $\Delta f\approx f'(x)\,\Delta x$ 와 조건수로 함수의 well/ill-conditioned 를 판정할 수 있다.</li>
+      <li>반올림·절단의 상충에서 최적 스텝 $h\approx\sqrt{\varepsilon_{\text{mach}}}$ 를 유도하고, log-log 기울기로 방법의 수렴 차수를 구할 수 있다.</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->

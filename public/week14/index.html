@@ -23,6 +23,18 @@
     <div class="intro-teaser">답 — <em>격자.</em> 공간·시간을 잘게 나눠 각 미분을 <strong>차분</strong>으로 바꾸면, PDE가 거대한 <strong>연립방정식</strong>이 된다. 이번 주는 그 격자를 <strong>직접 갱신·수렴</strong>시켜 본다.</div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="heatmap" data-grid="[[100,100,100,100],[0,37.5,37.5,0],[0,12.5,12.5,0],[0,0,0,0]]" data-cap="벽(판) 속 <b>온도장</b> — 공간 위의 함수 $T(x,y)$. 미분방정식을 격자에서 풀어 이 분포를 얻는다."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>2계 중심차분 $\dfrac{u_{i+1}-2u_i+u_{i-1}}{\Delta x^2}$ 로 격자점의 곡률(라플라시안)을 직접 계산할 수 있다</li>
+      <li>PDE를 포물형·타원형·쌍곡형으로 분류하고 각 유형에 맞는 풀이법을 선택할 수 있다</li>
+      <li>FTCS 갱신식 $T_i^{n+1}=T_i^n+\lambda(T_{i+1}^n-2T_i^n+T_{i-1}^n)$ 로 열전도를 한 시간스텝 전진시킬 수 있다</li>
+      <li>안정조건 $\lambda=\alpha\Delta t/\Delta x^2\le\tfrac12$ 로 FTCS의 안정·발산 여부를 판정할 수 있다</li>
+      <li>라플라스 방정식을 5점 평균으로 차분하고 Jacobi 반복으로 평형 온도장을 수렴시킬 수 있다</li>
+      <li>명시적·음함수·Crank–Nicolson 방법을 안정성·정확도 기준으로 비교해 설명할 수 있다</li>
+      <li>CFL 조건으로 파동방정식의 안정적인 시간 스텝 $\Delta t$ 를 판정할 수 있다</li>
+    </ul>
+  </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="편미분방정식 시작" data-stage="여정">
   <div class="intro">

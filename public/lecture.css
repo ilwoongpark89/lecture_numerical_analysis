@@ -261,3 +261,10 @@ body:not(.na-prof) .prof-example{ display:none !important; }
 /* L3 P10 — 한 줄 개념답(.longform 축소 변형) */
 .lf-compact{ margin-top:14px; max-width:640px; } .lf-compact .lf-q{ font-size:14px; line-height:1.5; margin-bottom:7px; } .lf-compact .lf-q .qn{ color:var(--accent); font-weight:700; margin-right:6px; }
 .lf-compact .lf-input{ min-height:44px; font-size:13.5px; } .lf-compact .lf-row{ margin-top:7px; }
+
+/* L5 P16 — 주차 학습목표 (이번 주가 끝나면) */
+.wk-outcomes{ border:1px solid var(--accent-line); border-radius:14px; padding:16px 20px; background:linear-gradient(180deg,var(--accent-soft),transparent); }
+.wk-outcomes-h{ font-size:13px; font-weight:800; color:var(--accent); letter-spacing:.02em; margin-bottom:10px; }
+.wk-outcomes ul.wk-list{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:7px; }
+.wk-outcomes ul.wk-list li{ font-size:14px; line-height:1.5; padding-left:26px; position:relative; color:var(--ink); }
+.wk-outcomes ul.wk-list li::before{ content:"☐"; position:absolute; left:0; top:-1px; color:var(--accent); font-size:15px; }

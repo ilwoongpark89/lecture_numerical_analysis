@@ -24,6 +24,18 @@
     <div class="intro-teaser">답 — <em>반복(iteration).</em> 근을 한 번에 맞히는 대신, <em>점점 가까워지는 수열</em>을 컴퓨터로 만든다. 이번 주는 그 첫 두 방법을 <strong>직접 돌려본다.</strong></div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="funcplot" data-fn="x^3-x-2" data-xmin="0" data-xmax="2" data-roots="1.5214" data-cap="곡선이 x축과 만나는 곳(빨강 $\approx1.5214$)이 근. 어떻게 <b>체계적으로</b> 이 점을 찾을까 — 이분법·가위치법."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>연속함수에서 $f(a)\,f(b)<0$ 인지 부호를 따져, 근이 든 브래킷 구간을 중간값 정리로 판정해 찾을 수 있다.</li>
+      <li>이분법을 손으로 반복해 중점 $c=(a+b)/2$ 와 부호 판정으로 갱신되는 다음 구간을 계산할 수 있다.</li>
+      <li>이분법의 오차 상한 $|\varepsilon_n|\le(b-a)/2^{n}$ 으로 목표 정밀도에 필요한 반복 횟수 $n\ge\log_2\!\big((b-a)/\text{tol}\big)$ 를 계산할 수 있다.</li>
+      <li>Newton 점화식 $x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)}$ 을 접선의 $x$절편으로 유도하고 한 반복을 계산할 수 있다.</li>
+      <li>이분법의 선형 수렴($p=1$)과 Newton의 이차 수렴($p=2$)을 오차 감소 방식으로 비교해 설명할 수 있다.</li>
+      <li>중근·불연속·성긴 스캔·나쁜 초기값에서 각 방법이 실패(정체·발산·순환)하는 원인을 판정할 수 있다.</li>
+      <li>안전(브래킷 유무)과 속도(도함수·초기값)의 트레이드오프를 따져 이분법·Newton·할선법 중 하나를 선택하고 근거를 댈 수 있다.</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->
@@ -650,7 +662,7 @@ f  = @(x) x.^3 - x - 2;
 df = @(x) 3*x.^2 - 1;
 [root, n] = newton(f, df, 1.5, 1e-12);
 <span class="out">% root = 1.521379706804568  (n = 4)</span></code></pre></div>
-  <div class="callout warn" style="margin-top:12px"><div class="ct">도함수가 어렵다면</div>$f'$ 를 직접 구하기 어려우면 다음 절 <strong>할선법(Secant)</strong> — 도함수 없이 두 점의 기울기로 근사 — 을 쓴다.</div>
+  <div class="callout warn" style="margin-top:12px"><div class="ct">도함수가 어렵다면</div>$f'$ 를 직접 구하기 어려우면 <strong>다음 주(5주) 할선법(Secant)</strong> — 도함수 없이 두 점의 기울기로 근사 — 을 쓴다.</div>
 </section>
 
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="연습">

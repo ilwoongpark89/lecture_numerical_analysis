@@ -24,6 +24,18 @@
     <div class="intro-teaser">답 — <em>차분(difference).</em> 도함수의 정의 $\lim_{h\to0}\frac{f(x+h)-f(x)}{h}$ 에서 극한을 <strong>유한한 $h$</strong> 로 멈춘다. 이번 주는 그 근사가 <em>얼마나 정확한지</em>, 그리고 <em>$h$ 를 무작정 줄이면 왜 오히려 나빠지는지</em>를 직접 계산해 본다.</div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="scatter" data-points="[[0,1],[1,2.7],[2,7.4],[3,20.1],[4,54.6]]" data-cap="식은 없고 측정 점만 있다 — 이 곡선의 <b>기울기(도함수)</b>를 이웃 점들의 차이로 어떻게 추정할까."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>전진·후진·중앙 차분으로 데이터 점에서 $f'$ 을 직접 계산할 수 있다</li>
+      <li>중앙차분이 $O(h^2)$, 전진·후진이 $O(h)$ 인 이유를 Taylor 전개로 유도할 수 있다</li>
+      <li>$h$ 를 반감했을 때 오차 감소비($\div2,\ \div4,\ \div16$)로 정확도 차수를 판정할 수 있다</li>
+      <li>절단오차와 반올림오차의 상충으로 최적 $h$ 가 존재함을 설명할 수 있다</li>
+      <li>2계 도함수와 4점 $O(h^4)$ 공식의 가중치를 Taylor 소거 조건으로 결정할 수 있다</li>
+      <li>Richardson 외삽 $D_R=\dfrac{4D(h/2)-D(h)}{3}$ 로 $O(h^2)$ 를 $O(h^4)$ 로 끌어올릴 수 있다</li>
+      <li>2차원 격자에서 편미분·라플라시안·교차 도함수 $\partial^2 f/\partial x\partial y$ 스텐실을 구성할 수 있다</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->

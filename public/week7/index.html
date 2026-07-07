@@ -24,6 +24,17 @@
     <div class="intro-teaser">답 — <em>반복(iteration).</em> 정확한 해를 한 번에 구하는 대신, <em>해에 점점 가까워지는 벡터 수열</em> $\mathbf{x}^{(0)}\!\to\!\mathbf{x}^{(1)}\!\to\!\cdots$ 을 만든다. 각 스텝은 <strong>행렬-벡터 곱 한 번</strong>뿐이라 성긴 구조를 그대로 살린다. 이번 주는 그 대표 세 방법을 <strong>직접 반복시켜 본다.</strong></div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="convergence" data-rates='[{"r":0.6,"label":"Jacobi"},{"r":0.4,"label":"Gauss-Seidel"}]' data-cap="$10^6{\times}10^6$ 은 직접법($O(n^3)$)으로 불가 — <b>반복</b>으로 근사해를 점점 조인다(대각 우세면 수렴 보장)."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>$A=D+L+U$ 로 분해해 Jacobi 반복식 $\mathbf{x}^{(k+1)}=D^{-1}(\mathbf{b}-(L+U)\mathbf{x}^{(k)})$ 을 유도하고 한 반복을 손으로 계산할 수 있다</li>
+      <li>Jacobi 와 Gauss-Seidel 의 갱신 시점 차이를 설명하고, GS 가 보통 약 2배 빠른 이유를 댈 수 있다</li>
+      <li>엄격 대각 우세 $|a_{ii}|>\sum_{j\ne i}|a_{ij}|$ 를 확인해 반복법의 수렴을 판정할 수 있다</li>
+      <li>반복 행렬의 스펙트럴 반경 $\rho(T)<1$ 을 수렴의 필요·충분 조건으로 적용할 수 있다</li>
+      <li>SOR 완화식에서 완화 계수 $\omega$ 의 역할과 안전 구간 $0<\omega<2$ 를 판별하고 $\omega$ 로 수렴을 가속할 수 있다</li>
+      <li>대각 우세가 아닐 때 $\rho(T_J)\ge1$ 이 되어 반복법이 발산함을 예측·설명할 수 있다</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->

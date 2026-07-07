@@ -23,6 +23,18 @@
     <div class="intro-teaser">답 — <em>반복.</em> 행렬을 벡터에 <strong>거듭 곱하면</strong> 가장 센 고유방향만 살아남는다. 이번 주는 그 수렴을 <strong>직접 돌려본다.</strong></div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="vectors" data-cap="행렬이 방향을 휘어도 <b>자기 방향을 지키는 벡터</b>(고유벡터)와 그 배율(고유값 $\lambda$) — 진동·PageRank·PCA 의 뼈대."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>$A\mathbf{x}=\lambda\mathbf{x}$ 에서 특성방정식 $\det(A-\lambda I)=0$ 을 유도하고, $2\times2$ 행렬의 고유값을 대각합·행렬식으로 검산할 수 있다</li>
+      <li>거듭제곱법으로 지배(최대) 고유값을 반복 계산하고, 매 반복 최대성분으로 정규화하는 이유를 설명할 수 있다</li>
+      <li>거듭제곱법의 수렴 속도가 $|\lambda_2/\lambda_1|$ 임을 근거로 두 문제의 수렴 빠르기를 비교할 수 있다</li>
+      <li>역 거듭제곱법이 최소 고유값을, shift $(A-\mu I)^{-1}$ 가 $\mu$ 근처 고유값을 겨냥함을 판정하고 겨냥값을 선택할 수 있다</li>
+      <li>QR 반복 $A=QR\to RQ$ 가 닮음변환($Q^{-1}AQ$)이라 고유값을 보존함을 유도할 수 있다</li>
+      <li>특성방정식을 손으로 푸는 방식이 큰 행렬에서 실패하는 이유(근의 공식 부재·계수 악조건)를 설명할 수 있다</li>
+      <li>문제의 요구(최대/최소/전체)와 행렬의 크기·희소성에 맞춰 거듭제곱·역·shift·QR 중 알맞은 방법을 선택할 수 있다</li>
+    </ul>
+  </div>
 </section>
 <section class="screen" data-ch="시작" data-chtitle="고유값 문제 시작" data-stage="여정">
   <div class="intro">

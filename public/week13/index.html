@@ -63,6 +63,18 @@
     </div>
     <div class="callout key" style="margin-top:18px"><div class="ct">직접 돌리고 깨뜨린다</div><ul><li><strong>시연</strong>: "다음 반복" 으로 수치해가 정확해(회색 점선)를 따라가는(혹은 벗어나는) 걸 본다.</li><li><strong>함정</strong>: $h$ 를 크게 주면 Euler가 <strong>발산</strong>하는 걸 눈으로 확인한다.</li></ul></div>
   </div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>Euler 전진식 $y_{n+1}=y_n+h\,f(x_n,y_n)$ 으로 한 스텝을 손으로 계산할 수 있다.</li>
+      <li>Taylor 전개를 1차에서 절단해 Euler 점화식을 유도할 수 있다.</li>
+      <li>Euler·Heun·RK4 의 전역 오차 차수 $O(h)$·$O(h^2)$·$O(h^4)$ 를 비교하고, log–log 기울기로 수렴 차수를 판정할 수 있다.</li>
+      <li>안정 조건 $|1+h\lambda|<1$ 로 발산하지 않는 스텝 $h$ 의 상한을 계산할 수 있다.</li>
+      <li>Heun 의 예측–수정(두 기울기 평균)이 사다리꼴 적분과 같은 꼴임을 설명할 수 있다.</li>
+      <li>RK4 의 네 기울기 $k_1,k_2,k_3,k_4$ 를 순서대로 계산해 가중평균 $\tfrac16(k_1+2k_2+2k_3+k_4)$ 로 전진할 수 있다.</li>
+      <li>고차·연립 ODE 를 보조변수로 1차 시스템(상태벡터 $\mathbf{Y}$)으로 바꿔 수치법을 적용할 수 있다.</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 생각·읽을거리 (열린 사유) ════════ -->

@@ -24,6 +24,17 @@
     <div class="intro-teaser">이번 주 — <em>도함수 없이 · 다중근 · 연립계.</em> 접선 대신 <em>할선(secant)</em>으로, 겹친 근은 <em>수정 공식</em>으로, 여러 변수는 <em>Jacobian</em>으로. 그리고 "언제 무엇을 쓸지" 를 정리한다.</div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="funcplot" data-fns='[{"fn":"x^2-2","label":"f(x)"},{"fn":"4*x-6","label":"x=2 접선"}]' data-xmin="0" data-xmax="2.5" data-points="[[2,2],[1.5,0]]" data-cap="Newton 은 <b>접선</b>을 따라 미끄러진다($x_0{=}2{\to}x_1{=}1.5$). 그런데 $f'$ 를 모르면? — 할선·고정점이 답."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>할선 점화식 $x_{n+1}=x_n-f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})}$ 으로 도함수 없이 한 반복의 근사값을 직접 계산할 수 있다</li>
+      <li>이분법(선형)·할선법($p\approx1.618$)·Newton(이차)의 수렴 차수를 비교해 설명할 수 있다</li>
+      <li>분모 $f(x_n)-f(x_{n-1})\to0$ 에서 유효숫자가 소멸해 할선법이 폭발·발산하는 조건을 판정할 수 있다</li>
+      <li>근의 중복도 $m$ 을 판정하고, $\times m$(Modified) 또는 $u=f/f'$ 로 무너진 이차 수렴을 복원할 수 있다</li>
+      <li>비선형 연립계 $\mathbf F(\mathbf x)=\mathbf 0$ 에서 Jacobian $J$ 를 세우고 선형계 $J\,\Delta\mathbf x=-\mathbf F$ 를 풀어 다변수 Newton 한 반복을 수행할 수 있다</li>
+      <li>문제의 성질(구간·도함수·중근)에 따라 이분법·할선·Newton·Modified·Brent 중 알맞은 방법을 선택할 수 있다</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->

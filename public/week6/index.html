@@ -24,6 +24,17 @@
     <div class="intro-teaser">답 — <em>체계적인 소거(elimination).</em> 방정식을 <em>사다리꼴</em>로 바꾼 뒤 아래에서 위로 대입해 푼다. 이번 주는 이 <strong>직접법(direct method)</strong> 을 손으로 따라가고, 언제 무너지는지까지 직접 확인한다.</div>
   </div>
   <div class="nafig" style="margin:22px auto 0;max-width:660px" data-fig="funcplot" data-fns='[{"fn":"3-x","label":"x+y=3"},{"fn":"x-1","label":"x-y=1"}]' data-xmin="0" data-xmax="3" data-points="[[2,1]]" data-cap="두 방정식의 <b>교점 $(2,1)$</b> = 해. 미지수가 $2$ 개면 눈으로 보이지만 $100$ 개면? — 가우스 소거."></div>
+  <div class="wk-outcomes" style="max-width:680px;margin:20px auto 0">
+    <div class="wk-outcomes-h">이번 주가 끝나면 — 스스로 점검</div>
+    <ul class="wk-list">
+      <li>증대행렬 $[A\,|\,\mathbf{b}]$ 에 전진 소거를 적용해 상삼각 $U$ 로 만들고 후진 대입으로 해 $\mathbf{x}$ 를 계산할 수 있다</li>
+      <li>가우스 소거의 연산량이 $O(n^3/3)$ 임을 유도하고, 정해진 횟수로 끝나는 직접법과 수렴을 따지는 반복법의 차이를 설명할 수 있다</li>
+      <li>피벗이 $0$·아주 작은 값일 때 답이 무너지는 원인을 유효숫자 소멸로 설명할 수 있다</li>
+      <li>부분 피벗팅에서 $p=\arg\max_{i\ge k}|a_{ik}|$ 로 교환할 행을 선택해 배수를 $|f|\le 1$ 로 억제하고 소거를 안정화할 수 있다</li>
+      <li>행렬을 $A=LU$ 로 분해하고, $L\mathbf{y}=\mathbf{b}$(전진)·$U\mathbf{x}=\mathbf{y}$(후진) 두 대입으로 여러 우변을 값싸게 풀 수 있다</li>
+      <li>조건수 $\kappa(A)=\|A\|\,\|A^{-1}\|$ 로 시스템의 민감도를 판정하고, 신뢰 자릿수 $\approx 16-\log_{10}\kappa$ 를 추정할 수 있다</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ════════ 시작 / 여정 ════════ -->
