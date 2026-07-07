@@ -346,6 +346,8 @@
     data-steps="16"
     data-title="이분법 — f(x) = x³ − x − 2,  [a,b]=[1,2]"
     data-note="주황=중점 c, 파랑 곡선=f(x), 초록 점선=참근. 표의 |b−a| 가 매 반복 절반으로 줄어든다."></div>
+
+  <div class="prob" style="max-width:600px;margin:12px auto 0"><div class="prob-num">📊 표에서 읽기</div><p class="prob-statement">이분법은 매 반복 구간 폭이 정확히 <b>절반</b>이 된다. $[1,2]$ 에서 폭 $\dfrac{1}{2^n}$ 이 $10^{-3}$ 아래로 처음 내려가는 최소 반복수 $n$ 은? ($2^n>1000$)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="반복 횟수" data-answer="10" data-tol="0.05"/><span class="ans-unit">회</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div></div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="직접계산">
@@ -363,6 +365,8 @@
     </div>
   </div>
   <div class="nafig" data-fig="funcplot" data-fn="x^3 - x - 2" data-xmin="1.2" data-xmax="2.1" data-points="[[1.5,-0.125],[1.75,1.6094]]" data-roots="1.5214" data-cap="지금 계산 중 — 1회째로 구간이 $[1.5,\,2]$ 로 좁혀졌고, 그 한가운데 $c_2{=}1.75$(오른쪽 주황)를 찍는다. 왼쪽 주황은 직전 중점 $c_1{=}1.5$. 근(빨강 $\approx1.5214$)을 향해 폭을 절반씩 조인다."></div>
+
+  <div class="prob" style="max-width:640px;margin:16px auto 0"><div class="prob-num">🔗 다단계 · 이분법 한 스텝</div><p class="prob-statement">$f(x)=x^3-x-2$, 구간 $[1,2]$. 아래를 <b>순서대로</b> 채워 한 스텝을 완성하라.</p><div class="ans-row" style="margin-top:8px"><span style="min-width:0;flex:1;font-size:13.5px">① 중점 $c=(1+2)/2$ 에서 $f(1.5)=$ ?</span><input class="ans-input" type="text" inputmode="decimal" placeholder="답" data-answer="-0.125" data-tol="0.05" style="max-width:120px"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div><div class="ans-row" style="margin-top:8px"><span style="min-width:0;flex:1;font-size:13.5px">② $f(1)\cdot f(1.5)$ 의 부호로 판정 → 근이 든 다음 구간의 <b>왼끝</b> $a$ = ?</span><input class="ans-input" type="text" inputmode="decimal" placeholder="답" data-answer="1.5" data-tol="0.01" style="max-width:120px"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div><div class="ans-row" style="margin-top:8px"><span style="min-width:0;flex:1;font-size:13.5px">③ 갱신된 구간 $[1.5,2]$ 의 새 중점 = ?</span><input class="ans-input" type="text" inputmode="decimal" placeholder="답" data-answer="1.75" data-tol="0.01" style="max-width:120px"/><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div></div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="수렴">
@@ -573,6 +577,8 @@ f = @(x) x.^3 - x - 2;
     data-steps="6"
     data-title="Newton — f(x)=x³−x−2,  f'(x)=3x²−1,  x₀=1.5"
     data-note="청록 점선=접선, 주황=접선의 x절편(다음 근사). 표의 f(xₙ) 이 이차로 급락한다."></div>
+
+  <div class="prob" style="max-width:600px;margin:12px auto 0"><div class="prob-num">📊 표에서 읽기</div><p class="prob-statement">위 스테퍼를 돌려 보라 — $x_0=1.5$ 에서 Newton 의 오차가 $10^{-3}$ 아래로 내려가는 것은 <b>몇 번째</b> 반복에서인가? (이차수렴의 위력)</p><div class="ans-row"><input class="ans-input" type="text" inputmode="decimal" placeholder="반복 횟수" data-answer="1" data-tol="0.05"/><span class="ans-unit">회</span><button class="btn pr-check">확인</button><span class="check-fb pr-fb"></span></div></div>
 </section>
 
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="직접계산">
