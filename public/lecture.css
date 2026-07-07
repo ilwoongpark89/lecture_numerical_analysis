@@ -252,3 +252,8 @@ body:not(.na-prof) .prof-example{ display:none !important; }
 .lf-featured-h{ font-size:12px; font-weight:800; color:#b45309; margin-bottom:6px; letter-spacing:.01em; }
 .lf-featured-a{ font-size:13.5px; line-height:1.6; color:var(--ink); padding:6px 0; border-top:1px solid rgba(245,158,11,.18); }
 .lf-featured-a:first-of-type{ border-top:0; }
+
+/* L3 P8/P9 — 클릭형 개념질문(.cq) 제출 버튼·피드백 + 예측(predict) 변형 */
+.cp-submit{ margin-top:11px; } .cp-fb{ font-size:12.5px; font-weight:700; margin-top:7px; min-height:1em; color:var(--accent); }
+.cq.predict{ border:1px solid var(--accent-line); border-radius:12px; padding:13px 15px; background:linear-gradient(180deg,rgba(37,99,235,.035),transparent); }
+.cq.predict .qn{ color:#b45309; } .cq.predict .qtext::before{ content:"🔮 "; }

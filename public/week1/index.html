@@ -231,6 +231,18 @@
     </table>
   </div>
   <div class="nafig-cap" style="max-width:560px;margin:8px auto 0;text-align:center">$\sin x$ 의 기울기를 유한차분으로($x=1$, 참값 $\cos 1=0.540302$). $h$ 를 줄이면 <b>절단오차</b>가 $\propto h$ 로 줄어(위 세 줄, $h{\times}\tfrac1{100}\Rightarrow |E|{\times}\tfrac1{100}$) — 그러나 $h\approx10^{-8}$ 을 지나면 <b>반올림오차</b>가 지배해 오차가 U자로 되커진다. "더 잘게 = 항상 좋다"가 거짓임을 값으로 실증.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>위 표에서 $h$ 를 $10^{-8}$ 보다 더 줄였더니 오차가 <b>다시 커졌다</b>. 가장 큰 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">유효자릿수가 부족해 <b>반올림오차</b>가 절단오차보다 커졌다</button>
+      <button class="opt">$h$ 가 작아 <b>절단오차</b>가 커졌다</button>
+      <button class="opt">$\sin$ 함수의 참값 자체가 틀렸다</button>
+      <button class="opt">$h$ 가 작으면 계산이 느려 오차가 생긴다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>절단오차는 $h$ 에 비례해 계속 줄지만, 두 가까운 수 $\sin(1{+}h)-\sin 1$ 의 <b>빼기</b>에서 유효자릿수가 소거(자리빠짐)돼 반올림오차가 $\propto 1/h$ 로 커진다. 둘의 합이 $U$ 자를 그려 $h\approx10^{-8}$ 에서 최소 — "무조건 잘게"가 거짓인 이유.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="연습">
