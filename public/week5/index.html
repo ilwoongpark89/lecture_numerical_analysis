@@ -162,12 +162,35 @@
     <div class="dcard"><h4>③ 대입·정리</h4><div class="sub">할선의 $x$절편</div><div class="eq">$ x_{n+1}=x_n-f(x_n)\dfrac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})} $</div><p>Secant 점화식.</p></div>
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">형제 방법 — False Position (Regula Falsi)</div>같은 할선을 쓰되 <strong>구간 $[a,b]$ 를 유지</strong>해 항상 근을 가둔다: $ c = a - f(a)\dfrac{b-a}{f(b)-f(a)} $. 부호 판정으로 구간을 갱신하므로 <strong>수렴 보장</strong>(장점)이나, 한쪽 끝이 고정되면(stagnation) 느려질 수 있다(Illinois·Pegasus 변형으로 개선).</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>할선법이 도함수 $f'(x)$ 를 전혀 쓰지 않고도 Newton에 버금가는 속도로 근에 다가가는 근본 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">두 점을 이은 할선의 기울기가 접선 기울기 $f'(x_n)$ 의 유한 차분 근사이기 때문</button>
+      <button class="opt">매 반복 구간을 절반으로 가둬 근을 놓치지 않기 때문</button>
+      <button class="opt">할선이 언제나 접선보다 근에 더 가깝게 지나기 때문</button>
+      <button class="opt">초기값을 2개 쓰므로 정보량이 2배여서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>할선 기울기 $\dfrac{f(x_n)-f(x_{n-1})}{x_n-x_{n-1}}$ 는 두 점이 가까워질수록 $f'(x_n)$ 으로 수렴하는 유한 차분이다. Newton 공식의 $f'$ 자리에 이를 대입한 것이라 도함수 없이 같은 도약을 한다. 다만 구간을 가두지는 않아 수렴 보장은 없다(이분법과의 차이).</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="시연">
   <div class="eyebrow">5-1 · 시연 · Step-through</div>
   <h1 class="stage-h">할선을 따라 근으로 — 직접 반복</h1>
   <p class="lede">"다음 반복" 을 누르면 최근 두 점 $(x_{n-1},x_n)$(파랑)을 잇는 할선의 $x$절편(주황)이 다음 $x_{n+1}$ 이 된다. 표의 $f(x_n)$ 이 <strong>도함수 없이도</strong> 얼마나 빨리 0으로 가는지 보라. 초록 점선이 실제 근 $\approx 1.5214$.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>돌려보기 전에 — $x_0=1,\;x_1=2$ 로 할선법을 시작하면, 첫 반복의 할선 $x$절편 $x_2$ 는 실제 근 $\approx1.5214$ 에 비해 어디쯤 놓일까?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">약 $1.33$ — 근보다 왼쪽, 아직 못 미침</button>
+      <button class="opt">약 $1.52$ — 첫 반복에 근에 거의 도달</button>
+      <button class="opt">$2$ 보다 큼 — 근을 지나쳐 오른쪽</button>
+    </div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>두 끝점 $(1,-2),(2,4)$ 를 이은 할선의 $x$절편은 $x_2=2-4\cdot\dfrac{1}{6}=\dfrac43\approx1.333$. 근보다 왼쪽에서 출발해 $x_3\approx1.463$ 처럼 초선형으로 다가간다 — 한 번에 근에 닿지는 않는다.</div>
+  </div>
   <div class="stepper"
     data-kind="root-secant"
     data-fn="x^3 - x - 2"
@@ -243,6 +266,18 @@
     </table>
   </div>
   <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">두 근사점의 함수값이 거의 같아지면 할선이 <b>수평</b>이 되어 분모 $f_n-f_{n-1}$ 에서 유효숫자가 소멸한다(7자리 → 2자리). 여기에 나눗셈을 하면 다음 근사 $x_{n+1}$ 이 근 $\sqrt2\approx1.414$ 에서 <b>2만 배</b>나 튕겨 나간다. 정확히 대칭($x_{n-1}=-x_n$)이면 분모 $=0$, 곧 <b>0으로 나눔</b>.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>할선법을 돌렸더니 다음 근사값 $x_{n+1}$ 이 근에서 2만 배나 튕겨 나갔다. 가장 직접적인 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">두 점의 함수값이 거의 같아져 분모 $f(x_n)-f(x_{n-1})$ 에서 유효숫자가 소멸(할선이 수평)</button>
+      <button class="opt">두 초기값의 부호가 서로 달라서</button>
+      <button class="opt">함수가 그 구간에서 미분 불가능해서</button>
+      <button class="opt">반복 횟수가 부족해서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>분모 $f_n-f_{n-1}$ 이 0에 가까워지면 할선이 거의 수평이 되어 $x$절편이 멀리 날아간다(자리수 소멸, catastrophic cancellation). 할선법은 이분법과 달리 구간을 가두지 않으므로 이런 폭발을 스스로 막지 못한다. 부호 조건은 할선법과 무관하다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="5-1" data-chtitle="할선법 (Secant)" data-stage="코드">
@@ -365,12 +400,35 @@ f = @(x) x.^3 - x - 2;
     <div class="dcard"><h4>③ $u(x)$ ($m$ 모를 때)</h4><div class="sub">중근→단근</div><div class="eq">$ x_{n+1}=x_n-\dfrac{f f'}{(f')^2-f f''} $</div><p>$u=f/f'$ 는 단근만 가짐. $f''$ 필요.</p></div>
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">보너스 — Deflation(수축)</div>근 $r_1$ 을 찾은 뒤 $g(x)=\dfrac{f(x)}{x-r_1}$ 로 나눠 차수를 줄이고 나머지 근을 찾는다. 다항식에 유용하나 <strong>수치 오차 누적</strong>에 주의(역순으로 다듬기).</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>중복도 $m$ 을 아는 이중근에서 Modified Newton $x_{n+1}=x_n-m\dfrac{f}{f'}$ 처럼 <strong>$m$ 을 곱하기만</strong> 해도 이차 수렴이 되살아나는 근본 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">표준 Newton이 중근에서 오차를 매 반복 $(1-\tfrac1m)$ 배로만 줄이는데, $m$ 을 곱하면 그 선형 감쇠 인자를 정확히 상쇄해 오차가 다시 제곱으로 떨어지기 때문</button>
+      <button class="opt">$m$ 을 곱해 함수값 $f$ 를 $m$ 배 키우면 근에 더 큰 보폭으로 도달하기 때문</button>
+      <button class="opt">$m$ 을 곱하면 근처에서 도함수 $f'$ 이 더 정확해지기 때문</button>
+      <button class="opt">$m$ 을 곱하는 순간 중근이 단근으로 바뀌기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>중근 $(x-r)^m$ 에서 표준 Newton은 오차를 매 반복 $\left(1-\tfrac1m\right)$ 배로만 줄여 <strong>선형</strong>이다. 공식에 $m$ 을 곱하면 이 선형 감쇠 인자가 정확히 상쇄되어 오차가 다시 $O(\varepsilon^2)$ 로 붕괴한다(이차 복원). 단근화하는 것은 $u=f/f'$ 기법이지 $\times m$ 이 아니다 — 결과는 같아도 방식이 다르다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="시연">
   <div class="eyebrow">5-2 · 시연 · Step-through</div>
   <h1 class="stage-h">이중근에서 Newton이 기어가는 모습 — 직접 반복</h1>
   <p class="lede">$f(x)=(x-1)^2$ (x축에 <strong>접하는</strong> 포물선), $x_0=1.8$. "다음 반복" 을 눌러 보라 — 접선의 $x$절편이 근 $x=1$ 까지 <strong>매번 절반씩만</strong> 다가간다($1.8\to1.4\to1.2\to1.1\dots$). 이차가 아니라 <strong>선형</strong> 수렴임을 표의 $x_n$ 에서 확인하라.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>돌려보기 전에 — 이중근 $f=(x-1)^2$ 에서 표준 Newton을 $x_0=1.8$ 로 시작하면(근 $x=1$ 까지 오차 $0.8$), <strong>첫 반복 뒤</strong> 오차는 어떻게 될까?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">약 절반인 $0.4$ 로 줄어 $x_1\approx1.4$ — 이차가 아니라 선형 crawl</button>
+      <button class="opt">거의 $0$ 이 되어 $x_1\approx1$ — 한 스텝에 근 도달</button>
+      <button class="opt">오히려 커져 근에서 멀어진다(발산)</button>
+    </div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$x_1=1.8-\dfrac{(0.8)^2}{2(0.8)}=1.8-0.4=1.4$ — 오차가 $0.8\to0.4$ 로 정확히 절반만 줄었다. 이중근에서는 근처에서 $f'\to0$ 이라 이차 수렴이 무너지고 매 반복 $\times\tfrac12$ 의 선형 crawl. Modified Newton($\times2$)이면 단 한 스텝에 근에 닿는다.</div>
+  </div>
   <div class="stepper"
     data-kind="root-tangent"
     data-fn="(x-1)^2"
@@ -445,6 +503,18 @@ f = @(x) x.^3 - x - 2;
 <tr><td>3</td><td>0.125</td><td>$2.1{\times}10^{-6}$</td></tr>
 <tr><td>4</td><td>0.0625</td><td>$1.6{\times}10^{-12}$</td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">중근에서 Newton 이 느려진다</div>단순근에선 오차가 <b>제곱</b>으로 붕괴(이차)하는데, <b>중근</b>에선 $f'$ 도 0에 다가가 오차가 매번 $\times\tfrac12$ 로만 준다(<b>선형</b>) — "빠른 Newton" 신화가 깨지는 지점.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>위 표에서 단순근 $x^2{-}2$ 는 오차가 $8.6{\times}10^{-2}\!\to\!2.5{\times}10^{-3}\!\to\!2.1{\times}10^{-6}$ 로 급락하는데, 중근 $(x{-}1)^2$ 는 $0.5\!\to\!0.25\!\to\!0.125$ 로만 준다. 중근에서 이렇게 느려지는 <strong>직접적</strong> 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">근 근처에서 $f'$ 도 $0$ 으로 다가가 $f/f'$ 이 $0/0$ 꼴이 되고, 오차가 제곱이 아니라 매번 $\times\tfrac12$ 의 상수배로만 줄기 때문</button>
+      <button class="opt">중근의 초기 오차 $1.0$ 이 단순근 $0.59$ 보다 커서 출발이 불리하기 때문</button>
+      <button class="opt">중근에서는 함수 $f$ 가 미분 불가능해서</button>
+      <button class="opt">함수값 $f$ 가 $0$ 에 가까워 반올림 오차가 계산을 지배해서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>중근 $(x-r)^m$ 에서는 $f(r)=f'(r)=0$ 이라 근 근처에서 $f/f'$ 이 $0/0$ 부정형이 된다. 그래서 오차 감쇠가 $\varepsilon_{n+1}\approx(1-\tfrac1m)\varepsilon_n$ 의 <strong>선형</strong>이 되어 이중근은 매번 절반만 준다 — 단순근의 제곱 붕괴(이차)와 대비된다. 초기 오차 크기·미분가능성·반올림 문제가 아니다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="5-2" data-chtitle="다중근과 수정 기법" data-stage="코드">
@@ -527,6 +597,11 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
     <tr><td class="stp-k">$u=f/f'$ Newton</td><td>$m$ 모를 때 · $f''$ 필요</td><td>이차 복원</td></tr>
   </tbody></table></div>
   <div class="nafig-cap" style="max-width:560px;margin:7px auto 0">표준 Newton 오차 감소율 $1-\tfrac1m$ — 이중근 $0.5$, 삼중근 $\approx0.6667$. $m$ 이 클수록 $1$ 에 가까워 거의 안 준다.</div>
+  <div class="longform lf-compact" data-qid="concept-5-2" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>겹친 근이 의심되는데 <strong>중복도 $m$ 을 미리 알 수 없다면</strong>, 왜 $u(x)=f/f'$ 기법이 $\times m$ 을 곱하는 방법보다 안전한 선택일지 한 줄로 판단해 보라.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 <!-- ════════════════════ 5-3 비선형 연립계 ════════════════════ -->
@@ -588,6 +663,18 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
       </div>
       <div class="callout warn"><div class="ct">왜 역행렬을 안 구하나</div>$J^{-1}$ 직접 계산은 $O(n^3)$ 로 비싸고 불안정. 대신 선형계 $J\Delta\mathbf x=-\mathbf F$ 를 푼다(MATLAB backslash <strong>\</strong>).</div>
     </div>
+  </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>점화식은 $\mathbf x_{n+1}=\mathbf x_n-J^{-1}\mathbf F$ 라고 쓰지만, 실제 구현은 역행렬 $J^{-1}$ 을 만들지 않고 선형계 $J\,\Delta\mathbf x=-\mathbf F$ 를 푼다. 그 근본 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">역행렬을 명시적으로 구하는 것은 $O(n^3)$ 로 비싸고 불안정한데, 정작 필요한 것은 $J^{-1}$ 전체가 아니라 갱신 벡터 $\Delta\mathbf x$ 하나뿐이기 때문</button>
+      <button class="opt">$J$ 가 특이 행렬($\det J=0$)일 때도 선형계 $J\Delta\mathbf x=-\mathbf F$ 는 항상 풀리기 때문</button>
+      <button class="opt">선형계 풀이는 Jacobian $J$ 자체가 필요 없어 편미분을 생략할 수 있기 때문</button>
+      <button class="opt">역행렬을 쓰면 이차 수렴이 선형으로 떨어지기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$J^{-1}$ 을 직접 만들면 $O(n^3)$ 연산에 오차가 증폭되기 쉽다. 우리가 원하는 것은 갱신 벡터 $\Delta\mathbf x$ 하나뿐이므로 LU 분해로 $J\Delta\mathbf x=-\mathbf F$ 를 바로 푸는 편이 싸고 안정적이다(MATLAB backslash \). 참고로 $\det J=0$ 이면 역행렬도 선형계도 풀 수 없다.</div>
   </div>
 </section>
 
@@ -672,6 +759,18 @@ root = newton_u(f, df, d2f, 2.0, 1e-12);
 <tr><td>3</td><td>0.87</td><td>0.87</td></tr>
 <tr><td>4</td><td>1.24</td><td>1.24</td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">성분별 대입은 진동·발산</div>연립 $x{=}2{-}y^2,\ y{=}2{-}x^2$ 을 한 식씩 대입 반복하면 값이 <b>안정되지 못하고 튄다</b>. 비선형 연립은 방정식을 따로 못 풀고 <b>전체 Jacobian 을 쓰는 Newton</b>($J\Delta=-F$)이 필요하다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>연립 $x=2-y^2,\ y=2-x^2$ 을 한 식씩 번갈아 대입해 반복했더니 값이 $0.5\!\to\!1.75\!\to\!-1.06\!\to\!0.87\!\to\cdots$ 로 안정되지 못하고 튄다. 이 실패의 근본 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">성분별 대입은 변수 사이의 결합(전체 Jacobian)을 무시하는 다변수 고정점 사상이라, $|g'|$(스펙트럼 반경)이 $1$ 을 넘어 진동·발산하기 때문</button>
+      <button class="opt">Jacobian 행렬식이 $0$ 이라 선형계 $J\Delta\mathbf x=-\mathbf F$ 를 못 풀어서</button>
+      <button class="opt">초기값 $(0.5,\,0.5)$ 가 특이점이라서</button>
+      <button class="opt">방정식 개수가 미지수 개수보다 많아서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>각 식을 따로 $x\leftarrow g_1(y),\ y\leftarrow g_2(x)$ 로 대입하는 것은 다변수 <strong>고정점 반복</strong>인데, 이 사상의 미분(스펙트럼 반경)이 $1$ 보다 커서 발산한다. 변수들이 강하게 얽힌 비선형 연립은 전체 Jacobian 을 함께 쓰는 Newton($J\Delta\mathbf x=-\mathbf F$)으로 <strong>동시에</strong> 풀어야 한다. 여기서는 Jacobian 을 아예 쓰지 않았으므로 $\det J$ 문제가 아니다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="5-3" data-chtitle="비선형 연립계" data-stage="코드">
@@ -850,6 +949,18 @@ opts = optimoptions('fsolve','Display','iter','TolFun',1e-12);
 <tr><td>할선법</td><td>7회</td><td>초선형 1.6</td></tr>
 <tr><td>Newton</td><td><b>5회</b></td><td>이차</td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">잘못된 선택의 대가 = 4배 반복</div>같은 근($\sqrt2$, 구간 $[1,2]$)을 이분법은 <b>20회</b>, Newton 은 <b>5회</b>. 단 Newton 은 $f'$ 와 좋은 초기값이 있어야 — 안전(이분법) vs 속도(Newton)의 실제 비용을 값으로 본다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>고정점 반복 $x_{n+1}=g(x_n)$ 을 돌렸더니 근 근처에서 수렴은커녕 값이 점점 밖으로 튕겨 나갔다. 코드 버그가 아니라면 가장 가능성 높은 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">고른 $g$ 가 고정점에서 $|g'(x^*)|>1$ 이라, 반복이 거리를 넓히는 반발(비수축) 사상이기 때문</button>
+      <button class="opt">초기값이 부호가 다른 두 점으로 근을 감싸지 못했기 때문</button>
+      <button class="opt">반복 횟수를 너무 많이 돌려 오차가 누적됐기 때문</button>
+      <button class="opt">$g$ 가 그 구간에서 연속이 아니기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>고정점 반복의 수렴은 알고리즘이 아니라 $|g'(x^*)|$ 이 결정한다. $|g'|<1$(수축)이면 수렴, $|g'|>1$(반발)이면 같은 방정식이라도 발산한다. 예: $x^3-x-2=0$ 을 $g=\sqrt[3]{x+2}$($|g'|\approx0.14$)로 풀면 수렴하지만 $g=x^3-2$($|g'|\approx6.9$)면 튕겨 나간다. 부호 조건은 고정점법과 무관하다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="5-4" data-chtitle="방법 선택 전략" data-stage="코드">

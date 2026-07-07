@@ -180,12 +180,31 @@
       <div class="callout warn"><div class="ct">주의</div>세 우변 모두 <strong>이전 값 $x^{(k)}$</strong> — 이번 라운드에 $x_1$ 을 새로 구했어도 $x_2$ 계산엔 <strong>옛 $x_1$</strong> 을 쓴다.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>Jacobi 반복식의 우변을 <strong>모두 이전 반복값 $x_j^{(k)}$</strong> 으로 두면, 세 성분 $x_1,x_2,x_3$ 의 갱신 계산에는 어떤 성질이 생기나?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">서로 참조하지 않아 순서 없이 <b>동시에(병렬로)</b> 계산할 수 있다</button>
+      <button class="opt">반드시 $x_1\!\to\!x_2\!\to\!x_3$ 순서를 지켜 계산해야 한다</button>
+      <button class="opt">대각 원소 $a_{ii}$ 없이도 각 성분을 구할 수 있다</button>
+      <button class="opt">반복할수록 필요한 저장 벡터가 하나로 줄어든다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>우변에 이번 라운드의 새 값이 하나도 없으므로 각 $x_i^{(k+1)}$ 은 오직 $\mathbf{x}^{(k)}$ 에만 의존한다. 성분끼리 서로를 참조하지 않으니 순서·의존 없이 동시에 계산할 수 있다 — 이것이 Jacobi 의 병렬성이다. 대신 최신 정보를 못 써 수렴은 느리다(다음 절 GS 와 대비).</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="시연">
   <div class="eyebrow">7-1 · 시연 · Step-through</div>
   <h1 class="stage-h">직접 반복시켜 보기 — 해로 조여든다</h1>
   <p class="lede">"다음 반복" 을 누르면 세 성분이 <strong>동시에</strong> 갱신되고, 오른쪽 <strong>max err</strong> 열(정확한 해 $(2,4,3)$ 과의 최대 오차)이 줄어드는 것을 확인하라. 초기값 $\mathbf{x}^{(0)}=(0,0,0)$. 1회 반복이면 이미 $(1.75,\,2.625,\,3.0)$.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>초기값 $\mathbf{x}^{(0)}=(0,0,0)$ 은 정확한 해 $(2,4,3)$ 과 <b>max err $=4$</b>. "다음 반복" 을 <b>한 번</b> 누르면 max err 는 어떻게 될까?</div>
+    <div class="opts"><button class="opt" data-correct="1">$4$ 에서 <b>크게 줄어</b> 약 $1.4$ 가 된다</button><button class="opt">$0$ 으로 <b>즉시</b> 떨어진다 (한 번에 정확한 해)</button><button class="opt">거의 그대로 (약 $4$)</button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>대각 우세라 수렴이 보장돼 오차가 매 반복 상수비로 준다. 첫 반복 $\mathbf{x}^{(1)}=(1.75,\,2.625,\,3.0)$ 이라 max err $=|4-2.625|=1.375\approx1.4$. 한 번에 정해에 닿지도, 발산하지도 않고 <b>점진적으로</b> 조여든다.</div>
+  </div>
   <div class="stepper"
     data-kind="matrix-iter"
     data-a="[[4,-1,1],[4,-8,1],[-2,1,5]]"
@@ -267,6 +286,18 @@
     </table>
   </div>
   <div class="keqnote" style="margin-top:8px">반례 시스템 $A=\begin{bmatrix}1&2\\2&1\end{bmatrix},\ \mathbf{b}=(3,3)$, 정해 $(1,1)$. 대각이 오프대각보다 작아($|1|\lt|2|+0$) 반복 행렬 $\rho(T_J)=2\gt1$. 표처럼 부호가 튀면서 오차가 <b>매 반복 정확히 2배</b>($1\!\to\!2\!\to\!4\!\to\!\cdots$)로 커진다 — 초기값을 바꿔도 발산은 못 막는다. 그래서 반복법을 돌리기 <b>전에</b> 대각 우세부터 확인한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>위 표처럼 값이 부호를 튀며 <b>발산</b>했다. Jacobi 구현 코드를 의심하기 전에 <b>가장 먼저 확인</b>할 것은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">계수행렬이 <b>대각 우세</b> $|a_{ii}|>\sum_{j\ne i}|a_{ij}|$ 인지 — 아니면 $\rho(T_J)\ge1$ 로 발산</button>
+      <button class="opt">초기값 $\mathbf{x}^{(0)}$ 을 정확한 해에 더 가깝게 바꾼다</button>
+      <button class="opt">반복 횟수를 훨씬 더 늘린다</button>
+      <button class="opt">우변 $\mathbf{b}$ 의 부호를 뒤집는다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>발산 여부는 초기값이나 반복 수가 아니라 <b>반복 행렬의 스펙트럴 반경</b>이 정한다. 대각이 오프대각보다 작으면 $\rho(T_J)\ge1$ 이라 어떤 초기값에서도 오차가 커진다(표는 정확히 $\times2$). 손으로 확인되는 <b>대각 우세</b>부터 점검하고, 아니면 행·열 재배열(pivoting)로 대각을 키운다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-1" data-chtitle="Jacobi 반복법" data-stage="코드">
@@ -405,12 +436,31 @@ b = np.array([7,-21,15], float)
     <div class="dcard"><h4>③ $x_3$ (새 $x_1,x_2$)</h4><div class="sub">둘 다 갱신됨</div><div class="eq">$ x_3^{(k+1)}=\dfrac{15+2x_1^{(k+1)}-x_2^{(k+1)}}{5} $</div><p>이번 라운드에서 구한 최신 값들을 사용.</p></div>
   </div>
   <div class="callout key" style="margin-top:12px"><div class="ct">왜 더 빠른가</div>매 성분이 <strong>이번 라운드의 개선분</strong>을 즉시 받으므로, 보통 정보가 한 스텝 앞서 전파되어 Jacobi 대비 <strong>약 절반</strong>의 반복으로 수렴한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>Jacobi 와 GS 는 갱신 <b>공식</b>이 거의 같은데, GS 가 보통 약 <b>2배 빨리</b> 수렴하는 근본 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$x_i$ 를 구할 때 이번 라운드에 <b>갓 구한 새 값</b> $x_{j<i}^{(k+1)}$ 을 즉시 재사용해 최신 정보가 한 스텝 앞서 퍼지기 때문</button>
+      <button class="opt">GS 는 대각 원소 $a_{ii}$ 로 나누지 않기 때문</button>
+      <button class="opt">GS 는 우변을 전부 이전 값 $x_j^{(k)}$ 으로 쓰기 때문</button>
+      <button class="opt">GS 는 세 성분을 병렬로 동시에 계산하기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>두 방법의 공식은 같고 <b>갱신 시점</b>만 다르다. GS 는 $x_1$ 을 구하는 즉시 그 값을 $x_2$ 식에 흘려보내(전진대입) 한 스윕 안에서 여러 성분분 개선을 반영한다. 대각 우세계에서 대체로 $\rho(T_{GS})\approx\rho(T_J)^2$ 이라 반복 수가 절반 수준. 나머지 보기(비-나눗셈·옛값·병렬)는 오히려 Jacobi 쪽 특성이거나 사실이 아니다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="시연">
   <div class="eyebrow">7-2 · 시연 · Step-through</div>
   <h1 class="stage-h">직접 반복 — Jacobi 보다 빠르게 조여든다</h1>
   <p class="lede">동일 시스템·동일 초기값 $(0,0,0)$ 이지만 <strong>즉시 재사용</strong> 때문에 훨씬 빨리 수렴한다. 1회 반복이 벌써 $(1.75,\,3.5,\,3.0)$ — Jacobi 의 $x_2=2.625$ 보다 참값 $4$ 에 가깝다. max err 열을 앞 절 Jacobi 와 비교해 보라.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>같은 시스템·초기값 $(0,0,0)$. GS 는 새 $x_1^{(1)}=1.75$ 를 <b>즉시</b> $x_2$ 계산에 넣는다. 첫 반복의 $x_2^{(1)}$ 은 Jacobi 값 $2.625$ 와 비교하면?</div>
+    <div class="opts"><button class="opt" data-correct="1">참값 $4$ 에 <b>더 가깝다</b> ($3.5$)</button><button class="opt">Jacobi 와 <b>똑같다</b> ($2.625$)</button><button class="opt">참값에서 <b>더 멀어진다</b></button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>GS 는 $x_2^{(1)}=\dfrac{21+4(1.75)+0}{8}=\dfrac{28}{8}=3.5$. Jacobi 는 옛 $x_1=0$ 을 써 $2.625$ 였다. 새 값을 즉시 재사용한 덕에 같은 첫 반복에서 이미 참값 $4$ 에 더 가깝다 — 이것이 GS 가 약 $2$배 빠른 근본 이유.</div>
+  </div>
   <div class="stepper"
     data-kind="matrix-iter"
     data-a="[[4,-1,1],[4,-8,1],[-2,1,5]]"
@@ -463,6 +513,18 @@ b = np.array([7,-21,15], float)
     </table>
   </div>
   <div class="keqnote" style="margin-top:8px">같은 $A=\begin{bmatrix}1&2\\2&1\end{bmatrix},\ \mathbf{b}=(3,3)$ (정해 $(1,1)$)에 두 방법을 나란히. Jacobi 오차는 매 반복 $\times2$ ($\rho(T_J)=2$), <b>GS 는 $\times4$</b> ($\rho(T_{GS})=4$). GS 의 자랑인 "새 값 즉시 재사용"이 발산 방향에선 오차 확대까지 <b>즉시 가속</b>한다 — <b>더 빠름 ≠ 항상 수렴</b>. 대각 우세가 깨지면 GS 라고 안전하지 않다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>"GS 는 Jacobi 보다 빠르니 더 안전하다"고 여겨 <b>대각 우세가 아닌</b> 계에 GS 를 돌렸다. 실제로는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">GS 도 <b>발산</b>한다 — "즉시 재사용" 탓에 오히려 Jacobi 보다 <b>더 빨리</b> 오차가 커질 수 있다</button>
+      <button class="opt">GS 는 항상 수렴하므로 문제없다</button>
+      <button class="opt">GS 는 발산해도 반복만 늘리면 결국 수렴한다</button>
+      <button class="opt">"2배 빠름"이 "2배 안전"을 뜻하므로 대각 우세는 필요 없다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>"더 빠름"은 "항상 수렴"이 아니다. 대각 우세가 깨지면 $\rho(T_{GS})\ge1$ 이라 GS 도 발산하고, 새 값을 즉시 되먹이는 성질이 발산 방향에선 오차 확대를 가속한다(위 반례: Jacobi $\times2$ vs GS $\times4$). 수렴은 반복 수가 아니라 행렬 $A$ 의 구조가 정한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-2" data-chtitle="Gauss-Seidel" data-stage="코드">
@@ -602,6 +664,18 @@ end
       <div class="callout warn"><div class="ct">충분 ≠ 필요</div>대각 우세가 아니어도 $\rho(T)<1$ 이면 수렴한다. 대각 우세는 <strong>안전한 판정</strong>일 뿐, 유일한 조건이 아니다.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>어떤 행렬이 <b>엄격 대각 우세가 아닌데도</b> Jacobi 반복이 수렴했다. 모순인가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">모순 아님 — 대각 우세는 <b>충분조건</b>일 뿐이라, $\rho(T_J)<1$ 이면 대각 우세 없이도 수렴한다</button>
+      <button class="opt">모순이다 — 대각 우세가 없으면 반드시 발산한다</button>
+      <button class="opt">모순이다 — 수렴했다면 사실은 대각 우세인 것이다</button>
+      <button class="opt">대각 우세는 <b>필요충분</b> 조건이라 이런 경우는 있을 수 없다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>수렴의 <b>필요충분</b> 조건은 $\rho(T)<1$ 이고, 엄격 대각 우세는 이를 보장하는 <b>충분(안전) 조건</b>일 뿐 필요조건이 아니다. 그래서 대각 우세가 없어도 스펙트럴 반경이 1 미만이면 수렴한다. 대각 우세는 "행만 보면 확인되는" 간편한 판정이라 실무에서 먼저 쓰는 것.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-3" data-chtitle="수렴 조건" data-stage="직접계산">
@@ -639,6 +713,18 @@ end
         <div class="pitfall"><h4>⚠ $\rho$ 만이 진짜 기준</h4><p>대각 우세가 아니어도 $\rho(T)<1$ 이면 수렴 — 최종 판정은 <b>고유값</b>.</p></div>
       </div>
     </div>
+  </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$A=\begin{bmatrix}1&2&3\\4&5&6\\7&8&9\end{bmatrix}$ 에 Jacobi 를 그대로 돌리니 발산한다. 알고리즘을 바꾸기 전에 <b>가장 먼저</b> 시도할 것은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">행·열을 <b>재배열(pivoting)</b>해 대각 원소를 키워 대각 우세를 회복시켜 본다</button>
+      <button class="opt">초기값을 정확한 해로 두면 발산이 사라진다</button>
+      <button class="opt">완화 계수 $\omega$ 를 $2$ 보다 크게 잡아 가속한다</button>
+      <button class="opt">반복 허용 오차(tol)를 더 작게 잡는다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>첫 행부터 $|1|<|2|+|3|$ 이라 대각 우세가 깨져 $\rho(T_J)\ge1$ 이다. 초기값·tol·반복 수는 발산 자체를 못 막고, $\omega>2$ 는 오히려 확실히 발산시킨다. 손쓸 첫 수는 <b>행·열 재배열</b>로 큰 원소를 대각에 올려 대각 우세(따라서 $\rho<1$)를 만드는 것.</div>
   </div>
 </section>
 
@@ -733,6 +819,18 @@ end
     <div class="dcard"><h4>③ 전개</h4><div class="sub">완화형</div><div class="eq">$ =(1-\omega)x_i^{(k)}+\omega\,x_i^{GS} $</div><p>가중 평균 형태로 정리.</p></div>
   </div>
   <div class="callout key" style="margin-top:12px"><div class="ct">최적 $\omega$</div>이론적 최적 완화 계수 $\omega_{opt}=\dfrac{2}{1+\sqrt{1-\rho(T_J)^2}}$ (모델 문제). 잘 맞추면 반복 수가 극적으로 줄지만, <strong>시스템마다 다르고</strong> 잘못 고르면 오히려 느려진다 — 다음 시연에서 직접 확인.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>GS 가 매 스텝 "옳은 방향"으로 $\Delta_i=x_i^{GS}-x_i^{(k)}$ 만큼 움직인다. SOR 이 $\omega>1$ 로 이 걸음을 <b>일부러 더 크게</b> 밀어 가속을 노리는 근거는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">방향이 여러 스텝에 걸쳐 <b>일관</b>되면, 같은 방향으로 더 멀리 가는 편이 목표에 빨리 닿기 때문</button>
+      <button class="opt">$\omega$ 를 키우면 대각 원소 $a_{ii}$ 가 커져 수렴 조건이 좋아지기 때문</button>
+      <button class="opt">$\omega>1$ 이면 반복 행렬이 대각 행렬이 되어 한 번에 수렴하기 때문</button>
+      <button class="opt">걸음을 키우면 무조건 발산이 없어지기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$x_i^{(k+1)}=x_i^{(k)}+\omega\Delta_i$ — GS 걸음 $\Delta_i$ 를 $\omega$ 배 확대한다. 오차가 매 스텝 비슷한 방향으로 줄 때는 그 방향으로 과감히 더 가면 반복 수가 준다(over-relax). 단 $\omega$ 가 과하면($\omega\ge2$) 지나쳐 진동·발산하므로 안전구간 $0<\omega<2$ 안에서만 이득. $\omega$ 는 $a_{ii}$ 를 바꾸지도, 반복 행렬을 대각으로 만들지도 않는다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="시연">
@@ -815,6 +913,18 @@ end
     </table>
   </div>
   <div class="keqnote" style="margin-top:8px">왜 $\omega\ge2$ 가 무조건 발산인가 — $\det(T_{SOR})=(1-\omega)^n$ 이라 최대 고유값 $\rho(T_{SOR})\ge|1-\omega|$. $\omega\ge2$ 면 $|1-\omega|\ge1$ 이라 <b>어떤 행렬·어떤 $\omega_{opt}$ 로도 $\rho$ 를 1 아래로 못 내린다.</b> 오른쪽 열 $|1-\omega|^{10}$ = 10회 반복 뒤 오차가 <b>최소</b> 몇 배로 커지는지의 하한 — $\omega=2.5$ 면 10회에 이미 <b>58배 이상</b> 확대. 반대로 $0\lt\omega\lt2$ 는 (일반 행렬에서) 수렴의 <b>필요조건</b>일 뿐, 충분조건이 아니다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>가속을 노려 $\omega=2.5$ 로 크게 잡았더니 발산했다. 계수행렬 $A$ 를 아무리 좋게(강한 대각 우세로) 골라도 이 발산을 막을 수 있을까?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">막을 수 없다 — $\rho(T_{SOR})\ge|1-\omega|=1.5\ge1$ 이라 <b>어떤 $A$ 로도</b> $\rho$ 를 $1$ 아래로 못 내린다</button>
+      <button class="opt">막을 수 있다 — 대각 우세만 강하면 $\omega$ 는 얼마든 커도 된다</button>
+      <button class="opt">막을 수 있다 — 초기값을 해 근처로 주면 된다</button>
+      <button class="opt">반복 수를 충분히 늘리면 결국 수렴한다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$\det(T_{SOR})=(1-\omega)^n$ 이라 항상 $\rho(T_{SOR})\ge|1-\omega|$. $\omega\ge2$ 면 $|1-\omega|\ge1$ 이므로 행렬을 아무리 잘 골라도, 초기값·반복 수를 어찌해도 $\rho$ 를 $1$ 미만으로 못 만든다 → 무조건 발산. 안전구간은 $0<\omega<2$ (대칭 양정치에서 Kahan 정리).</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="7-4" data-chtitle="SOR와 완화" data-stage="코드">
@@ -948,6 +1058,11 @@ for w in [0.8, 1.0, 1.2, 1.5]:
     <tr><td class="stp-k">$1&lt;\omega&lt;2$</td><td>over-relax</td><td>가속(잘 조건화 계엔 역효과)</td></tr>
     <tr><td class="stp-k">$\omega\ge2$</td><td>발산</td><td>$\rho(T_{SOR})\ge|1-\omega|\ge1$</td></tr>
   </tbody></table></div>
+  <div class="longform lf-compact" data-qid="concept-7-4" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>이번 주 배운 반복법을 실전에서 쓴다고 하자. 첫 반복을 돌리기 <b>전에</b> 계수행렬 $A$ 에서 딱 하나만 확인한다면 무엇을 보겠는가 — 그리고 왜 그것이 수렴을 좌우하는지 한 줄로.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 </div></main>

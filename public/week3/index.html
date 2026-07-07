@@ -161,6 +161,18 @@
     <div class="dcard"><h4>③ 필드 채우기</h4><div class="sub">$S,E,M$ 결정</div><div class="eq">$ S{=}0,\; E{=}2{+}7{=}9,\; M{=}011 $</div><p>지수는 bias $7$ 을 더해 저장.</p></div>
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">검산</div>$ (-1)^0\times 1.011_2\times 2^{9-7} = 1.375\times 4 = 5.5 $ ✓ — 세 필드를 다시 조립하면 원래 값이 복원된다. 이 규칙은 32비트·64비트에서 비트 수만 늘 뿐 동일하다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>정규화 $1.xxx_2\times 2^{k}$ 에서 맨 앞의 $1$ 을 비트에 저장하지 않는(hidden bit) 이유로 옳은 것은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">정규화하면 최상위 비트는 항상 $1$ 이라 저장 안 해도 복원되고, 그만큼 가수 정밀도를 $1$ 비트 더 얻는다</button>
+      <button class="opt">맨 앞 $1$ 은 부호 비트가 대신 저장하므로 중복이라 뺀다</button>
+      <button class="opt">지수 필드에 이미 그 $1$ 이 포함돼 있어 생략한다</button>
+      <button class="opt">$0$ 인 경우가 더 흔해서 기본값으로 두는 것이다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>정규화 $1.xxx$ 의 정의상 맨 앞 비트가 항상 $1$ 로 고정되므로 저장할 필요가 없다. 그 자리를 가수에 넘겨 유효 비트가 하나 늘어 double 은 실질 $53$ 비트가 된다 — 검산처럼 세 필드를 조립하면 값이 정확히 복원된다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="시연">
@@ -224,6 +236,18 @@
     <tr><td class="stp-k">$2^{54}=1.8\times10^{16}$</td><td>$4$</td><td>$+1,+2,+3$ 모두 삼켜짐</td></tr>
   </tbody></table></div>
   <div class="callout warn" style="margin-top:10px"><div class="ct">두 반례가 말하는 것</div>①은 <b>작은 수의 반올림</b>($0.1$ 이 이진수로 무한 반복 → 마지막 비트에서 어긋남), ②는 <b>큰 수의 간격</b>($2^{53}$ 부터 ULP $\gt1$ 이라 정수 $9007199254740993$ 은 저장 자체가 불가). 둘 다 "가장 가까운 칸으로 민" 결과다 — 그래서 $==$ 대신 $|a-b|\lt\text{tol}$ 로 비교한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>MATLAB 에서 $0.1+0.2==0.3$ 이 <strong>거짓</strong>으로 나왔다. 가장 근본적인 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$0.1,0.2,0.3$ 이 이진수로 무한 반복소수라 유한 비트에 담을 때 각기 다르게 반올림되어, 양변의 저장값이 미세하게 어긋나기 때문</button>
+      <button class="opt">$0.1+0.2$ 는 정확히 $0.3$ 이지만 화면 표시 자릿수만 반올림돼 달라 보이는 것이다</button>
+      <button class="opt">덧셈 연산 자체에 버그가 있어 결과가 조금 커지기 때문</button>
+      <button class="opt">$==$ 연산자가 부동소수점에서는 항상 거짓을 반환하도록 정의돼 있기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$0.1$ 은 $0.0\overline{0011}_2$ 로 유한 비트에 정확히 안 담겨 저장 시 반올림된다. 좌변($0.30000000000000004$)과 우변($0.29999999999999999$)의 저장값이 달라 $\approx5.6\times10^{-17}$ 차이가 남는다 — 그래서 $==$ 대신 $|a-b|\lt\text{tol}$ 로 비교한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="3-1" data-chtitle="부동소수점 표현" data-stage="코드">
@@ -404,6 +428,18 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
       <div class="keqnote">Step 54 에서 $1+e$ 가 $1$ 로 반올림되어 종료. 복원하면 $e=2^{-52}=\varepsilon_{\text{mach}}$.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>최근접 반올림(round-to-nearest)에서 상대오차 상한이 간격 $\varepsilon_{\text{mach}}$ 전체가 아니라 그 <strong>절반</strong> $\varepsilon_{\text{mach}}/2$ 인 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">가장 가까운 격자점으로 밀므로, 어떤 수든 이웃한 두 표현값 중 가까운 쪽까지의 거리(최대 간격의 절반) 안에 든다</button>
+      <button class="opt">오차가 양수·음수 두 방향으로 나뉘어 각각 절반씩이기 때문</button>
+      <button class="opt">가수 비트 하나를 부호 표시에 쓰느라 정밀도가 절반이 되기 때문</button>
+      <button class="opt">반올림은 항상 아래로 버려 최대 오차가 간격의 절반이기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>최근접 반올림은 이웃한 두 격자점의 <strong>중점</strong>을 경계로 삼는다. 따라서 임의의 실수는 더 가까운 격자점과 최대 '간격$/2$' 만큼만 떨어진다 — 그래서 상대오차 상한이 $\varepsilon_{\text{mach}}/2$ 다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="3-2" data-chtitle="머신 엡실론과 반올림" data-stage="시연">
@@ -457,6 +493,18 @@ disp(1/0)              <span class="out">% Inf</span></code></pre></div>
         <div class="pitfall"><h4>⚠ 미분의 차분</h4><p>$f(x+h)-f(x)$ 도 $h$ 가 작으면 상쇄 → 다음 절 "최적 $h$" 로 이어진다.</p></div>
       </div>
     </div>
+  </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>유효숫자 $5$ 자리로 $1.23456\times10^{5}-1.23447\times10^{5}$ 를 했더니 결과 $9$ 는 <strong>한 자리</strong>밖에 못 믿게 됐다. 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">거의 같은 두 수를 빼면 앞쪽 공통 자리가 서로 지워지고, 원래 미덥던 뒷자리(반올림 잡음)만 결과로 살아남기 때문</button>
+      <button class="opt">뺄셈이 덧셈보다 반올림 오차를 더 많이 만들어내기 때문</button>
+      <button class="opt">결과 $9$ 가 작은 수라서 컴퓨터가 정밀하게 저장하지 못하기 때문</button>
+      <button class="opt">유효숫자 $5$ 자리 산술이 뺄셈에서는 $1$ 자리로 자동 축소되기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>두 수의 앞 네 자리($1.2345$)가 상쇄돼 사라지고, 각 입력의 마지막 자리에 있던 불확실성만 남는다. 절대오차는 그대로인데 결과가 작아 상대오차가 폭증한다(자리 잃음) — 그래서 상쇄가 없는 꼴로 식을 재구성한다.</div>
   </div>
 </section>
 
@@ -552,6 +600,11 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <tr><td class="stp-k">절단 vs 반올림</td><td>Accuracy(알고리즘) vs Precision(컴퓨터)</td><td>정밀도↑ → 반올림만 감소</td></tr>
     <tr><td class="stp-k">상쇄</td><td>비슷한 두 수 빼기 → 유효숫자 붕괴</td><td>$5$자리 $-$ $5$자리 $\to$ $1$자리</td></tr>
   </tbody></table></div>
+  <div class="longform lf-compact" data-qid="concept-3-2" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>정밀도를 double→quad 로 높였더니 <strong>반올림</strong> 오차는 줄었는데 <strong>절단</strong> 오차는 그대로였다. 왜 그런지 '컴퓨터의 한계'와 '알고리즘의 한계'라는 말을 써서 한 줄로.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 <!-- ════════════════════ 3-3 Taylor 급수와 절단오차 ════════════════════ -->
@@ -590,12 +643,35 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <div class="dcard"><h4>③ 상한 잡기</h4><div class="sub">$\xi$ 는 몰라도 됨</div><div class="eq">$ |R_n|\le \dfrac{\max|f^{(n+1)}|}{(n+1)!}h^{n+1} $</div><p>도함수 최댓값으로 오차 상한.</p></div>
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">왜 첫 버린 항이 지배하나</div>$h\lt1$ 이면 $h^2\gg h^3\gg h^4$ 이고 분모 $n!$ 이 커져, 버린 나머지 중 <strong>첫 항</strong>($h^{n+1}$ 포함)이 전체의 대부분을 차지한다. 그래서 $n$ 차 근사의 절단 오차를 $O(h^{n+1})$ 로 표기한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$h\lt1$ 일 때 $n$ 차 근사의 절단오차를 버린 나머지 전체가 아니라 <strong>첫 번째 버린 항</strong> $O(h^{n+1})$ 로 표기하는 근거는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$h\lt1$ 이면 $h^{n+1}\gg h^{n+2}\gg\cdots$ 이고 분모 계승도 커져, 버린 항들 중 첫 항이 크기를 지배하기 때문</button>
+      <button class="opt">둘째 항부터는 부호가 반대라 서로 상쇄되어 정확히 $0$ 이 되기 때문</button>
+      <button class="opt">$\xi$ 를 모르면 둘째 항 이후는 계산 자체가 불가능하기 때문</button>
+      <button class="opt">Taylor 정리가 첫 항까지만 수렴을 보장하기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$h\lt1$ 이면 거듭제곱이 급격히 작아지고 $(n{+}1)!$ 분모도 커져, 나머지 급수의 첫 항이 대부분을 차지한다. 그래서 오차 규모를 그 첫 항의 크기 $h^{n+1}$ 로 표기한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="시연">
   <div class="eyebrow">3-3 · 시연 · Try it</div>
   <h1 class="stage-h">항을 더할수록 오차가 준다 — 직접 재보기</h1>
   <p class="lede">$e^{0.5}$ 을 Maclaurin 급수 $1+x+\tfrac{x^2}{2!}+\cdots$ 로 근사한다. "다음 반복" 마다 항을 <strong>하나씩</strong> 더하며, 부분합이 참값 $e^{0.5}=1.6487213$ 에 다가가고 <strong>잘린 꼬리(절단오차)</strong>가 급감하는 걸 한 줄씩 관찰하라.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>돌려보기 전에 예측 — $e^{0.5}$ 급수에 항을 <strong>하나씩</strong> 더해 갈 때, 매 단계 절단오차(잘린 꼬리)는 대략 어떻게 변할까?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">계승 $n!$ 분모 때문에 한 항 더할 때마다 한 자리 이상씩 급격히 줄어든다</button>
+      <button class="opt">매 단계 일정한 양(예: 매번 $0.1$ 씩)으로 선형으로 줄어든다</button>
+      <button class="opt">참값 $1.649$ 를 넘어설 때까지 커지다가 그 뒤 줄어든다</button>
+    </div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>항 $x^n/n!$ 은 $x\lt1$ 에서 $n$ 이 커질수록 계승 분모로 급감한다. 첫 버린 항이 지배하는 절단오차도 단계마다 급감 — 아래 표에서 $6.49\times10^{-1}\to1.49\times10^{-1}\to2.37\times10^{-2}\to2.89\times10^{-3}$ 로 확인된다.</div>
+  </div>
   <div class="stepper"
     data-kind="series" data-term="0.5^n/fact(n)" data-n0="0" data-true="1.6487212707" data-steps="8"
     data-title="e^0.5 = Σ (0.5)ⁿ/n! — 항을 하나씩 더한다"
@@ -674,6 +750,18 @@ fprintf('좋은 방법: %.3e\n', x_good);  <span class="out">% 1.000e-08 (정확
     <tr><td class="stp-k">5항</td><td>$205$</td><td>$204.8$</td></tr>
   </tbody></table></div>
   <div class="callout warn" style="margin-top:10px"><div class="ct">함정</div>$3{-}3$ 시연의 $e^{0.5}$ 급수는 어디서나 수렴하지만, 모든 급수가 그렇지는 않다. $1/(1+x^2)$ 은 실수 축엔 특이점이 없어도 <b>복소 평면의 $x=\pm i$</b> 가 수렴 반경을 $1$ 로 묶는다 — "매끄러우니 급수도 안전" 은 거짓이다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$1/(1+x^2)$ 는 실수 축 어디서나 매끄러운데, $x=2$ 에서 Taylor 항을 더할수록 참값 $0.2$ 에서 <strong>오히려 멀어졌다</strong>. 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">이 급수의 수렴 반경이 $1$ 이라, 전개 중심에서 그보다 멀리 떨어진 $x=2$ 에서는 항을 더해도 발산하기 때문</button>
+      <button class="opt">함수에 실수 특이점이 있어 $x=2$ 에서 값이 정의되지 않기 때문</button>
+      <button class="opt">항을 $5$ 개보다 더 많이 더하면 다시 수렴하는데 표가 짧아서일 뿐이다</button>
+      <button class="opt">$x=2$ 가 정수라 반올림 오차가 급격히 누적되기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>복소 평면의 특이점 $x=\pm i$ 가 수렴 반경을 $1$ 로 묶는다. $|x|\gt1$ 밖에서는 급수가 발산하므로 "실수에서 매끄러우니 급수도 안전" 은 거짓이다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="3-3" data-chtitle="Taylor 급수와 절단오차" data-stage="코드">
@@ -813,6 +901,18 @@ end
         <text x="250" y="205" text-anchor="middle" fill="#b45309" font-size="10" font-weight="bold">★ h ≈ √ε ≈ 10⁻⁸</text>
       </svg>
     </div>
+  </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>수치미분에서 스텝 $h$ 를 계속 줄이면 오차가 줄다가 <strong>어느 지점부터 다시 커지는</strong> 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">절단오차는 $h$ 에 비례해 줄지만 반올림오차는 $\varepsilon_{\text{mach}}/h$ 라 $h$ 가 작아질수록 커져, 둘의 합이 U자를 이루기 때문</button>
+      <button class="opt">절단오차와 반올림오차가 모두 $h$ 와 함께 커지기 때문</button>
+      <button class="opt">$h$ 가 작아지면 계산 반복이 많아져 시간이 오래 걸리기 때문</button>
+      <button class="opt">$h$ 가 결국 음수가 되어 도함수의 부호가 뒤집히기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>전체 오차 $\approx \varepsilon_{\text{mach}}/h + h/2$ 에서, 첫 항은 $h$ 가 작아질수록 폭발하고 둘째 항은 감소한다. 그래서 최소가 되는 $h_{\text{opt}}\approx\sqrt{\varepsilon_{\text{mach}}}\approx10^{-8}$ 이 반드시 존재한다.</div>
   </div>
 </section>
 

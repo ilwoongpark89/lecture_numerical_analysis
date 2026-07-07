@@ -157,6 +157,18 @@
   </div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">주의</div>간격 $\Delta x$ 가 크면 <strong>두 근이 한 칸에 같이</strong> 들어(부호 안 바뀜) 놓칠 수 있다. 촘촘히 스캔할수록 안전하지만 계산이 는다.</div>
   <div class="stp-tblwrap" style="max-width:480px;margin:14px auto 0"><table class="stp-tbl"><thead><tr><th>$x$</th><th>$f(x)=x^3{-}x{-}2$</th><th>부호</th></tr></thead><tbody><tr><td>0</td><td>&minus;2</td><td>&minus;</td></tr><tr><td>1</td><td>&minus;2</td><td>&minus;</td></tr><tr><td>2</td><td>+4</td><td><b>+ ← 여기</b></td></tr><tr><td>3</td><td>+22</td><td>+</td></tr></tbody></table></div><div class="callout key" style="margin-top:10px"><div class="ct">부호가 바뀌는 칸 $[1,2]$ 에 근이 있다</div>일정 간격으로 훑어 $f(a)f(b)<0$ 인 구간을 찾으면 근을 <b>가둔다</b>(bracket) — 그 안에서 좁혀 간다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>브래킷 탐색이 $f(x_i)\,f(x_{i+1})<0$ 인 칸에 근이 <b>반드시</b> 있다고 보장하는 근본 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">연속함수는 부호가 바뀌려면 그 사이 어딘가에서 반드시 $0$ 을 지나야 하기 때문 (중간값 정리)</button>
+      <button class="opt">두 점의 평균이 언제나 근이 되기 때문</button>
+      <button class="opt">함수값의 곱이 음수이면 근이 정확히 두 개이기 때문</button>
+      <button class="opt">$f$ 가 그 칸에서 단조증가한다고 보장되기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>한 끝이 음, 다른 끝이 양이면 연속인 곡선은 값이 위에서 아래로 <b>끊김 없이</b> 이어지므로 중간에 반드시 $f=0$ 을 지난다(중간값 정리). 연속성이 깨지면($1/x$ 처럼) 부호가 갈려도 근이 없을 수 있어, 이 보장은 오직 <b>연속</b>일 때만 성립한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="직접계산">
@@ -189,6 +201,18 @@
     <tr><td class="stp-k">부호</td><td>$-$</td><td>$-$</td><td>극점</td><td>$+$</td><td>$+$</td></tr>
   </tbody></table></div>
   <div class="callout warn" style="margin-top:10px"><div class="ct">부호 판정이 거짓말한다 — $f(0)\,f(1)=(-2)(+2)=-4&lt;0$</div>양 끝 부호가 <b>달라</b> 이분법은 "근 있음"으로 <b>출발</b>하지만, 정작 조여드는 $x{=}0.5$ 는 근이 아니라 <b>불연속(극점)</b>이다 — 그 자리에서 $|f|\to\infty$ 로 <b>발산</b>할 뿐 $0$ 이 아니다. 중간값 정리의 <b>연속 가정</b>이 깨지면 부호 곱이 음수여도 근이 없으므로, 답을 얻은 뒤 반드시 $f(\hat x)\approx0$ 인지 <b>대입 검산</b>해야 한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$f(x)=\dfrac{1}{x-0.5}$ 를 $[0,1]$ 에 이분법으로 걸면 양끝 부호가 달라 "근 있음"으로 출발하지만 실제 근은 없다. 이 오판의 <b>원인</b>은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$x=0.5$ 에서 함수가 불연속이라 중간값 정리의 연속 가정이 깨졌다</button>
+      <button class="opt">시작 구간 $[0,1]$ 이 너무 넓었다</button>
+      <button class="opt">중점 공식 $(a+b)/2$ 를 잘못 적용했다</button>
+      <button class="opt">허용오차 tol 을 너무 크게 잡았다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>중간값 정리는 $f$ 가 <b>연속</b>일 때만 "부호 변화 → 근"을 보장한다. $1/(x-0.5)$ 는 $x=0.5$ 에서 $\pm\infty$ 로 튀는 불연속점이라 부호는 갈리지만 그 자리는 근이 아니다. 그래서 답을 얻은 뒤 $f(\hat x)\approx0$ 대입 검산이 꼭 필요하다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="4-1" data-chtitle="근의 존재성" data-stage="그림">
@@ -276,12 +300,31 @@
 <tr><td>3</td><td>1.5000</td><td>1.7500</td><td>1.6250</td><td>+0.666</td></tr>
 <tr><td>4</td><td>1.5000</td><td>1.6250</td><td>1.5625</td><td>+0.252</td></tr></tbody></table></div>
 <div class="callout key" style="margin-top:10px"><div class="ct">$f=x^3-x-2$, 근 $\approx1.5214$</div>매 반복 $f(c)$ 부호로 근이 든 반쪽을 골라 구간을 <b>절반</b>씩 줄인다. $f(c){<}0$ 이면 $a{\gets}c$, 아니면 $b{\gets}c$.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>다음 구간을 고를 때 왜 $f(c)$ 하나가 아니라 <b>$f(a)\,f(c)$</b> 의 부호를 보는가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">근을 계속 가두려면 "부호가 다른 끝점 쌍"을 유지해야 하는데, 그건 끝점과의 부호 관계로만 판별되기 때문</button>
+      <button class="opt">$f(c)$ 하나만으로는 함수값을 계산할 수 없기 때문</button>
+      <button class="opt">$f(a)$ 는 항상 음수라고 보장되기 때문</button>
+      <button class="opt">곱셈이 나눗셈보다 계산이 빠르기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>이분법은 매 반복 <b>부호가 반대인 두 끝점</b>을 유지해야 근을 놓치지 않는다. $f(a)f(c)<0$ 이면 $[a,c]$ 안에 부호 변화가 있으니 근은 그쪽 → $b\gets c$. $f(c)$ 부호만으로는 어느 끝과 짝지어 부호가 갈리는지 알 수 없어 반쪽을 못 고른다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="시연">
   <div class="eyebrow">4-2 · 시연 · Step-through</div>
   <h1 class="stage-h">직접 반복시켜 보기 — 구간이 조여든다</h1>
   <p class="lede">"다음 반복" 을 누르면 중점 $c$(주황)가 찍히고 근이 든 <strong>절반</strong>만 남는다. 구간 폭 $|b-a|$ 이 매번 반으로 주는 것을 표에서 확인하라. 초록 점선이 실제 근 $\approx 1.5214$.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>돌려보기 전에 — 이분법을 반복하면 구간 폭 $|b-a|$ 는 매 반복 어떻게 변할까?</div>
+    <div class="opts"><button class="opt" data-correct="1">매 반복 정확히 절반으로 준다</button><button class="opt">매 반복 일정한 양만큼 준다</button><button class="opt">처음엔 빠르다가 점점 느리게 준다</button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>중점 $c=(a+b)/2$ 로 구간을 반씩 자르므로 폭은 $1\to0.5\to0.25\to\dots$ 로 <b>매번 정확히 절반</b>(선형). $n$ 회 후 폭은 $(b-a)/2^n$ 이라 오차 상한도 그만큼 준다.</div>
+  </div>
   <div class="stepper"
     data-kind="root-bracket"
     data-fn="x^3 - x - 2"
@@ -349,6 +392,18 @@
     <tr><td class="stp-k">Newton 오차 $|\varepsilon_n|$</td><td>$2\times10^{-2}$</td><td>$4\times10^{-4}$</td><td>$1\times10^{-7}$</td><td>$8\times10^{-15}$</td><td>$\approx0$</td><td>—</td><td>—</td></tr>
   </tbody></table></div>
   <div class="callout warn" style="margin-top:10px"><div class="ct">"느리다"를 숫자로 — 같은 근 $\approx1.5214$, $f(x)=x^3-x-2$</div>이분법 오차는 매 반복 <b>정확히 절반</b>(선형)이라 $10^{-6}$ 까지 <b>~20회</b>를 갈아 넣어야 한다. Newton 오차는 <b>제곱</b>으로 줄어(이차) <b>4회</b> 만에 기계 정밀도($10^{-15}$)에 닿는다 — $n{=}4$ 열에서 이분법은 아직 $0.06$ 인데 Newton은 이미 $10^{-15}$ 다. 수렴은 보장되지만 <b>느린 것</b>이 이분법이 치르는 대가다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$f(x)=(x-1)^2$ 에 이분법을 걸면 어떤 구간을 잡아도 근 $x=1$ 을 <b>못 찾는다</b>. 근본 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">근에서 곡선이 축에 접하기만 해 양끝 부호가 늘 같기 때문</button>
+      <button class="opt">근 $x=1$ 이 정수라서</button>
+      <button class="opt">함수가 그 구간에서 불연속이라서</button>
+      <button class="opt">도함수가 존재하지 않아서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$(x-1)^2\ge0$ 이라 근 양쪽 모두 $f>0$ — 부호가 안 바뀐다. 이분법은 부호 변화로만 근을 가두므로 <b>짝수 중근(접점)</b> 은 원리적으로 못 잡는다. 알고리즘 버그가 아니라 '부호 변화 = 근'이라던 <b>전제</b>가 이 함수에서 깨진 것.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="4-2" data-chtitle="이분법" data-stage="코드">
@@ -424,6 +479,11 @@ f = @(x) x.^3 - x - 2;
     <tr><td class="stp-k">필요 반복</td><td>$n\ge\log_2\dfrac{b-a}{\text{tol}}$</td><td>tol $10^{-6}$: $20$회</td></tr>
     <tr><td class="stp-k">수렴 차수</td><td>$p=1$ (비 $\tfrac12$)</td><td>선형 · 3회당 1자리</td></tr>
   </tbody></table></div>
+  <div class="longform lf-compact" data-qid="concept-4-2" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>이분법은 '느린데도' 실무 근찾기(예: <code>fzero</code>)의 안전장치로 여전히 쓰인다. 왜일까 — 한 줄로.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 <!-- ════════════════════ 4-3 Newton-Raphson ════════════════════ -->
@@ -464,12 +524,31 @@ f = @(x) x.^3 - x - 2;
     <div class="dcard"><h4>③ 정리</h4><div class="sub">$x_{n+1}$ 로</div><div class="eq">$ x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)} $</div><p>Newton–Raphson 점화식.</p></div>
   </div>
   <div class="callout warn"><div class="ct">주의</div>$f'(x_n)=0$ 이면 접선이 수평이라 $x$절편이 없어 <strong>정의되지 않는다</strong>(0으로 나눔). 함정 단계 참고.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>점화식 $x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)}$ 에서 $x_{n+1}$ 이 <b>기하적으로</b> 뜻하는 점은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$x_n$ 에서 그은 접선이 $x$축과 만나는 점</button>
+      <button class="opt">$f$ 가 최솟값이 되는 점</button>
+      <button class="opt">$x_n$ 과 참근의 정확한 중점</button>
+      <button class="opt">$f'$ 가 $0$ 이 되는 점</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>Newton은 곡선을 $x_n$ 에서 <b>접선(1차 Taylor)</b> 으로 바꿔치기하고 그 접선의 $x$절편을 다음 근사값으로 삼는다. 그래서 $f'(x_n)=0$(수평 접선)이면 $x$절편이 없어 점화식이 정의되지 않는다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="4-3" data-chtitle="Newton-Raphson" data-stage="시연">
   <div class="eyebrow">4-3 · 시연 · Step-through</div>
   <h1 class="stage-h">접선을 따라 근으로 — 직접 반복</h1>
   <p class="lede">"다음 반복" 마다 접선(청록)이 그어지고 그 $x$절편(주황)이 다음 $x_{n+1}$ 이 된다. 표의 $f(x_n)$ 이 <strong>얼마나 빨리 0으로</strong> 가는지(이분법과 비교) 보라 — 보통 3~4회면 끝난다.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>돌려보기 전에 — Newton($x_0=1.5$)에서 $f(x_n)$ 이 $0$ 으로 가는 속도는 이분법과 비교해 어떨까?</div>
+    <div class="opts"><button class="opt" data-correct="1">오차가 제곱으로 줄어 서너 번 만에 근에 닿는다</button><button class="opt">이분법처럼 매번 절반씩 준다</button><button class="opt">처음 몇 번은 이분법보다 느리다</button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>단근·좋은 초기값에서 Newton은 <b>이차 수렴</b> — 오차가 매 반복 제곱으로 급락한다. 실제 $|f|$ 가 $10^{-1}\to10^{-3}\to10^{-7}\to10^{-14}$ 처럼 떨어져 3~4회면 기계 정밀도. 이분법(절반씩, ~20회)과 대조적이다.</div>
+  </div>
   <div class="stepper"
     data-kind="root-tangent"
     data-fn="x^3 - x - 2"
@@ -537,6 +616,18 @@ f = @(x) x.^3 - x - 2;
   <div class="pitfalls" style="margin-top:14px">
     <div class="pitfall"><h4>⚠ $f'(x_n)=0$</h4><p>접선이 수평 → 0으로 나눔. 극값 근처에서 발생.</p></div>
     <div class="pitfall"><h4>⚠ 순환·발산</h4><p>나쁜 초기값에서 <b>진동하거나 멀어진다</b>(위 시연).</p></div>
+  </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>위 시연에서 $f(x)=x^3-2x+2$, $x_0=0$ 으로 Newton을 돌리면 $x_n$ 이 $0\to1\to0\to1$ 을 오간다. 이 <b>순환</b>의 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">초기값이 나빠 접선의 도약이 근으로 못 가고 두 점 사이를 왕복하기 때문</button>
+      <button class="opt">함수가 그 구간에서 불연속이라서</button>
+      <button class="opt">이 함수엔 애초에 실근이 존재하지 않아서</button>
+      <button class="opt">허용오차를 $0$ 으로 두어서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>Newton은 접선의 $x$절편으로 도약하는데, 초기값이 근에서 멀거나 형상이 나쁘면 근으로 수렴하지 않고 몇 점 사이를 진동(순환)·발산한다. 이 함수의 실근은 $x\approx-1.77$ 인데 $x_0=0$ 에선 그쪽으로 못 가고 $0,1$ 을 왕복한다 — 초기값이 성패를 가른다.</div>
   </div>
 </section>
 
@@ -727,6 +818,11 @@ df = @(x) 3*x.^2 - 1;
     <tr><td class="stp-k">할선법</td><td>$\approx1.6$ (초선형)</td><td>$\varepsilon_{n+1}\!\approx\!C\varepsilon_n^{1.6}$</td><td>~7회</td></tr>
     <tr><td class="stp-k">Newton</td><td>$2$ (이차)</td><td>$\varepsilon_{n+1}\!\approx\!C\varepsilon_n^{2}$</td><td>~5회</td></tr>
   </tbody></table></div>
+  <div class="longform lf-compact" data-qid="concept-4-4" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>'빠른 방법(Newton)이 항상 더 좋다'는 말이 왜 틀렸는지 — 한 줄로.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 </div></main>

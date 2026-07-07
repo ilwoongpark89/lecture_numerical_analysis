@@ -152,6 +152,18 @@
     <div class="dcard"><h4>③ $\partial S/\partial a_1=0$</h4><div class="sub">기울기 방향</div><div class="eq">$ -2\sum x_i(y_i-a_0-a_1x_i)=0 $</div><p>$\Rightarrow\ \big(\textstyle\sum x_i\big)a_0+\big(\textstyle\sum x_i^2\big)a_1=\sum x_iy_i$</p></div>
   </div>
   <div class="callout key" style="margin-top:14px"><div class="ct">정규방정식</div>두 조건을 행렬로 묶으면 $2\times2$ 선형 시스템 — <strong>정규방정식(Normal Equations)</strong>: $$\begin{bmatrix} n & \sum x_i \\ \sum x_i & \sum x_i^2 \end{bmatrix}\!\begin{bmatrix} a_0\\ a_1\end{bmatrix}=\begin{bmatrix}\sum y_i\\ \sum x_iy_i\end{bmatrix}$$</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>편미분 $\partial S/\partial a_k=0$ 을 풀어 얻은 해가 최댓값이나 안장점이 아니라 <b>반드시 최솟값</b>임을 보장하는 근거는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$S$ 가 매개변수에 대해 아래로 볼록(convex)한 함수라서</button>
+      <button class="opt">잔차 합 $\sum e_i$ 이 $0$ 이 되기 때문</button>
+      <button class="opt">데이터 점이 $2$개 이상이기 때문</button>
+      <button class="opt">정규방정식이 선형이기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$S$ 는 잔차의 제곱합이라 $a_k$ 들에 대해 아래로 볼록한 함수다. 볼록 함수는 임계점이 곧 유일한 전역 최소이므로, 편미분$=0$ 조건 하나로 최소가 확정된다. 부호 상쇄($\sum e_i\approx0$)나 선형성은 최소임을 보장하지 않는다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="시연">
@@ -200,6 +212,13 @@
   <div class="eyebrow">9-1 · 시연 · 점을 하나씩</div>
   <h1 class="stage-h">데이터를 더할수록 적합 직선이 잡힌다 — 직접 돌려보기</h1>
   <p class="lede">"다음 반복" 마다 데이터 점을 하나씩 넣으며, 누적합 $\sum x,\sum y$ 로 최소자승 직선의 <strong>기울기·절편이 갱신</strong>되는 걸 한 줄씩 본다. 점이 쌓일수록 직선이 안정된다.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>점을 하나씩 추가하며 최소자승 직선을 갱신한다. 점이 쌓일수록 기울기·절편은 어떻게 될까?</div>
+    <div class="opts"><button class="opt" data-correct="1">처음엔 새 점마다 크게 흔들리다, 점이 늘수록 한 값으로 <b>안정(수렴)</b>된다</button><button class="opt">점을 넣을 때마다 매번 똑같은 폭으로 계속 크게 요동친다</button><button class="opt">점이 늘수록 기울기가 한없이 커진다</button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>최소자승은 모든 점의 잔차 제곱합을 함께 최소화하므로, 표본이 많아질수록 개별 점 하나의 영향력이 줄어 계수가 안정된다. $\geq2$ 점부터 직선이 정해지고, 이 데이터에서는 기울기가 $1.6\to1.4\to1.47\to1.47$ 로 수렴한다.</div>
+  </div>
   <div class="stepper" data-kind="lsq" data-pts="[[1,2],[2,3.6],[3,4.8],[4,6.5],[5,7.9]]"
     data-title="최소자승 직선 — 점을 하나씩 추가"
     data-note="≥2점부터 직선이 정해지고, 점이 늘수록 잔차 제곱합을 최소화하는 기울기·절편으로 수렴한다."></div>
@@ -235,6 +254,18 @@
 <tr><td>(1,1)…(5,5) 깔끔</td><td>$y=x$</td><td><b>1.0</b></td></tr>
 <tr><td>마지막을 (5,15) 이상치로</td><td>$y=3x-4$</td><td><b>3.0</b></td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">이상치 하나가 직선을 끌고 간다</div>최소제곱은 잔차를 <b>제곱</b>하므로 멀리 떨어진 점 하나의 영향이 폭증 — 점 하나로 기울기가 $1{\to}3$ 로 <b>3배</b>. 적합 전 산점도로 이상치를 먼저 봐야 한다(로버스트 회귀·이상치 제거 고려).</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>다섯 점 중 마지막 하나만 크게 튀게 바꿨더니 적합 직선의 기울기가 $1{\to}3$ 으로 확 돌아갔다. 이 과민반응의 <b>직접 원인</b>은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">최소제곱이 잔차를 <b>제곱</b>해 더하므로, 멀리 떨어진 한 점의 큰 잔차가 제곱으로 증폭돼 직선을 끌어당긴다</button>
+      <button class="opt">데이터 점이 $5$개로 너무 적어서 — 점이 많으면 제곱은 문제가 안 된다</button>
+      <button class="opt">정규방정식이 유일해를 갖지 못해 계산이 불안정해져서</button>
+      <button class="opt">잔차 합 $\sum e_i$ 이 더 이상 $0$ 이 아니게 되어서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>제곱합 $S=\sum e_i^2$ 은 큰 잔차에 제곱만큼 큰 벌점을 주므로 이상치 하나가 최적해를 크게 흔든다(레버리지). 점 개수나 해의 유일성 문제가 아니라 '제곱' 손실함수의 구조적 민감성이다. 적합 전 산점도로 이상치를 먼저 보고, 필요하면 로버스트 회귀를 쓴다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-1" data-chtitle="최소자승 원리" data-stage="연습">
@@ -353,6 +384,18 @@
 <div class="drow">$\dfrac{\partial S}{\partial a_k}=-2\sum_i x_i^{\,k}\big(y_i-\sum_j a_j x_i^{\,j}\big)=0$</div>
 <div class="drow">정리 → $\sum_j\big(\sum_i x_i^{\,k}x_i^{\,j}\big)a_j=\sum_i x_i^{\,k}y_i$, 즉 $(X^\mathsf{T}X)\mathbf a=X^\mathsf{T}\mathbf y$</div></div>
 <div class="callout key" style="margin-top:10px"><div class="ct">$X$ = 설계행렬 (각 행 $[1,x_i,x_i^2,\dots]$)</div>차수만 바꾸면 직선·포물선·다중회귀가 <b>같은 한 줄</b>로 통일 — 6주 가우스 소거로 푸는 $(m{+}1)\times(m{+}1)$ 선형계.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>9-1 의 직선 정규방정식 $\begin{bmatrix}n&\sum x_i\\ \sum x_i&\sum x_i^2\end{bmatrix}$ 이 9-2 의 $(X^TX)a=X^Ty$ 와 <b>같은 것</b>인 이유로 옳은 것은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">직선은 설계행렬 $X$ 의 열이 $\{1,x\}$ 인 $m{=}1$ 특수한 경우라, $X^TX$ 가 바로 그 $2\times2$ 행렬이 된다</button>
+      <button class="opt">직선과 다항 회귀는 원래 별개 공식인데 결과만 우연히 같다</button>
+      <button class="opt">차수 $m$ 이 커지면 정규방정식이 비선형이 되어 반복법이 필요하다</button>
+      <button class="opt">$X^TX$ 는 모델과 무관하게 항상 $2\times2$ 크기라서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>설계행렬의 열을 $\{1,x\}$ 로 두면 $X^TX$ 의 원소가 $n,\ \sum x_i,\ \sum x_i^2$ 가 되어 9-1 정규방정식과 정확히 일치한다. 계수에 선형인 한 차수를 올려도 <b>같은 틀</b>이고, 달라지는 것은 $X^TX$ 크기 $(m{+}1)\times(m{+}1)$ 뿐 — 비선형이 되거나 반복이 필요하지 않다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="시연">
@@ -412,6 +455,18 @@
 <tr><td>1차 직선 ($y\approx2x$)</td><td>0.999</td><td>≈ 12.1 (합리적)</td></tr>
 <tr><td>4차 다항 (점 5개 관통)</td><td><b>1.000</b></td><td><b>15.1</b> (폭주)</td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">$R^2{=}1$ 은 완벽이 아니라 과적합 신호</div>점 $n$ 개는 $n{-}1$ 차 다항이 <b>항상</b> 정확히 통과($R^2{=}1$) — 하지만 잡음까지 외워 점 사이·바깥에서 요동친다. 외삽 $x{=}6$ 에서 직선 12.1 vs 4차 15.1. "$R^2$ 높다 = 좋다"가 거짓인 지점.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>점 $5$개에 $4$차 다항을 맞췄더니 $R^2=1.000$ 인데, $x{=}6$ 예측이 직선의 $12$ 대신 $15$ 로 튀고 점 사이도 요동친다. 무엇이 잘못됐나?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">점 $n$ 개를 $n{-}1$ 차가 <b>정확히 통과</b>하느라 잡음까지 학습한 <b>과적합</b></button>
+      <button class="opt">$R^2$ 계산식을 잘못 적용해 실제로는 $1$ 이 아니다</button>
+      <button class="opt">차수가 낮아 데이터를 충분히 담지 못한 과소적합</button>
+      <button class="opt">외삽은 원래 내삽보다 정확한데 계산 실수가 섞였다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>자유도가 데이터와 같으면($m{=}n{-}1$) 다항식이 모든 점을 지나 $R^2{=}1$ 이지만 점 사이·바깥에서 요동친다 — 신호가 아니라 잡음까지 외운 과적합이다. $R^2{=}1$ 은 완벽이 아니라 <b>경보</b>다. 수정 $R^2$·검증셋으로 재판단하고 차수를 낮춰야 한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-2" data-chtitle="선형·다항 회귀" data-stage="코드">
@@ -541,6 +596,18 @@ p = polyfit(x, y, 1);
       <div class="keqnote">모두 $Y=A_0+A_1X$ 로 통일. 변환 후에는 오직 <b>직선 회귀 한 번</b>.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>지수 $y=ae^{bx}$ 를 $\ln y=\ln a+bx$ 로 바꾼 뒤 9-2 의 <b>선형 회귀를 그대로</b> 쓸 수 있는 근본 이유는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">변환된 좌표 $(x,\ \ln y)$ 에서 모델이 계수 $\ln a,\ b$ 에 대해 <b>선형</b>이 되기 때문</button>
+      <button class="opt">$\ln$ 변환이 데이터의 잡음을 완전히 제거해 주기 때문</button>
+      <button class="opt">지수함수가 원래 직선의 한 종류이기 때문</button>
+      <button class="opt">변환하면 데이터 점의 개수가 늘어나 자유도가 커지기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>최소제곱·정규방정식은 <b>계수에 대해 선형</b>이기만 하면 형태와 무관하게 적용된다. $\ln y=\ln a+bx$ 는 새 변수 $Y=\ln y$ 에 대해 계수 $(\ln a,\,b)$ 가 선형이라 9-2 틀이 그대로 통한다. 변환은 좌표만 갈아끼울 뿐 잡음을 없애거나 점 수를 바꾸지 않는다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="시연">
@@ -601,6 +668,18 @@ p = polyfit(x, y, 1);
 <tr><td>1</td><td>1</td><td>보통</td></tr>
 <tr><td>10 (큰 값)</td><td>0.1</td><td>거의 무시</td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">변환은 오차 가중치를 바꾼다</div>비선형을 직선으로 펴려 $y\to1/y$(또는 $\ln y$) 변환하면, 최소제곱이 <b>변환된 값</b>의 오차를 최소화 — 위 표처럼 <b>작은 $y$ 가 fit 을 지배</b>하고 큰 $y$ 는 무시된다. 변환 fit 후엔 원래 스케일에서 잔차를 다시 확인해야 한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$y$ 가 큰 점과 작은 점이 섞인 (모두 양수) 데이터를 $\ln y$ 로 선형화해 적합했더니, 원래 스케일에서 보니 <b>큰 $y$ 점들이 곡선에서 크게 벗어나</b> 있었다. 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$\ln$ 변환이 큰 $y$ 의 오차를 <b>상대적으로 축소</b>해, 변환 공간의 최소제곱이 작은 $y$ 쪽에 더 큰 가중을 두기 때문</button>
+      <button class="opt">$\ln y$ 계산에서 음수 데이터가 섞여 정의역 오류가 났기 때문</button>
+      <button class="opt">변환하면서 점 개수가 줄어 정보가 손실됐기 때문</button>
+      <button class="opt">지수 대신 거듭제곱 모델을 썼어야 하기 때문</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$\ln$ 공간의 잔차 최소화는 원공간 $y$ 의 잔차 최소화와 다르다 — 변환이 오차의 상대적 크기를 바꿔 큰 $y$ 의 절대오차가 과소평가된다. 선형화 결과는 좋은 <b>초기값</b>일 뿐, 정밀 적합은 원공간에서 비선형 최적화(Gauss–Newton 등)로 마무리하고 원 스케일 잔차를 재확인한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-3" data-chtitle="비선형 선형화" data-stage="코드">
@@ -719,6 +798,18 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
       <div class="keqnote">회귀변동 비율이 곧 $R^2$. 잔차변동이 작을수록 파란 막대가 총변동을 꽉 채운다.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>$R^2=1-SS_{\text{res}}/SS_{\text{tot}}$ 에서 회귀가 '이겨야 하는 상대(기준선)'는 무엇인가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">모델 없이 항상 평균 $\bar y$ 로만 예측했을 때 남는 총변동 $SS_{\text{tot}}=\sum(y_i-\bar y)^2$</button>
+      <button class="opt">잔차가 $0$ 인, 모든 점을 지나는 완벽한 보간 곡선</button>
+      <button class="opt">기울기가 다른 임의의 또 하나의 직선</button>
+      <button class="opt">데이터의 최댓값과 최솟값의 차이</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$SS_{\text{tot}}$ 은 아무 모델도 안 쓰고 평균만으로 답했을 때 남는 변동이다. $R^2$ 은 회귀가 그 <b>평균 기준선</b> 대비 변동을 얼마나 줄였나의 비율 — 총변동으로 정규화돼 단위·스케일이 달라도 두 적합을 비교할 수 있다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="시연">
@@ -797,6 +888,18 @@ fprintf('y = %.3f * exp(%.3f x)\n', a, b);
 <tr><td>4</td><td>16</td><td>17</td><td>&minus;1</td></tr>
 <tr><td>5</td><td>25</td><td>23</td><td>+2</td></tr></tbody></table></div>
 <div class="callout warn" style="margin-top:10px"><div class="ct">$R^2{=}0.963$ 인데 모델이 틀렸다</div>완전한 $2$차 데이터에 직선을 맞추면 $R^2{=}0.963$ 로 <b>훌륭해 보이지만</b>, 잔차가 $+,-,-,-,+$ <b>U자 패턴</b>(무작위 아님) — 이것이 "모델이 곡률을 놓쳤다"는 증거. $R^2$ 숫자만 보지 말고 <b>잔차 그림</b>을 반드시 봐야 한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>완전한 $2$차 데이터에 <b>직선</b>을 맞췄더니 $R^2=0.963$ 으로 높은데, 잔차를 $x$ 순서로 늘어놓으니 $+,-,-,-,+$ 의 <b>U자 패턴</b>이 보인다. 이것이 말해주는 것은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$R^2$ 이 높아도 잔차가 무작위가 아니라 체계적 패턴을 그리면 <b>모델 형태(직선)가 곡률을 놓친</b> 것</button>
+      <button class="opt">잔차에 패턴이 있어도 $R^2$ 가 높으면 좋은 모델이다</button>
+      <button class="opt">U자 패턴은 이상치가 하나 섞였다는 신호다</button>
+      <button class="opt">데이터에 측정 오차가 전혀 없다는 뜻이다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>잘 맞은 모델의 잔차는 부호가 <b>무작위</b>로 흩어진다. 활처럼 휜 U자 패턴은 남은 구조(곡률)를 직선이 담지 못했다는 증거이므로 $2$차 이상으로 올려야 한다. $R^2$ 숫자만 보지 말고 반드시 잔차 그림을 함께 봐야 하는 이유다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="9-4" data-chtitle="결정계수 R²" data-stage="코드">
@@ -912,6 +1015,11 @@ fprintf('R^2_adj = %.4f\n', R2adj);
     <tr><td class="stp-k">표준오차 $s_{y/x}$</td><td>$\sqrt{S_r/(n-2)}$</td><td>$\sqrt{1.475/3}=0.701$</td></tr>
     <tr><td class="stp-k">상관계수 $r$</td><td>$\pm\sqrt{R^2}$</td><td>$\sqrt{0.741}=0.861$</td></tr>
   </tbody></table></div>
+  <div class="longform lf-compact" data-qid="concept-9-4" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>$R^2=0.99$ 라는 말만 듣고 그 적합을 믿어도 될까? 함께 반드시 확인할 것 하나를 근거로 한 줄로.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 </div></main>

@@ -257,3 +257,7 @@ body:not(.na-prof) .prof-example{ display:none !important; }
 .cp-submit{ margin-top:11px; } .cp-fb{ font-size:12.5px; font-weight:700; margin-top:7px; min-height:1em; color:var(--accent); }
 .cq.predict{ border:1px solid var(--accent-line); border-radius:12px; padding:13px 15px; background:linear-gradient(180deg,rgba(37,99,235,.035),transparent); }
 .cq.predict .qn{ color:#b45309; } .cq.predict .qtext::before{ content:"🔮 "; }
+
+/* L3 P10 — 한 줄 개념답(.longform 축소 변형) */
+.lf-compact{ margin-top:14px; max-width:640px; } .lf-compact .lf-q{ font-size:14px; line-height:1.5; margin-bottom:7px; } .lf-compact .lf-q .qn{ color:var(--accent); font-weight:700; margin-right:6px; }
+.lf-compact .lf-input{ min-height:44px; font-size:13.5px; } .lf-compact .lf-row{ margin-top:7px; }

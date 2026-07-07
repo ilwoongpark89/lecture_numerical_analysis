@@ -178,6 +178,18 @@
       <div class="keqnote"><code>eps</code> $\approx 2.2\times10^{-16}$ 는 부동소수점 오차의 척도 — 수치해석 내내 "이보다 작은 차이는 0으로 본다"는 기준이 된다.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>두 실수가 "같은지" 판정할 때 수치해석에서는 <code>a == b</code> 대신 <code>abs(a-b) &lt; eps</code> 를 쓰라고 한다. 왜 그럴까?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">실수는 유한한 비트로 근사 저장돼 미세한 반올림 오차가 남으므로, 이론상 같은 값도 <code>==</code> 로는 거짓이 될 수 있어서</button>
+      <button class="opt"><code>==</code> 는 행렬에만 쓸 수 있고 스칼라 비교에는 못 써서</button>
+      <button class="opt"><code>eps</code> 를 쓰면 비교 계산이 <code>==</code> 보다 훨씬 빨라져서</button>
+      <button class="opt"><code>abs</code> 를 씌워야 음수 값도 비교할 수 있어서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>부동소수점은 실수를 유한 비트에 근사해 담기 때문에 $0.1+0.2$ 조차 정확히 $0.3$ 이 아니다($\texttt{eps}\approx2.2\times10^{-16}$ 규모의 오차). 그래서 "같다"는 정확한 일치가 아니라 <strong>$\texttt{eps}$ 규모의 tol 안</strong>에 드는지로 판정한다 — 다음 주 수렴 판정에서도 그대로 쓰는 잣대다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="시연">
@@ -243,6 +255,18 @@
     </tbody></table>
   </div>
   <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">각도는 <code>×pi/180</code> 로 라디안 변환하거나 도 단위 내장 함수 <code>sind·cosd</code> 를 쓴다 — 아래 두 줄만 의도대로 나온다. <code>sin(90)=0.894</code> 는 90 라디안(≈5157°)의 sin 이다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>학생이 $\sin 90° = 1$ 을 기대하고 <code>sin(90)</code> 을 실행했더니 $0.894$ 가 나왔다. 무엇이 원인인가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1"><code>sin</code> 은 인자를 <strong>라디안</strong>으로 해석하므로, $90$ 을 $90$ 라디안($\approx5157°$)의 sin 으로 계산해서</button>
+      <button class="opt">MATLAB의 반올림 오차가 커서 결과가 $1$ 에 조금 못 미쳐서</button>
+      <button class="opt">$90$ 이 너무 큰 값이라 계산 중 오버플로가 나서</button>
+      <button class="opt">세미콜론을 안 붙여 출력이 중간에 잘려서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>MATLAB 삼각함수의 기본 인자 단위는 라디안이다. 도(°) 단위 값을 그대로 넣으면 그 숫자를 라디안으로 읽어 값이 크기·부호까지 어긋난다. 도 단위로 넣으려면 <code>sin(90*pi/180)</code> 로 변환하거나 도 전용 함수 <code>sind(90)</code> 를 쓴다 — 둘 다 정확히 $1$ 이 나온다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-1" data-chtitle="환경과 문법" data-stage="코드">
@@ -354,6 +378,18 @@ I = eye(3);            <span class="cm">% 단위행렬</span>
 Z = zeros(2,3);        <span class="cm">% 0 행렬</span>
 D = diag([2 5 8]);     <span class="cm">% 대각행렬</span></code></pre></div>
   <div class="callout warn" style="margin-top:14px"><div class="ct">콜론 vs linspace</div><code>a:step:b</code> 는 <strong>간격</strong>을 지정(끝점이 안 맞을 수 있음), <code>linspace(a,b,n)</code> 는 <strong>개수</strong>를 지정(끝점 포함 보장). 그래프의 $x$ 축은 보통 <code>linspace</code>.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>그래프의 $x$ 축 벡터를 만들 때 <code>0:0.3:1</code>(콜론)보다 <code>linspace(0,1,n)</code> 을 주로 권한다. 왜 그럴까?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">콜론은 <strong>간격</strong>을 지정해 끝점 $1$ 이 딱 안 맞으면 빠질 수 있지만, linspace는 <strong>개수</strong>를 지정해 끝점 포함을 보장해서</button>
+      <button class="opt">linspace가 콜론보다 항상 더 촘촘한 점을 만들어서</button>
+      <button class="opt">콜론은 정수 간격만 만들 수 있어서</button>
+      <button class="opt">linspace로 만든 벡터만 <code>plot</code> 에 넣을 수 있어서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span><code>0:0.3:1</code> 은 간격 $0.3$ 으로 $[0,0.3,0.6,0.9]$ 까지만 만들고 끝점 $1$ 이 빠진다 — 간격이 구간 길이를 정확히 나누지 못하면 끝점이 누락된다. <code>linspace(a,b,n)</code> 은 "$a$ 부터 $b$ 까지 정확히 $n$ 개"라 끝점 포함이 보장돼, 축 범위를 딱 맞춰야 하는 그래프에 안전하다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="시연">
@@ -419,6 +455,18 @@ D = diag([2 5 8]);     <span class="cm">% 대각행렬</span></code></pre></div>
     </tbody></table>
   </div>
   <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">행렬곱 <code>*</code> 은 행×열 내적(예 (2,1): $3\cdot5+4\cdot7=43$), 원소별곱 <code>.*</code> 는 같은 자리끼리($3\cdot7=21$). 점(<code>.</code>) 하나가 결과 전체를 바꾼다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>같은 크기의 두 행렬을 "같은 자리끼리 곱하려" <code>A * B</code> 를 썼더니 원하던 값과 전혀 다른 결과가 나왔다. 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1"><code>*</code> 는 행×열 내적을 하는 <strong>행렬곱</strong>이라, 같은 자리끼리 곱하려면 <code>.*</code>(원소별곱)를 써야 해서</button>
+      <button class="opt">$A$ 와 $B$ 의 크기가 달라서 MATLAB이 자동으로 다른 연산으로 바꿔서</button>
+      <button class="opt">인덱스가 $1$ 부터라 원소가 한 칸씩 밀려서</button>
+      <button class="opt"><code>*</code> 는 정수 행렬에만 쓸 수 있어서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span><code>*</code> 는 선형대수의 행렬곱($C(i,j)=\sum_k A(i,k)B(k,j)$)이고, "같은 위치끼리 곱"은 <strong>원소별곱</strong> <code>.*</code> 다. 점(<code>.</code>) 하나 차이로 $(2,1)$ 성분이 $43$(행렬곱) 대 $21$(원소별곱)처럼 완전히 달라진다 — 같은 크기 정사각행렬이면 둘 다 오류 없이 "그럴듯한" 값을 내므로 더 위험하다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-2" data-chtitle="벡터·행렬 연산" data-stage="코드">
@@ -592,12 +640,35 @@ A(2,2)</code></pre></div>
       <div class="keqnote"><code>for i=1:100</code> 이면 같은 방식으로 $s=5050$. <code>i=1:2:9</code> 처럼 증분도 지정 가능.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>반복 결과를 배열에 모을 때 <code>y = zeros(1,n)</code> 으로 <strong>미리 크기를 확보</strong>하라고 한다. 미리 잡지 않고 반복 중 <code>y(i)=...</code> 로 배열을 키우면 무엇이 문제인가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">배열이 커질 때마다 메모리를 새로 할당·복사해서 반복이 느려진다</button>
+      <button class="opt">인덱스가 $1$ 부터 시작하지 않아 오류가 난다</button>
+      <button class="opt"><code>y(i)</code> 에는 값을 넣을 수 없어 문법 오류가 난다</button>
+      <button class="opt">최종 결과 값 자체가 달라진다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>배열을 한 칸씩 키우면 그때마다 더 큰 메모리 블록을 새로 잡아 기존 값을 통째로 복사한다 — 반복 $n$ 이 길수록 이 재할당 비용이 눈덩이처럼 쌓인다. 결과 값은 같지만 <strong>속도</strong>가 크게 나빠진다. <code>zeros</code> 로 크기를 한 번에 확보하면 재할당이 사라진다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="시연">
   <div class="eyebrow">2-3 · 시연 · while 수렴</div>
   <h1 class="stage-h">수렴할 때까지 반복 — 직접 돌려보기</h1>
   <p class="lede"><code>while</code> 의 진짜 쓸모는 <strong>수렴 반복</strong>이다. 아래는 $x_{n+1}=\cos(x_n)$ 을 계속 대입하는 고정점 반복($x=\cos x$). "다음 반복" 을 누르면 값이 한 점(<strong>$\approx 0.7391$</strong>, 초록 점선)으로 빨려 든다 — 이것이 <code>while error &gt; tol</code> 의 그림이다.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>이 반복은 한 점 $\approx0.739$ 로 <strong>수렴</strong>한다(위 예고). 그렇다면 $x_0=0$ 에서 그 값에 <em>다가가는 방식</em>은 어느 쪽에 가까울까? — 돌려보기 전에 예측해 보자.</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$0.739$ 를 사이에 두고 위·아래로 번갈아 오가며(진동하며) 점점 좁혀 든다</button>
+      <button class="opt">$0$ 에서 한 방향으로만 꾸준히 커지며 매끄럽게 다가간다</button>
+      <button class="opt">처음엔 $0.739$ 를 크게 지나쳐 발산했다가 되돌아온다</button>
+    </div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$x_1=\cos 0=1$(위) → $x_2=\cos 1\approx0.540$(아래) → $x_3\approx0.858$(위) → $x_4\approx0.654$(아래)… 값이 고정점을 <strong>번갈아 넘나들며</strong> 진폭이 줄어 수렴한다. $\cos$ 의 기울기가 음수라 나타나는 나선형 수렴 — "진동한다=안 멈춘다"가 아니라, 진동하면서도 폭이 줄면 수렴한다.</div>
+  </div>
   <div class="stepper"
     data-kind="fixed-point"
     data-gfn="cos(x)"
@@ -651,6 +722,18 @@ end</code></pre></div>
     </tbody></table>
   </div>
   <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">오차가 줄기는커녕 발산 → tol 아래로 못 내려간다. 그래서 수렴 반복엔 항상 <code>iter &lt; max_iter</code> 안전장치를 함께 건다(2-3 정리). 수렴하려면 $|g'(x^{*})|&lt;1$ 이어야 한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>고정점 반복 <code>while error &gt; tol</code> 을 돌렸더니 끝나지 않고 값이 점점 커지며 발산했다. <strong>근본</strong> 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">그 반복의 고정점이 <em>밀어내는</em> 점($|g'(x^{*})|&gt;1$)이라, 오차가 매 회 오히려 커져 tol 아래로 내려갈 수 없어서</button>
+      <button class="opt">tol 을 너무 작게 잡아서 — 조금만 키우면 곧 수렴한다</button>
+      <button class="opt"><code>iter &lt; max_iter</code> 안전장치를 안 걸어서 값이 발산했다</button>
+      <button class="opt">초기값 $x_0$ 을 하필 $0$ 으로 둬서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>수렴 여부는 고정점 근처의 기울기가 정한다 — $|g'(x^{*})|&lt;1$ 이면 오차가 줄어(끌어당김) 수렴하고, $|g'(x^{*})|&gt;1$ 이면 매 회 커져(밀어냄) 발산한다. tol 이나 $x_0$ 을 바꿔도 발산 자체는 못 막는다. <code>max_iter</code> 안전장치는 무한루프를 <strong>멈춰줄</strong> 뿐 발산의 원인은 아니다 — 증상 완화와 근본 원인을 구분해야 한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-3" data-chtitle="제어 흐름과 함수" data-stage="코드">
@@ -726,6 +809,11 @@ root = fzero(f, -2);        <span class="cm">% 익명 함수를 fzero 에 전달
     <tr><td class="stp-k">function</td><td>재사용 모듈</td><td>파일명 = 함수명</td></tr>
     <tr><td class="stp-k">@(x) …</td><td>익명 함수 한 줄</td><td><code>f=@(x)x.^2+2*x+1</code>, f(3)=16</td></tr>
   </tbody></table></div>
+  <div class="longform lf-compact" data-qid="concept-2-3" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>이분법·Newton 같은 수렴 반복에서 종료 조건을 <code>error &lt; tol</code> <strong>하나만</strong> 걸고 <code>max_iter</code> 는 빼면 무엇이 위험한가? 근거 한 줄.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 <!-- ════════════════════ 2-4 그래프 시각화 ════════════════════ -->
@@ -770,6 +858,18 @@ title('Sine &amp; Cosine');                    <span class="cm">% 제목</span>
 legend('sin(x)', 'cos(x)');                <span class="cm">% 범례</span>
 grid on;   axis([0 2*pi -1.2 1.2]);       <span class="cm">% 격자 · 축 범위</span></code></pre></div>
   <div class="callout warn" style="margin-top:12px"><div class="ct">subplot</div><code>subplot(m,n,p)</code> 로 한 창을 $m\times n$ 격자로 나눠 $p$ 번째 칸에 그린다 — 여러 결과를 나란히 비교할 때.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>한 그래프 창에 두 곡선을 겹쳐 그리려면 첫 <code>plot</code> 뒤에 <code>hold on</code> 을 켜야 한다. <code>hold on</code> 없이 두 번째 <code>plot</code> 을 하면 어떻게 되는가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">두 번째 <code>plot</code> 이 이전 곡선을 지우고 새로 그려, 마지막 곡선 하나만 남는다</button>
+      <button class="opt">두 곡선이 서로 다른 창에 각각 나뉘어 그려진다</button>
+      <button class="opt">오류가 나서 아무 그래프도 뜨지 않는다</button>
+      <button class="opt">두 곡선이 자동으로 겹쳐 그려진다(<code>hold on</code> 은 색만 바꾼다)</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span><code>plot</code> 은 기본적으로 현재 축(axes)을 <strong>비우고</strong> 새로 그린다. <code>hold on</code> 은 "지우지 말고 위에 겹쳐라"라는 상태를 켜는 명령이라, 이걸 켜지 않으면 나중 곡선이 앞 곡선을 덮어써 하나만 남는다. 다 그린 뒤 <code>hold off</code> 로 되돌린다 — 수치해 vs 해석해를 겹쳐 비교할 때 필수다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="시연">
@@ -839,6 +939,18 @@ grid on;   axis([0 2*pi -1.2 1.2]);       <span class="cm">% 격자 · 축 범�
     </tbody></table>
   </div>
   <div class="nafig-cap" style="max-width:520px;margin:7px auto 0">선형 <code>plot</code> 에선 $0.01$ 이하가 모두 바닥에 뭉쳐 구분 불가 → 지수적 수렴을 놓친다. <code>semilogy</code>·<code>loglog</code> 로 그리면 등간격 직선이 되고, 그 <strong>기울기가 수렴 차수</strong>(2-4 시연·직접계산).</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>매 반복 오차가 $1/10$ 로 주는데 일반 <code>plot</code>(선형축)으로 그렸더니, 몇 점 뒤부터 곡선이 $x$ 축에 붙어 안 보였다. 원인과 올바른 해법은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">선형축은 작은 값들이 바닥에 뭉쳐 구분이 안 되니, <code>semilogy</code>($y$ 축 로그)로 그리면 지수적 감소가 직선으로 보인다</button>
+      <button class="opt">$x$ 축이 성겨 각져 보인 것이므로 <code>linspace</code> 로 촘촘히 하면 된다</button>
+      <button class="opt"><code>hold on</code> 을 안 켜서 뒤 점들이 덮어써졌다</button>
+      <button class="opt">오차가 실제로 정확히 $0$ 이 되어 그릴 값이 사라졌다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>선형축에서는 $1,\,0.1,\,0.01,\,0.001$ 이 위→바닥으로 눌려 $0.01$ 이하가 모두 $x$ 축에 뭉친다 — 값이 $0$ 이 된 게 아니라 <strong>구분이 안 될 뿐</strong>이다. $y$ 축을 로그로 바꾸는 <code>semilogy</code> 를 쓰면 $10$ 배 간격이 등간격이 되어 직선으로 펴지고, 그 기울기가 수렴 차수를 읽는 무기가 된다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="2-4" data-chtitle="그래프 시각화" data-stage="코드">

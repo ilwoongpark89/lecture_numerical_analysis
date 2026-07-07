@@ -175,12 +175,31 @@
       <div class="callout warn"><div class="ct">직관</div>무한(극한)을 컴퓨터는 다룰 수 없다. 그래서 <strong>유한한 $\Delta t$, 유한한 조각</strong>으로 바꾸는 것이 모든 수치해석의 출발점이다.</div>
     </div>
   </div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>수치해석은 미분·적분의 극한을 유한한 $\Delta t$·유한 합으로 바꾼다. 이렇게 "유한화"하는 <b>근본 이유</b>는?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">컴퓨터는 무한(극한)을 직접 다룰 수 없어 유한한 산술로만 계산하기 때문</button>
+      <button class="opt">유한한 $\Delta t$ 가 극한보다 더 정확하기 때문</button>
+      <button class="opt">해석해가 항상 존재하기 때문</button>
+      <button class="opt">반올림오차를 없애기 위해서</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>컴퓨터는 유한 자릿수·유한 연산만 수행한다. 그래서 연속·극한을 유한한 $\Delta t$ 와 유한 합으로 바꿔야 <b>비로소 계산이 가능</b>해진다. 유한화는 정확도를 높이는 것이 아니라 계산 가능하게 만드는 대신 <b>절단오차</b>를 감수하는 거래다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="1-1" data-chtitle="수치해석이란" data-stage="시연">
   <div class="eyebrow">1-1 · 시연 · Step-through</div>
   <h1 class="stage-h">수치해석의 원형 — 면적을 잘게 나눠 더한다</h1>
   <p class="lede">가장 단순한 수치해석을 직접 돌려 보자. $\int_0^\pi \sin x\,dx$ 의 <strong>참값은 정확히 $2$</strong> 이다. 곡선 아래 면적을 <strong>사다리꼴</strong>로 근사하고, "다음 반복"으로 조각 수 $n$ 을 늘려 보라 — 근사값이 $2$ 로 <strong>수렴</strong>한다. 이것이 "정확한 공식 없이 답을 만든다"의 본질이다.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>돌려보기 전에 — 조각 수 $n$ 을 $1\to2\to4\to\cdots$ 로 늘리면 사다리꼴 합은 참값 $2$ 에 대해 어떻게 변할까?</div>
+    <div class="opts"><button class="opt" data-correct="1">$n$ 이 커질수록 오차가 줄어 참값 $2$ 에 점점 가까워진다</button><button class="opt">$n$ 과 무관하게 항상 정확히 $2$ 가 나온다</button><button class="opt">$n$ 이 커질수록 $2$ 에서 점점 멀어진다</button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>사다리꼴은 곡선 아래 면적을 유한 조각으로 근사한다. 조각을 잘게 나눌수록 각 조각의 근사가 정확해져 절단오차가 줄고, 합이 참값 $2$ 로 <b>수렴</b>한다. $\sin x$ 는 $[0,\pi]$ 에서 위로 볼록해 사다리꼴이 면적을 살짝 <b>과소평가</b>하므로 $2$ 보다 조금 작은 값에서 접근한다.</div>
+  </div>
   <div class="stepper"
     data-kind="integration"
     data-fn="sin(x)"
@@ -328,12 +347,31 @@
     <div class="dcard"><h4>③ 뒤집기</h4><div class="sub">$v_{i+1}$ 로</div><div class="eq">$ v_{i+1} = v_i + \dfrac{dv_i}{dt}\,\Delta t $</div><p>New = Old + Slope × Step. Euler Method.</p></div>
   </div>
   <div class="callout warn"><div class="ct">주의</div>이 공식은 현재 <strong>한 점의 기울기</strong>만 쓴다. 그래서 $\Delta t$ 가 크면 곡선을 직선으로 오해해 오차가 커진다 — 수렴 단계에서 확인한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>미분의 정의는 $\lim_{\Delta t\to0}$ 을 취하지만, Euler는 극한을 <b>취하지 않고</b> 유한한 $\Delta t$ 에서 멈춘다. 이렇게 '극한을 버리는' 대가로 <b>반드시</b> 따라오는 것은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">유한한 $\Delta t$ 때문에 생기는 <b>절단오차</b></button>
+      <button class="opt">반올림오차가 완전히 사라진다</button>
+      <button class="opt">아무 대가 없이 해석해와 똑같은 값을 얻는다</button>
+      <button class="opt">해석해가 자동으로 만들어진다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>극한 $\Delta t\to0$ 을 유한한 $\Delta t$ 로 대체하는 순간, 곡선을 한 점의 기울기(직선)로 근사하게 되어 <b>절단오차</b>가 생긴다. 이는 정확도를 포기하는 대신 컴퓨터로 계산 가능하게 만드는 거래이며, $\Delta t$ 를 줄이면 이 절단오차가 줄어든다(1차 정확도).</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="1-2" data-chtitle="해석해 vs 수치해" data-stage="시연">
   <div class="eyebrow">1-2 · 시연 · Step-through</div>
   <h1 class="stage-h">반복이 해석해로 수렴한다 — 1D 열전도</h1>
   <p class="lede">또 다른 예 — 벽 양쪽 온도가 $100^\circ$, $25^\circ$ 로 고정된 1D 정상상태 열전도. 해석해는 <strong>직선 온도분포</strong>($81.25,\,62.5,\,43.75$). 내부 3절점을 <strong>Gauss–Seidel 반복</strong>으로 풀어 보자 — "다음 반복"마다 값이 정확한 직선 해로 <strong>수렴</strong>한다. 이것이 "수치해 → 해석해 검증"의 실제 모습이다.</p>
+  <div class="cq predict" style="max-width:620px;margin:0 auto 14px">
+    <div class="qtext"><span class="qn">예측</span>초기값 $(62.5,62.5,62.5)$ 에서 '다음 반복'을 계속 누르면 세 절점 $(T_1,T_2,T_3)$ 은 어떻게 될까?</div>
+    <div class="opts"><button class="opt" data-correct="1">반복할수록 정확한 직선 해 $(81.25,62.5,43.75)$ 에 점점 가까워진다</button><button class="opt">초기값에서 전혀 변하지 않는다</button><button class="opt">반복할수록 값이 계속 커져 발산한다</button></div>
+    <button class="btn primary cp-submit">예측 확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>각 절점을 이웃의 평균 $T_i=(T_{i-1}+T_{i+1})/2$ 으로 갱신하는 Gauss–Seidel 반복은 이 문제에서 <b>수렴</b>이 보장돼, 매 반복 참 직선 해 $(81.25,62.5,43.75)$ 로 다가간다. 이것이 '수치해가 해석해로 수렴'하는 실제 모습이다.</div>
+  </div>
   <div class="stepper"
     data-kind="matrix-iter"
     data-a="[[2,-1,0],[-1,2,-1],[0,-1,2]]"
@@ -525,6 +563,18 @@ end
 <tr><td>참값 앎 (해석해)</td><td>참오차 $E_t=$참값$-$근사</td><td>검증·오차분석용</td></tr>
 <tr><td>참값 모름 (실전 대부분)</td><td>근사오차 $\varepsilon_a=\dfrac{|x_n-x_{n-1}|}{|x_n|}$</td><td>$\varepsilon_a<\varepsilon_s$ 면 멈춤</td></tr></tbody></table></div>
 <div class="callout key" style="margin-top:10px"><div class="ct">실전 알고리즘은 근사오차로 멈춘다</div>참값을 알면 애초에 수치해석이 필요 없다 — 그래서 <b>직전 반복과의 변화</b>($\varepsilon_a$)로 수렴을 판정한다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>참값을 모르는 <b>실전</b> 문제에서 '반복을 언제 멈출지'는 무엇을 기준으로 판단하는가?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">근사오차 $\varepsilon_a$(직전 반복과 현재의 변화)가 허용오차 $\varepsilon_s$ 보다 작아질 때</button>
+      <button class="opt">참오차 $\varepsilon_t$ 가 정확히 $0$ 이 될 때</button>
+      <button class="opt">반올림오차가 완전히 사라질 때</button>
+      <button class="opt">$\Delta t$ 가 정확히 $0$ 이 될 때</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>실전엔 참값이 없어 참오차 $\varepsilon_t$ 를 계산할 수 없다(참값을 알면 수치해석이 불필요). 그래서 <b>직전 반복과 현재의 상대변화</b> $\varepsilon_a$ 를 정지 기준으로 삼아, $\varepsilon_a<\varepsilon_s$ 면 수렴으로 보고 멈춘다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="직접계산">
@@ -566,6 +616,18 @@ end
     </table>
   </div>
   <div class="nafig-cap" style="max-width:580px;margin:8px auto 0;text-align:center">$x$ 가 작아지면 $\cos x\approx1$ 이라 $1-\cos x$ 는 <b>거의 같은 두 수의 뺄셈</b> — 앞자리가 모두 소거되며 믿을 수 있는 유효숫자가 사라진다. $x=10^{-8}$ 에선 $1-\cos x$ 가 통째로 $0$ 으로 반올림돼, 참값 $0.5$ 가 <b>$0$ 으로 무너진다</b>(상대오차 $100\%$). 수식은 옳아도 뺄셈 순서 하나로 답이 붕괴.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>위 표에서 $x=10^{-8}$ 일 때 $\dfrac{1-\cos x}{x^2}$ 가 참값 $0.5$ 를 두고 $0$ 으로 무너졌다. 가장 큰 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">$\cos x\approx1$ 이라 $1-\cos x$ 가 <b>거의 같은 두 수의 뺄셈</b>이 되어 유효숫자가 소거(자리빠짐)됐다</button>
+      <button class="opt">$x$ 가 작아 <b>절단오차</b>가 커졌다</button>
+      <button class="opt">$\cos$ 함수의 참값 자체가 틀렸다</button>
+      <button class="opt">$x^2$ 으로 나누는 과정에서 $0$ 으로 나눠졌다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>$x$ 가 작으면 $\cos x$ 가 $1$ 에 매우 가까워 $1-\cos x$ 는 거의 같은 두 수의 뺄셈이 된다. 앞자리가 모두 소거돼 믿을 유효숫자가 사라지는 <b>자리빠짐(catastrophic cancellation)</b>이다. $x=10^{-8}$ 에선 $1-\cos x$ 가 통째로 $0$ 으로 반올림돼 답이 붕괴한다 — 수식은 옳아도 뺄셈 형태가 문제다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="1-3" data-chtitle="오차와 근사" data-stage="연습">
@@ -730,6 +792,18 @@ end
     </table>
   </div>
   <div class="nafig-cap" style="max-width:600px;margin:8px auto 0;text-align:center">같은 번지점퍼를 Euler로 풀되 <b>스텝만</b> 바꿨다. $\Delta t=2$ 는 $t=4\text{s}$ 에서 벌써 $\approx10\%$ 오차 — 큰 스텝이 곡선을 직선으로 오해해 <b>절단오차</b>가 급증한 것(위 함정의 수치 실증). $\Delta t=0.5$ 로 줄이면 같은 지점 오차가 $2.4\%$ 로 떨어진다.</div>
+  <div class="cq" style="max-width:620px;margin:16px auto 0">
+    <div class="qtext"><span class="qn">개념 점검</span>위 표에서 $\Delta t=2$ 는 $t=4$s 에서 오차 $\approx10\%$, $\Delta t=0.5$ 로 줄이니 $2.4\%$ 로 떨어졌다. 큰 스텝에서 오차가 컸던 주된 원인은?</div>
+    <div class="opts">
+      <button class="opt" data-correct="1">큰 $\Delta t$ 가 곡선을 한 점의 기울기(직선)로 근사해 <b>절단오차</b>가 급증했다</button>
+      <button class="opt">큰 $\Delta t$ 에서 <b>반올림오차</b>가 급증했다</button>
+      <button class="opt">모델 방정식 $\frac{dv}{dt}=g-\frac{c_d}{m}v^2$ 자체가 틀렸다</button>
+      <button class="opt">스텝이 크면 반복 횟수가 적어 계산이 부정확해진다</button>
+    </div>
+    <button class="btn primary cp-submit">확인</button>
+    <div class="cp-fb"></div>
+    <div class="cp-exp"><span class="exp-h">왜</span>Euler는 한 점의 기울기로 다음 값을 예측한다. $\Delta t$ 가 크면 그 구간 안에서 기울기가 변하는 것을 무시하고 곡선을 직선으로 오해해 <b>절단오차</b>가 커진다($E\propto\Delta t$). 반올림오차는 오히려 스텝이 극단적으로 작을 때 문제가 되며, 여기서는 절단오차가 지배한다.</div>
+  </div>
 </section>
 
 <section class="screen" data-ch="1-4" data-chtitle="수치해석 절차" data-stage="그림">
@@ -784,6 +858,11 @@ end
     </tbody>
   </table></div>
   <div class="nafig-cap" style="max-width:600px;margin:8px auto 0;text-align:center">한눈 요약 — 모든 수치해석의 뼈대 5단계. Approximate가 심장, Verify 없이는 신뢰 불가.</div>
+  <div class="longform lf-compact" data-qid="concept-1-4" data-kind="reflect">
+    <div class="lf-q"><span class="qn">한 줄 생각</span>이 5단계 중 딱 하나도 생략할 수 없다면, <b>절대</b> 빼면 안 되는 단계는 무엇이고 그 이유는? 한 줄로.</div>
+    <textarea class="lf-input" maxlength="200" placeholder="개념만 한 줄로 — 계산 없이"></textarea>
+    <div class="lf-row"><button class="lf-save btn primary" type="button">기록</button><span class="lf-fb"></span></div>
+  </div>
 </section>
 
 </div></main>
