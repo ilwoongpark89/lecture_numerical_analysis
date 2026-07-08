@@ -927,6 +927,19 @@ end
 
 <section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="감잡기">
   <div class="eyebrow">3-4 · 감 잡기 · Warm-up</div>
+  <h1 class="stage-h">먼저 아주 쉽게 — 작은 흔들림, 커질까 눌릴까</h1>
+  <div class="warmup">
+    <div class="wu-intro">같은 "손 떨림"(작은 입력 오차)이라도, 어떤 장치를 통과하느냐에 따라 결과가 천지차이다. 확성기와 방음벽을 떠올려 보자.</div>
+    <div class="wu-steps"><div class="wu-step"><span class="wu-n">1</span><div><b>확성기(증폭기):</b> 아주 작은 속삭임이 스피커를 지나면 방을 울리는 큰 소리가 된다. 작은 입력 → <b>크게 증폭</b>.</div></div><div class="wu-step"><span class="wu-n">2</span><div><b>기어비:</b> 손잡이를 살짝만 떨어도 큰 톱니가 크게 돌면 작은 떨림이 큰 회전으로 <b>뻥튀기</b>. 기어비를 낮추면 도로 눌린다.</div></div><div class="wu-step"><span class="wu-n">3</span><div>즉 어떤 계산(장치)은 입력의 작은 오차를 <b>크게 부풀리고</b>(민감·위험), 어떤 건 <b>얌전히 눌러</b> 통과시킨다(안전).</div></div></div>
+    <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
+      입력 오차가 결과로 얼마나 <b>증폭</b>되는지를 재는 값이 <b>조건수</b> $\kappa$ 다 — 확성기처럼 크게 부풀리면 <b>ill-conditioned</b>(위험), 방음벽처럼 눌리면 <b>well-conditioned</b>(안전). 오차 전파는 $\Delta f \approx f'(x)\,\Delta x$ 로, 기울기 $f'$(기어비)가 클수록 입력 떨림이 크게 번진다. 신뢰할 자릿수도 $\kappa$ 가 클수록 줄어든다.</div>
+  </div>
+</section>
+
+
+
+<section class="screen" data-ch="3-4" data-chtitle="오차 전파와 수렴차수" data-stage="감잡기">
+  <div class="eyebrow">3-4 · 감 잡기 · Warm-up</div>
   <h1 class="stage-h">먼저 아주 쉽게 — 언덕 경사, 두 점을 얼마나 벌려 잴까</h1>
   <div class="warmup">
     <div class="wu-intro">굽은 언덕에서 "지금 발밑 경사"를 재고 싶다. 두 지점의 높이 차를 그 사이 거리로 나누면 된다. 그런데 두 지점을 얼마나 떨어뜨려 잴까? 너무 벌려도, 너무 붙여도 엉뚱한 값이 나온다.</div>

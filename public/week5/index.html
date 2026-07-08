@@ -435,7 +435,7 @@ f = @(x) x.^3 - x - 2;
       <div class="wu-step"><span class="wu-n">3</span><div>남은 $40$cm 일 때 평소의 <b>2배</b>로 $40$cm 를 밀면 → 벽에 <b>단번에 딱</b>. <span class="wu-say">"절반인 걸 알면 2배로! 한 방이네"</span></div></div>
     </div>
     <div class="wu-bridge"><span class="bh">이 감을 수학으로 다듬으면 → 다음 장 '원리'</span>
-      근이 <b>겹쳐 있으면</b>(중복도 $m$) 표준 Newton은 딱 이 주차처럼 오차를 매번 $\left(1-\tfrac1m\right)$ 배로만 줄인다 — 이중근이면 매번 <b>절반씩</b>($x_0{=}1.8\to1.4\to1.2\to\cdots$), 답답한 선형 crawl. 해결도 똑같다: "절반씩인 걸 알면 <b>보폭을 $m$ 배로</b>" — 이게 <b>Modified Newton</b> $x_{n+1}=x_n-m\dfrac{f}{f'}$ 다. 이중근($m{=}2$)이면 $\times2$ 로 한 걸음에 근에 딱 붙는다. 공식이 무서운 게 아니라, "절반씩 가면 답답하니 두 배로" 라는 감이 먼저다.</div>
+      근이 <b>겹쳐 있으면</b>(중복도 $m$) 표준 Newton은 딱 이 주차처럼 오차를 매번 $\left(1-\tfrac1m\right)$ 배로만 줄인다 — 이중근이면 매번 <b>절반씩</b>($x_0{=}1.8\to1.4\to1.2\to\cdots$), 답답한 선형 crawl. 해결도 똑같다: "절반씩인 걸 알면 <b>보폭을 $m$ 배로</b>" — 이게 <b>Modified Newton</b> $x_{n+1}=x_n-m\dfrac{f}{f'}$ 다. 이중근($m{=}2$)이면 $\times2$ 로 한 걸음에 근에 딱 붙는다. (중복도 $m$ 을 <b>모를 때</b>는? <b>겹쳐 접힌 종이(중근)를 한 겹으로 펴듯</b> $u=\dfrac{f}{f'}$ 로 바꾸면 그 근이 <b>단순근</b>이 되어, $m$ 을 몰라도 $u$ 에 표준 Newton 만으로 이차수렴이 되살아난다.) 공식이 무서운 게 아니라, "절반씩 가면 답답하니 두 배로" 라는 감이 먼저다.</div>
   </div>
 </section>
 
