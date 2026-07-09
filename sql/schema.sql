@@ -68,7 +68,7 @@ grant execute on function public.na_record_event(text,text,int,text,int,text,tex
 -- ── 2. 교수 토큰 (anon 비공개) ───────────────────────────────────────────────
 create table if not exists public.na_admin_secret ( token text primary key );
 alter table public.na_admin_secret enable row level security;   -- 정책 없음 → anon 읽기 불가
-insert into public.na_admin_secret(token) values ('ef97d7ab8391aa47f18682ddfc6ad816c40eb90be8cfcd8c') on conflict (token) do nothing;
+insert into public.na_admin_secret(token) values ('__NA_ADMIN_TOKEN__') on conflict (token) do nothing;  -- 실값은 Vercel env NA_ADMIN_TOKEN 참조 (평문 커밋 금지)
 
 -- ── 3. 교수 raw 열람 RPC (토큰 일치 시 전체 이벤트) ──────────────────────────
 create or replace function public.na_admin_export(p_token text)
